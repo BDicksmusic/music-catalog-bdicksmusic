@@ -1,191 +1,12 @@
 console.log("Website loaded!");
 
-// Add click handlers to buttons
+// ===== NAVIGATION FUNCTIONS =====
 document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('button');
-    
-    buttons.forEach(button => {
-        button.addEventListener('click', function() {
-            alert('Button clicked: ' + this.textContent);
-        });
-    });
+    loadCompositions(); // Load compositions first
+    // Navigation is now directly in HTML, no need to load
+    setActivePage();
+    initMobileMenu();
 });
-
-// Load navigation on every page
-document.addEventListener('DOMContentLoaded', function() {
-    loadNavigation();
-});
-
-async function loadNavigation() {
-    try {
-        const response = await fetch('includes/nav.html');
-        const navHTML = await response.text();
-        document.getElementById('navigation').innerHTML = navHTML;
-        
-        // Set active page
-        setActivePage();
-        
-        // Initialize mobile menu
-        initMobileMenu();
-    } catch (error) {
-        console.error('Error loading navigation:', error);
-    }
-}
-
-function setActivePage() {
-    const currentPage = window.location.pathname.split('/').pop();
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    navLinks.forEach(link => {
-        const linkPage = link.getAttribute('href');
-        if (linkPage === currentPage || (currentPage === '' && linkPage === 'index.html')) {
-            link.classList.add('active');
-        }
-    });
-}
-
-function initMobileMenu() {
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-
-    if (hamburger && navMenu) {
-        hamburger.addEventListener('click', function() {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-
-        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        }));
-    }
-}
-
-
-
-// Load compositions from Notion API
-document.addEventListener('DOMContentLoaded', function() {
-    loadCompositions();
-    loadNavigation();
-});
-
-async function loadCompositions() {
-    const grid = document.getElementById('compositionGrid');
-    
-    if (!grid) return; // Not on a page with composition grid
-    
-    try {
-        showLoading(grid);
-        
-        const response = await fetch('/api/compositions');
-        const result = await response.json();
-        
-        if (result.success) {
-            renderCompositions(result.data);
-            console.log(`✅ Loaded ${result.count} compositions from Notion`);
-        } else {
-            showError(grid, result.message);
-        }
-        
-    } catch (error) {
-        console.error('❌ Error loading compositions:', error);
-        showError(grid, 'Failed to load compositions');
-    }
-}
-
-function renderCompositions(compositions) {
-    const grid = document.getElementById('compositionGrid');
-    
-    if (compositions.length === 0) {
-        grid.innerHTML = '<p class="no-results">No compositions found.</p>';
-        return;
-    }
-    
-    grid.innerHTML = compositions.map(comp => `
-        <div class="composition-card" data-genre="${comp.genre.toLowerCase()}">
-            <h3 class="composition-title">${comp.title}</h3>
-            
-            <div class="composition-meta">
-                <span class="genre-tag">${comp.genre}</span>
-                <span class="bpm">${comp.bpm} BPM</span>
-                <span class="duration">${comp.duration}</span>
-            </div>
-            
-            ${comp.audioFile ? `
-                <audio controls class="audio-player">
-                    <source src="${comp.audioFile}" type="audio/mpeg">
-                    Your browser does not support audio.
-                </audio>
-            ` : ''}
-            
-            <p class="composition-description">${comp.description}</p>
-            
-            <div class="composition-tags">
-                ${comp.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-            </div>
-            
-            <div class="composition-actions">
-                <span class="price">$${comp.price}</span>
-                <button class="btn btn-primary" onclick="purchaseTrack('${comp.id}', '${comp.title}', ${comp.price})">
-                    License Track
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-function showLoading(container) {
-    container.innerHTML = `
-        <div class="loading">
-            <p>🎵 Loading compositions from Notion...</p>
-            <div class="loading-spinner"></div>
-        </div>
-    `;
-}
-
-function showError(container, message) {
-    container.innerHTML = `
-        <div class="error">
-            <p>❌ ${message}</p>
-            <button onclick="loadCompositions()" class="btn btn-secondary">Try Again</button>
-        </div>
-    `;
-}
-
-async function purchaseTrack(id, title, price) {
-    // Integrate with Stripe or other payment processor
-    alert(`Purchasing "${title}" for $${price}\n\nID: ${id}`);
-    
-    // In real implementation:
-    // window.location.href = `/checkout?track=${id}`;
-}
-
-// Filter compositions by genre
-function filterByGenre(genre) {
-    const cards = document.querySelectorAll('.composition-card');
-    
-    cards.forEach(card => {
-        if (genre === 'all' || card.dataset.genre === genre) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
-
-// Navigation loader (from previous examples)
-async function loadNavigation() {
-    try {
-        const response = await fetch('includes/nav.html');
-        const navHTML = await response.text();
-        document.getElementById('navigation').innerHTML = navHTML;
-        
-        setActivePage();
-        initMobileMenu();
-    } catch (error) {
-        console.error('Error loading navigation:', error);
-    }
-}
 
 function setActivePage() {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -208,25 +29,244 @@ function initMobileMenu() {
             hamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
         });
+
+        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }));
     }
 }
 
-// Load navigation
-async function loadNavigation() {
+// ===== COMPOSITION FUNCTIONS =====
+
+// Load and display all compositions
+async function loadCompositions() {
     try {
-        const response = await fetch('includes/nav.html');
-        const navHTML = await response.text();
-        document.getElementById('navigation').innerHTML = navHTML;
+        showLoading('popular-works');
         
-        // Add class to show content AFTER nav loads
-        document.body.classList.add('nav-loaded');
+        const response = await fetch('/api/compositions');
+        const data = await response.json();
+        
+        if (data.success) {
+            displayCompositions(data.compositions, 'popular-works');
+            console.log(`✅ Loaded ${data.count} compositions from Notion`);
+        } else {
+            showError('popular-works', 'Failed to load compositions');
+        }
     } catch (error) {
-        console.error('Error loading navigation:', error);
-        // Show content even if nav fails to load
-        document.body.classList.add('nav-loaded');
+        console.error('❌ Error loading compositions:', error);
+        showError('popular-works', 'Error connecting to server');
     }
 }
 
-// Load navigation when page loads
-document.addEventListener('DOMContentLoaded', loadNavigation);
+// Display compositions in beautiful cards
+function displayCompositions(compositions, containerId) {
+    const container = document.getElementById(containerId);
+    
+    if (!container) {
+        console.error(`Container ${containerId} not found`);
+        return;
+    }
+    
+    if (compositions.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <h3>No compositions found</h3>
+                <p>Check back soon for new musical works!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = compositions.map(comp => `
+        <div class="work-card" onclick="viewComposition('${comp.id}')">
+            <div class="work-header">
+                <h3 class="work-title">${comp.title}</h3>
+                <div class="work-instrument">${comp.instrumentation}</div>
+            </div>
+            
+            <div class="work-content">
+                ${(comp.year || comp.duration) ? `
+                    <div class="work-meta">
+                        ${comp.year ? `<div class="work-year">${comp.year}</div>` : ''}
+                        ${comp.duration && comp.duration !== 'Duration:' ? `<div class="work-duration">${comp.duration}</div>` : ''}
+                    </div>
+                ` : ''}
+                
+                ${comp.difficulty ? `<div class="difficulty-badge ${comp.difficulty.toLowerCase()}">${comp.difficulty}</div>` : ''}
+                
+                ${comp.description ? `<p class="work-description">${comp.description}</p>` : ''}
+                
+                ${comp.tags && comp.tags.length > 0 ? `
+                    <div class="work-tags">
+                        ${comp.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                ` : ''}
+                
+                <div class="work-links">
+                    ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">🎵 Listen</a>` : ''}
+                    ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">📄 Score</a>` : ''}
+                    ${comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="btn-primary" onclick="event.stopPropagation()">💳 Purchase</a>` : ''}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
 
+// View single composition details
+async function viewComposition(id) {
+    try {
+        const response = await fetch(`/api/compositions/${id}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            showCompositionModal(data.composition);
+        } else {
+            alert('Failed to load composition details');
+        }
+    } catch (error) {
+        console.error('Error loading composition:', error);
+        alert('Error loading composition details');
+    }
+}
+
+// Show composition in modal/popup
+function showCompositionModal(comp) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2>${comp.title}</h2>
+            <p><strong>Instrumentation:</strong> ${comp.instrumentation}</p>
+            ${comp.year ? `<p><strong>Year:</strong> ${comp.year}</p>` : ''}
+            ${comp.duration ? `<p><strong>Duration:</strong> ${comp.duration}</p>` : ''}
+            ${comp.difficulty ? `<p><strong>Difficulty:</strong> ${comp.difficulty}</p>` : ''}
+            ${comp.genre ? `<p><strong>Genre:</strong> ${comp.genre}</p>` : ''}
+            <p><strong>Description:</strong> ${comp.description}</p>
+            
+            <div class="modal-links">
+                ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-primary">🎵 Listen</a>` : ''}
+                ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
+                ${comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="btn-primary">💳 Purchase</a>` : ''}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+// Close modal
+function closeModal() {
+    const modal = document.querySelector('.modal-overlay');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// ===== FORM FUNCTIONS =====
+
+// Add new composition form handler
+async function submitComposition(event) {
+    event.preventDefault();
+    
+    const formData = {
+        title: document.getElementById('title').value,
+        instrumentation: document.getElementById('instrumentation').value,
+        year: document.getElementById('year').value,
+        duration: document.getElementById('duration').value,
+        difficulty: document.getElementById('difficulty').value,
+        genre: document.getElementById('genre').value,
+        description: document.getElementById('description').value,
+        audioLink: document.getElementById('audioLink').value,
+        scoreLink: document.getElementById('scoreLink').value,
+        purchaseLink: document.getElementById('purchaseLink').value,
+        tags: document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
+    };
+    
+    try {
+        const response = await fetch('/api/compositions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Composition added successfully!');
+            document.getElementById('composition-form').reset();
+            loadCompositions(); // Reload the list
+        } else {
+            alert('Error: ' + (result.message || result.error));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to add composition');
+    }
+}
+
+// Set up form handler when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('composition-form');
+    if (form) {
+        form.addEventListener('submit', submitComposition);
+    }
+    
+    // Set up modal close on background click
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal-overlay')) {
+            closeModal();
+        }
+    });
+});
+
+// ===== UTILITY FUNCTIONS =====
+
+// Filter compositions by genre
+async function filterByGenre(genre) {
+    try {
+        const response = await fetch(`/api/compositions/genre/${genre}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            displayCompositions(data.compositions, 'popular-works');
+        }
+    } catch (error) {
+        console.error('Error filtering compositions:', error);
+    }
+}
+
+// Search functionality
+function searchCompositions(searchTerm) {
+    const cards = document.querySelectorAll('.work-card');
+    cards.forEach(card => {
+        const title = card.querySelector('.work-title').textContent.toLowerCase();
+        const instrument = card.querySelector('.work-instrument').textContent.toLowerCase();
+        const description = card.querySelector('.work-description')?.textContent.toLowerCase() || '';
+        
+        if (title.includes(searchTerm.toLowerCase()) || 
+            instrument.includes(searchTerm.toLowerCase()) || 
+            description.includes(searchTerm.toLowerCase())) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+function showLoading(containerId) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.innerHTML = '<div class="loading">Loading compositions...</div>';
+    }
+}
+
+function showError(containerId, message) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.innerHTML = `<div class="error">${message}</div>`;
+    }
+}

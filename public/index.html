@@ -42,24 +42,40 @@
     <div class="page-content"></div>
 
     <main>
-        <div class="composition">
-            <h3>Epic Journey</h3>
-            <p>Cinematic orchestral piece</p>
-            <button>Listen</button>
-            <button>License - $49</button>
-        </div>
-        <div class="composition">
-    <h3>Peaceful Dawn</h3>
-    <p>Ambient meditation track</p>
-    <button>Listen</button>
-    <button>License - $35</button>
-</div>
-    <div class="composition">
-    <h3>Peaceful Dawn</h3>
-    <p>Ambient meditation track</p>
-    <button>Listen</button>
-    <button>License - $35</button>
-</div>
+   <h1>My Compositions</h1>
+    <div id="popular-works" class="works-grid">
+        Loading...
+    </div>
+    
+    <script>
+        // Simple test to load compositions
+        async function loadCompositions() {
+            try {
+                const response = await fetch('/api/compositions');
+                const data = await response.json();
+                
+                const container = document.getElementById('popular-works');
+                
+                if (data.success && data.compositions.length > 0) {
+                    container.innerHTML = data.compositions.map(comp => `
+                        <div class="work-card">
+                            <h3>${comp.title}</h3>
+                            <p>${comp.instrumentation}</p>
+                            <p>${comp.price}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p>No compositions found</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('popular-works').innerHTML = '<p>Error loading compositions</p>';
+            }
+        }
+        
+        // Load when page loads
+        document.addEventListener('DOMContentLoaded', loadCompositions);
+    </script>
     </main>
 
 
