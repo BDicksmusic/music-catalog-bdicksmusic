@@ -1,17 +1,11 @@
 const express = require('express');
-const path = require('path');
 const app = express();
 
-// Serve static files
-app.use(express.static('public'));
-
-// Test route
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.send('<h1>🎵 Music Catalog - Test Version</h1><p>Server is working!</p>');
 });
 
-// Use Railway's port
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`✅ SIMPLE SERVER RUNNING ON PORT: ${PORT}`);
 });
