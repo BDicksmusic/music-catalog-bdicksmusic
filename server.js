@@ -28,3 +28,18 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Music Catalog app running on port ${PORT}`);
 });
+
+// Instead of this:
+app.listen(PORT, 'localhost', () => {
+    console.log(`Server running on localhost:${PORT}`);
+});
+
+// Use this:
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
+// Or even simpler (Express defaults to 0.0.0.0):
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
