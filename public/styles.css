@@ -9,9 +9,11 @@ header {
     color: white;
     padding: 2rem;
     text-align: center;
+    
 }
 
 main {
+    padding-top: 20px;
     max-width: 1200px;
     margin: 2rem auto;
     padding: 0 1rem;
@@ -19,8 +21,8 @@ main {
 
 .composition {
     background: white;
-    padding: 1.5rem;
-    border-radius: 10px;
+    padding: 1rem;
+    border-radius: 20px;
     margin: 1rem 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
@@ -37,4 +39,320 @@ button {
 
 button:hover {
     background: #5a6fd8;
+}
+
+
+
+
+
+/* ____________________________________________ */
+/* Navigation Styles */
+nav {
+    background: #fff;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 0;
+}
+
+.secondary-nav {
+  position: main;
+  z-index: 999;
+  top: var(--nav-height-primary);
+  left: 0;
+  width: 100vw;
+  font-size: 14px; /* Slightly smaller text */
+  background: var(--footer-background-color);
+  color: var(--footer-text-color);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0;
+  padding: 0 1rem 0 0.7rem;
+  text-align: left;
+  height: var(--nav-height-secondary);
+
+}
+
+.secondary-button {
+  text-decoration: none;
+  font-weight: 600;
+  color: #6c757d;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: var(--transition-fast);
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  position: relative;
+  margin: 0 2px;
+}
+
+.secondary-button:hover {
+  color: var(--btn-primary);
+  background: #e9ecef;
+  transform: translateY(-1px);
+}
+
+.secondary-button::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background: var(--btn-primary);
+  transition: var(--transition-fast);
+}
+
+.secondary-button:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+.secondary-button:active {
+  transform: translateY(0);
+  background: #dee2e6;
+}
+
+
+body {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+::selection {
+  background: #fdb933;
+  color: #ffffff;
+}
+
+.nav-container {
+    max-width: 12000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #667eea;
+    text-decoration: none;
+    padding: 1rem 0;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2rem;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 1.5rem 1rem;
+    display: block;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover effect with underline animation */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background: #667eea;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+    left: 0;
+}
+
+.nav-link:hover {
+    color: #667eea;
+}
+
+.nav-link.active {
+    color: #667eea;
+}
+
+/* Mobile hamburger menu */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    padding: 1rem;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: #333;
+    margin: 3px 0;
+    transition: 0.3s;
+    border-radius: 2px;
+}
+
+/* Hamburger animation */
+.hamburger.active span:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+    
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background-color: #fff;
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        gap: 0;
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
+    .nav-item {
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .nav-item:last-child {
+        border-bottom: none;
+    }
+    
+    .nav-link {
+        padding: 1.5rem;
+        width: 100%;
+    }
+    
+    .nav-link::after {
+        display: none;
+    }
+    
+    .nav-link:hover {
+        background: #f8f9fa;
+    }
+}
+
+/* Alternative Style: Pills Navigation */
+.nav-pills .nav-link {
+    border-radius: 25px;
+    margin: 0 0.25rem;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link::after {
+    display: none;
+}
+
+.nav-pills .nav-link:hover,
+.nav-pills .nav-link.active {
+    background: #667eea;
+    color: white;
+}
+
+/* Alternative Style: Button Navigation */
+.nav-buttons .nav-link {
+    background: #f8f9fa;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    margin: 0 0.25rem;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-buttons .nav-link::after {
+    display: none;
+}
+
+.nav-buttons .nav-link:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.nav-buttons .nav-link.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+/* Dropdown Menu (Optional) */
+.nav-item.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 200px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0;
+}
+
+.nav-item.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu li {
+    padding: 0;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: #333;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.dropdown-menu a:hover {
+    background: #f8f9fa;
+    color: #667eea;
 }
