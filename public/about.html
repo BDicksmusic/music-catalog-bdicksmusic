@@ -55,6 +55,53 @@
             <p>I use Logic Pro X with a full orchestral sample library...</p>
         </section>
     </main>
+
+    <!DOCTYPE html>
+<html>
+<head>
+    <title>Test Compositions</title>
+    <style>
+        .work-card { border: 1px solid #ccc; margin: 10px; padding: 15px; }
+        .works-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    </style>
+</head>
+<body>
+    <h1>My Compositions</h1>
+    <div id="popular-works" class="works-grid">
+        Loading...
+    </div>
+    
+    <script>
+        // Simple test to load compositions
+        async function loadCompositions() {
+            try {
+                const response = await fetch('/api/compositions');
+                const data = await response.json();
+                
+                const container = document.getElementById('popular-works');
+                
+                if (data.success && data.compositions.length > 0) {
+                    container.innerHTML = data.compositions.map(comp => `
+                        <div class="work-card">
+                            <h3>${comp.title}</h3>
+                            <p>${comp.instrumentation}</p>
+                            <p>${comp.description}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p>No compositions found</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('popular-works').innerHTML = '<p>Error loading compositions</p>';
+            }
+        }
+        
+        // Load when page loads
+        document.addEventListener('DOMContentLoaded', loadCompositions);
+    </script>
+</body>
+</html>
     
     <script src="script.js"></script>
 </body>
