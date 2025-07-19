@@ -560,6 +560,7 @@ input:focus, textarea:focus, select:focus {
     line-height: var(--leading-relaxed);
     margin-bottom: var(--space-5);
     display: -webkit-box;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     font-family: var(--font-primary);
@@ -688,6 +689,30 @@ input:focus, textarea:focus, select:focus {
 
 .payment-btn:hover::before {
     left: 100%;
+}
+
+/* Disabled/Unavailable button styling */
+.btn-disabled {
+    background: var(--gray-400) !important;
+    color: var(--gray-50) !important;
+    cursor: not-allowed !important;
+    text-decoration: none;
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    border: none;
+    font-family: var(--font-primary);
+    transition: all var(--transition-base);
+}
+
+.btn-disabled:hover {
+    background: var(--gray-500) !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 /* Loading State */

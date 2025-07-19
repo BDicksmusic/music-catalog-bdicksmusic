@@ -114,11 +114,18 @@
                                 <div class="work-links">
                                     ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">🎵 Listen</a>` : ''}
                                     ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">📄 Score</a>` : ''}
+                                    
                                     ${comp.paymentLink ? `
                                         <button class="btn-primary payment-btn" onclick="event.stopPropagation(); purchaseComposition('${comp.paymentLink}', '${comp.title.replace(/'/g, "\\'")}')">
                                             💳 Buy Now
                                         </button>
-                                    ` : comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="btn-primary" onclick="event.stopPropagation()">💳 Purchase</a>` : ''}
+                                    ` : comp.purchaseLink ? `
+                                        <a href="${comp.purchaseLink}" target="_blank" class="btn-primary" onclick="event.stopPropagation()">💳 Purchase</a>
+                                    ` : `
+                                        <button class="btn-disabled" onclick="event.stopPropagation(); showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
+                                            🚫 Currently Not Available
+                                        </button>
+                                    `}
                                 </div>
                             </div>
                         </div>
@@ -137,6 +144,11 @@
                 console.error('❌ Error loading compositions:', error);
                 showError('popular-works', 'Error loading compositions');
             }
+        }
+
+        // Show unavailable message
+        function showUnavailableMessage(title) {
+            alert(`"${title}" is currently not available for purchase.\n\nPlease contact us directly for more information about acquiring this composition.`);
         }
 
         // Purchase function for Stripe integration
@@ -193,11 +205,18 @@
                     <div class="modal-links">
                         ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
                         ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
+                        
                         ${comp.paymentLink ? `
                             <button class="btn-primary payment-btn" onclick="purchaseComposition('${comp.paymentLink}', '${comp.title.replace(/'/g, "\\'")}')">
                                 💳 Buy Now
                             </button>
-                        ` : comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="btn-primary">💳 Purchase</a>` : ''}
+                        ` : comp.purchaseLink ? `
+                            <a href="${comp.purchaseLink}" target="_blank" class="btn-primary">💳 Purchase</a>
+                        ` : `
+                            <button class="btn-disabled" onclick="showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
+                                🚫 Currently Not Available
+                            </button>
+                        `}
                     </div>
                 </div>
             `;
