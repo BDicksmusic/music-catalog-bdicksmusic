@@ -38,7 +38,7 @@ app.get('/api/compositions', async (req, res) => {
             
             return {
                 id: page.id,
-                title: properties.Title?.title[0]?.text?.content || 'Untitled',
+                title: properties.Name?.title[0]?.text?.content || 'Untitled',
                 instrumentation: properties.Instrumentation?.rich_text[0]?.text?.content || 'Unknown',
                 year: properties.Year?.number || null,
                 duration: properties.Duration?.rich_text[0]?.text?.content || '',
@@ -48,6 +48,8 @@ app.get('/api/compositions', async (req, res) => {
                 audioLink: properties['Audio Link']?.url || '',
                 scoreLink: properties['Score PDF']?.url || '',
                 purchaseLink: properties['Purchase Link']?.url || '',
+                paymentLink: properties['Payment Link']?.url || properties['Stripe Link']?.url || '',
+                coverImage: properties['Cover Image']?.files[0]?.file?.url || properties['Cover Image']?.files[0]?.external?.url || '',
                 tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
                 created: page.created_time,
                 lastEdited: page.last_edited_time
@@ -80,7 +82,7 @@ app.get('/api/compositions/:id', async (req, res) => {
         const properties = response.properties;
         const composition = {
             id: response.id,
-            title: properties.Title?.title[0]?.text?.content || 'Untitled',
+            title: properties.Name?.title[0]?.text?.content || 'Untitled',
             instrumentation: properties.Instrumentation?.rich_text[0]?.text?.content || 'Unknown',
             year: properties.Year?.number || null,
             duration: properties.Duration?.rich_text[0]?.text?.content || '',
@@ -113,7 +115,7 @@ app.post('/api/compositions', async (req, res) => {
         
         // Prepare properties for Notion
         const properties = {
-            Title: {
+            Name: {
                 title: [{ text: { content: title || 'Untitled' } }]
             },
             Instrumentation: {
@@ -172,7 +174,7 @@ app.get('/api/compositions/genre/:genre', async (req, res) => {
             const properties = page.properties;
             return {
                 id: page.id,
-                title: properties.Title?.title[0]?.text?.content || 'Untitled',
+                title: properties.Name?.title[0]?.text?.content || 'Untitled',
                 instrumentation: properties.Instrumentation?.rich_text[0]?.text?.content || 'Unknown',
                 year: properties.Year?.number || null,
                 genre: properties.Genre?.select?.name || ''

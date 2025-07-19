@@ -80,6 +80,12 @@ function displayCompositions(compositions, containerId) {
     
     container.innerHTML = compositions.map(comp => `
         <div class="work-card" onclick="viewComposition('${comp.id}')">
+            ${comp.coverImage ? `
+                <div class="work-image-container">
+                    <img src="${comp.coverImage}" alt="${comp.title}" class="work-image" loading="lazy">
+                </div>
+            ` : ''}
+            
             <div class="work-header">
                 <h3 class="work-title">${comp.title}</h3>
                 <div class="work-instrument">${comp.instrumentation}</div>
@@ -106,7 +112,11 @@ function displayCompositions(compositions, containerId) {
                 <div class="work-links">
                     ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">🎵 Listen</a>` : ''}
                     ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">📄 Score</a>` : ''}
-                    ${comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="btn-primary" onclick="event.stopPropagation()">💳 Purchase</a>` : ''}
+                    ${comp.paymentLink ? `
+                        <button class="btn-primary payment-btn" onclick="event.stopPropagation(); purchaseComposition('${comp.paymentLink}', '${comp.title.replace(/'/g, "\\'")}')">
+                            💳 Buy Now
+                        </button>
+                    ` : comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="btn-primary" onclick="event.stopPropagation()">💳 Purchase</a>` : ''}
                 </div>
             </div>
         </div>
@@ -146,9 +156,13 @@ function showCompositionModal(comp) {
             <p><strong>Description:</strong> ${comp.description}</p>
             
             <div class="modal-links">
-                ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-primary">🎵 Listen</a>` : ''}
+                ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
                 ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
-                ${comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="btn-primary">💳 Purchase</a>` : ''}
+                ${comp.paymentLink ? `
+                    <button class="btn-primary payment-btn" onclick="purchaseComposition('${comp.paymentLink}', '${comp.title.replace(/'/g, "\\'")}')">
+                        💳 Buy Now
+                    </button>
+                ` : comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="btn-primary">💳 Purchase</a>` : ''}
             </div>
         </div>
     `;
@@ -222,6 +236,51 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// ===== PURCHASE FUNCTIONS =====
+
+// Handle Stripe payment link purchases
+function purchaseComposition(paymentLink, title) {
+    try {
+        // Validate it's a Stripe link for security
+        if (paymentLink && (paymentLink.includes('stripe.com') || paymentLink.includes('buy.stripe.com'))) {
+            // Optional: Track the purchase attempt
+            console.log(`Initiating purchase for: ${title}`);
+            
+            // Optional: Show confirmation dialog
+            const confirmed = confirm(`Purchase "${title}"?\n\nYou'll be redirected to Stripe to complete your payment.`);
+            
+            if (confirmed) {
+                // Redirect to Stripe payment page
+                window.open(paymentLink, '_blank');
+                
+                // Optional: Track successful redirect
+                console.log(`Redirected to payment for: ${title}`);
+            }
+        } else {
+            console.error('Invalid payment link:', paymentLink);
+            alert('Sorry, there was an issue with the payment link. Please try again or contact support.');
+        }
+    } catch (error) {
+        console.error('Error processing purchase:', error);
+        alert('Sorry, there was an issue processing your request. Please try again.');
+    }
+}
+
+// Alternative function for direct Stripe redirect (no confirmation)
+function purchaseCompositionDirect(paymentLink, title) {
+    try {
+        if (paymentLink && (paymentLink.includes('stripe.com') || paymentLink.includes('buy.stripe.com'))) {
+            console.log(`Direct purchase for: ${title}`);
+            window.open(paymentLink, '_blank');
+        } else {
+            alert('Invalid payment link. Please contact support.');
+        }
+    } catch (error) {
+        console.error('Error processing purchase:', error);
+        alert('Sorry, there was an issue. Please try again.');
+    }
+}
 
 // ===== UTILITY FUNCTIONS =====
 
