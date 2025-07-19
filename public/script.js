@@ -210,3 +210,23 @@ function initMobileMenu() {
         });
     }
 }
+
+// Load navigation
+async function loadNavigation() {
+    try {
+        const response = await fetch('includes/nav.html');
+        const navHTML = await response.text();
+        document.getElementById('navigation').innerHTML = navHTML;
+        
+        // Add class to show content AFTER nav loads
+        document.body.classList.add('nav-loaded');
+    } catch (error) {
+        console.error('Error loading navigation:', error);
+        // Show content even if nav fails to load
+        document.body.classList.add('nav-loaded');
+    }
+}
+
+// Load navigation when page loads
+document.addEventListener('DOMContentLoaded', loadNavigation);
+
