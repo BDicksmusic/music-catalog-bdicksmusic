@@ -2,6 +2,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     background-color: #f5f5f5;
+    opacity: 0;
+    transition: opacity 0.1s;
 }
 
 header {
@@ -122,6 +124,10 @@ nav {
 body {
   overflow-x: hidden;
   overflow-y: scroll;
+}
+
+body.nav-loaded {
+    opacity: 1;
 }
 
 ::selection {
@@ -356,3 +362,4 @@ body {
     background: #f8f9fa;
     color: #667eea;
 }
+
