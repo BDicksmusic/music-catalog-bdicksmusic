@@ -119,6 +119,10 @@
                                         <button class="btn-primary payment-btn" onclick="event.stopPropagation(); purchaseComposition('${comp.paymentLink}', '${comp.title.replace(/'/g, "\\'")}')">
                                             💳 Buy Now
                                         </button>
+                                    ` : comp.stripeProductId || comp.stripePriceId ? `
+                                        <button class="btn-primary payment-btn" onclick="event.stopPropagation(); purchaseWithStripe('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 10})">
+                                            💳 Buy Now - ${comp.price || 10}
+                                        </button>
                                     ` : comp.purchaseLink ? `
                                         <a href="${comp.purchaseLink}" target="_blank" class="btn-primary" onclick="event.stopPropagation()">💳 Purchase</a>
                                     ` : `
@@ -143,6 +147,34 @@
             } catch (error) {
                 console.error('❌ Error loading compositions:', error);
                 showError('popular-works', 'Error loading compositions');
+            }
+        }
+
+        // Purchase with Stripe integration
+        async function purchaseWithStripe(compositionId, title, price) {
+            try {
+                const confirmed = confirm(`Purchase "${title}" for ${price}?\n\nYou'll be redirected to Stripe checkout.`);
+                
+                if (confirmed) {
+                    const response = await fetch('/api/create-checkout-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ compositionId: compositionId })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.checkoutUrl) {
+                        window.location.href = data.checkoutUrl;
+                    } else {
+                        alert('Error creating checkout session. Please try again.');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error processing purchase. Please try again.');
             }
         }
 
