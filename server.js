@@ -39,27 +39,56 @@ app.get('/api/compositions', async (req, res) => {
         const compositions = response.results.map(page => {
             const properties = page.properties;
             
+            // Helper function to safely get text content
+            const getTextContent = (field) => {
+                try {
+                    if (field && field.title && field.title.length > 0) {
+                        return field.title[0]?.text?.content || '';
+                    }
+                    if (field && field.rich_text && field.rich_text.length > 0) {
+                        return field.rich_text[0]?.text?.content || '';
+                    }
+                    return '';
+                } catch (error) {
+                    console.log('Error reading field:', error);
+                    return '';
+                }
+            };
+            
+            // Helper function to safely get file URL
+            const getFileUrl = (field) => {
+                try {
+                    if (field && field.files && field.files.length > 0) {
+                        return field.files[0]?.file?.url || field.files[0]?.external?.url || '';
+                    }
+                    return '';
+                } catch (error) {
+                    console.log('Error reading file field:', error);
+                    return '';
+                }
+            };
+            
             return {
                 id: page.id,
-                title: properties.Name?.title[0]?.text?.content || 
-                       properties.Title?.title[0]?.text?.content || 
+                title: getTextContent(properties.Name) || 
+                       getTextContent(properties.Title) || 
                        'Untitled',
-                instrumentation: properties.Instrumentation?.rich_text[0]?.text?.content || 
-                                properties.Instruments?.rich_text[0]?.text?.content || 
+                instrumentation: getTextContent(properties.Instrumentation) || 
+                                getTextContent(properties.Instruments) || 
                                 'Unknown',
                 year: properties.Year?.number || null,
-                duration: properties.Duration?.rich_text[0]?.text?.content || '',
+                duration: getTextContent(properties.Duration) || '',
                 difficulty: properties.Difficulty?.select?.name || '',
                 genre: properties.Genre?.select?.name || '',
-                description: properties.Description?.rich_text[0]?.text?.content || '',
+                description: getTextContent(properties.Description) || '',
                 audioLink: properties['Audio Link']?.url || '',
                 scoreLink: properties['Score PDF']?.url || '',
                 purchaseLink: properties['Purchase Link']?.url || '',
                 paymentLink: properties['Payment Link']?.url || properties['Stripe Link']?.url || '',
-                coverImage: properties['Cover Image']?.files[0]?.file?.url || properties['Cover Image']?.files[0]?.external?.url || '',
+                coverImage: getFileUrl(properties['Cover Image']),
                 // Add Stripe integration fields
-                stripeProductId: properties['Stripe Product ID']?.rich_text[0]?.text?.content || '',
-                stripePriceId: properties['Stripe Price ID']?.rich_text[0]?.text?.content || '',
+                stripeProductId: getTextContent(properties['Stripe Product ID']),
+                stripePriceId: getTextContent(properties['Stripe Price ID']),
                 price: properties.Price?.number || null,
                 tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
                 created: page.created_time,
@@ -91,28 +120,45 @@ app.get('/api/compositions/:id', async (req, res) => {
         });
         
         const properties = response.properties;
-        const composition = {
-            id: response.id,
-            title: properties.Name?.title[0]?.text?.content || 
-                   properties.Title?.title[0]?.text?.content || 
+        const properties = composition.properties;
+        
+        // Helper function to safely get text content
+        const getTextContent = (field) => {
+            try {
+                if (field && field.title && field.title.length > 0) {
+                    return field.title[0]?.text?.content || '';
+                }
+                if (field && field.rich_text && field.rich_text.length > 0) {
+                    return field.rich_text[0]?.text?.content || '';
+                }
+                return '';
+            } catch (error) {
+                return '';
+            }
+        };
+        
+        const compositionData = {
+            id: composition.id,
+            title: getTextContent(properties.Name) || 
+                   getTextContent(properties.Title) || 
                    'Untitled',
-            instrumentation: properties.Instrumentation?.rich_text[0]?.text?.content || 
-                            properties.Instruments?.rich_text[0]?.text?.content || 
+            instrumentation: getTextContent(properties.Instrumentation) || 
+                            getTextContent(properties.Instruments) || 
                             'Unknown',
             year: properties.Year?.number || null,
-            duration: properties.Duration?.rich_text[0]?.text?.content || '',
+            duration: getTextContent(properties.Duration) || '',
             difficulty: properties.Difficulty?.select?.name || '',
             genre: properties.Genre?.select?.name || '',
-            description: properties.Description?.rich_text[0]?.text?.content || '',
+            description: getTextContent(properties.Description) || '',
             audioLink: properties['Audio Link']?.url || '',
             scoreLink: properties['Score PDF']?.url || '',
             purchaseLink: properties['Purchase Link']?.url || '',
             tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
-            created: response.created_time,
-            lastEdited: response.last_edited_time
+            created: composition.created_time,
+            lastEdited: composition.last_edited_time
         };
         
-        res.json({ success: true, composition });
+        res.json({ success: true, composition: compositionData });
         
     } catch (error) {
         console.error('Error fetching composition:', error);
@@ -189,11 +235,11 @@ app.get('/api/compositions/genre/:genre', async (req, res) => {
             const properties = page.properties;
             return {
                 id: page.id,
-                title: properties.Name?.title[0]?.text?.content || 
-                       properties.Title?.title[0]?.text?.content || 
+                title: getTextContent(properties.Name) || 
+                       getTextContent(properties.Title) || 
                        'Untitled',
-                instrumentation: properties.Instrumentation?.rich_text[0]?.text?.content || 
-                                properties.Instruments?.rich_text[0]?.text?.content || 
+                instrumentation: getTextContent(properties.Instrumentation) || 
+                                getTextContent(properties.Instruments) || 
                                 'Unknown',
                 year: properties.Year?.number || null,
                 genre: properties.Genre?.select?.name || ''
@@ -219,7 +265,7 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Create Stripe checkout session
+// Create Stripe checkout session (with auto-product creation)
 app.post('/api/create-checkout-session', async (req, res) => {
     try {
         const { compositionId } = req.body;
@@ -231,51 +277,71 @@ app.post('/api/create-checkout-session', async (req, res) => {
         
         const properties = composition.properties;
         const title = properties.Name?.title[0]?.text?.content || 'Music Composition';
-        const price = properties.Price?.number || 10; // Default $10
-        const stripePriceId = properties['Stripe Price ID']?.rich_text[0]?.text?.content;
+        const instrumentation = properties.Instrumentation?.rich_text[0]?.text?.content || 'Unknown';
+        const price = properties.Price?.number || 10;
+        let stripePriceId = properties['Stripe Price ID']?.rich_text[0]?.text?.content;
+        let stripeProductId = properties['Stripe Product ID']?.rich_text[0]?.text?.content;
         
-        let sessionConfig;
-        
-        if (stripePriceId) {
-            // Use existing Stripe Price
-            sessionConfig = {
-                payment_method_types: ['card'],
-                line_items: [{
-                    price: stripePriceId,
-                    quantity: 1,
-                }],
-                mode: 'payment',
-                success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-                cancel_url: `${req.headers.origin}/cancel`,
+        // Auto-create Stripe product if it doesn't exist
+        if (!stripePriceId && !stripeProductId) {
+            console.log(`🆕 Auto-creating Stripe product for: "${title}"`);
+            
+            // Create Stripe product
+            const product = await stripe.products.create({
+                name: title,
+                description: `Digital music composition: ${title} for ${instrumentation}`,
                 metadata: {
-                    compositionId: compositionId,
-                    compositionTitle: title
+                    notionPageId: compositionId,
+                    instrumentation: instrumentation
                 }
-            };
-        } else {
-            // Create price on the fly
-            sessionConfig = {
-                payment_method_types: ['card'],
-                line_items: [{
-                    price_data: {
-                        currency: 'usd',
-                        product_data: {
-                            name: title,
-                            description: `Digital music composition: ${title}`,
-                        },
-                        unit_amount: Math.round(price * 100), // Convert to cents
+            });
+            
+            // Create price
+            const priceObj = await stripe.prices.create({
+                unit_amount: Math.round(price * 100),
+                currency: 'usd',
+                product: product.id,
+            });
+            
+            // Update Notion with new IDs
+            await notion.pages.update({
+                page_id: compositionId,
+                properties: {
+                    'Stripe Product ID': {
+                        rich_text: [{
+                            text: { content: product.id }
+                        }]
                     },
-                    quantity: 1,
-                }],
-                mode: 'payment',
-                success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-                cancel_url: `${req.headers.origin}/cancel`,
-                metadata: {
-                    compositionId: compositionId,
-                    compositionTitle: title
+                    'Stripe Price ID': {
+                        rich_text: [{
+                            text: { content: priceObj.id }
+                        }]
+                    }
                 }
-            };
+            });
+            
+            stripePriceId = priceObj.id;
+            stripeProductId = product.id;
+            
+            console.log(`✅ Created Stripe product: ${product.id}`);
         }
+        
+        // Create checkout session
+        const sessionConfig = {
+            payment_method_types: ['card'],
+            line_items: [{
+                price: stripePriceId,
+                quantity: 1,
+            }],
+            mode: 'payment',
+            success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${req.headers.origin}/cancel`,
+            metadata: {
+                compositionId: compositionId,
+                compositionTitle: title,
+                stripeProductId: stripeProductId
+            }
+        };
         
         const session = await stripe.checkout.sessions.create(sessionConfig);
         
@@ -473,6 +539,11 @@ app.post('/api/create-stripe-product/:compositionId', async (req, res) => {
 // Serve main HTML file
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Serve admin panel
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
 // Handle all other routes
