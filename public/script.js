@@ -1,331 +1,228 @@
-console.log("Website loaded!");
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+const { Client } = require('@notionhq/client');
+require('dotenv').config();
 
-// ===== NAVIGATION FUNCTIONS =====
-document.addEventListener('DOMContentLoaded', function() {
-    loadCompositions(); // Load compositions first
-    // Navigation is now directly in HTML, no need to load
-    setActivePage();
-    initMobileMenu();
+const app = express();
+
+// Initialize Notion client
+const notion = new Client({
+    auth: process.env.NOTION_API_KEY,
 });
 
-function setActivePage() {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    navLinks.forEach(link => {
-        const linkPage = link.getAttribute('href');
-        if (linkPage === currentPage) {
-            link.classList.add('active');
-        }
-    });
-}
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
-function initMobileMenu() {
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
+// ===== NOTION API ROUTES =====
 
-    if (hamburger && navMenu) {
-        hamburger.addEventListener('click', function() {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
+// GET all compositions from Notion
+app.get('/api/compositions', async (req, res) => {
+    try {
+        const response = await notion.databases.query({
+            database_id: process.env.NOTION_DATABASE_ID,
+            sorts: [
+                {
+                    property: 'Year',
+                    direction: 'descending'
+                }
+            ]
         });
-
-        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        }));
-    }
-}
-
-// ===== COMPOSITION FUNCTIONS =====
-
-// Load and display all compositions
-async function loadCompositions() {
-    try {
-        showLoading('popular-works');
         
-        const response = await fetch('/api/compositions');
-        const data = await response.json();
+        // Transform Notion data to clean format
+        const compositions = response.results.map(page => {
+            const properties = page.properties;
+            
+            return {
+                id: page.id,
+                title: properties.Name?.title[0]?.text?.content || 
+                       properties.Title?.title[0]?.text?.content || 
+                       'Untitled',
+                instrumentation: properties.Instrumentation?.rich_text[0]?.text?.content || 
+                                properties.Instruments?.rich_text[0]?.text?.content || 
+                                'Unknown',
+                year: properties.Year?.number || null,
+                duration: properties.Duration?.rich_text[0]?.text?.content || '',
+                difficulty: properties.Difficulty?.select?.name || '',
+                genre: properties.Genre?.select?.name || '',
+                description: properties.Description?.rich_text[0]?.text?.content || '',
+                audioLink: properties['Audio Link']?.url || '',
+                scoreLink: properties['Score PDF']?.url || '',
+                purchaseLink: properties['Purchase Link']?.url || '',
+                paymentLink: properties['Payment Link']?.url || properties['Stripe Link']?.url || '',
+                coverImage: properties['Cover Image']?.files[0]?.file?.url || properties['Cover Image']?.files[0]?.external?.url || '',
+                tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
+                created: page.created_time,
+                lastEdited: page.last_edited_time
+            };
+        });
         
-        if (data.success) {
-            displayCompositions(data.compositions, 'popular-works');
-            console.log(`✅ Loaded ${data.count} compositions from Notion`);
-        } else {
-            showError('popular-works', 'Failed to load compositions');
-        }
+        res.json({ 
+            success: true,
+            count: compositions.length,
+            compositions: compositions 
+        });
+        
     } catch (error) {
-        console.error('❌ Error loading compositions:', error);
-        showError('popular-works', 'Error connecting to server');
+        console.error('Error fetching compositions:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to fetch compositions',
+            message: error.message 
+        });
     }
-}
+});
 
-// Display compositions in beautiful cards
-function displayCompositions(compositions, containerId) {
-    const container = document.getElementById(containerId);
-    
-    if (!container) {
-        console.error(`Container ${containerId} not found`);
-        return;
-    }
-    
-    if (compositions.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <h3>No compositions found</h3>
-                <p>Check back soon for new musical works!</p>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = compositions.map(comp => `
-        <div class="work-card" onclick="viewComposition('${comp.id}')">
-            ${comp.coverImage ? `
-                <div class="work-image-container">
-                    <img src="${comp.coverImage}" alt="${comp.title}" class="work-image" loading="lazy">
-                </div>
-            ` : ''}
-            
-            <div class="work-header">
-                <h3 class="work-title">${comp.title}</h3>
-                <div class="work-instrument">${comp.instrumentation}</div>
-            </div>
-            
-            <div class="work-content">
-                ${(comp.year || comp.duration) ? `
-                    <div class="work-meta">
-                        ${comp.year ? `<div class="work-year">${comp.year}</div>` : ''}
-                        ${comp.duration && comp.duration !== 'Duration:' ? `<div class="work-duration">${comp.duration}</div>` : ''}
-                    </div>
-                ` : ''}
-                
-                ${comp.difficulty ? `<div class="difficulty-badge ${comp.difficulty.toLowerCase()}">${comp.difficulty}</div>` : ''}
-                
-                ${comp.description ? `<p class="work-description">${comp.description}</p>` : ''}
-                
-                ${comp.tags && comp.tags.length > 0 ? `
-                    <div class="work-tags">
-                        ${comp.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    </div>
-                ` : ''}
-                
-                <div class="work-links">
-                    ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">🎵 Listen</a>` : ''}
-                    ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">📄 Score</a>` : ''}
-                    ${comp.paymentLink ? `
-                        <button class="btn-primary payment-btn" onclick="event.stopPropagation(); purchaseComposition('${comp.paymentLink}', '${comp.title.replace(/'/g, "\\'")}')">
-                            💳 Buy Now
-                        </button>
-                    ` : comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="btn-primary" onclick="event.stopPropagation()">💳 Purchase</a>` : ''}
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-// View single composition details
-async function viewComposition(id) {
+// GET single composition by ID
+app.get('/api/compositions/:id', async (req, res) => {
     try {
-        const response = await fetch(`/api/compositions/${id}`);
-        const data = await response.json();
+        const response = await notion.pages.retrieve({
+            page_id: req.params.id,
+        });
         
-        if (data.success) {
-            showCompositionModal(data.composition);
-        } else {
-            alert('Failed to load composition details');
-        }
+        const properties = response.properties;
+        const composition = {
+            id: response.id,
+            title: properties.Name?.title[0]?.text?.content || 
+                   properties.Title?.title[0]?.text?.content || 
+                   'Untitled',
+            instrumentation: properties.Instrumentation?.rich_text[0]?.text?.content || 
+                            properties.Instruments?.rich_text[0]?.text?.content || 
+                            'Unknown',
+            year: properties.Year?.number || null,
+            duration: properties.Duration?.rich_text[0]?.text?.content || '',
+            difficulty: properties.Difficulty?.select?.name || '',
+            genre: properties.Genre?.select?.name || '',
+            description: properties.Description?.rich_text[0]?.text?.content || '',
+            audioLink: properties['Audio Link']?.url || '',
+            scoreLink: properties['Score PDF']?.url || '',
+            purchaseLink: properties['Purchase Link']?.url || '',
+            tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
+            created: response.created_time,
+            lastEdited: response.last_edited_time
+        };
+        
+        res.json({ success: true, composition });
+        
     } catch (error) {
-        console.error('Error loading composition:', error);
-        alert('Error loading composition details');
+        console.error('Error fetching composition:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to fetch composition' 
+        });
     }
-}
+});
 
-// Show composition in modal/popup
-function showCompositionModal(comp) {
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">&times;</button>
-            <h2>${comp.title}</h2>
-            <p><strong>Instrumentation:</strong> ${comp.instrumentation}</p>
-            ${comp.year ? `<p><strong>Year:</strong> ${comp.year}</p>` : ''}
-            ${comp.duration ? `<p><strong>Duration:</strong> ${comp.duration}</p>` : ''}
-            ${comp.difficulty ? `<p><strong>Difficulty:</strong> ${comp.difficulty}</p>` : ''}
-            ${comp.genre ? `<p><strong>Genre:</strong> ${comp.genre}</p>` : ''}
-            <p><strong>Description:</strong> ${comp.description}</p>
-            
-            <div class="modal-links">
-                ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
-                ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
-                ${comp.paymentLink ? `
-                    <button class="btn-primary payment-btn" onclick="purchaseComposition('${comp.paymentLink}', '${comp.title.replace(/'/g, "\\'")}')">
-                        💳 Buy Now
-                    </button>
-                ` : comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="btn-primary">💳 Purchase</a>` : ''}
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-}
-
-// Close modal
-function closeModal() {
-    const modal = document.querySelector('.modal-overlay');
-    if (modal) {
-        modal.remove();
-    }
-}
-
-// ===== FORM FUNCTIONS =====
-
-// Add new composition form handler
-async function submitComposition(event) {
-    event.preventDefault();
-    
-    const formData = {
-        title: document.getElementById('title').value,
-        instrumentation: document.getElementById('instrumentation').value,
-        year: document.getElementById('year').value,
-        duration: document.getElementById('duration').value,
-        difficulty: document.getElementById('difficulty').value,
-        genre: document.getElementById('genre').value,
-        description: document.getElementById('description').value,
-        audioLink: document.getElementById('audioLink').value,
-        scoreLink: document.getElementById('scoreLink').value,
-        purchaseLink: document.getElementById('purchaseLink').value,
-        tags: document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
-    };
-    
+// POST new composition to Notion
+app.post('/api/compositions', async (req, res) => {
     try {
-        const response = await fetch('/api/compositions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        const { title, instrumentation, year, duration, difficulty, genre, description, audioLink, scoreLink, purchaseLink, tags } = req.body;
+        
+        // Prepare properties for Notion
+        const properties = {
+            Name: {
+                title: [{ text: { content: title || 'Untitled' } }]
             },
-            body: JSON.stringify(formData)
+            Instrumentation: {
+                rich_text: [{ text: { content: instrumentation || '' } }]
+            }
+        };
+        
+        // Add optional properties if they exist
+        if (year) properties.Year = { number: parseInt(year) };
+        if (duration) properties.Duration = { rich_text: [{ text: { content: duration } }] };
+        if (difficulty) properties.Difficulty = { select: { name: difficulty } };
+        if (genre) properties.Genre = { select: { name: genre } };
+        if (description) properties.Description = { rich_text: [{ text: { content: description } }] };
+        if (audioLink) properties['Audio Link'] = { url: audioLink };
+        if (scoreLink) properties['Score PDF'] = { url: scoreLink };
+        if (purchaseLink) properties['Purchase Link'] = { url: purchaseLink };
+        if (tags && Array.isArray(tags)) {
+            properties.Tags = { multi_select: tags.map(tag => ({ name: tag })) };
+        }
+        
+        const response = await notion.pages.create({
+            parent: { database_id: process.env.NOTION_DATABASE_ID },
+            properties: properties
         });
         
-        const result = await response.json();
+        res.json({ 
+            success: true, 
+            pageId: response.id,
+            message: 'Composition added successfully!'
+        });
         
-        if (result.success) {
-            alert('Composition added successfully!');
-            document.getElementById('composition-form').reset();
-            loadCompositions(); // Reload the list
-        } else {
-            alert('Error: ' + (result.message || result.error));
-        }
     } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to add composition');
+        console.error('Error creating composition:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to create composition',
+            message: error.message 
+        });
     }
-}
+});
 
-// Set up form handler when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('composition-form');
-    if (form) {
-        form.addEventListener('submit', submitComposition);
+// GET compositions filtered by genre
+app.get('/api/compositions/genre/:genre', async (req, res) => {
+    try {
+        const response = await notion.databases.query({
+            database_id: process.env.NOTION_DATABASE_ID,
+            filter: {
+                property: 'Genre',
+                select: {
+                    equals: req.params.genre
+                }
+            }
+        });
+        
+        const compositions = response.results.map(page => {
+            const properties = page.properties;
+            return {
+                id: page.id,
+                title: properties.Name?.title[0]?.text?.content || 
+                       properties.Title?.title[0]?.text?.content || 
+                       'Untitled',
+                instrumentation: properties.Instrumentation?.rich_text[0]?.text?.content || 
+                                properties.Instruments?.rich_text[0]?.text?.content || 
+                                'Unknown',
+                year: properties.Year?.number || null,
+                genre: properties.Genre?.select?.name || ''
+            };
+        });
+        
+        res.json({ success: true, compositions });
+        
+    } catch (error) {
+        console.error('Error fetching compositions by genre:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch compositions' });
     }
-    
-    // Set up modal close on background click
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal-overlay')) {
-            closeModal();
-        }
+});
+
+// Health check
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        status: 'OK', 
+        message: 'Music Catalog API is running',
+        timestamp: new Date().toISOString(),
+        notion: process.env.NOTION_API_KEY ? 'Connected' : 'Not configured'
     });
 });
 
-// ===== PURCHASE FUNCTIONS =====
+// Serve main HTML file
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
-// Handle Stripe payment link purchases
-function purchaseComposition(paymentLink, title) {
-    try {
-        // Validate it's a Stripe link for security
-        if (paymentLink && (paymentLink.includes('stripe.com') || paymentLink.includes('buy.stripe.com'))) {
-            // Optional: Track the purchase attempt
-            console.log(`Initiating purchase for: ${title}`);
-            
-            // Optional: Show confirmation dialog
-            const confirmed = confirm(`Purchase "${title}"?\n\nYou'll be redirected to Stripe to complete your payment.`);
-            
-            if (confirmed) {
-                // Redirect to Stripe payment page
-                window.open(paymentLink, '_blank');
-                
-                // Optional: Track successful redirect
-                console.log(`Redirected to payment for: ${title}`);
-            }
-        } else {
-            console.error('Invalid payment link:', paymentLink);
-            alert('Sorry, there was an issue with the payment link. Please try again or contact support.');
-        }
-    } catch (error) {
-        console.error('Error processing purchase:', error);
-        alert('Sorry, there was an issue processing your request. Please try again.');
-    }
-}
+// Handle all other routes
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
-// Alternative function for direct Stripe redirect (no confirmation)
-function purchaseCompositionDirect(paymentLink, title) {
-    try {
-        if (paymentLink && (paymentLink.includes('stripe.com') || paymentLink.includes('buy.stripe.com'))) {
-            console.log(`Direct purchase for: ${title}`);
-            window.open(paymentLink, '_blank');
-        } else {
-            alert('Invalid payment link. Please contact support.');
-        }
-    } catch (error) {
-        console.error('Error processing purchase:', error);
-        alert('Sorry, there was an issue. Please try again.');
-    }
-}
-
-// ===== UTILITY FUNCTIONS =====
-
-// Filter compositions by genre
-async function filterByGenre(genre) {
-    try {
-        const response = await fetch(`/api/compositions/genre/${genre}`);
-        const data = await response.json();
-        
-        if (data.success) {
-            displayCompositions(data.compositions, 'popular-works');
-        }
-    } catch (error) {
-        console.error('Error filtering compositions:', error);
-    }
-}
-
-// Search functionality
-function searchCompositions(searchTerm) {
-    const cards = document.querySelectorAll('.work-card');
-    cards.forEach(card => {
-        const title = card.querySelector('.work-title').textContent.toLowerCase();
-        const instrument = card.querySelector('.work-instrument').textContent.toLowerCase();
-        const description = card.querySelector('.work-description')?.textContent.toLowerCase() || '';
-        
-        if (title.includes(searchTerm.toLowerCase()) || 
-            instrument.includes(searchTerm.toLowerCase()) || 
-            description.includes(searchTerm.toLowerCase())) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
-
-function showLoading(containerId) {
-    const container = document.getElementById(containerId);
-    if (container) {
-        container.innerHTML = '<div class="loading">Loading compositions...</div>';
-    }
-}
-
-function showError(containerId, message) {
-    const container = document.getElementById(containerId);
-    if (container) {
-        container.innerHTML = `<div class="error">${message}</div>`;
-    }
-}
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`✅ Music Catalog Server running on port: ${PORT}`);
+    console.log(`🔗 Notion integration: ${process.env.NOTION_API_KEY ? 'Connected' : 'Not configured'}`);
+});

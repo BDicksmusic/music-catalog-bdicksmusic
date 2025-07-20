@@ -560,7 +560,7 @@ input:focus, textarea:focus, select:focus {
     line-height: var(--leading-relaxed);
     margin-bottom: var(--space-5);
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+
     -webkit-box-orient: vertical;
     overflow: hidden;
     font-family: var(--font-primary);
