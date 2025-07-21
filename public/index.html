@@ -6,7 +6,42 @@
     <title>My Music Catalog</title>
     <link rel="stylesheet" href="variables.css"> 
     <link rel="stylesheet" href="styles.css">
-    <body>
+    <style>
+        html {
+      scroll-behavior: smooth;
+    }
+    @keyframes pulse-glow {
+        0%, 100% { 
+            opacity: 1; 
+            transform: scale(1);
+        }
+        50% { 
+            opacity: 1; 
+            transform: scale(1.2);
+    
+        }
+    }
+    /* Hover effect for the button */
+    a[href="#catalog"] {
+        transition: color 0.4s, background 0.6s, transform 0.3s, opacity 0.3s, border-radius 1s;
+        border-radius: 25px; /* or any value you like */
+    }
+    a[href="#catalog"]:hover { 
+        color: #ffffff;
+        background: linear-gradient(135deg, #81d9ff, #43a7ff);
+        border-radius: 25px;
+        padding: 10px 20px; /* keep the same or make it more/less rounded on hover */
+        transform: scale(1.08) !important;
+        opacity: 0.8 !important;
+        animation-play-state: paused;
+    }
+    @media (max-width: 768px) {
+        a[href="#catalog"] {
+            font-size: 12px !important;
+            padding: 10px 20px !important;
+        }
+    }
+    </style>
     <!-- Navigation -->
 <nav>
     <div class="nav-container">
@@ -36,7 +71,6 @@
         <a href="/trumpeter" class="secondary-button">Trumpeter</a>
         <a href="/educator" class="secondary-button">Educator</a>
     </nav>
-</head>
 
 
     <!-- Hero Section -->
@@ -77,57 +111,27 @@
         ↓ Explore Music Catalog ↓
     </a>
 </div>
-
-<style>
-    html {
-  scroll-behavior: smooth;
-}
-@keyframes pulse-glow {
-    0%, 100% { 
-        opacity: 1; 
-        transform: scale(1);
-    }
-    50% { 
-        opacity: 1; 
-        transform: scale(1.2);
-
-    }
-}
-
-/* Hover effect for the button */
-a[href="#catalog"] {
-    transition: color 0.4s, background 0.6s, transform 0.3s, opacity 0.3s, border-radius 1s;
-    border-radius: 25px; /* or any value you like */
-}
-a[href="#catalog"]:hover { 
-    color: #ffffff;
-    background: linear-gradient(135deg, #81d9ff, #43a7ff);
-    border-radius: 25px;
-    padding: 10px 20px; /* keep the same or make it more/less rounded on hover */
-    transform: scale(1.08) !important;
-    opacity: 0.8 !important;
-    animation-play-state: paused;
-}
+</head>
+<br><br><br><br>
 
 
-
-@media (max-width: 768px) {
-    a[href="#catalog"] {
-        font-size: 12px !important;
-        padding: 10px 20px !important;
-    }
-}
-</style>
-
+<page-title>
+    <h3>Featured Compositions</h3>
+</page-title>
+<body>
     <!-- Main Content -->
-     <section id="catalog">
+<section id="catalog">
     <main>
         <div class="container">
-            <section>
-                <h2>Featured Compositions</h2>
+            <div class="carousel-outer">
                 <div id="popular-works" class="works-grid">
                     <div class="loading">Loading compositions...</div>
                 </div>
+            </div>
+            <div class="carousel-controls">
+              <button class="carousel-btn left" onclick="scrollWorks(-1)">&#8592;</button>
+              <button class="carousel-btn right" onclick="scrollWorks(1)">&#8594;</button>
+            </div>
             </section>
         </div>
     </main>
@@ -138,16 +142,124 @@ a[href="#catalog"]:hover {
     </footer>
 
     <script>
+        // Add Example Data
+        const exampleCompositions = [
+          {
+            id: "1",
+            title: "Sunrise Fanfare",
+            instrumentation: "Brass Quintet",
+            year: 2022,
+            duration: "4:30",
+            difficulty: "Medium",
+            description: "A bright, energetic piece for brass quintet.",
+            tags: ["brass", "fanfare", "modern"],
+            coverImage: "/imgs/Coming Home (Cover Photo).png",
+            audioLink: "https://example.com/audio1.mp3",
+            scoreLink: "https://example.com/score1.pdf",
+            paymentLink: "",
+            stripeProductId: "",
+            stripePriceId: "",
+            price: 20
+          },
+          {
+            id: "2",
+            title: "Nocturne in Blue",
+            instrumentation: "Solo Piano",
+            year: 2021,
+            duration: "6:00",
+            difficulty: "Hard",
+            description: "A reflective nocturne for solo piano.",
+            tags: ["piano", "nocturne", "contemporary"],
+            coverImage: "https://via.placeholder.com/350x200?text=Nocturne+in+Blue",
+            audioLink: "",
+            scoreLink: "https://example.com/score2.pdf",
+            paymentLink: "",
+            stripeProductId: "",
+            stripePriceId: "",
+            price: 15
+          },
+          {
+            id: "2",
+            title: "Nocturne in Blue",
+            instrumentation: "Solo Piano",
+            year: 2021,
+            duration: "6:00",
+            difficulty: "Hard",
+            description: "A reflective nocturne for solo piano.",
+            tags: ["piano", "nocturne", "contemporary"],
+            coverImage: "https://via.placeholder.com/350x200?text=Nocturne+in+Blue",
+            audioLink: "",
+            scoreLink: "https://example.com/score2.pdf",
+            paymentLink: "",
+            stripeProductId: "",
+            stripePriceId: "",
+            price: 15
+          },
+          {
+            id: "2",
+            title: "Nocturne in Blue",
+            instrumentation: "Solo Piano",
+            year: 2021,
+            duration: "6:00",
+            difficulty: "Hard",
+            description: "A reflective nocturne for solo piano.",
+            tags: ["piano", "nocturne", "contemporary"],
+            coverImage: "https://via.placeholder.com/350x200?text=Nocturne+in+Blue",
+            audioLink: "",
+            scoreLink: "https://example.com/score2.pdf",
+            paymentLink: "",
+            stripeProductId: "",
+            stripePriceId: "",
+            price: 15
+          },
+          {
+            id: "2",
+            title: "Nocturne in Blue",
+            instrumentation: "Solo Piano",
+            year: 2021,
+            duration: "6:00",
+            difficulty: "Hard",
+            description: "A reflective nocturne for solo piano.",
+            tags: ["piano", "nocturne", "contemporary"],
+            coverImage: "https://via.placeholder.com/350x200?text=Nocturne+in+Blue",
+            audioLink: "",
+            scoreLink: "https://example.com/score2.pdf",
+            paymentLink: "",
+            stripeProductId: "",
+            stripePriceId: "",
+            price: 15
+          },
+          {
+            id: "2",
+            title: "Nocturne in Blue",
+            instrumentation: "Solo Piano",
+            year: 2021,
+            duration: "6:00",
+            difficulty: "Hard",
+            description: "A reflective nocturne for solo piano.",
+            tags: ["piano", "nocturne", "contemporary"],
+            coverImage: "https://via.placeholder.com/350x200?text=Nocturne+in+Blue",
+            audioLink: "",
+            scoreLink: "https://example.com/score2.pdf",
+            paymentLink: "",
+            stripeProductId: "",
+            stripePriceId: "",
+            price: 15
+          },
+          // Add more as needed
+        ];
+
         // Load compositions with proper payment integration
         async function loadCompositions() {
-            try {
-                showLoading('popular-works');
-                
-                const response = await fetch('/api/compositions');
-                const data = await response.json();
-                
+            showLoading('popular-works');
+            // Simulate network delay
+            setTimeout(() => {
+                const data = {
+                    success: true,
+                    compositions: exampleCompositions,
+                    count: exampleCompositions.length
+                };
                 const container = document.getElementById('popular-works');
-                
                 if (data.success && data.compositions.length > 0) {
                     container.innerHTML = data.compositions.map(comp => `
                         <div class="work-card" onclick="viewComposition('${comp.id}')">
@@ -163,26 +275,20 @@ a[href="#catalog"]:hover {
                             </div>
                             
                             <div class="work-content">
-                                ${(comp.year || comp.duration) ? `
+                                ${(comp.duration) ? `
                                     <div class="work-meta">
-                                        ${comp.year ? `<div class="work-year">${comp.year}</div>` : ''}
+
                                         ${comp.duration && comp.duration !== 'Duration:' ? `<div class="work-duration">${comp.duration}</div>` : ''}
                                     </div>
                                 ` : ''}
                                 
-                                ${comp.difficulty ? `<div class="difficulty-badge ${comp.difficulty.toLowerCase()}">${comp.difficulty}</div>` : ''}
+
                                 
                                 ${comp.description ? `<p class="work-description">${comp.description}</p>` : ''}
-                                
-                                ${comp.tags && comp.tags.length > 0 ? `
-                                    <div class="work-tags">
-                                        ${comp.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                                    </div>
-                                ` : ''}
+                                 
+  
                                 
                                 <div class="work-links">
-                                    ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">🎵 Listen</a>` : ''}
-                                    ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">📄 Score</a>` : ''}
                                     
                                     ${comp.paymentLink ? `
                                         <button class="btn-primary payment-btn" onclick="event.stopPropagation(); purchaseComposition('${comp.paymentLink}', '${comp.title.replace(/'/g, "\\'")}')">
@@ -203,8 +309,6 @@ a[href="#catalog"]:hover {
                             </div>
                         </div>
                     `).join('');
-                    
-                    console.log(`✅ Loaded ${data.count} compositions`);
                 } else {
                     container.innerHTML = `
                         <div class="empty-state">
@@ -213,10 +317,14 @@ a[href="#catalog"]:hover {
                         </div>
                     `;
                 }
-            } catch (error) {
-                console.error('❌ Error loading compositions:', error);
-                showError('popular-works', 'Error loading compositions');
-            }
+            }, 0); // 0.5s delay for realism
+        }
+
+        // Carousel scroll function
+        function scrollWorks(direction) {
+            const container = document.getElementById('popular-works');
+            const scrollAmount = 400; // Adjust as needed
+            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
 
         // Purchase with Stripe integration
