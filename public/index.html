@@ -41,6 +41,13 @@
             padding: 10px 20px !important;
         }
     }
+    .works-grid.dragging {
+        cursor: grabbing;
+        user-select: none;
+    }
+    .works-grid {
+        cursor: grab;
+    }
     </style>
     <!-- Navigation -->
 <nav>
@@ -216,7 +223,7 @@
         // Carousel scroll function
         function scrollWorks(direction) {
             const container = document.getElementById('popular-works');
-            const scrollAmount = 400; // Adjust as needed
+            const scrollAmount = 900; // Increased for more drastic movement
             container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
 
@@ -374,10 +381,57 @@
             }
         });
 
+        // Enable click-and-drag scrolling for the carousel
+        function enableCarouselDragScroll() {
+            const carousel = document.getElementById('popular-works');
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            carousel.addEventListener('mousedown', (e) => {
+                isDown = true;
+                carousel.classList.add('dragging');
+                startX = e.pageX - carousel.offsetLeft;
+                scrollLeft = carousel.scrollLeft;
+            });
+            carousel.addEventListener('mouseleave', () => {
+                isDown = false;
+                carousel.classList.remove('dragging');
+            });
+            carousel.addEventListener('mouseup', () => {
+                isDown = false;
+                carousel.classList.remove('dragging');
+            });
+            carousel.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - carousel.offsetLeft;
+                const walk = (x - startX) * 1.5; // Adjust scroll speed
+                carousel.scrollLeft = scrollLeft - walk;
+            });
+
+            // Touch support
+            carousel.addEventListener('touchstart', (e) => {
+                isDown = true;
+                startX = e.touches[0].pageX - carousel.offsetLeft;
+                scrollLeft = carousel.scrollLeft;
+            });
+            carousel.addEventListener('touchend', () => {
+                isDown = false;
+            });
+            carousel.addEventListener('touchmove', (e) => {
+                if (!isDown) return;
+                const x = e.touches[0].pageX - carousel.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                carousel.scrollLeft = scrollLeft - walk;
+            });
+        }
+
         // Load everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadCompositions();
             initMobileMenu();
+            enableCarouselDragScroll();
         });
     </script>
     
