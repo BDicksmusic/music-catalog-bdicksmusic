@@ -52,9 +52,75 @@
     
         <source src="https://file.notion.so/f/f/fa29efda-948c-4378-9da5-ea0d4058a01f/707daaf2-3013-4c03-9806-aa94085783dc/v1.0_Website_Promo_8.12.mp4?table=block&id=2348cc9f-36f1-8048-838d-ea53f873224d&spaceId=fa29efda-948c-4378-9da5-ea0d4058a01f&expirationTimestamp=1753156800000&signature=wE1KQdxOcKqfpwMjdpZU9wz04wqLa__hYjbR-CcmzKc&downloadName=v1.0+Website+Promo+%5B8.12%5D.mp4" type="video/mp4">
     </video>
- 
+
+    <div style="
+    position: relative;
+    margin-top: -125px;
+    margin-bottom: 2rem;
+    text-align: center;
+    z-index: 10;
+    pointer-events: auto;
+">
+    <a href="#catalog" style="
+        display: inline-block;
+
+        color: rgb(228, 228, 228);
+
+        font-size: 20px;
+        font-weight: 900;
+        text-decoration: none;
+        opacity: 1;
+        animation: pulse-glow 3s infinite;
+        cursor: pointer;
+        transition: all 10s ease;
+    "onclick="smoothScrollTo('#catalog'); return false;">
+        ↓ Explore Music Catalog ↓
+    </a>
+</div>
+
+<style>
+    html {
+  scroll-behavior: smooth;
+}
+@keyframes pulse-glow {
+    0%, 100% { 
+        opacity: 1; 
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.2);
+
+    }
+}
+
+/* Hover effect for the button */
+a[href="#catalog"] {
+    transition: color 0.4s, background 0.6s, transform 0.3s, opacity 0.3s, border-radius 1s;
+    border-radius: 25px; /* or any value you like */
+}
+a[href="#catalog"]:hover { 
+    color: #ffffff;
+    background: linear-gradient(135deg, #81d9ff, #43a7ff);
+    border-radius: 25px;
+    padding: 10px 20px; /* keep the same or make it more/less rounded on hover */
+    transform: scale(1.08) !important;
+    opacity: 0.8 !important;
+    animation-play-state: paused;
+}
+
+
+
+@media (max-width: 768px) {
+    a[href="#catalog"] {
+        font-size: 12px !important;
+        padding: 10px 20px !important;
+    }
+}
+</style>
 
     <!-- Main Content -->
+     <section id="catalog">
     <main>
         <div class="container">
             <section>
@@ -316,5 +382,6 @@
     
     <!-- Load external script for additional functionality -->
     <script src="script.js"></script>
+    </section> 
 </body>
 </html>
