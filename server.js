@@ -24,7 +24,8 @@ const notion = new Client({
     auth: process.env.NOTION_API_KEY,
 });
 
-// Middleware
+// Middleware - IMPORTANT: Raw body parser for Stripe webhook MUST come before express.json()
+app.use('/api/stripe-webhook', express.raw({type: 'application/json'}));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -467,16 +468,18 @@ app.post('/api/create-checkout-session', async (req, res) => {
 });
 
 // Webhook to handle successful payments
-app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
+app.post('/api/stripe-webhook', async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
 
     try {
         event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
     } catch (err) {
-        console.log(`Webhook signature verification failed.`, err.message);
+        console.log(`❌ Webhook signature verification failed:`, err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
+
+    console.log(`✅ Webhook received: ${event.type}`);
 
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
@@ -486,7 +489,8 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
         // - Update Notion with purchase info
         // - Log the sale
         
-        console.log('Payment successful for:', session.metadata.compositionTitle);
+        console.log('💰 Payment successful for:', session.metadata.compositionTitle);
+        console.log('📧 Customer email:', session.customer_details?.email);
     }
 
     res.json({received: true});
