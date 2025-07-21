@@ -884,6 +884,7 @@ input:focus, textarea:focus, select:focus {
     /* Navigation Mobile Styles */
     .hamburger {
         display: flex;
+        margin-left: 10px;
     }
     
     
