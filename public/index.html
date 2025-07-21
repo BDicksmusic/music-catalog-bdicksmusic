@@ -143,122 +143,12 @@
 
     <script>
         // Add Example Data
-        const exampleCompositions = [
-          {
-            id: "1",
-            title: "Sunrise Fanfare",
-            instrumentation: "Brass Quintet",
-            year: 2022,
-            duration: "4:30",
-            difficulty: "Medium",
-            description: "A bright, energetic piece for brass quintet.",
-            tags: ["brass", "fanfare", "modern"],
-            coverImage: "/imgs/Coming Home (Cover Photo).png",
-            audioLink: "https://example.com/audio1.mp3",
-            scoreLink: "https://example.com/score1.pdf",
-            paymentLink: "",
-            stripeProductId: "",
-            stripePriceId: "",
-            price: 20
-          },
-          {
-            id: "2",
-            title: "Nocturne in Blue",
-            instrumentation: "Solo Piano",
-            year: 2021,
-            duration: "6:00",
-            difficulty: "Hard",
-            description: "A reflective nocturne for solo piano.",
-            tags: ["piano", "nocturne", "contemporary"],
-            coverImage: "https://via.placeholder.com/350x200?text=Nocturne+in+Blue",
-            audioLink: "",
-            scoreLink: "https://example.com/score2.pdf",
-            paymentLink: "",
-            stripeProductId: "",
-            stripePriceId: "",
-            price: 15
-          },
-          {
-            id: "2",
-            title: "Nocturne in Blue",
-            instrumentation: "Solo Piano",
-            year: 2021,
-            duration: "6:00",
-            difficulty: "Hard",
-            description: "A reflective nocturne for solo piano.",
-            tags: ["piano", "nocturne", "contemporary"],
-            coverImage: "https://via.placeholder.com/350x200?text=Nocturne+in+Blue",
-            audioLink: "",
-            scoreLink: "https://example.com/score2.pdf",
-            paymentLink: "",
-            stripeProductId: "",
-            stripePriceId: "",
-            price: 15
-          },
-          {
-            id: "2",
-            title: "Nocturne in Blue",
-            instrumentation: "Solo Piano",
-            year: 2021,
-            duration: "6:00",
-            difficulty: "Hard",
-            description: "A reflective nocturne for solo piano.",
-            tags: ["piano", "nocturne", "contemporary"],
-            coverImage: "https://via.placeholder.com/350x200?text=Nocturne+in+Blue",
-            audioLink: "",
-            scoreLink: "https://example.com/score2.pdf",
-            paymentLink: "",
-            stripeProductId: "",
-            stripePriceId: "",
-            price: 15
-          },
-          {
-            id: "2",
-            title: "Nocturne in Blue",
-            instrumentation: "Solo Piano",
-            year: 2021,
-            duration: "6:00",
-            difficulty: "Hard",
-            description: "A reflective nocturne for solo piano.",
-            tags: ["piano", "nocturne", "contemporary"],
-            coverImage: "https://via.placeholder.com/350x200?text=Nocturne+in+Blue",
-            audioLink: "",
-            scoreLink: "https://example.com/score2.pdf",
-            paymentLink: "",
-            stripeProductId: "",
-            stripePriceId: "",
-            price: 15
-          },
-          {
-            id: "2",
-            title: "Nocturne in Blue",
-            instrumentation: "Solo Piano",
-            year: 2021,
-            duration: "6:00",
-            difficulty: "Hard",
-            description: "A reflective nocturne for solo piano.",
-            tags: ["piano", "nocturne", "contemporary"],
-            coverImage: "https://via.placeholder.com/350x200?text=Nocturne+in+Blue",
-            audioLink: "",
-            scoreLink: "https://example.com/score2.pdf",
-            paymentLink: "",
-            stripeProductId: "",
-            stripePriceId: "",
-            price: 15
-          },
-          // Add more as needed
-        ];
-
-        // Load compositions with proper payment integration
         async function loadCompositions() {
-            showLoading('popular-works');
-            // Simulate network delay
-            setTimeout(() => {
-                const data = {
-                    success: true,
-                    compositions: exampleCompositions,
-                    count: exampleCompositions.length
-                };
+            try {
+                showLoading('popular-works');
+                const response = await fetch('/api/compositions');
+                const data = await response.json();
+
                 const container = document.getElementById('popular-works');
                 if (data.success && data.compositions.length > 0) {
                     container.innerHTML = data.compositions.map(comp => `
@@ -317,7 +207,10 @@
                         </div>
                     `;
                 }
-            }, 0); // 0.5s delay for realism
+            } catch (error) {
+                console.error('❌ Error loading compositions:', error);
+                showError('popular-works', 'Error loading compositions');
+            }
         }
 
         // Carousel scroll function
