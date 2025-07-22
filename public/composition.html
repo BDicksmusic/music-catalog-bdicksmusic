@@ -81,7 +81,6 @@
         .composition-meta span {
             background: var(--gray-100);
             border-radius: 1.2rem;
-            padding: 0.2rem 0.9rem;
             font-size: 0.98rem;
             font-weight: 500;
         }
@@ -146,8 +145,9 @@
                 margin-bottom: 1.2rem;
             }
             .composition-cover {
-                width: 100%;
-                height: 260px;
+                width: 454px;
+                height: 600px;
+                flex-shrink: 1;
             }
             .composition-info {
                 width: 100%;
@@ -232,6 +232,7 @@
                          class="composition-cover" 
                          id="composition-cover">
                 </div>
+                <div class="composition-info">
                 <div class="composition-content-container">
                     <div class="composition-title-container">
                         <!-- Title will be injected here -->
@@ -239,10 +240,16 @@
                     <div class="composition-instrument-container">
                         <!-- Instrument will be injected here -->
                     </div>
-                 
-
-                  
-    
+                    <div class="composition-meta-container">
+                        <!-- Metadata (year, duration, difficulty, etc.) will be injected here -->
+                    </div>
+                    <div class="composition-links-container">
+                        <!-- Audio and score links will be injected here -->
+                    </div>
+                    <div class="composition-buy-container">
+                        <!-- Buy button will be injected here -->
+                    </div>
+                    </div>
                 </div>
             </div>
         </div>

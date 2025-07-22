@@ -139,29 +139,37 @@ function renderComposition(comp) {
         instrumentContainer.innerHTML = `<div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>`;
     }
 
-    // Meta, Description, Buy Button, Links (put these in .composition-info)
-    const infoContainer = document.getElementById('composition-info');
-    if (infoContainer) {
-        const buyButtonHtml = comp.paymentLink || comp.stripePriceId ? 
+
+    const metaContainer = document.querySelector('.composition-meta-container');
+    if (metaContainer) {
+        metaContainer.innerHTML = `
+            <div class="composition-meta">
+                ${comp.year ? `<span>Year: ${comp.year}</span>` : ''}
+                ${comp.duration ? `<span>Duration: ${comp.duration}</span>` : ''}
+                ${comp.difficulty ? `<span>Difficulty: ${comp.difficulty}</span>` : ''}
+            </div>
+        `;
+    }
+    
+    const buyContainer = document.querySelector('.composition-buy-container');
+    if (buyContainer) {
+        buyContainer.innerHTML = comp.paymentLink || comp.stripePriceId ? 
             `<button class="composition-buy-btn" onclick="purchaseComposition('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 10})">
                 💳 Buy Now - $${comp.price || 10}
             </button>` : 
             `<button class="composition-buy-btn btn-disabled" onclick="showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
                 🚫 Currently Not Available
             </button>`;
-        infoContainer.innerHTML = `
-            <div class="composition-meta">
-                ${comp.year ? `<span>Year: ${comp.year}</span>` : ''}
-                ${comp.duration ? `<span>Duration: ${comp.duration}</span>` : ''}
-                ${comp.difficulty ? `<span>Difficulty: ${comp.difficulty}</span>` : ''}
-            </div>
-            ${buyButtonHtml}
-            <div class="composition-links">
-                ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
-                ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
-            </div>
-        `
     }
+
+const linksContainer = document.querySelector('.composition-links-container');
+if (linksContainer) {
+    linksContainer.innerHTML = `
+        ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
+        ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
+    `;
+}
+
 
     // Notes
     const notesContainer = document.querySelector('.composition-notes-container');
