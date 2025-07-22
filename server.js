@@ -96,7 +96,7 @@ const transformNotionPage = (page) => {
         genre: properties.Genre?.select?.name || '',
         description: notionRichTextToHtml(properties.Description?.rich_text),
         audioLink: getFileUrl(properties['Audio Link']),
-        scoreLink: getFileUrl(properties['Score PDF']),
+        scoreLink: properties['Score PDF']?.url || getFileUrl(properties['Score PDF']),
         purchaseLink: properties['Purchase Link']?.url || '',
         paymentLink: properties['Payment Link']?.url || properties['Stripe Link']?.url || '',
         coverImage: getFileUrl(properties['Cover Image']),
