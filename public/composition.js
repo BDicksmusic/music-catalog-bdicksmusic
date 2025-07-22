@@ -289,15 +289,15 @@ const exampleCompositions = [
     stripeProductId: "",
     stripePriceId: "",
     price: 11
-  }
+  },
   {
     id: "19",
     slug: "the-stars-and-stripes-forever",
     title: "The Stars and Stripes Forever",
-    instrumentation: "...",
-    year: ...,
-    duration: "...",
-    description: "...",
+    instrumentation: "Solo Guitar",
+    year: 2023,
+    duration: "2:45",
+    description: "A light, sparkling solo for guitar.",
     // ...other fields...
   }
 ];
