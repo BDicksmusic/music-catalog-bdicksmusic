@@ -496,11 +496,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="work-instrument">${comp.instrumentation}</div>
                         </div>
                         <div class="work-content">
-                            ${(comp.duration) ? `
-                                <div class="work-meta">
-                                    ${comp.duration && comp.duration !== 'Duration:' ? `<div class="work-duration">${comp.duration}</div>` : ''}
-                                </div>
-                            ` : ''}
                             <div class="work-links">
                                 <button class="btn-disabled" onclick="event.stopPropagation(); showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
                                     🚫 Currently Not Available
