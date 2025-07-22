@@ -145,7 +145,9 @@ function renderComposition(comp) {
             ${comp.duration ? `<span>Duration: ${comp.duration}</span>` : ''}
             ${comp.difficulty ? `<span>Difficulty: ${comp.difficulty}</span>` : ''}
         </div>
+        <div class="composition-notes-container"></div>
         ${buyButtonHtml}
+        <div class="composition-notes-container"></div>
         <div class="composition-links">
             ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
             ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
