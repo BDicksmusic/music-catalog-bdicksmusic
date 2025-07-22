@@ -1,6 +1,7 @@
 // Add this route to handle composition pages
 const express = require('express');
 const app = express();
+const path = require('path');
 
 app.get('/composition.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'composition.html'));
