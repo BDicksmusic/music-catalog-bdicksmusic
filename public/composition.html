@@ -12,6 +12,8 @@
         }
         .composition-main {
             width: 87vw;
+            align-items: center; /* Vertically center both columns */
+            justify-content: center; /* Horizontally center the whole row */
             display: flex;
             flex-grow: 1;
             margin: 0 auto;
@@ -22,7 +24,8 @@
         }
         .composition-detail-card {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
+   
             background: none;
             border-radius: 0;
             box-shadow: none;
@@ -36,8 +39,8 @@
         .composition-cover-container {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
+            align-items: center; /* Center horizontally */
+            justify-content: center; /* Center vertically if you want */
             height: 600px;
             width: 454px;
             width: 454px;
