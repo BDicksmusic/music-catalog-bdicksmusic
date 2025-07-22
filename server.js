@@ -33,6 +33,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ===== HELPER FUNCTIONS =====
+function notionRichTextToHtml(richTextArr) {
+    if (!Array.isArray(richTextArr)) return '';
+    return richTextArr.map(rt => {
+        let text = rt.text?.content || '';
+        if (rt.annotations) {
+            if (rt.annotations.bold) text = `<strong>${text}</strong>`;
+            if (rt.annotations.italic) text = `<em>${text}</em>`;
+            if (rt.annotations.underline) text = `<u>${text}</u>`;
+            if (rt.annotations.strikethrough) text = `<s>${text}</s>`;
+            if (rt.annotations.code) text = `<code>${text}</code>`;
+        }
+        if (rt.href) text = `<a href="${rt.href}">${text}</a>`;
+        return text;
+    }).join('');
+}
 
 // Helper function to safely get text content
 const getTextContent = (field) => {
@@ -79,7 +94,7 @@ const transformNotionPage = (page) => {
         duration: getTextContent(properties.Duration) || '',
         difficulty: properties.Difficulty?.select?.name || '',
         genre: properties.Genre?.select?.name || '',
-        description: getTextContent(properties.Description) || '',
+        description: notionRichTextToHtml(properties.Description?.rich_text),
         audioLink: properties['Audio Link']?.url || '',
         scoreLink: properties['Score PDF']?.url || '',
         purchaseLink: properties['Purchase Link']?.url || '',
@@ -90,8 +105,8 @@ const transformNotionPage = (page) => {
         stripePriceId: getTextContent(properties['Stripe Price ID']),
         price: properties.Price?.number || null,
         tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
-        programNotes: getTextContent(properties['Program Notes']),
-        performanceNotes: getTextContent(properties['Performance Notes']), 
+        programNotes: notionRichTextToHtml(properties['Program Notes']?.rich_text),
+        performanceNotes: notionRichTextToHtml(properties['Performance Notes']?.rich_text),
         created: page.created_time,
         lastEdited: page.last_edited_time,
         popular: properties.Popular?.checkbox || false,
