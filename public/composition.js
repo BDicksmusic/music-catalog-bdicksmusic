@@ -128,6 +128,10 @@ function renderComposition(comp) {
         coverImg.alt = comp.title;
     }
 
+    // Always get the container first!
+    const container = document.getElementById('composition-info');
+    if (!container) return;
+
     //Score Container
     const scoreCarouselContainer = container.querySelector('.score-carousel-container');
     if (scoreCarouselContainer && comp.scoreLink) {
@@ -138,8 +142,6 @@ function renderComposition(comp) {
         `;
     }
     // Build the info HTML
-    const container = document.getElementById('composition-info');
-    if (!container) return;
     const buyButtonHtml = comp.paymentLink || comp.stripePriceId ? 
         `<button class="composition-buy-btn" onclick="purchaseComposition('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 10})">
             💳 Buy Now - $${comp.price || 10}
