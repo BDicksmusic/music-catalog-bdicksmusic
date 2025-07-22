@@ -669,6 +669,9 @@ app.get('/admin', (req, res) => {
 });
 
 // Handle all other routes
+app.get('/composition/:slug', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'composition.html'));
+});
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
