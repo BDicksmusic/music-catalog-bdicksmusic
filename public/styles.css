@@ -966,7 +966,7 @@ input:focus, textarea:focus, select:focus {
         gap: 0;
         border: none;
         z-index: 2000;
-        padding-top: 60px; /* Height of fixed nav */
+        padding-top: 0px; /* Height of fixed nav */
     }
     
     .nav-menu.active {

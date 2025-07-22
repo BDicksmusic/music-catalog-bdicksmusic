@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const navMenu = document.querySelector('.nav-menu');
     if (hamburger && navMenu) {
       hamburger.onclick = function() {
-        this.classList.toggle('open');
-        navMenu.classList.toggle('open');
+        this.classList.toggle('active');
+        navMenu.classList.toggle('active');
       };
     }
   });
