@@ -37,6 +37,17 @@ const exampleCompositions = [
   // ... rest of your example compositions data ...
 ];
 
+// Fetch all compositions
+const response = await fetch('/api/compositions');
+const data = await response.json();
+const allCompositions = data.compositions;
+
+// Filter for popular
+const popularCompositions = allCompositions.filter(comp => comp.popular);
+
+// Now use popularCompositions for your carousel
+renderCarousel(popularCompositions);
+
 function getSlugFromUrl() {
     // Extract slug from pathname for pretty URLs like /composition/slug-name
     const pathMatch = window.location.pathname.match(/^\/composition\/([^/?#]+)/);

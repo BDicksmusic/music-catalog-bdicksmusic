@@ -487,6 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         }
+        //Popular Compositions
         async function loadCompositions() {
             showLoading('popular-works');
             let data;
@@ -499,8 +500,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             const container = document.getElementById('popular-works');
             if (!apiFailed && data && data.success && data.compositions && data.compositions.length > 0) {
-                container.innerHTML = data.compositions.map(comp => `
-                    <div class="work-card" data-slug="${comp.slug}">
+                    const popularComps = data.compositions.filter(comp => comp.popular);
+
+                    container.innerHTML = popularComps.map(comp => `
                         ${comp.coverImage ? `
                             <div class="work-image-container">
                                 <img src="${comp.coverImage}" alt="${comp.title}" class="work-image" loading="lazy">

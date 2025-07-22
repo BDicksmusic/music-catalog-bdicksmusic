@@ -92,6 +92,7 @@ const transformNotionPage = (page) => {
         tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
         created: page.created_time,
         lastEdited: page.last_edited_time,
+        popular: properties.Popular?.checkbox || false,
         slug: properties.Slug?.rich_text[0]?.plain_text || ''
     };
 };
