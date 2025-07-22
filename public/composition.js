@@ -290,6 +290,16 @@ const exampleCompositions = [
     stripePriceId: "",
     price: 11
   }
+  {
+    id: "19",
+    slug: "the-stars-and-stripes-forever",
+    title: "The Stars and Stripes Forever",
+    instrumentation: "...",
+    year: ...,
+    duration: "...",
+    description: "...",
+    // ...other fields...
+  }
 ];
 
 function getQueryParam(param) {
