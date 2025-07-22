@@ -91,7 +91,8 @@ const transformNotionPage = (page) => {
         price: properties.Price?.number || null,
         tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
         created: page.created_time,
-        lastEdited: page.last_edited_time
+        lastEdited: page.last_edited_time,
+        slug: properties.Slug?.rich_text[0]?.plain_text || ''
     };
 };
 
@@ -470,7 +471,6 @@ app.post('/api/create-checkout-session', async (req, res) => {
 
 // Webhook to handle successful payments
 app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
-app.post('/api/stripe-webhook', async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
 
@@ -679,5 +679,4 @@ app.listen(PORT, () => {
     console.log(`📝 Notion integration: ${process.env.NOTION_API_KEY ? 'Connected' : 'Not configured'}`);
     console.log(`💳 Stripe integration: ${process.env.STRIPE_SECRET_KEY ? 'Connected' : 'Not configured'}`);
     console.log(`🗄️ Redis caching: Enabled`);
-});
 });
