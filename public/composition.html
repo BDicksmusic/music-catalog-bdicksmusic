@@ -158,6 +158,19 @@
                 width: 100%;
             }
         }
+        @media (max-width: 900px) {
+            .composition-main {
+                grid-template-columns: 1fr;   /* Single column */
+                grid-template-rows: auto auto; /* Two rows: cover, then content */
+                gap: 1.2rem;                  /* Adjust gap for mobile */
+            }
+            .composition-cover-container,
+            .composition-content-container {
+                width: 100%;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+        }
         .score-carousel {
             display: relative;
             align-items: center;
