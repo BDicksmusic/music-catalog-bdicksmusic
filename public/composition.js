@@ -156,6 +156,30 @@ function renderComposition(comp) {
             ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
         </div>
     `;
+
+       // Inject notes into the notes container
+       const notesContainer = container.querySelector('.composition-notes-container');
+       let notesHtml = '';
+       if (comp.programNotes) {
+           notesHtml += `
+               <section class="composition-program-notes">
+                   <h3>Program Notes</h3>
+                   <div class="program-notes-content">${comp.programNotes}</div>
+               </section>
+           `;
+       }
+       if (comp.performanceNotes) {
+           notesHtml += `
+               <section class="composition-performance-notes">
+                   <h3>Performance Notes</h3>
+                   <div class="performance-notes-content">${comp.performanceNotes}</div>
+               </section>
+           `;
+       }
+       if (notesHtml) {
+           notesContainer.innerHTML = notesHtml;
+       }
+       
     // Set description as HTML
     const descDiv = container.querySelector('.composition-description');
     if (descDiv && comp.description) {
