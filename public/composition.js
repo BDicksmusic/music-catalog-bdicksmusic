@@ -127,6 +127,16 @@ function renderComposition(comp) {
         coverImg.src = comp.coverImage;
         coverImg.alt = comp.title;
     }
+
+    //Score Container
+    const scoreCarouselContainer = container.querySelector('.score-carousel-container');
+    if (scoreCarouselContainer && comp.scoreLink) {
+        scoreCarouselContainer.innerHTML = `
+            <div class="score-pdf-viewer">
+                <iframe src="${comp.scoreLink}" width="100%" height="600px"></iframe>
+            </div>
+        `;
+    }
     // Build the info HTML
     const container = document.getElementById('composition-info');
     if (!container) return;
@@ -147,7 +157,6 @@ function renderComposition(comp) {
         </div>
            ${buyButtonHtml}
         <div class="composition-notes-container"></div>
-        <div class="composition-notes-container"></div>
         <div class="composition-links">
             ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
             ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
@@ -163,15 +172,7 @@ const instrumentContainer = container.querySelector('.composition-instrument-con
 if (instrumentContainer) instrumentContainer.innerHTML = `<div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>`;
 
 
-//Score Container
-    const scoreCarouselContainer = container.querySelector('.score-carousel-container');
-    if (scoreCarouselContainer && comp.scoreLink) {
-        scoreCarouselContainer.innerHTML = `
-            <div class="score-pdf-viewer">
-                <iframe src="${comp.scoreLink}" width="100%" height="600px"></iframe>
-            </div>
-        `;
-    }
+
 
     // Set description as HTML
     const descDiv = container.querySelector('.composition-description');
