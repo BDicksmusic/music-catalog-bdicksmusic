@@ -331,30 +331,35 @@ async function loadCompositionDetail() {
 }
 
 function renderComposition(comp) {
-    const container = document.getElementById('composition-detail');
-    container.innerHTML = `
-        <div class="composition-detail-card">
-            <div class="composition-cover-container">
-                ${comp.coverImage ? `<img src="${comp.coverImage}" alt="${comp.title}" class="composition-cover">` : ''}
-            </div>
-            <div class="composition-info">
-                <div class="composition-title-instrument">
+    // Set the cover image
+    const coverImg = document.getElementById('composition-cover');
+    if (coverImg && comp.coverImage) {
+        coverImg.src = comp.coverImage;
+        coverImg.alt = comp.title;
+    }
+    // Render the info section
+    const info = document.getElementById('composition-info');
+    if (info) {
+        info.innerHTML = `
+            <div class="composition-info-row">
+                <div class="composition-title-instrument-group">
                     <div class="composition-title">${comp.title}</div>
                     <div class="composition-instrument">${comp.instrumentation}</div>
                 </div>
+                ${(comp.year || comp.duration) ? '<span class="composition-divider"></span>' : ''}
                 <div class="composition-meta">
                     ${comp.year ? `<span>📅 ${comp.year}</span>` : ''}
                     ${comp.duration ? `<span>⏱ ${comp.duration}</span>` : ''}
                 </div>
-                <div class="composition-description">${comp.description}</div>
-                <div class="composition-actions">
-                    ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="composition-action-btn">🎵 Listen</a>` : ''}
-                    ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="composition-action-btn">📄 View Score</a>` : ''}
-                    ${comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="composition-action-btn">💳 Purchase</a>` : ''}
-                </div>
             </div>
-        </div>
-    `;
+            <div class="composition-description">${comp.description}</div>
+            ${comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="composition-buy-btn">💳 Buy Now</a>` : `<button class="composition-buy-btn btn-disabled" disabled>💳 Buy Now</button>`}
+            <div class="composition-actions">
+                ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="composition-action-btn">🎵 Listen</a>` : ''}
+                ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="composition-action-btn">📄 View Score</a>` : ''}
+            </div>
+        `;
+    }
 }
 
 document.addEventListener('DOMContentLoaded', loadCompositionDetail); 

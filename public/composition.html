@@ -9,7 +9,7 @@
         body {
             background: var(--gray-100);
             margin: 0;
-            padding-top: 25px;
+            padding-top: 30px;
         }
         .composition-main {
             max-width: 1200px;
@@ -21,7 +21,7 @@
         .composition-detail-card {
             display: flex;
             flex-direction: row;
-            gap: 0rem;
+            gap: 2.5rem;
             background: none;
             border-radius: 0;
             box-shadow: none;
@@ -57,11 +57,19 @@
             align-items: flex-end;
             width: 100%;
         }
-        .composition-title-instrument {
+        .composition-info-row {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: flex-end;
+            gap: 1.2rem;
+            width: 100%;
+        }
+        .composition-title-instrument-group {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            margin-bottom: 0.7rem;
+            text-align: right;
         }
         .composition-title {
             font-size: 1.8rem;
@@ -78,12 +86,23 @@
             font-weight: 600;
             text-align: right;
         }
+        .composition-divider {
+            display: inline-block;
+            width: 2px;
+            height: 2.2em;
+            background: var(--gray-300);
+            margin: 0 1.2rem;
+            border-radius: 2px;
+            vertical-align: middle;
+        }
         .composition-meta {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             gap: 0.2rem;
-            margin-bottom: 0.7rem;
+            text-align: right;
+            width: auto;
+            padding-right: 0;
         }
         .composition-meta span {
             background: var(--gray-100);
@@ -92,6 +111,9 @@
             font-size: 0.98rem;
             font-weight: 500;
             margin-bottom: 0.2rem;
+            text-align: right;
+            display: block;
+            min-width: 80px;
         }
         .composition-description {
             font-size: 1.08rem;
@@ -99,7 +121,38 @@
             margin-top: 0.7rem;
             margin-bottom: 1.2rem;
             line-height: 1.7;
-            text-align: right;
+            text-align: left;
+            align-self: flex-start;
+            width: 100%;
+            max-width: 600px;
+        }
+        .composition-buy-btn {
+            display: inline-block;
+            margin: 0.5rem 0 1.2rem 0;
+            padding: 0.9rem 2.2rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+            border-radius: 1.2rem;
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-700));
+            color: #fff;
+            border: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            text-align: center;
+        }
+        .composition-buy-btn:disabled,
+        .composition-buy-btn.btn-disabled {
+            background: var(--gray-400) !important;
+            color: var(--gray-50) !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+        }
+        .composition-buy-btn:hover:not(:disabled) {
+            background: linear-gradient(90deg, var(--primary-700), var(--primary-500));
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.13);
         }
         .composition-actions {
             display: flex;
@@ -139,6 +192,7 @@
                 align-items: center;
                 padding: 1.2rem 0 1.2rem 0;
                 width: 100%;
+                gap: 1.2rem;
             }
             .composition-cover-container {
                 width: 100%;
@@ -155,11 +209,17 @@
                 width: 100%;
                 align-items: flex-end;
             }
-            .composition-title-instrument {
+            .composition-info-row {
+                flex-direction: column;
                 align-items: flex-end;
+                gap: 0.2rem;
+            }
+            .composition-divider {
+                display: none;
             }
             .composition-description {
-                text-align: right;
+                text-align: left;
+                align-self: flex-start;
             }
         }
     </style>
@@ -169,39 +229,40 @@
     <nav>
         <div class="nav-container">
             <a href="index.html" class="logo">BRANDON DICKS</a>
-            </div>
-            <div class="nav-right">
-                <ul class="nav-menu">
-                    <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Catalog</a></li>
-                    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
-                </ul>
-                <button class="music-catalog-btn">Music Catalog</button>
-                <div class="hamburger">
-                    <span></span>
-                    <span></span>   
-                    <span></span>
-            </div>
-    
+        </div>
+        <div class="nav-right">
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Catalog</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="music-catalog-btn">Music Catalog</button>
+            <div class="hamburger">
+                <span></span>
+                <span></span>   
+                <span></span>
             </div>
         </div>
     </nav>
-        
-        <!-- Secondary Navigation -->
-        <nav class="secondary-nav">
-            <a href="/composer" class="secondary-button">Composer</a>
-            <a href="/trumpeter" class="secondary-button">Trumpeter</a>
-            <a href="/educator" class="secondary-button">Educator</a>
-        </nav>
+    <nav class="secondary-nav">
+        <a href="/composer" class="secondary-button">Composer</a>
+        <a href="/trumpeter" class="secondary-button">Trumpeter</a>
+        <a href="/educator" class="secondary-button">Educator</a>
+    </nav>
     <main>
-        <br><br>
         <div class="composition-main">
-            <div id="composition-detail" class="container">
-                <div class="loading">Loading composition...</div>
+            <div class="composition-detail-card">
+                <div class="composition-cover-container">
+                    <img src="" alt="" class="composition-cover" id="composition-cover">
+                </div>
+                <div class="composition-info" id="composition-info">
+                    <!-- Content will be rendered by JS -->
+                </div>
             </div>
         </div>
     </main>
     <script src="composition.js"></script>
 </body>
-</html>
+</html>     
+    
