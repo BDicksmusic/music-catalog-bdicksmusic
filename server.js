@@ -90,6 +90,8 @@ const transformNotionPage = (page) => {
         stripePriceId: getTextContent(properties['Stripe Price ID']),
         price: properties.Price?.number || null,
         tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
+        programNotes: getTextContent(properties['Program Notes']),
+        performanceNotes: getTextContent(properties['Performance Notes']), 
         created: page.created_time,
         lastEdited: page.last_edited_time,
         popular: properties.Popular?.checkbox || false,
