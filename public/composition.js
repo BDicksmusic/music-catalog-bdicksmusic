@@ -297,16 +297,30 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
+function getSlugFromUrl() {
+    // Try query param first
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('slug')) {
+        return params.get('slug');
+    }
+    // Fallback: try to extract from path (for /composition/slug)
+    const match = window.location.pathname.match(/composition(?:\.html)?\/?([^/?#]+)/);
+    if (match && match[1]) {
+        return match[1];
+    }
+    return null;
+}
+
 async function loadCompositionDetail() {
-    const slug = getQueryParam('slug');
-    const container = document.getElementById('composition-detail');
+    const slug = getSlugFromUrl();
+    const container = document.getElementById('composition-info');
     if (!slug) {
         if (container) container.innerHTML = '<div class="error">No composition slug provided.</div>';
         return;
     }
     if (container) container.innerHTML = '<div class="loading">Loading composition...</div>';
     try {
-        const response = await fetch(`/api/composition/slug/${slug}`);
+        const response = await fetch(`/api/compositions/slug/${encodeURIComponent(slug)}`);
         const data = await response.json();
         if (!data.success) {
             // Fallback to local data
@@ -366,4 +380,6 @@ function showUnavailableMessage(title) {
     alert(`"${title}" is currently not available for purchase.\n\nPlease contact us directly for more information about acquiring this composition.`);
 }
 
-document.addEventListener('DOMContentLoaded', loadCompositionDetail); 
+document.addEventListener('DOMContentLoaded', function() {
+    loadCompositionDetail();
+}); 
