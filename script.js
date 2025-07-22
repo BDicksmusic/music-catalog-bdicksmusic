@@ -54,6 +54,8 @@ app.get('/api/compositions', async (req, res) => {
                 paymentLink: properties['Payment Link']?.url || properties['Stripe Link']?.url || '',
                 coverImage: properties['Cover Image']?.files[0]?.file?.url || properties['Cover Image']?.files[0]?.external?.url || '',
                 tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
+                programNotes: properties['Program Notes']?.rich_text?.map(rt => rt.plain_text || rt.text?.content || '').join('') || '',
+                performanceNotes: properties['Performance Notes']?.rich_text?.map(rt => rt.plain_text || rt.text?.content || '').join('') || '',
                 created: page.created_time,
                 lastEdited: page.last_edited_time
             };
