@@ -301,20 +301,21 @@ async function loadCompositionDetail() {
     const slug = getQueryParam('slug');
     const container = document.getElementById('composition-detail');
     if (!slug) {
-        container.innerHTML = '<div class="error">No composition slug provided.</div>';
+        if (container) container.innerHTML = '<div class="error">No composition slug provided.</div>';
         return;
     }
-    container.innerHTML = '<div class="loading">Loading composition...</div>';
+    if (container) container.innerHTML = '<div class="loading">Loading composition...</div>';
     try {
-        const response = await fetch(`/api/compositions/slug/${slug}`);
+        const response = await fetch(`/api/composition/slug/${slug}`);
         const data = await response.json();
         if (!data.success) {
             // Fallback to local data
             const comp = exampleCompositions.find(c => c.slug === slug);
             if (comp) {
+                console.log('Using fallback example data for slug:', slug);
                 renderComposition(comp);
             } else {
-                container.innerHTML = '<div class="error">Composition not found.</div>';
+                if (container) container.innerHTML = '<div class="error">Composition not found.</div>';
             }
             return;
         }
@@ -323,9 +324,10 @@ async function loadCompositionDetail() {
         // Fallback to local data
         const comp = exampleCompositions.find(c => c.slug === slug);
         if (comp) {
+            console.log('Using fallback example data for slug:', slug);
             renderComposition(comp);
         } else {
-            container.innerHTML = '<div class="error">Error loading composition details.</div>';
+            if (container) container.innerHTML = '<div class="error">Error loading composition details.</div>';
         }
     }
 }
