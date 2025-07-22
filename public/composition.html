@@ -54,22 +54,24 @@
             display: flex;
             flex-direction: column;
             gap: 1.2rem;
-            align-items: flex-end;
+            align-items: flex-start;
             width: 100%;
+            text-align: left;
         }
-        .composition-info-row {
+        .composition-title-meta-row {
             display: flex;
             flex-direction: row;
-            align-items: flex-end;
-            justify-content: flex-end;
-            gap: 1.2rem;
+            align-items: flex-start;
             width: 100%;
+            justify-content: space-between;
+            gap: 0;
         }
         .composition-title-instrument-group {
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
-            text-align: right;
+            align-items: flex-start;
+            text-align: left;
+            flex: 1 1 auto;
         }
         .composition-title {
             font-size: 1.8rem;
@@ -78,22 +80,21 @@
             color: var(--primary-700, #1a237e);
             text-shadow: 0 2px 12px rgba(0,0,0,0.07);
             margin-bottom: 0.2rem;
-            text-align: right;
+            text-align: left;
         }
         .composition-instrument {
             font-size: 1.1rem;
             color: var(--primary-500);
             font-weight: 600;
-            text-align: right;
+            text-align: left;
         }
-        .composition-divider {
-            display: inline-block;
-            width: 2px;
-            height: 2.2em;
-            background: var(--gray-300);
-            margin: 0 1.2rem;
-            border-radius: 2px;
-            vertical-align: middle;
+        .composition-meta-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-start;
+            min-width: 120px;
+            margin-left: 2.5rem;
         }
         .composition-meta {
             display: flex;
@@ -101,8 +102,7 @@
             align-items: flex-end;
             gap: 0.2rem;
             text-align: right;
-            width: auto;
-            padding-right: 0;
+            min-width: 80px;
         }
         .composition-meta span {
             background: var(--gray-100);
@@ -128,7 +128,7 @@
         }
         .composition-buy-btn {
             display: inline-block;
-            margin: 0.5rem 0 1.2rem 0;
+            margin: 0 0 1.2rem 0;
             padding: 0.9rem 2.2rem;
             font-size: 1.15rem;
             font-weight: 700;
@@ -141,6 +141,7 @@
             transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
             text-decoration: none;
             text-align: center;
+            align-self: flex-start;
         }
         .composition-buy-btn:disabled,
         .composition-buy-btn.btn-disabled {
@@ -207,19 +208,23 @@
             }
             .composition-info {
                 width: 100%;
-                align-items: flex-end;
-            }
-            .composition-info-row {
-                flex-direction: column;
-                align-items: flex-end;
-                gap: 0.2rem;
-            }
-            .composition-divider {
-                display: none;
-            }
-            .composition-description {
+                align-items: flex-start;
                 text-align: left;
-                align-self: flex-start;
+            }
+            .composition-title-meta-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .composition-meta-container {
+                align-items: flex-start;
+                text-align: left;
+                margin-left: 0;
+                min-width: 0;
+            }
+            .composition-meta {
+                align-items: flex-start;
+                text-align: left;
             }
         }
     </style>
@@ -256,13 +261,37 @@
                 <div class="composition-cover-container">
                     <img src="" alt="" class="composition-cover" id="composition-cover">
                 </div>
-                <div class="composition-info" id="composition-info">
-                    <!-- Content will be rendered by JS -->
+                <div class="composition-info">
+                  <div class="composition-row" style="display: flex; flex-direction: row; justify-content: space-between; align-items: flex-start; width: 100%; gap: 0;">
+                    <div class="composition-left" style="display: flex; flex-direction: column; align-items: flex-start; flex: 1 1 auto;">
+                      <div class="composition-title" style="font-size: 1.8rem; font-weight: 100; letter-spacing: 0.02em; color: var(--primary-700, #1a237e); text-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 0.2rem;">Sunrise Fanfare</div>
+                      <div class="composition-instrument" style="font-size: 1.1rem; color: var(--primary-500); font-weight: 600;">Brass Quintet</div>
+                      <!--
+                        If a purchase/payment link is available:
+                        <button class="composition-buy-btn" style="margin-top: 1.2rem;">💳 Buy Now</button>
+                        If not available:
+                        <button class="composition-buy-btn btn-disabled" style="margin-top: 1.2rem;" disabled>🚫 Currently Not Available</button>
+                      -->
+                    </div>
+                    <div class="composition-right" style="display: flex; flex-direction: column; align-items: flex-end; min-width: 100px; margin-left: 2.5rem;">
+                      <span class="composition-year" style="background: var(--gray-100); border-radius: 1.2rem; padding: 0.2rem 0.9rem; font-size: 0.98rem; font-weight: 500; margin-bottom: 0.2rem; text-align: right; display: block; min-width: 80px;">2022</span>
+                      <span class="composition-duration" style="background: var(--gray-100); border-radius: 1.2rem; padding: 0.2rem 0.9rem; font-size: 0.98rem; font-weight: 500; text-align: right; display: block; min-width: 80px;">4:30</span>
+                    </div>
+                  </div>
+                  <div class="composition-description" style="font-size: 1.08rem; color: var(--gray-800); margin-top: 1.7rem; margin-bottom: 1.2rem; line-height: 1.7; text-align: left; align-self: flex-start; width: 100%; max-width: 600px;">
+                    A bright, energetic piece for brass quintet.
+                  </div>
                 </div>
             </div>
         </div>
     </main>
     <script src="composition.js"></script>
+    <script>
+    function showUnavailableMessage(title) {
+        alert(`"${title}" is currently not available for purchase.\n\nPlease contact us directly for more information about acquiring this composition.`);
+    }
+    </script>
 </body>
 </html>     
+    
     

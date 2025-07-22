@@ -343,25 +343,27 @@ function renderComposition(comp) {
     const info = document.getElementById('composition-info');
     if (info) {
         info.innerHTML = `
-            <div class="composition-info-row">
-                <div class="composition-title-instrument-group">
-                    <div class="composition-title">${comp.title}</div>
-                    <div class="composition-instrument">${comp.instrumentation}</div>
-                </div>
-                ${(comp.year || comp.duration) ? '<span class="composition-divider"></span>' : ''}
+            <div class="composition-title-meta-group">
+                <div class="composition-title">${comp.title}</div>
+                <div class="composition-instrument">${comp.instrumentation}</div>
                 <div class="composition-meta">
                     ${comp.year ? `<span>📅 ${comp.year}</span>` : ''}
                     ${comp.duration ? `<span>⏱ ${comp.duration}</span>` : ''}
                 </div>
             </div>
+            ${comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="composition-buy-btn">💳 Buy Now</a>` : `<button class="composition-buy-btn btn-disabled" onclick="showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">🚫 Currently Not Available</button>`}
             <div class="composition-description">${comp.description}</div>
-            ${comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="composition-buy-btn">💳 Buy Now</a>` : `<button class="composition-buy-btn btn-disabled" disabled>💳 Buy Now</button>`}
             <div class="composition-actions">
                 ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="composition-action-btn">🎵 Listen</a>` : ''}
                 ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="composition-action-btn">📄 View Score</a>` : ''}
             </div>
         `;
     }
+}
+
+// Add the showUnavailableMessage function if not already present
+function showUnavailableMessage(title) {
+    alert(`"${title}" is currently not available for purchase.\n\nPlease contact us directly for more information about acquiring this composition.`);
 }
 
 document.addEventListener('DOMContentLoaded', loadCompositionDetail); 
