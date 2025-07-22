@@ -193,7 +193,7 @@ function renderComposition(comp) {
         scoreCarouselContainer.innerHTML = `
           <div class="score-pdf-viewer">
             <iframe
-                src="/pdfjs/web/viewer.html?file=${encodeURIComponent(comp.scoreLink)}#toolbar=0&scrollHorizontal"
+                src="/pdfjs/web/viewer.html?file=${encodeURIComponent(comp.scoreLink)}#toolbar=0&navpanes=0&scrollHorizontal"
                 width="434px"
                 height="600px"
                 style="border: none;"

@@ -181,6 +181,22 @@
         .carousel-btn:hover {
             background: var(--primary-700);
         }
+        .score-carousel-container,
+        .score-pdf-viewer {
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Optional: for vertical centering if you set a height */
+            width: 100%;
+            margin: 2rem 0; /* Add some vertical spacing if you like */
+        }
+
+        .score-pdf-viewer iframe {
+            /* Optional: set a max-width for the PDF viewer */
+            max-width: 900px;
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        }
     </style>
 </head>
 <body>
