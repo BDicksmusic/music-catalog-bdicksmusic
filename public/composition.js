@@ -153,6 +153,26 @@ function renderComposition(comp) {
             ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
         </div>
     `;
+
+    
+//Title Container
+    const titleContainer = container.querySelector('.composition-title-container');
+if (titleContainer) titleContainer.innerHTML = `<h1 class="composition-title">${comp.title || 'Untitled'}</h1>`;
+
+const instrumentContainer = container.querySelector('.composition-instrument-container');
+if (instrumentContainer) instrumentContainer.innerHTML = `<div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>`;
+
+
+//Score Container
+    const scoreCarouselContainer = container.querySelector('.score-carousel-container');
+    if (scoreCarouselContainer && comp.scoreLink) {
+        scoreCarouselContainer.innerHTML = `
+            <div class="score-pdf-viewer">
+                <iframe src="${comp.scoreLink}" width="100%" height="600px"></iframe>
+            </div>
+        `;
+    }
+
     // Set description as HTML
     const descDiv = container.querySelector('.composition-description');
     if (descDiv && comp.description) {

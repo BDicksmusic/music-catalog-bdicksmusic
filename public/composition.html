@@ -154,6 +154,29 @@
                 width: 100%;
             }
         }
+        .score-carousel {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .score-carousel-viewer {
+            flex: 1;
+            min-width: 0;
+        }
+        .carousel-btn {
+            background: var(--primary-500);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .carousel-btn:hover {
+            background: var(--primary-700);
+        }
     </style>
 </head>
 <body>
@@ -191,11 +214,20 @@
                          alt="" 
                          class="composition-cover" 
                          id="composition-cover">
+                <div class="composition-title-container">
+                            <!-- Title will be injected here -->
                 </div>
                 <div class="composition-info" id="composition-info">
                     <div class="loading">Loading composition...</div>
-                <div class="composition-notes-container">
-                <!-- Program and Performance Notes will be injected here -->
+           
+                    </div>  
+                    <div class="composition-instrument-container">
+                        <!-- Instrument will be injected here -->
+                    </div>
+                    <div class="composition-notes-container">
+                        <!-- Program and Performance Notes will be injected here -->
+                    </div>
+                    <div class="score-carousel-container"></div>
                 </div>
             </div>
         </div>
