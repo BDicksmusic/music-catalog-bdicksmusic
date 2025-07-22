@@ -501,6 +501,7 @@ input:focus, textarea:focus, select:focus {
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
     scrollbar-color: var(--primary-500) var(--gray-200);
+    scale: 0.9;
 }
 
 /* Style the scrollbar (Webkit browsers) */
@@ -539,24 +540,10 @@ input:focus, textarea:focus, select:focus {
     position: relative;
 }
 
-.work-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--gradient-primary);
-    transform: scaleX(0);
-    transition: transform var(--transition-base);
-}
 
-.work-card:hover::before {
-    transform: scaleX(1);
-}
 
 .work-card:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-8px) scale(1.01);
     box-shadow: var(--shadow-2xl);
     background: linear-gradient(90deg, var(--primary-900) 0%, var(--gray-100) 100%);
 }
@@ -581,7 +568,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .work-card:hover .work-image {
-    transform: scale(1.05);
+    transform: scale(1.01);
 }
 
 /* Card Header with Music Note Icon */
@@ -594,11 +581,11 @@ input:focus, textarea:focus, select:focus {
     font-size: 1.15rem;
     font-weight: var(--font-bold);
     color: var(--gray-900);
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-1);
     line-height: var(--leading-tight);
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-2);
     font-family: var(--font-primary);
 }
 
@@ -613,30 +600,30 @@ input:focus, textarea:focus, select:focus {
 }
 
 .work-instrument {
-    font-size: 0.75rem;
-    color: var(--gray-400);
-    font-weight: var(--font-semibold);
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    font-weight: var(--font-primary);
     display: inline-block;
     font-family: var(--font-primary);
 }
 
 /* Card Content */
 .work-content {
-    padding: 0 var(--space-6) var(--space-6);
+    padding: 0 var(--space-5) var(--space-6);
 }
 
 .work-meta {
     display: flex;
-    gap: var(--space-4);
-    margin-bottom: var(--space-4);
+    gap: var(--space-5);
+    margin-bottom: var(--space-0);
     flex-wrap: wrap;
 }
 
 .work-year, .work-duration {
-    font-size: 0.7rem;
-    color: var(--gray-600);
+    font-size: 0.75rem;
+    color: var(--gray-800);
     background: var(--gray-100);
-    padding: var(--space-1) var(--space-3);
+    padding: var(--space-1) var(--space-1);
     border-radius: var(--radius-lg);
     border: 1px solid var(--gray-200);
     display: flex;
@@ -652,7 +639,7 @@ input:focus, textarea:focus, select:focus {
 
 .work-duration::before {
     content: '⏱';
-    font-size: var(--text-xs);
+    font-size: var(--text-sm);
 }
 
 .work-description {
@@ -714,7 +701,7 @@ input:focus, textarea:focus, select:focus {
 /* Action Links */
 .work-links {
     display: flex;
-    gap: var(--space-3);
+    gap: var(--space-2);
     flex-wrap: wrap;
     margin-top: var(--space-5);
 }
@@ -960,7 +947,6 @@ input:focus, textarea:focus, select:focus {
     display: flex;
     justify-content: center;
     gap: 5px;
-    margin: 10px 0 10px 0;
 }
 
 .carousel-btn {

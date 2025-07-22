@@ -1,7 +1,7 @@
 // composition.js
 
 // Example Data for Local Testing (copied from index.html)
-const examplecompositions = [
+const exampleCompositions = [
   {
     id: "1",
     slug: "sunrise-fanfare",
@@ -297,7 +297,7 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
-async function loadcompositionDetail() {
+async function loadCompositionDetail() {
     const slug = getQueryParam('slug');
     const container = document.getElementById('composition-detail');
     if (!slug) {
@@ -310,11 +310,11 @@ async function loadcompositionDetail() {
         const data = await response.json();
         if (!data.success) {
             // Fallback to local data
-            const comp = examplecompositions.find(c => c.slug === slug);
+            const comp = exampleCompositions.find(c => c.slug === slug);
             if (comp) {
                 renderComposition(comp);
             } else {
-                container.innerHTML = '<div class="error">composition not found.</div>';
+                container.innerHTML = '<div class="error">Composition not found.</div>';
             }
             return;
         }

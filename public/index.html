@@ -134,8 +134,6 @@
 
 
 <body>
-
- <script src="carousel.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     loadCompositions();
@@ -461,6 +459,19 @@ document.addEventListener('DOMContentLoaded', function() {
             price: 11
           }
         ];
+        function enableCardClicks() {
+            const cards = document.querySelectorAll('.work-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Only navigate if not clicking a button inside the card
+                    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+                    const slug = this.getAttribute('data-slug');
+                    if (slug) {
+                        window.location.href = `composition.html?slug=${slug}`;
+                    }
+                });
+            });
+        }
         async function loadCompositions() {
             showLoading('popular-works');
             let data;
@@ -498,6 +509,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 `).join('');
+                enableCardClicks();
             } else {
                 // Use example data for local testing
                 container.innerHTML = exampleCompositions.map(comp => `
@@ -512,12 +524,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="work-instrument">${comp.instrumentation}</div>
                         </div>
                         <div class="work-content">
-                            ${(comp.duration) ? `
-                                <div class="work-meta">
-                                    ${comp.duration && comp.duration !== 'Duration:' ? `<div class="work-duration">${comp.duration}</div>` : ''}
-                                </div>
-                            ` : ''}
-                            <div class="work-links">
                                 <button class="btn-disabled" onclick="event.stopPropagation(); showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
                                     🚫 Currently Not Available
                                 </button>
@@ -525,6 +531,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 `).join('');
+                enableCardClicks();
             }
         }
 
@@ -607,9 +614,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <h2>${comp.title}</h2>
                     <p><strong>Instrumentation:</strong> ${comp.instrumentation}</p>
                     ${comp.year ? `<p><strong>Year:</strong> ${comp.year}</p>` : ''}
-                    ${comp.duration ? `<p><strong>Duration:</strong> ${comp.duration}</p>` : ''}
-                    ${comp.difficulty ? `<p><strong>Difficulty:</strong> ${comp.difficulty}</p>` : ''}
-                    ${comp.genre ? `<p><strong>Genre:</strong> ${comp.genre}</p>` : ''}
                     <p><strong>Description:</strong> ${comp.description}</p>
                     
                     <div class="modal-links">
