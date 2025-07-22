@@ -120,7 +120,6 @@ async function loadCompositionDetail() {
 }
 
 function renderComposition(comp) {
-    console.log('Rendering composition:', comp);
     // Update cover image
     const coverImg = document.getElementById('composition-cover');
     if (coverImg && comp.coverImage) {
@@ -128,61 +127,50 @@ function renderComposition(comp) {
         coverImg.alt = comp.title;
     }
 
-    // Always get the container first!
-    const container = document.getElementById('composition-info');
-    if (!container) return;
+    // Title
+    const titleContainer = document.querySelector('.composition-title-container');
+    if (titleContainer) {
+        titleContainer.innerHTML = `<h1 class="composition-title">${comp.title || 'Untitled'}</h1>`;
+    }
 
-    //Score Container
-    const scoreCarouselContainer = container.querySelector('.score-carousel-container');
-    if (scoreCarouselContainer && comp.scoreLink) {
-        scoreCarouselContainer.innerHTML = `
-            <div class="score-pdf-viewer">
-                <iframe src="${comp.scoreLink}" width="100%" height="600px"></iframe>
+    // Instrument
+    const instrumentContainer = document.querySelector('.composition-instrument-container');
+    if (instrumentContainer) {
+        instrumentContainer.innerHTML = `<div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>`;
+    }
+
+    // Meta, Description, Buy Button, Links (put these in .composition-info)
+    const infoContainer = document.getElementById('composition-info');
+    if (infoContainer) {
+        const buyButtonHtml = comp.paymentLink || comp.stripePriceId ? 
+            `<button class="composition-buy-btn" onclick="purchaseComposition('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 10})">
+                💳 Buy Now - $${comp.price || 10}
+            </button>` : 
+            `<button class="composition-buy-btn btn-disabled" onclick="showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
+                🚫 Currently Not Available
+            </button>`;
+        infoContainer.innerHTML = `
+            <div class="composition-meta">
+                ${comp.year ? `<span>Year: ${comp.year}</span>` : ''}
+                ${comp.duration ? `<span>Duration: ${comp.duration}</span>` : ''}
+                ${comp.difficulty ? `<span>Difficulty: ${comp.difficulty}</span>` : ''}
+            </div>
+            <div class="composition-description"></div>
+            ${buyButtonHtml}
+            <div class="composition-links">
+                ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
+                ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
             </div>
         `;
+        // Set description as HTML
+        const descDiv = infoContainer.querySelector('.composition-description');
+        if (descDiv && comp.description) {
+            descDiv.innerHTML = comp.description;
+        }
     }
-    // Build the info HTML
-    const buyButtonHtml = comp.paymentLink || comp.stripePriceId ? 
-        `<button class="composition-buy-btn" onclick="purchaseComposition('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 10})">
-            💳 Buy Now - $${comp.price || 10}
-        </button>` : 
-        `<button class="composition-buy-btn btn-disabled" onclick="showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
-            🚫 Currently Not Available
-        </button>`;
-    container.innerHTML = `
-        <h1 class="composition-title">${comp.title || 'Untitled'}</h1>
-        <div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>
-        <div class="composition-meta">
-            ${comp.year ? `<span>Year: ${comp.year}</span>` : ''}
-            ${comp.duration ? `<span>Duration: ${comp.duration}</span>` : ''}
-            ${comp.difficulty ? `<span>Difficulty: ${comp.difficulty}</span>` : ''}
-        </div>
-           ${buyButtonHtml}
-        <div class="composition-notes-container"></div>
-        <div class="composition-links">
-            ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
-            ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
-        </div>
-    `;
 
-    
-//Title Container
-    const titleContainer = container.querySelector('.composition-title-container');
-if (titleContainer) titleContainer.innerHTML = `<h1 class="composition-title">${comp.title || 'Untitled'}</h1>`;
-
-const instrumentContainer = container.querySelector('.composition-instrument-container');
-if (instrumentContainer) instrumentContainer.innerHTML = `<div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>`;
-
-
-
-
-    // Set description as HTML
-    const descDiv = container.querySelector('.composition-description');
-    if (descDiv && comp.description) {
-        descDiv.innerHTML = comp.description;
-    }
-    // Inject notes into the notes container
-    const notesContainer = container.querySelector('.composition-notes-container');
+    // Notes
+    const notesContainer = document.querySelector('.composition-notes-container');
     let notesHtml = '';
     if (comp.programNotes) {
         notesHtml += `
@@ -202,6 +190,16 @@ if (instrumentContainer) instrumentContainer.innerHTML = `<div class="compositio
     }
     if (notesContainer) {
         notesContainer.innerHTML = notesHtml;
+    }
+
+    // Score PDF
+    const scoreCarouselContainer = document.querySelector('.score-carousel-container');
+    if (scoreCarouselContainer && comp.scoreLink) {
+        scoreCarouselContainer.innerHTML = `
+            <div class="score-pdf-viewer">
+                <iframe src="${comp.scoreLink}" width="100%" height="600px"></iframe>
+            </div>
+        `;
     }
 }
 
