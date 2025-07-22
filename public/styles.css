@@ -5,8 +5,8 @@ body {
     background-color: var(--gray-50);
     color: var(--gray-900);
     line-height: var(--leading-normal);
-    overflow-x: hidden;
-    overflow-y: scroll;
+    /* Removed overflow-x: hidden to allow horizontal scrolling */
+    overflow-y: auto;
 }
 
 ::selection {
@@ -26,7 +26,6 @@ header {
 
 page-title {
     position: relative;
-
     top: 0;
     font-size: var(--text-2xl);
     font-weight: var(--font-bold);
@@ -40,18 +39,25 @@ main {
     width: 78vw;
     padding-left: 10px;
     padding-right: 10px;
-
-
 }
+
+/* Special main styling for catalog section */
+#catalog main {
+    margin: var(--space-2) auto;
+    width: 100%; /* Changed from 78vw to 100% */
+    padding: 0; /* Remove padding for full width */
+    max-width: 100vw;
+}
+
 .hero-video {
     position: relative;      /* or absolute if you want it inside a section */
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    min-width: 100vw;
-    min-height: 100vh;
+    width: 100%;
     max-width: 100vw;
+    min-width: 0;
+    height: 100vh;
+    min-height: 100vh;
     max-height: 100vh;
     object-fit: cover;
     object-position: center top;
@@ -60,7 +66,7 @@ main {
     margin: 0;
     padding: 0;
     background: black;    /* fallback color */
-  }
+}
 
 /* ===== COMPOSITION CARDS ===== */
 .composition {
@@ -123,7 +129,6 @@ nav {
     width: 100vw;
     z-index: 1000;
 }
-
 
 .secondary-nav {
     position: sticky;
@@ -202,7 +207,6 @@ nav {
     display: flex;
     flex: 1 1 auto;
     align-items: center;
-
 }
 
 .logo {
@@ -215,6 +219,7 @@ nav {
     line-height: 20px;
     margin: auto;
 }
+
 .music-catalog-btn {
     min-width: 120px; /* or whatever is comfortable */
     max-width: 100%;
@@ -225,7 +230,7 @@ nav {
     text-overflow: ellipsis;
     color: var(--gray-100);
     background-color: var(--primary-400);
-  }
+}
 
 .logo:hover {
     color: var(--primary-600);
@@ -238,16 +243,11 @@ nav {
     margin: 0;
     padding: 0;
     list-style: none;
-
 }
 
 .nav-item {
     position: relative;
     flex-shrink: 1;
-
-
-
-    
 }
 
 .nav-link {
@@ -445,61 +445,87 @@ input:focus, textarea:focus, select:focus {
 
 /* ===== BEAUTIFUL COMPOSITION CARDS USING VARIABLES ===== */
 
-/* Grid Layout for Cards */
-.carousel-outer {
-    position: relative;
-    width: 100vw;
+/* Container adjustment for full width carousel */
+.container {
+    width: 100%;
     max-width: 100vw;
-    margin-left: 70%;
-    transform: translateX(-70%);
-    overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
+
 
 .carousel-outer::before,
 .carousel-outer::after {
     content: "";
     position: absolute;
     top: 0;
-    width: 48px;
+    width: 60px; /* Increased width for better visibility */
     height: 100%;
     z-index: 2;
     pointer-events: none;
 }
+
 .carousel-outer::before {
     left: 0;
-    background: linear-gradient(to right, var(--gray-50, #fff) 80%, transparent);
-}
-.carousel-outer::after {
-    right: 0;
-    background: linear-gradient(to left, var(--gray-50, #fff) 80%, transparent);
+    background: linear-gradient(to right, var(--gray-50) 0%, transparent 100%);
 }
 
+.carousel-outer::after {
+    right: 0;
+    background: linear-gradient(to left, var(--gray-50) 0%, transparent 100%);
+}
+
+/* Updated works grid with proper scrollbar */
 .works-grid {
     display: flex;
     flex-direction: row;
-    overflow-x: auto;
+    overflow-x: auto !important;
     overflow-y: hidden;
     gap: var(--space-5);
-    padding: 0;
-    width: 110vw;
-    max-width: 110vw;
+    width: calc(100vw / 0.87);
+    max-width: none;
+    min-width: 0;
     scroll-behavior: smooth;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE 10+ */
-    scale: 0.85
+    cursor: grab;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--primary-500) var(--gray-200);
+    scale: 0.87;
 }
+
+/* Style the scrollbar (Webkit browsers) */
 .works-grid::-webkit-scrollbar {
-    display: none; /* Chrome/Safari/Webkit */
+    height: 10px; /* Make scrollbar taller for easier grabbing */
 }
-.work-card {
-    min-width: 300px;
-    max-width: 300px;
-    flex:  0 auto;
-    /* Keep your existing card styles */
+
+.works-grid::-webkit-scrollbar-track {
+    background: var(--gray-200);
+    border-radius: var(--radius-full);
+    margin: 0 var(--space-5); /* Add margin to match content padding */
+}
+
+.works-grid::-webkit-scrollbar-thumb {
+    background: var(--primary-500);
+    border-radius: var(--radius-full);
+    border: 2px solid var(--gray-200);
+}
+
+.works-grid::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-600);
+}
+
+/* Ensure dragging state works */
+.works-grid.dragging {
+    cursor: grabbing;
+    user-select: none;
+    scroll-behavior: auto; /* Disable smooth scroll during drag */
 }
 
 /* Individual Composition Cards */
 .work-card {
+    min-width: 300px;
+    max-width: 300px;
+    flex: 0 0 auto; /* Prevent flex shrinking */
     background: linear-gradient(145deg, var(--gray-50) 0%, var(--gray-100) 100%);
     border-radius: var(--radius-3xl);
     overflow: hidden;
@@ -587,7 +613,6 @@ input:focus, textarea:focus, select:focus {
     font-size: 0.75rem;
     color: var(--gray-400);
     font-weight: var(--font-semibold);
-
     display: inline-block;
     font-family: var(--font-primary);
 }
@@ -927,6 +952,38 @@ input:focus, textarea:focus, select:focus {
     flex-wrap: wrap;
 }
 
+/* Carousel Controls */
+.carousel-controls {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 10px 0 10px 0;
+}
+
+.carousel-btn {
+    background: var(--primary-500);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: px 24px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: none;
+    transition: background 0.2s, transform 0.2s;
+    margin: 0 0px;
+    outline: none;
+}
+
+.carousel-btn:hover {
+    background: var(--primary-700);
+    transform: translateY(-2px) scale(1.04);
+}
+
+/* Spacing for first/last cards */
+.works-grid .work-card:last-child {
+    margin-right: var(--space-5);
+}
+
 /* ===== MOBILE RESPONSIVE STYLES ===== */
 @media (max-width: 880px) {
     /* Navigation Mobile Styles */
@@ -934,7 +991,6 @@ input:focus, textarea:focus, select:focus {
         display: flex;
         margin-left: 10px;
     }
-    
     
     .nav-menu {
         position: fixed;
@@ -951,8 +1007,6 @@ input:focus, textarea:focus, select:focus {
         border: none;
         z-index: var(--z-modal); /* Higher z-index than header */
     }
-
- 
     
     .nav-menu.active {
         left: 0;
@@ -984,13 +1038,19 @@ input:focus, textarea:focus, select:focus {
     
     /* Works Grid Mobile Styles */
     .works-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-5);
-        padding: 0 var(--space-4);
+        padding: 0 var(--space-3);
+        gap: var(--space-3);
     }
     
     .work-card {
+        min-width: 280px;
+        max-width: 280px;
         border-radius: var(--radius-2xl);
+    }
+    
+    /* Make scrollbar more visible on mobile */
+    .works-grid::-webkit-scrollbar {
+        height: 10px;
     }
     
     .work-header, .work-content {
@@ -1016,22 +1076,27 @@ input:focus, textarea:focus, select:focus {
     }
 
     .music-catalog-btn {
-      width: 100%;
-      min-width: 0;
-      margin: var(--space-2) 0;
+        width: 100%;
+        min-width: 0;
+        margin: var(--space-2) 0;
     }
 
     .nav-container {
-      flex-direction: column;
-      align-items: stretch;
-      padding-top: 22.75px;
-      padding-bottom: 22.75px;
+        flex-direction: column;
+        align-items: stretch;
+        padding-top: 22.75px;
+        padding-bottom: 22.75px;
     }
 }
 
 @media (max-width: 480px) {
     .works-grid {
         padding: 0 var(--space-3);
+    }
+    
+    .work-card {
+        min-width: 260px;
+        max-width: 260px;
     }
     
     .work-meta {
@@ -1042,30 +1107,8 @@ input:focus, textarea:focus, select:focus {
     .modal-content {
         padding: var(--space-6) var(--space-4);
     }
-}
-
-.carousel-controls {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin: 10px 0 10px 0;
-}
-.carousel-btn {
-    background: var(--primary-500);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: px 24px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    box-shadow: none;
-    transition: background 0.2s, transform 0.2s;
-    margin: 0 0px;
-    outline: none;
-}
-.carousel-btn:hover {
-    background: var(--primary-700);
-    transform: translateY(-2px) scale(1.04);
+} work-card:first-child {
+    margin-left: 0;
 }
 
 .works-grid .work-card:first-child {
