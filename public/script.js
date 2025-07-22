@@ -1,10 +1,9 @@
 const express = require('express');
+const app = express();
 const path = require('path');
 const cors = require('cors');
 const { Client } = require('@notionhq/client');
 require('dotenv').config();
-
-const app = express();
 
 // Initialize Notion client
 const notion = new Client({
