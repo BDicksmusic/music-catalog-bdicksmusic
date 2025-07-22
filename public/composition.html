@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/variables.css">
     <link rel="stylesheet" href="/styles.css">
     <style>
+        
         body {
             background: var(--gray-100);
             margin: 0;
@@ -22,6 +23,7 @@
     box-sizing: border-box;
     padding: 0 2vw;
 }
+
         .composition-detail-card {
             display: flex;
             flex-direction: column;
@@ -46,10 +48,6 @@
     flex: 1 1 0;
     min-width: 0;
 }
-
-
-
-    
         .composition-notes-container {
            padding: 40px;
         }
@@ -137,31 +135,7 @@
             padding: 2rem;
             color: var(--error-600);
         }
-        @media (max-width: 860px) {
-            .composition-main {
-                padding: 0 2vw;
-            }
-            .composition-detail-card {
-                flex-direction: column;
-                align-items: center;
-                padding: 1.2rem 0;
-                gap: 1rem;
-            }
-            .composition-cover-container {
-                width: 454px;
-                height: 600px;
-                min-width: 0;
-                margin-bottom: 1.2rem;
-            }
-            .composition-cover {
-                width: 454px;
-                height: 600px;
-                flex-shrink: 1;
-            }
-            .composition-info {
-                width: 100%;
-            }
-        }
+    
         @media (max-width: 900px) {
             .composition-main {
         flex-direction: column;
@@ -175,7 +149,12 @@
         max-width: 100vw;
         margin: 0 auto;
     }
-
+    .composition-title {
+        word-break: break-word;
+        font-size: 1.3rem; /* Optionally reduce font size on mobile */
+        margin-top: 1rem;
+    }
+    
     .composition-cover {
         width: 100%;
         max-width: 100vw;
@@ -223,6 +202,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.10);
         }
+    }
     </style>
 </head>
 <body>
