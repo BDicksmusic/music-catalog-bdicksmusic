@@ -38,9 +38,11 @@ const exampleCompositions = [
 ];
 
 // Fetch all compositions
+async function loadCompositions() {
 const response = await fetch('/api/compositions');
 const data = await response.json();
 const allCompositions = data.compositions;
+
 
 // Filter for popular
 const popularCompositions = allCompositions.filter(comp => comp.popular);
@@ -66,8 +68,7 @@ function getSlugFromUrl() {
     console.log('No slug found in URL');
     return null;
 }
-// Call the function to run it
-loadCompositions();
+
 
 async function loadCompositionDetail() {
     const slug = getSlugFromUrl();
@@ -196,9 +197,11 @@ async function purchaseComposition(compositionId, title, price) {
         alert('Error processing purchase. Please try again.');
     }
 }
+}
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing composition detail page...');
+    loadCompositions();
     loadCompositionDetail();
 });
