@@ -679,7 +679,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-    
+        function scrollWorks(direction) {
+            const grid = document.getElementById('popular-works');
+            if (!grid) return;
+            // Find the width of a card or use a default
+            const card = grid.querySelector('.work-card');
+            const scrollAmount = card ? card.offsetWidth + 24 : 320; // 24px gap or fallback
+            grid.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
 
         // Load everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
