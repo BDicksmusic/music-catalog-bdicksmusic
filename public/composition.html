@@ -14,7 +14,9 @@
             width: 87vw;
             align-items: center; /* Vertically center both columns */
             justify-content: center; /* Horizontally center the whole row */
-            display: flex;
+            display: grid;
+            grid-template-columns: 454px 1fr;
+            justify-content: start; /* or use margin-left */
             flex-grow: 1;
             margin: 0 auto;
             margin-top: 2rem; /* Add extra space below the nav */
