@@ -11,19 +11,18 @@
             margin: 0;
         }
         .composition-main {
-            width: 94vw;
-            align-items: flex-start; /* Vertically center both columns */
-            justify-content: center; /* Horizontally center the whole row */
-            display: grid;
-            grid-template-columns: 454px 1fr;
-            justify-content: start; /* or use margin-left */
-            flex-grow: 1;
-            gap: 2rem;
-            margin: 0 auto;
-            margin-top: 2rem; /* Add extra space below the nav */
-            padding: 0 0;
-            box-sizing: border-box;
-        }
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;      /* Align both columns to the top */
+    justify-content: center;      /* Center the whole block horizontally */
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 2rem;
+    gap: 2rem;                    /* Space between cover and content */
+    box-sizing: border-box;
+    padding: 0 2vw;               /* Add a little horizontal padding */
+}
         .composition-detail-card {
             display: flex;
             flex-direction: column;
@@ -39,26 +38,40 @@
             position: relative;
         }
         .composition-cover-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Center horizontally */
-            justify-content: center; /* Center vertically if you want */
-            height: 600px;
-            width: 454px;
-            width: 454px;
-            margin-left: 0;
-        }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 362px;                 /* Or your preferred width */
+    min-width: 220px;
+    max-width: 454px;
+    flex-shrink: 0;               /* Prevent shrinking */
+}
+.composition-content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;      /* Align content to the left within the column */
+    justify-content: flex-start;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+
+
+    
         .composition-notes-container {
            padding: 40px;
         }
         .composition-cover {
-            width: 454px;
-            height: 600px;
-            object-fit: cover;
-            border-radius: 0.7rem;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.13);
-            background: var(--gray-200);
-        }
+    width: 100%;
+    height: auto;
+    aspect-ratio: 454 / 600;
+    object-fit: cover;
+    border-radius: 0.7rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    background: var(--gray-200);
+    max-width: 454px;
+}
         .composition-info {
             flex: 1 1 0;
             display: flex;
@@ -160,17 +173,25 @@
         }
         @media (max-width: 900px) {
             .composition-main {
-                grid-template-columns: 1fr;   /* Single column */
-                grid-template-rows: auto auto; /* Two rows: cover, then content */
-                gap: 1.2rem;                  /* Adjust gap for mobile */
-            }
-            .composition-cover-container,
-            .composition-content-container {
-                width: 100%;
-                max-width: 100%;
-                margin: 0 auto;
-            }
-        }
+        flex-direction: column;
+        align-items: center;
+        gap: 1.2rem;
+        padding: 0 1vw;
+    }
+    .composition-cover-container,
+    .composition-content-container {
+        width: 100%;
+        max-width: 100vw;
+        margin: 0 auto;
+    }
+
+    .composition-cover {
+        width: 100%;
+        max-width: 100vw;
+        height: auto;
+        aspect-ratio: 454 / 600;
+    }
+
         .score-carousel {
             display: relative;
             align-items: center;
