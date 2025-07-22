@@ -323,6 +323,7 @@ function getSlugFromUrl() {
 
 async function loadCompositionDetail() {
     const slug = getSlugFromUrl();
+    console.log('Extracted slug:', slug); // <--- Add this line
     const container = document.getElementById('composition-info');
     if (!slug) {
         if (container) container.innerHTML = '<div class="error">No composition slug provided.</div>';
@@ -332,11 +333,12 @@ async function loadCompositionDetail() {
     try {
         const response = await fetch(`/api/compositions/slug/${encodeURIComponent(slug)}`);
         const data = await response.json();
+        console.log('API response:', data); // <--- Add this line
         if (!data.success) {
             // Fallback to local data
             const comp = exampleCompositions.find(c => c.slug === slug);
+            console.log('Fallback example data:', comp); // <--- Add this line
             if (comp) {
-                console.log('Using fallback example data for slug:', slug);
                 renderComposition(comp);
             } else {
                 if (container) container.innerHTML = '<div class="error">Composition not found.</div>';
@@ -347,8 +349,8 @@ async function loadCompositionDetail() {
     } catch (err) {
         // Fallback to local data
         const comp = exampleCompositions.find(c => c.slug === slug);
+        console.log('Fallback example data (error):', comp); // <--- Add this line
         if (comp) {
-            console.log('Using fallback example data for slug:', slug);
             renderComposition(comp);
         } else {
             if (container) container.innerHTML = '<div class="error">Error loading composition details.</div>';
