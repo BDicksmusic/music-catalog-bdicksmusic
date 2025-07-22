@@ -11,17 +11,17 @@
             background: var(--gray-100);
             margin: 0;
         }
-            .composition-main {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    width: 92vw;
+        .composition-main {
+    display: grid;
+    grid-template-columns: 454px 1fr;
+    gap: 2rem;
+    max-width: 1200px;
     margin: 0 auto;
     margin-top: 2rem;
-    gap: 2rem;
+    padding: 0 0;
     box-sizing: border-box;
-    padding: 0 2vw;
+    justify-content: start;
+    align-items: start;   /* <-- This aligns items to the top */
 }
 
         .composition-detail-card {
@@ -138,23 +138,23 @@
     
         @media (max-width: 900px) {
             .composition-main {
-        flex-direction: column;
-        align-items: center;
-        gap: 1.2rem;
-        padding: 0 1vw;
+                grid-template-columns: 1fr;   /* Single column */
+                grid-template-rows: auto auto; /* Two rows: cover, then content */
+                gap: 1.2rem;                  /* Adjust gap for mobile */
     }
     .composition-cover-container,
-    .composition-content-container {
-        width: 100%;
-        max-width: 100vw;
-        margin: 0 auto;
+            .composition-content-container {
+                width: 100%;
+                max-width: 100%;
+                margin: 0 auto;
+            }
     }
     .composition-title {
         word-break: break-word;
         font-size: 1.3rem; /* Optionally reduce font size on mobile */
         margin-top: 1rem;
     }
-    
+
     .composition-cover {
         width: 100%;
         max-width: 100vw;
