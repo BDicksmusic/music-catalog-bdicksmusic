@@ -490,7 +490,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     ${comp.duration && comp.duration !== 'Duration:' ? `<div class="work-duration">${comp.duration}</div>` : ''}
                                 </div>
                             ` : ''}
-                            ${comp.description ? `<p class="work-description">${comp.description}</p>` : ''}
                             <div class="work-links">
                                 <button class="btn-disabled" onclick="event.stopPropagation(); showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
                                     🚫 Currently Not Available
@@ -518,7 +517,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     ${comp.duration && comp.duration !== 'Duration:' ? `<div class="work-duration">${comp.duration}</div>` : ''}
                                 </div>
                             ` : ''}
-                            ${comp.description ? `<p class="work-description">${comp.description}</p>` : ''}
                             <div class="work-links">
                                 <button class="btn-disabled" onclick="event.stopPropagation(); showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
                                     🚫 Currently Not Available
@@ -528,14 +526,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `).join('');
             }
-            enableCarouselDragScroll(); // <-- call here, after rendering
-        }
-
-        // Carousel scroll function
-        function scrollWorks(direction) {
-            const container = document.getElementById('popular-works');
-            const scrollAmount = 900; // Increased for more drastic movement
-            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
 
         // Purchase with Stripe integration
@@ -591,9 +581,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // View composition details
-        async function viewComposition(id) {
+        async function viewComposition(slug) {
             try {
-                const response = await fetch(`/api/compositions/${id}`);
+                const response = await fetch(`/api/compositions/slug/${slug}`);
                 const data = await response.json();
                 
                 if (data.success) {
@@ -685,54 +675,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Modal close on background click
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal-overlay')) {
-                closeModal();
-            }
-        });
-
-        // Enable card click only if not a drag
-        function enableCardClickWithoutDrag() {
-            const carousel = document.getElementById('popular-works');
-            let dragMoved = false;
-
-            // Mouse events
-            carousel.addEventListener('mousedown', () => { dragMoved = false; });
-            carousel.addEventListener('mousemove', (e) => {
-                if (e.buttons) dragMoved = true;
-            });
-            carousel.addEventListener('mouseup', (e) => {
-                if (!dragMoved) {
-                    const card = e.target.closest('.work-card');
-                    if (card && carousel.contains(card)) {
-                        window.location.href = `composition.html?slug=${card.getAttribute('data-slug')}`;
-                    }
-                }
-            });
-
-            // Touch events
-            let touchMoved = false;
-            carousel.addEventListener('touchstart', () => { touchMoved = false; });
-            carousel.addEventListener('touchmove', () => { touchMoved = true; });
-            carousel.addEventListener('touchend', (e) => {
-                if (!touchMoved) {
-                    const touch = e.changedTouches[0];
-                    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-                    const card = el && el.closest('.work-card');
-                    if (card && carousel.contains(card)) {
-                        window.location.href = `composition.html?slug=${card.getAttribute('data-slug')}`;
-                    }
-                }
-            });
-        }
+    
 
         // Load everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadCompositions();
             initMobileMenu();
-            enableCarouselDragScroll();
-            enableCardClickWithoutDrag();
         });
     </script>
     
