@@ -155,18 +155,12 @@ function renderComposition(comp) {
                 ${comp.duration ? `<span>Duration: ${comp.duration}</span>` : ''}
                 ${comp.difficulty ? `<span>Difficulty: ${comp.difficulty}</span>` : ''}
             </div>
-            <div class="composition-description"></div>
             ${buyButtonHtml}
             <div class="composition-links">
                 ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
                 ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
             </div>
-        `;
-        // Set description as HTML
-        const descDiv = infoContainer.querySelector('.composition-description');
-        if (descDiv && comp.description) {
-            descDiv.innerHTML = comp.description;
-        }
+        `
     }
 
     // Notes
@@ -195,6 +189,7 @@ function renderComposition(comp) {
     // Score PDF
     const scoreCarouselContainer = document.querySelector('.score-carousel-container');
     if (scoreCarouselContainer && comp.scoreLink) {
+        console.log('Score PDF link:', comp.scoreLink);
         scoreCarouselContainer.innerHTML = `
           <div class="score-pdf-viewer">
             <iframe
