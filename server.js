@@ -658,6 +658,11 @@ app.post('/api/create-stripe-product/:compositionId', async (req, res) => {
     }
 });
 
+// Serve pretty URLs for compositions
+app.get('/composition/:slug', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'composition.html'));
+});
+
 // Serve main HTML file
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -669,9 +674,6 @@ app.get('/admin', (req, res) => {
 });
 
 // Handle all other routes
-app.get('/composition/:slug', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'composition.html'));
-});
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

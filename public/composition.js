@@ -323,21 +323,34 @@ function getSlugFromUrl() {
 
 async function loadCompositionDetail() {
     const slug = getSlugFromUrl();
-    console.log('Extracted slug:', slug); // <--- Add this line
+    console.log('Extracted slug:', slug);
     const container = document.getElementById('composition-info');
     if (!slug) {
         if (container) container.innerHTML = '<div class="error">No composition slug provided.</div>';
         return;
     }
     if (container) container.innerHTML = '<div class="loading">Loading composition...</div>';
+
+    // If running locally (localhost or file://), always use example data
+    if (window.location.hostname === 'localhost' || window.location.protocol === 'file:') {
+        const comp = exampleCompositions.find(c => c.slug === slug);
+        console.log('Local dev: using exampleCompositions:', comp);
+        if (comp) {
+            renderComposition(comp);
+        } else {
+            if (container) container.innerHTML = '<div class="error">Composition not found in example data.</div>';
+        }
+        return;
+    }
+
     try {
         const response = await fetch(`/api/compositions/slug/${encodeURIComponent(slug)}`);
         const data = await response.json();
-        console.log('API response:', data); // <--- Add this line
-        if (!data.success) {
+        console.log('API response:', data);
+        if (!data.success || !data.composition) {
             // Fallback to local data
             const comp = exampleCompositions.find(c => c.slug === slug);
-            console.log('Fallback example data:', comp); // <--- Add this line
+            console.log('Fallback example data:', comp);
             if (comp) {
                 renderComposition(comp);
             } else {
@@ -349,7 +362,7 @@ async function loadCompositionDetail() {
     } catch (err) {
         // Fallback to local data
         const comp = exampleCompositions.find(c => c.slug === slug);
-        console.log('Fallback example data (error):', comp); // <--- Add this line
+        console.log('Fallback example data (error):', comp);
         if (comp) {
             renderComposition(comp);
         } else {
