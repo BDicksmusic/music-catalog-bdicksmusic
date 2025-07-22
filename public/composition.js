@@ -196,9 +196,14 @@ function renderComposition(comp) {
     const scoreCarouselContainer = document.querySelector('.score-carousel-container');
     if (scoreCarouselContainer && comp.scoreLink) {
         scoreCarouselContainer.innerHTML = `
-            <div class="score-pdf-viewer">
-                <iframe src="${comp.scoreLink}" width="100%" height="600px"></iframe>
-            </div>
+          <div class="score-pdf-viewer">
+            <iframe
+                src="/pdfjs/web/viewer.html?file=${encodeURIComponent(comp.scoreLink)}#toolbar=0&scrollHorizontal"
+                width="100%"
+                height="600px"
+                style="border: none;"
+            ></iframe>
+        </div>
         `;
     }
 }
