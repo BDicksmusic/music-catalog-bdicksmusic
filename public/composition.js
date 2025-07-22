@@ -170,6 +170,11 @@ if (linksContainer) {
     `;
 }
 
+const shortInstrContainer = document.querySelector('.composition-short-instrument-container');
+if (shortInstrContainer && comp.shortInstrumentList) {
+    shortInstrContainer.innerHTML = `<div class="short-instrument-list"><strong>Short Instrument List:</strong> ${comp.shortInstrumentList}</div>`;
+}
+
 
     // Notes
     const notesContainer = document.querySelector('.composition-notes-container');
