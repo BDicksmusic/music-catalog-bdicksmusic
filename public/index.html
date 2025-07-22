@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
                     const slug = this.getAttribute('data-slug');
                     if (slug) {
-                        window.location.href = `composition.html?slug=${slug}`;
+                        window.location.href = `/composition/${slug}`;
                     }
                 });
             });
