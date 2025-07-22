@@ -1,5 +1,11 @@
 // composition.js
 
+// Dummy renderCarousel to prevent errors (remove or replace with real implementation)
+function renderCarousel(compositions) {
+    // For now, just log the compositions
+    console.log('renderCarousel called with:', compositions);
+}
+
 // Example Data for Local Testing (copied from index.html)
 const exampleCompositions = [
   {
@@ -37,21 +43,13 @@ const exampleCompositions = [
   // ... rest of your example compositions data ...
 ];
 
-// Dummy renderCarousel to prevent errors (remove or replace with real implementation)
-function renderCarousel(compositions) {
-    // For now, just log the compositions
-    console.log('renderCarousel called with:', compositions);
-}
-
 // Fetch all compositions
 async function loadCompositions() {
     const response = await fetch('/api/compositions');
     const data = await response.json();
     const allCompositions = data.compositions;
-
     // Filter for popular
     const popularCompositions = allCompositions.filter(comp => comp.popular);
-
     // Now use popularCompositions for your carousel
     renderCarousel(popularCompositions);
 }
@@ -148,52 +146,39 @@ function renderComposition(comp) {
             ${comp.difficulty ? `<span>Difficulty: ${comp.difficulty}</span>` : ''}
         </div>
         <div class="composition-description"></div>
-        ${comp.programNotes ? `<section class="composition-program-notes"><h3>Program Notes</h3><div class="program-notes-content"></div></section>` : ''}
-        ${comp.performanceNotes ? `<section class="composition-performance-notes"><h3>Performance Notes</h3><div class="performance-notes-content"></div></section>` : ''}
+        <div class="composition-notes-container"></div>
         ${buyButtonHtml}
         <div class="composition-links">
             ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
             ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
         </div>
     `;
-
-       // Inject notes into the notes container
-       const notesContainer = container.querySelector('.composition-notes-container');
-       let notesHtml = '';
-       if (comp.programNotes) {
-           notesHtml += `
-               <section class="composition-program-notes">
-                   <h3>Program Notes</h3>
-                   <div class="program-notes-content">${comp.programNotes}</div>
-               </section>
-           `;
-       }
-       if (comp.performanceNotes) {
-           notesHtml += `
-               <section class="composition-performance-notes">
-                   <h3>Performance Notes</h3>
-                   <div class="performance-notes-content">${comp.performanceNotes}</div>
-               </section>
-           `;
-       }
-       if (notesHtml) {
-           notesContainer.innerHTML = notesHtml;
-       }
-       
     // Set description as HTML
     const descDiv = container.querySelector('.composition-description');
     if (descDiv && comp.description) {
         descDiv.innerHTML = comp.description;
     }
-    // Set Program Notes as HTML
-    const progDiv = container.querySelector('.program-notes-content');
-    if (progDiv && comp.programNotes) {
-        progDiv.innerHTML = comp.programNotes;
+    // Inject notes into the notes container
+    const notesContainer = container.querySelector('.composition-notes-container');
+    let notesHtml = '';
+    if (comp.programNotes) {
+        notesHtml += `
+            <section class="composition-program-notes">
+                <h3>Program Notes</h3>
+                <div class="program-notes-content">${comp.programNotes}</div>
+            </section>
+        `;
     }
-    // Set Performance Notes as HTML
-    const perfDiv = container.querySelector('.performance-notes-content');
-    if (perfDiv && comp.performanceNotes) {
-        perfDiv.innerHTML = comp.performanceNotes;
+    if (comp.performanceNotes) {
+        notesHtml += `
+            <section class="composition-performance-notes">
+                <h3>Performance Notes</h3>
+                <div class="performance-notes-content">${comp.performanceNotes}</div>
+            </section>
+        `;
+    }
+    if (notesContainer) {
+        notesContainer.innerHTML = notesHtml;
     }
 }
 
@@ -224,7 +209,6 @@ async function purchaseComposition(compositionId, title, price) {
 
 // Initialize when DOM is ready
 // Call both loadCompositions and loadCompositionDetail after DOM is loaded
-
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing composition detail page...');
     loadCompositions();
