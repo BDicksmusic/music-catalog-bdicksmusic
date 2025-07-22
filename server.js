@@ -242,6 +242,41 @@ app.get('/api/compositions/genre/:genre', async (req, res) => {
     }
 });
 
+// GET single composition by slug (WITH CACHING)
+app.get('/api/compositions/slug/:slug', async (req, res) => {
+    try {
+        const slug = req.params.slug;
+        const fetchCompositionBySlug = async () => {
+            const response = await notion.databases.query({
+                database_id: process.env.NOTION_DATABASE_ID,
+                filter: {
+                    property: 'Slug',
+                    rich_text: {
+                        equals: slug
+                    }
+                }
+            });
+
+            if (response.results.length === 0) {
+                return { success: false, error: 'Not found' };
+            }
+
+            const page = response.results[0];
+            const composition = transformNotionPage(page);
+
+            return { success: true, composition };
+        };
+
+        // Use cache wrapper if you want, or just call directly:
+        const result = await fetchCompositionBySlug();
+        res.json(result);
+
+    } catch (error) {
+        console.error('Error fetching composition by slug:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch composition by slug' });
+    }
+});
+
 // POST new composition to Notion (INVALIDATES CACHE)
 app.post('/api/compositions', async (req, res) => {
     try {
