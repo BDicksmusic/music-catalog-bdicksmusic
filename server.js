@@ -245,7 +245,7 @@ app.get('/api/compositions/genre/:genre', async (req, res) => {
 // POST new composition to Notion (INVALIDATES CACHE)
 app.post('/api/compositions', async (req, res) => {
     try {
-        const { title, instrumentation, year, duration, difficulty, genre, description, audioLink, scoreLink, purchaseLink, tags } = req.body;
+        const { title, instrumentation, year, duration, difficulty, genre, description, audioLink, scoreLink, purchaseLink, tags, Slug } = req.body;
         
         // Prepare properties for Notion
         const newPageProperties = {
@@ -266,6 +266,7 @@ app.post('/api/compositions', async (req, res) => {
         if (audioLink) newPageProperties['Audio Link'] = { url: audioLink };
         if (scoreLink) newPageProperties['Score PDF'] = { url: scoreLink };
         if (purchaseLink) newPageProperties['Purchase Link'] = { url: purchaseLink };
+        if (Slug) newPageProperties.Slug = { rich_text: [{ text: { content: Slug } }] };
         if (tags && Array.isArray(tags)) {
             newPageProperties.Tags = { multi_select: tags.map(tag => ({ name: tag })) };
         }

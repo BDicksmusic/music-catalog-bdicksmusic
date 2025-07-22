@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Composition Details</title>
-    <link rel="stylesheet" href="variables.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/variables.css">
+    <link rel="stylesheet" href="/styles.css">
     <style>
         body {
             background: var(--gray-100);
@@ -58,21 +58,6 @@
             width: 100%;
             text-align: left;
         }
-        .composition-title-meta-row {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            width: 100%;
-            justify-content: space-between;
-            gap: 0;
-        }
-        .composition-title-instrument-group {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            text-align: left;
-            flex: 1 1 auto;
-        }
         .composition-title {
             font-size: 1.8rem;
             font-weight: 100;
@@ -80,29 +65,17 @@
             color: var(--primary-700, #1a237e);
             text-shadow: 0 2px 12px rgba(0,0,0,0.07);
             margin-bottom: 0.2rem;
-            text-align: left;
         }
         .composition-instrument {
             font-size: 1.1rem;
             color: var(--primary-500);
             font-weight: 600;
-            text-align: left;
-        }
-        .composition-meta-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: flex-start;
-            min-width: 120px;
-            margin-left: 2.5rem;
+            margin-bottom: 1.2rem;
         }
         .composition-meta {
             display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 0.2rem;
-            text-align: right;
-            min-width: 80px;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
         .composition-meta span {
             background: var(--gray-100);
@@ -110,10 +83,6 @@
             padding: 0.2rem 0.9rem;
             font-size: 0.98rem;
             font-weight: 500;
-            margin-bottom: 0.2rem;
-            text-align: right;
-            display: block;
-            min-width: 80px;
         }
         .composition-description {
             font-size: 1.08rem;
@@ -121,14 +90,11 @@
             margin-top: 0.7rem;
             margin-bottom: 1.2rem;
             line-height: 1.7;
-            text-align: left;
-            align-self: flex-start;
-            width: 100%;
             max-width: 600px;
         }
         .composition-buy-btn {
             display: inline-block;
-            margin: 0 0 1.2rem 0;
+            margin: 1.2rem 0;
             padding: 0.9rem 2.2rem;
             font-size: 1.15rem;
             font-weight: 700;
@@ -141,7 +107,6 @@
             transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
             text-decoration: none;
             text-align: center;
-            align-self: flex-start;
         }
         .composition-buy-btn:disabled,
         .composition-buy-btn.btn-disabled {
@@ -155,34 +120,15 @@
             transform: translateY(-2px) scale(1.04);
             box-shadow: 0 6px 24px rgba(0,0,0,0.13);
         }
-        .composition-actions {
-            display: flex;
-            gap: 1.2rem;
-            margin-top: 1.2rem;
-            justify-content: flex-end;
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-600);
         }
-        .composition-action-btn {
-            background: linear-gradient(90deg, var(--primary-500), var(--primary-700));
-            color: #fff;
-            border: none;
-            border-radius: 1.2rem;
-            padding: 0.7rem 1.7rem;
-            font-size: 1.08rem;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-            outline: none;
-            position: relative;
-            overflow: hidden;
-        }
-        .composition-action-btn:hover {
-            background: linear-gradient(90deg, var(--primary-700), var(--primary-500));
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 6px 24px rgba(0,0,0,0.13);
-        }
-        .composition-action-btn:active {
-            transform: scale(0.98);
+        .error {
+            text-align: center;
+            padding: 2rem;
+            color: var(--error-600);
         }
         @media (max-width: 900px) {
             .composition-main {
@@ -191,8 +137,7 @@
             .composition-detail-card {
                 flex-direction: column;
                 align-items: center;
-                padding: 1.2rem 0 1.2rem 0;
-                width: 100%;
+                padding: 1.2rem 0;
                 gap: 1.2rem;
             }
             .composition-cover-container {
@@ -204,27 +149,9 @@
             .composition-cover {
                 width: 100%;
                 height: 260px;
-                border-radius: .7rem;
             }
             .composition-info {
                 width: 100%;
-                align-items: flex-start;
-                text-align: left;
-            }
-            .composition-title-meta-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-            .composition-meta-container {
-                align-items: flex-start;
-                text-align: left;
-                margin-left: 0;
-                min-width: 0;
-            }
-            .composition-meta {
-                align-items: flex-start;
-                text-align: left;
             }
         }
     </style>
@@ -233,13 +160,13 @@
     <header><br></header>
     <nav>
         <div class="nav-container">
-            <a href="index.html" class="logo">BRANDON DICKS</a>
+            <a href="/index.html" class="logo">BRANDON DICKS</a>
         </div>
         <div class="nav-right">
             <ul class="nav-menu">
-                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Catalog</a></li>
-                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="/index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="/#catalog" class="nav-link">Catalog</a></li>
+                <li class="nav-item"><a href="/about.html" class="nav-link">About</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
             </ul>
             <button class="music-catalog-btn">Music Catalog</button>
@@ -255,45 +182,28 @@
         <a href="/trumpeter" class="secondary-button">Trumpeter</a>
         <a href="/educator" class="secondary-button">Educator</a>
     </nav>
+    
     <main>
         <div class="composition-main">
             <div class="composition-detail-card">
                 <div class="composition-cover-container">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" class="composition-cover" id="composition-cover">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" 
+                         alt="" 
+                         class="composition-cover" 
+                         id="composition-cover">
                 </div>
                 <div class="composition-info" id="composition-info">
-                    <div class="composition-row" style="display: flex; flex-direction: row; justify-content: space-between; align-items: flex-start; width: 100%; gap: 0;">
-                        <div class="composition-left" style="display: flex; flex-direction: column; align-items: flex-start; flex: 1 1 auto;">
-                            <div class="composition-title" id="composition-title" style="font-size: 1.8rem; font-weight: 100; letter-spacing: 0.02em; color: var(--primary-700, #1a237e); text-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 0.2rem;">Title Placeholder</div>
-                            <div class="composition-instrument" id="composition-instrument" style="font-size: 1.1rem; color: var(--primary-500); font-weight: 600;">Instrument Placeholder</div>
-                            <button class="composition-buy-btn" id="composition-buy-btn" style="margin-top: 1.2rem;">💳 Buy Now</button>
-                        </div>
-                        <div class="composition-right" style="display: flex; flex-direction: column; align-items: flex-end; min-width: 100px; margin-left: 2.5rem;">
-                            <span class="composition-year" id="composition-year" style="background: var(--gray-100); border-radius: 1.2rem; padding: 0.2rem 0.9rem; font-size: 0.98rem; font-weight: 500; margin-bottom: 0.2rem; text-align: right; display: block; min-width: 80px;">Year</span>
-                            <span class="composition-duration" id="composition-duration" style="background: var(--gray-100); border-radius: 1.2rem; padding: 0.2rem 0.9rem; font-size: 0.98rem; font-weight: 500; text-align: right; display: block; min-width: 80px;">Duration</span>
-                        </div>
-                    </div>
-                    <div class="composition-description" id="composition-description" style="font-size: 1.08rem; color: var(--gray-800); margin-top: 1.7rem; margin-bottom: 1.2rem; line-height: 1.7; text-align: left; align-self: flex-start; width: 100%; max-width: 600px;">
-                        Description placeholder.
-                    </div>
-                  <div class="composition-description" style="font-size: 1.08rem; color: var(--gray-800); margin-top: 1.7rem; margin-bottom: 1.2rem; line-height: 1.7; text-align: left; align-self: flex-start; width: 100%; max-width: 600px;">
-                    A bright, energetic piece for brass quintet.
-                  </div>
-                  </div>
-                  <div class="composition-description" style="font-size: 1.08rem; color: var(--gray-800); margin-top: 1.7rem; margin-bottom: 1.2rem; line-height: 1.7; text-align: left; align-self: flex-start; width: 100%; max-width: 600px;">
-                    A bright, energetic piece for brass quintet.
-                  </div>
+                    <div class="loading">Loading composition...</div>
                 </div>
             </div>
         </div>
     </main>
-    <script src="composition.js"></script>
+    
+    <script src="/composition.js"></script>
     <script>
-    function showUnavailableMessage(title) {
-        alert(`"${title}" is currently not available for purchase.\n\nPlease contact us directly for more information about acquiring this composition.`);
-    }
+        function showUnavailableMessage(title) {
+            alert(`"${title}" is currently not available for purchase.\n\nPlease contact us directly for more information about acquiring this composition.`);
+        }
     </script>
 </body>
-</html>     
-    
-    
+</html>
