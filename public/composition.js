@@ -147,13 +147,30 @@ function renderComposition(comp) {
             ${comp.duration ? `<span>Duration: ${comp.duration}</span>` : ''}
             ${comp.difficulty ? `<span>Difficulty: ${comp.difficulty}</span>` : ''}
         </div>
-        ${comp.description ? `<div class="composition-description">${comp.description}</div>` : ''}
+        <div class="composition-description"></div>
+        ${comp.programNotes ? `<section class="composition-program-notes"><h3>Program Notes</h3><div class="program-notes-content"></div></section>` : ''}
+        ${comp.performanceNotes ? `<section class="composition-performance-notes"><h3>Performance Notes</h3><div class="performance-notes-content"></div></section>` : ''}
         ${buyButtonHtml}
         <div class="composition-links">
             ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
             ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
         </div>
     `;
+    // Set description as HTML
+    const descDiv = container.querySelector('.composition-description');
+    if (descDiv && comp.description) {
+        descDiv.innerHTML = comp.description;
+    }
+    // Set Program Notes as HTML
+    const progDiv = container.querySelector('.program-notes-content');
+    if (progDiv && comp.programNotes) {
+        progDiv.innerHTML = comp.programNotes;
+    }
+    // Set Performance Notes as HTML
+    const perfDiv = container.querySelector('.performance-notes-content');
+    if (perfDiv && comp.performanceNotes) {
+        perfDiv.innerHTML = comp.performanceNotes;
+    }
 }
 
 // Purchase function for Stripe integration

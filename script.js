@@ -81,7 +81,6 @@ app.get('/api/compositions/:id', async (req, res) => {
         const response = await notion.pages.retrieve({
             page_id: req.params.id,
         });
-        
         const properties = response.properties;
         const composition = {
             id: response.id,
@@ -101,11 +100,11 @@ app.get('/api/compositions/:id', async (req, res) => {
             purchaseLink: properties['Purchase Link']?.url || '',
             tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
             created: response.created_time,
-            lastEdited: response.last_edited_time
+            lastEdited: response.last_edited_time,
+            programNotes: properties['Program Notes']?.rich_text?.map(rt => rt.plain_text || rt.text?.content || '').join('') || '',
+            performanceNotes: properties['Performance Notes']?.rich_text?.map(rt => rt.plain_text || rt.text?.content || '').join('') || ''
         };
-        
         res.json({ success: true, composition });
-        
     } catch (error) {
         console.error('Error fetching composition:', error);
         res.status(500).json({ 
@@ -151,7 +150,9 @@ app.get('/api/compositions/slug/:slug', async (req, res) => {
             coverImage: properties['Cover Image']?.files[0]?.file?.url || properties['Cover Image']?.files[0]?.external?.url || '',
             tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
             created: page.created_time,
-            lastEdited: page.last_edited_time
+            lastEdited: page.last_edited_time,
+            programNotes: properties['Program Notes']?.rich_text?.map(rt => rt.plain_text || rt.text?.content || '').join('') || '',
+            performanceNotes: properties['Performance Notes']?.rich_text?.map(rt => rt.plain_text || rt.text?.content || '').join('') || ''
         };
 
         res.json({ success: true, composition });
