@@ -116,6 +116,52 @@ app.get('/api/compositions/:id', async (req, res) => {
     }
 });
 
+// Add this route after your existing /api/compositions/:id route
+
+app.get('/api/compositions/slug/:slug', async (req, res) => {
+    try {
+        const response = await notion.databases.query({
+            database_id: process.env.NOTION_DATABASE_ID,
+            filter: {
+                property: 'Slug',
+                rich_text: {
+                    equals: req.params.slug
+                }
+            }
+        });
+
+        if (response.results.length === 0) {
+            return res.json({ success: false, error: 'Not found' });
+        }
+
+        const page = response.results[0];
+        const properties = page.properties;
+        const composition = {
+            id: page.id,
+            slug: properties.Slug?.rich_text[0]?.plain_text || '',
+            title: properties.Name?.title[0]?.text?.content || 'Untitled',
+            instrumentation: properties.Instrumentation?.rich_text[0]?.text?.content || 'Unknown',
+            year: properties.Year?.number || null,
+            duration: properties.Duration?.rich_text[0]?.text?.content || '',
+            difficulty: properties.Difficulty?.select?.name || '',
+            genre: properties.Genre?.select?.name || '',
+            description: properties.Description?.rich_text[0]?.text?.content || '',
+            audioLink: properties['Audio Link']?.url || '',
+            scoreLink: properties['Score PDF']?.url || '',
+            purchaseLink: properties['Purchase Link']?.url || '',
+            coverImage: properties['Cover Image']?.files[0]?.file?.url || properties['Cover Image']?.files[0]?.external?.url || '',
+            tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
+            created: page.created_time,
+            lastEdited: page.last_edited_time
+        };
+
+        res.json({ success: true, composition });
+    } catch (error) {
+        console.error('Error fetching composition by slug:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch composition by slug' });
+    }
+});
+
 // POST new composition to Notion
 app.post('/api/compositions', async (req, res) => {
     try {

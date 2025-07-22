@@ -159,21 +159,22 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="carousel-controls">
               <button class="carousel-btn left" onclick="scrollWorks(-1)">&#8592;</button>
               <button class="carousel-btn right" onclick="scrollWorks(1)">&#8594;</button>
-            </div>
+                </div>
             </section>
         </div>
     </main>
 
     <!-- Footer -->
-        <footer style="text-align: center; padding: 2rem; background: var(--gray-100); margin-top: 4rem;">
+    <footer style="text-align: center; padding: 2rem; background: var(--gray-100); margin-top: 4rem;">
         <p>&copy; 2025 Your Music. All rights reserved.</p>
-        </footer>
+    </footer>
 
-        <script>
+    <script>
         // Example Data for Local Testing
         const exampleCompositions = [
           {
             id: "1",
+            slug: "sunrise-fanfare",
             title: "Sunrise Fanfare",
             instrumentation: "Brass Quintet",
             year: 2022,
@@ -189,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "2",
+            slug: "nocturne-in-blue",
             title: "Nocturne in Blue",
             instrumentation: "Solo Piano",
             year: 2021,
@@ -204,6 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "3",
+            slug: "evening-dance",
             title: "Evening Dance",
             instrumentation: "String Quartet",
             year: 2020,
@@ -219,6 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "4",
+            slug: "march-of-the-titans",
             title: "March of the Titans",
             instrumentation: "Wind Ensemble",
             year: 2019,
@@ -234,6 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "5",
+            slug: "autumn-leaves",
             title: "Autumn Leaves",
             instrumentation: "Jazz Combo",
             year: 2023,
@@ -249,6 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "6",
+            slug: "celestial-waltz",
             title: "Celestial Waltz",
             instrumentation: "Orchestra",
             year: 2018,
@@ -264,6 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "7",
+            slug: "midnight-groove",
             title: "Midnight Groove",
             instrumentation: "Saxophone Quartet",
             year: 2022,
@@ -279,6 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "8",
+            slug: "winter-solstice",
             title: "Winter Solstice",
             instrumentation: "Chamber Choir",
             year: 2021,
@@ -294,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "9",
+            slug: "rising-sun",
             title: "Rising Sun",
             instrumentation: "Solo Flute",
             year: 2020,
@@ -309,6 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "10",
+            slug: "desert-mirage",
             title: "Desert Mirage",
             instrumentation: "Percussion Ensemble",
             year: 2017,
@@ -324,6 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "11",
+            slug: "spring-awakening",
             title: "Spring Awakening",
             instrumentation: "Clarinet Trio",
             year: 2023,
@@ -339,6 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "12",
+            slug: "harbor-lights",
             title: "Harbor Lights",
             instrumentation: "Brass Ensemble",
             year: 2019,
@@ -354,6 +366,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "13",
+            slug: "mountain-echoes",
             title: "Mountain Echoes",
             instrumentation: "Solo Horn",
             year: 2022,
@@ -369,6 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "14",
+            slug: "city-lights",
             title: "City Lights",
             instrumentation: "Big Band",
             year: 2021,
@@ -384,6 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "15",
+            slug: "forest-whispers",
             title: "Forest Whispers",
             instrumentation: "Woodwind Quintet",
             year: 2020,
@@ -399,6 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "16",
+            slug: "river-run",
             title: "River Run",
             instrumentation: "Solo Violin",
             year: 2018,
@@ -414,6 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "17",
+            slug: "golden-fields",
             title: "Golden Fields",
             instrumentation: "String Orchestra",
             year: 2017,
@@ -429,6 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           {
             id: "18",
+            slug: "firefly-nights",
             title: "Firefly Nights",
             instrumentation: "Solo Guitar",
             year: 2023,
@@ -456,57 +474,35 @@ document.addEventListener('DOMContentLoaded', function() {
             const container = document.getElementById('popular-works');
             if (!apiFailed && data && data.success && data.compositions && data.compositions.length > 0) {
                 container.innerHTML = data.compositions.map(comp => `
-                        <div class="work-card" data-id="${comp.id}">
-                            ${comp.coverImage ? `
-                                <div class="work-image-container">
-                                    <img src="${comp.coverImage}" alt="${comp.title}" class="work-image" loading="lazy">
+                    <div class="work-card" data-slug="${comp.slug}">
+                        ${comp.coverImage ? `
+                            <div class="work-image-container">
+                                <img src="${comp.coverImage}" alt="${comp.title}" class="work-image" loading="lazy">
+                            </div>
+                        ` : ''}
+                        <div class="work-header">
+                            <h3 class="work-title">${comp.title}</h3>
+                            <div class="work-instrument">${comp.instrumentation}</div>
+                        </div>
+                        <div class="work-content">
+                            ${(comp.duration) ? `
+                                <div class="work-meta">
+                                    ${comp.duration && comp.duration !== 'Duration:' ? `<div class="work-duration">${comp.duration}</div>` : ''}
                                 </div>
                             ` : ''}
-                            
-                            <div class="work-header">
-                                <h3 class="work-title">${comp.title}</h3>
-                                <div class="work-instrument">${comp.instrumentation}</div>
-                            </div>
-                            
-                            <div class="work-content">
-                                ${(comp.duration) ? `
-                                    <div class="work-meta">
-
-                                        ${comp.duration && comp.duration !== 'Duration:' ? `<div class="work-duration">${comp.duration}</div>` : ''}
-                                    </div>
-                                ` : ''}
-                                
-
-                                
-                                ${comp.description ? `<p class="work-description">${comp.description}</p>` : ''}
-                                 
-  
-                                
-                                <div class="work-links">
-                                    
-                                    ${comp.paymentLink ? `
-                                        <button class="btn-primary payment-btn" onclick="event.stopPropagation(); purchaseComposition('${comp.paymentLink}', '${comp.title.replace(/'/g, "\\'")}')">
-                                            💳 Buy Now
-                                        </button>
-                                    ` : comp.stripeProductId || comp.stripePriceId ? `
-                                        <button class="btn-primary payment-btn" onclick="event.stopPropagation(); purchaseWithStripe('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 10})">
-                                            💳 Buy Now - ${comp.price || 10}
-                                        </button>
-                                    ` : comp.purchaseLink ? `
-                                        <a href="${comp.purchaseLink}" target="_blank" class="btn-primary" onclick="event.stopPropagation()">💳 Purchase</a>
-                                    ` : `
-                                        <button class="btn-disabled" onclick="event.stopPropagation(); showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
-                                            🚫 Currently Not Available
-                                        </button>
-                                    `}
-                                </div>
+                            ${comp.description ? `<p class="work-description">${comp.description}</p>` : ''}
+                            <div class="work-links">
+                                <button class="btn-disabled" onclick="event.stopPropagation(); showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
+                                    🚫 Currently Not Available
+                                </button>
                             </div>
                         </div>
-                    `).join('');
+                    </div>
+                `).join('');
             } else {
                 // Use example data for local testing
                 container.innerHTML = exampleCompositions.map(comp => `
-                    <div class="work-card" data-id="${comp.id}">
+                    <div class="work-card" data-slug="${comp.slug}">
                         ${comp.coverImage ? `
                             <div class="work-image-container">
                                 <img src="${comp.coverImage}" alt="${comp.title}" class="work-image" loading="lazy">
@@ -710,7 +706,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!dragMoved) {
                     const card = e.target.closest('.work-card');
                     if (card && carousel.contains(card)) {
-                        viewComposition(card.getAttribute('data-id'));
+                        window.location.href = `composition.html?slug=${card.getAttribute('data-slug')}`;
                     }
                 }
             });
@@ -725,7 +721,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const el = document.elementFromPoint(touch.clientX, touch.clientY);
                     const card = el && el.closest('.work-card');
                     if (card && carousel.contains(card)) {
-                        viewComposition(card.getAttribute('data-id'));
+                        window.location.href = `composition.html?slug=${card.getAttribute('data-slug')}`;
                     }
                 }
             });

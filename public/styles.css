@@ -210,7 +210,7 @@ nav {
 }
 
 .logo {
-    font-size: 32px;
+    font-size: 20px;
     font-weight: var(--font-bold);
     color: var(--gray-800);
     text-decoration: none;
@@ -986,28 +986,26 @@ input:focus, textarea:focus, select:focus {
 
 /* ===== MOBILE RESPONSIVE STYLES ===== */
 @media (max-width: 880px) {
-    /* Navigation Mobile Styles */
     .hamburger {
-        display: flex;
+        display: flex !important;
         margin-left: 10px;
+        z-index: 2100;
     }
-    
     .nav-menu {
         position: fixed;
-        left: -100%;
-        top: 0; /* Start from very top */
+        left: -100vw;
+        top: 0;
         flex-direction: column;
-        background-color: var(--gray-50);
-        width: 100%;
-        height: 100vh; /* Full screen height */
+        background-color: var(--gray-50, #fff);
+        width: 100vw;
+        height: 100vh;
         text-align: center;
-        transition: var(--transition-base);
+        transition: left 0.3s;
         box-shadow: var(--shadow-lg);
         gap: 0;
         border: none;
-        z-index: var(--z-modal); /* Higher z-index than header */
+        z-index: 2000;
     }
-    
     .nav-menu.active {
         left: 0;
     }
@@ -1107,10 +1105,8 @@ input:focus, textarea:focus, select:focus {
     .modal-content {
         padding: var(--space-6) var(--space-4);
     }
-} work-card:first-child {
-    margin-left: 0;
 }
 
-.works-grid .work-card:first-child {
-    margin-left: 0rem;
+.work-card:first-child {
+    margin-left: 0;
 }

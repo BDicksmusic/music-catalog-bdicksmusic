@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Composition Details</title>
+    <link rel="stylesheet" href="variables.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: var(--gray-50);
+            margin: 0;
+            padding: 0;
+        }
+        .composition-main {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 5vw;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .composition-detail-card {
+            display: flex;
+            flex-direction: row;
+            gap: 2.5rem;
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 2.5rem 0 2.5rem 0;
+            align-items: flex-start;
+            width: 100%;
+            margin: 0;
+            position: relative;
+        }
+        .composition-cover-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            min-width: 320px;
+            max-width: 340px;
+            width: 340px;
+            margin-left: 0;
+        }
+        .composition-cover {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            border-radius: 2.2rem 0.7rem 0.7rem 2.2rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+            background: var(--gray-200);
+        }
+        .composition-info {
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            align-items: flex-end;
+            width: 100%;
+        }
+        .composition-title-instrument {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-bottom: 0.7rem;
+        }
+        .composition-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+            color: var(--primary-700, #1a237e);
+            text-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            margin-bottom: 0.2rem;
+            text-align: right;
+        }
+        .composition-instrument {
+            font-size: 1.1rem;
+            color: var(--primary-500);
+            font-weight: 600;
+            text-align: right;
+        }
+        .composition-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.2rem;
+            margin-bottom: 0.7rem;
+        }
+        .composition-meta span {
+            background: var(--gray-100);
+            border-radius: 1.2rem;
+            padding: 0.2rem 0.9rem;
+            font-size: 0.98rem;
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+        }
+        .composition-description {
+            font-size: 1.08rem;
+            color: var(--gray-800);
+            margin-top: 0.7rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.7;
+            text-align: right;
+        }
+        .composition-actions {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 1.2rem;
+            justify-content: flex-end;
+        }
+        .composition-action-btn {
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-700));
+            color: #fff;
+            border: none;
+            border-radius: 1.2rem;
+            padding: 0.7rem 1.7rem;
+            font-size: 1.08rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .composition-action-btn:hover {
+            background: linear-gradient(90deg, var(--primary-700), var(--primary-500));
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+        }
+        .composition-action-btn:active {
+            transform: scale(0.98);
+        }
+        @media (max-width: 900px) {
+            .composition-main {
+                padding: 0 2vw;
+            }
+            .composition-detail-card {
+                flex-direction: column;
+                align-items: center;
+                padding: 1.2rem 0 1.2rem 0;
+                width: 100%;
+            }
+            .composition-cover-container {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                margin-bottom: 1.2rem;
+            }
+            .composition-cover {
+                width: 100%;
+                height: 260px;
+                border-radius: 2rem 2rem 0.7rem 0.7rem;
+            }
+            .composition-info {
+                width: 100%;
+                align-items: flex-end;
+            }
+            .composition-title-instrument {
+                align-items: flex-end;
+            }
+            .composition-description {
+                text-align: right;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header><br></header>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">BRANDON DICKS</a>
+            </div>
+            <div class="nav-right">
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Catalog</a></li>
+                    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+                </ul>
+                <button class="music-catalog-btn">Music Catalog</button>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>   
+                    <span></span>
+            </div>
+    
+            </div>
+        </div>
+    </nav>
+        
+        <!-- Secondary Navigation -->
+        <nav class="secondary-nav">
+            <a href="/composer" class="secondary-button">Composer</a>
+            <a href="/trumpeter" class="secondary-button">Trumpeter</a>
+            <a href="/educator" class="secondary-button">Educator</a>
+        </nav>
+    <main>
+        <div class="composition-main">
+            <div id="composition-detail" class="container">
+                <div class="loading">Loading composition...</div>
+            </div>
+        </div>
+    </main>
+    <script src="composition.js"></script>
+</body>
+</html>
