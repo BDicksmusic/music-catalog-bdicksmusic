@@ -353,25 +353,31 @@ function renderComposition(comp) {
         coverImg.src = comp.coverImage;
         coverImg.alt = comp.title;
     }
-    // Render the info section
-    const info = document.getElementById('composition-info');
-    if (info) {
-        info.innerHTML = `
-            <div class="composition-title-meta-group">
-                <div class="composition-title">${comp.title}</div>
-                <div class="composition-instrument">${comp.instrumentation}</div>
-                <div class="composition-meta">
-                    ${comp.year ? `<span>📅 ${comp.year}</span>` : ''}
-                    ${comp.duration ? `<span>⏱ ${comp.duration}</span>` : ''}
-                </div>
-            </div>
-            ${comp.purchaseLink ? `<a href="${comp.purchaseLink}" target="_blank" class="composition-buy-btn">💳 Buy Now</a>` : `<button class="composition-buy-btn btn-disabled" onclick="showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">🚫 Currently Not Available</button>`}
-            <div class="composition-description">${comp.description}</div>
-            <div class="composition-actions">
-                ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="composition-action-btn">🎵 Listen</a>` : ''}
-                ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="composition-action-btn">📄 View Score</a>` : ''}
-            </div>
-        `;
+    // Update static template fields
+    const titleEl = document.getElementById('composition-title');
+    if (titleEl) titleEl.textContent = comp.title || '';
+    const instrEl = document.getElementById('composition-instrument');
+    if (instrEl) instrEl.textContent = comp.instrumentation || '';
+    const yearEl = document.getElementById('composition-year');
+    if (yearEl) yearEl.textContent = comp.year || '';
+    const durEl = document.getElementById('composition-duration');
+    if (durEl) durEl.textContent = comp.duration || '';
+    const descEl = document.getElementById('composition-description');
+    if (descEl) descEl.textContent = comp.description || '';
+    // Buy button logic
+    const buyBtn = document.getElementById('composition-buy-btn');
+    if (buyBtn) {
+        if (comp.purchaseLink) {
+            buyBtn.textContent = '💳 Buy Now';
+            buyBtn.disabled = false;
+            buyBtn.classList.remove('btn-disabled');
+            buyBtn.onclick = () => window.open(comp.purchaseLink, '_blank');
+        } else {
+            buyBtn.textContent = '🚫 Currently Not Available';
+            buyBtn.disabled = true;
+            buyBtn.classList.add('btn-disabled');
+            buyBtn.onclick = () => showUnavailableMessage(comp.title);
+        }
     }
 }
 
