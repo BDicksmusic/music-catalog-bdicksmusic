@@ -187,17 +187,26 @@ if (shortInstrContainer && comp.shortInstrumentList) {
             </section>
         `;
     }
-    if (comp.performanceNotes) {
-        notesHtml += `
-            <section class="composition-performance-notes">
-                <h3>Performance Notes</h3>
-                <div class="performance-notes-content">${comp.performanceNotes}</div>
-            </section>
-        `;
-    }
+   
     if (notesContainer) {
         notesContainer.innerHTML = notesHtml;
     }
+
+       // Perf
+       const perfContainer = document.querySelector('.composition-perf-container');
+       let perfHtml = '';
+   
+       if (comp.performanceNotes) {
+           notesHtml += `
+               <section class="composition-performance-notes">
+                   <h3>Performance Notes</h3>
+                   <div class="performance-notes-content">${comp.performanceNotes}</div>
+               </section>
+           `;
+       }
+       if (perfContainer) {
+           perfContainer.innerHTML = notesHtml;
+       }
 
     // Score PDF
     const scoreCarouselContainer = document.querySelector('.score-carousel-container');
