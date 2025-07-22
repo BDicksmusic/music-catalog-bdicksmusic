@@ -504,6 +504,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const popularComps = data.compositions.filter(comp => comp.popular);
 
                     container.innerHTML = popularComps.map(comp => `
+                    <div class="work-card" data-slug="${comp.slug}">
                         ${comp.coverImage ? `
                             <div class="work-image-container">
                                 <img src="${comp.coverImage}" alt="${comp.title}" class="work-image" loading="lazy">
