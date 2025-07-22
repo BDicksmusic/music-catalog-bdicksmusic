@@ -66,6 +66,8 @@ function getSlugFromUrl() {
     console.log('No slug found in URL');
     return null;
 }
+// Call the function to run it
+loadCompositions();
 
 async function loadCompositionDetail() {
     const slug = getSlugFromUrl();
@@ -121,6 +123,8 @@ async function loadCompositionDetail() {
         }
     }
 }
+loadCompositions();
+
 
 function renderComposition(comp) {
     console.log('Rendering composition:', comp);
