@@ -194,8 +194,8 @@ function renderComposition(comp) {
           <div class="score-pdf-viewer">
             <iframe
                 src="/pdfjs/web/viewer.html?file=${encodeURIComponent(comp.scoreLink)}#toolbar=0&navpanes=0&scrollHorizontal"
-                width="434px"
-                height="600px"
+                width="500px"
+                height="700px"
                 style="border: none;"
             ></iframe>
         </div>
