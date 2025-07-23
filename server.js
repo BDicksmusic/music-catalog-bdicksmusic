@@ -279,13 +279,7 @@ app.get('/api/media-with-compositions', async (req, res) => {
         console.log('🔄 Fetching media with composition relations...');
         
         const response = await notion.databases.query({
-            database_id: process.env.NOTION_MEDIA_DATABASE_ID,
-            sorts: [
-                {
-                    property: 'Created',
-                    direction: 'descending'
-                }
-            ]
+            database_id: process.env.NOTION_MEDIA_DATABASE_ID
         });
         
         const mediaWithCompositions = await Promise.all(

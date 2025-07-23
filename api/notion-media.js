@@ -33,13 +33,7 @@ async function handler(req, res) {
         
         // Query the Notion database
         const response = await notion.databases.query({
-            database_id: DATABASE_ID,
-            sorts: [
-                {
-                    property: 'Created',
-                    direction: 'descending'
-                }
-            ]
+            database_id: DATABASE_ID
         });
 
         // Transform the data for frontend consumption
