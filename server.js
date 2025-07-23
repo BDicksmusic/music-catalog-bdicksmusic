@@ -46,24 +46,24 @@ async function queryRelatedMedia(compositionId, mediaType = null) {
             console.log(`🔍 Querying related media for composition: ${compositionId}`);
         }
         
-            // Query the media database for items related to this composition
-    // Check both audio and video relations
-    let filter = {
-        or: [
-            {
-                property: 'Audio to Comp',
-                relation: {
-                    contains: compositionId
+        // Query the media database for items related to this composition
+        // Check both audio and video relations
+        let filter = {
+            or: [
+                {
+                    property: 'Audio to Comp',
+                    relation: {
+                        contains: compositionId
+                    }
+                },
+                {
+                    property: 'Video to Comp', 
+                    relation: {
+                        contains: compositionId
+                    }
                 }
-            },
-            {
-                property: 'Video to Comp', 
-                relation: {
-                    contains: compositionId
-                }
-            }
-        ]
-    };
+            ]
+        };
         
         // Add media type filter if specified
         if (mediaType) {
@@ -83,7 +83,7 @@ async function queryRelatedMedia(compositionId, mediaType = null) {
         const response = await notion.databases.query({
             database_id: process.env.NOTION_MEDIA_DATABASE_ID,
             filter: filter,
-            page_size: 10, // Limit results to prevent large responses
+            page_size: 50, // Increased to ensure we get all files
             sorts: [
                 {
                     property: 'Type',
@@ -92,9 +92,67 @@ async function queryRelatedMedia(compositionId, mediaType = null) {
             ]
         });
         
+        // Debug: Log the raw query results
+        if (process.env.NODE_ENV !== 'production') {
+            console.log(`🔍 DEBUG - Raw query returned ${response.results.length} items from Media database`);
+            response.results.forEach((item, index) => {
+                const name = item.properties.Name?.title?.[0]?.text?.content || 'Unnamed';
+                const type = item.properties.Type?.select?.name || 'No Type';
+                console.log(`  ${index + 1}. "${name}" (${type})`);
+            });
+        }
+        
         return response.results.map(transformMediaPage);
     } catch (error) {
         console.error('Error querying related media:', error);
+        return [];
+    }
+}
+
+// Helper function to find related movement files by pattern matching
+async function findMovementFilesByPattern(compositionTitle, linkedMediaIds = []) {
+    try {
+        console.log(`🔍 Looking for movement files matching pattern: "${compositionTitle}"`);
+        
+        // Query all audio files from media database
+        const response = await notion.databases.query({
+            database_id: process.env.NOTION_MEDIA_DATABASE_ID,
+            filter: {
+                property: 'Type',
+                select: {
+                    equals: 'Audio'
+                }
+            },
+            page_size: 100
+        });
+        
+        // Look for files that match the composition name pattern
+        const compositionPattern = compositionTitle.toLowerCase()
+            .replace(/[^a-z0-9]/g, '')
+            .substring(0, 10); // First 10 chars for pattern matching
+            
+        const movementFiles = [];
+        
+        response.results.forEach(item => {
+            const fileName = item.properties.Name?.title?.[0]?.text?.content || '';
+            const fileNameNormalized = fileName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            
+            // Check if this file matches the composition pattern and has movement indicators
+            const hasCompositionMatch = fileNameNormalized.includes(compositionPattern) || 
+                                      fileNameNormalized.includes('resolutions');
+            const hasMovementIndicator = /[._-](i{1,3}v?|v|[1-9])[._-]/i.test(fileName);
+            
+            if (hasCompositionMatch && hasMovementIndicator && !linkedMediaIds.includes(item.id)) {
+                movementFiles.push(transformMediaPage(item));
+                console.log(`  ✅ Found movement file: "${fileName}"`);
+            }
+        });
+        
+        console.log(`🔍 Found ${movementFiles.length} additional movement files by pattern matching`);
+        return movementFiles;
+        
+    } catch (error) {
+        console.error('Error finding movement files by pattern:', error);
         return [];
     }
 }
@@ -216,10 +274,39 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
             return []; // Return empty array on error, don't break the page
         });
         
+        // If we have very few audio files but the composition suggests movements, try pattern matching
+        const audioCount = allMedia.filter(m => m.type === 'Audio').length;
+        const compositionTitle = baseComposition.title || '';
+        const mightHaveMovements = /suite|symphony|sonata|concerto|movements?/i.test(compositionTitle);
+        
+        if (audioCount <= 1 && mightHaveMovements) {
+            console.log(`🔍 Composition "${compositionTitle}" might have movements, searching by pattern...`);
+            const linkedIds = allMedia.map(m => m.id);
+            const movementFiles = await findMovementFilesByPattern(compositionTitle, linkedIds);
+            allMedia.push(...movementFiles);
+        }
+
+        // Debug: Log what media was actually returned
+        if (process.env.NODE_ENV !== 'production') {
+            console.log(`🔍 DEBUG - Found ${allMedia.length} total media items for composition:`);
+            allMedia.forEach((media, index) => {
+                console.log(`  ${index + 1}. "${media.title}" (${media.type}) - URL: ${media.url ? 'YES' : 'NO'}`);
+            });
+        }
+        
         // Separate by type
         const audioMedia = allMedia.filter(media => media.type === 'Audio');
         const videoMedia = allMedia.filter(media => media.type === 'Video');
         const scoreMedia = allMedia.filter(media => media.type === 'Score');
+        
+        // Debug: Log the filtering results
+        if (process.env.NODE_ENV !== 'production') {
+            console.log(`🔍 DEBUG - After filtering: ${audioMedia.length} audio, ${videoMedia.length} video, ${scoreMedia.length} score`);
+            console.log(`🔍 DEBUG - Audio files:`);
+            audioMedia.forEach((audio, index) => {
+                console.log(`  ${index + 1}. "${audio.title}" - URL: ${audio.url ? 'YES' : 'NO'}`);
+            });
+        }
         
         // Roll up media data
         return {
@@ -342,6 +429,50 @@ const transformNotionPage = (page) => {
 // GET media content from Notion (for media page)
 app.get('/api/notion-media', mediaApiHandler);
 app.post('/api/notion-media', mediaApiHandler);
+
+// ===== TEMPORARY DEBUG ENDPOINT =====
+// DEBUG: Get all media items (no filtering)
+app.get('/api/debug/all-media', async (req, res) => {
+    try {
+        console.log('🔍 DEBUG - Fetching ALL media items from database...');
+        
+        const response = await notion.databases.query({
+            database_id: process.env.NOTION_MEDIA_DATABASE_ID,
+            page_size: 100
+        });
+        
+        console.log(`🔍 DEBUG - Found ${response.results.length} total media items`);
+        
+        const mediaItems = response.results.map(item => {
+            const name = item.properties.Name?.title?.[0]?.text?.content || 'Unnamed';
+            const type = item.properties.Type?.select?.name || 'No Type';
+            const audioToComp = item.properties['Audio to Comp']?.relation?.length || 0;
+            const videoToComp = item.properties['Video to Comp']?.relation?.length || 0;
+            return {
+                id: item.id,
+                name,
+                type,
+                audioToComp,
+                videoToComp,
+                hasRelations: audioToComp > 0 || videoToComp > 0
+            };
+        });
+        
+        console.log('🔍 DEBUG - Media items breakdown:');
+        mediaItems.forEach((item, index) => {
+            console.log(`  ${index + 1}. "${item.name}" (${item.type}) - Relations: Audio:${item.audioToComp}, Video:${item.videoToComp}`);
+        });
+        
+        res.json({
+            success: true,
+            totalCount: mediaItems.length,
+            items: mediaItems
+        });
+    } catch (error) {
+        console.error('❌ Debug endpoint error:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
 
 // ===== ENHANCED MEDIA RELATIONS API =====
 
