@@ -748,30 +748,38 @@ function getRomanNumeral(number) {
     return arabicToRoman[number] || 'Unknown';
 }
 
-// Extract movement title from filename
+// Extract movement title from API title
 function extractMovementTitle(title) {
     if (!title) return '';
     
     try {
+        // Handle API format: "Resolutions: Suite for Brass Trio - I. Agree to Disagree"
+        // Look for pattern: "CompositionName - MovementTitle"
+        const dashMatch = title.match(/^.+?\s*-\s*(.+)$/);
+        if (dashMatch && dashMatch[1]) {
+            return dashMatch[1].trim();
+        }
+        
+        // Fallback: Handle old filename format
         // Remove common prefixes (Master_MP3_, etc.)
         let cleaned = title.replace(/^(Master_MP3_|Master_|MP3_|Audio_)/i, '');
         
         // Look for pattern: "Composition_Roman/Number_Title"
-        // Example: "Resolutions_IV._Growing_Empathy" -> "Growing Empathy"
-        const match = cleaned.match(/.*?[._-]([IVX]+|No\.?\s*\d+)[._-](.+?)(?:\.(mp3|wav|m4a|aac))?$/i);
-        if (match && match[2]) {
-            const movementTitle = match[2]
+        // Example: "Resolutions_IV._Growing_Empathy" -> "IV. Growing Empathy"
+        const fileMatch = cleaned.match(/.*?[._-]([IVX]+[._].*?)(?:\.(mp3|wav|m4a|aac))?$/i);
+        if (fileMatch && fileMatch[1]) {
+            const movementTitle = fileMatch[1]
                 .replace(/[._]/g, ' ')
                 .replace(/\s+/g, ' ')
                 .trim();
             return movementTitle;
         }
         
-        // Fallback: return empty string to avoid displaying garbled titles
-        return '';
+        // If no pattern matches, return the original title
+        return title;
     } catch (error) {
         console.error('Error extracting movement title:', error);
-        return '';
+        return title; // Return original title on error instead of empty string
     }
 }
 
@@ -827,19 +835,7 @@ function addMultiAudioControls(audioContainer, audioCount) {
     updateAudioNavButtons();
 }
 
-// Navigate to previous audio
-function previousAudio() {
-    if (currentAudioIndex > 0) {
-        switchToAudio(currentAudioIndex - 1);
-    }
-}
-
-// Navigate to next audio
-function nextAudio() {
-    if (currentAudioIndex < totalAudioCount - 1) {
-        switchToAudio(currentAudioIndex + 1);
-    }
-}
+// (Navigation functions moved to bottom of file to avoid conflicts)
 
 // Switch to specific audio player
 function switchToAudio(index) {
@@ -879,29 +875,15 @@ function updateAudioNavButtons() {
 
 // Navigation functions for multiple audio files
 function previousAudio() {
-    const audioPlayers = document.querySelectorAll('.composition-audio-player');
-    if (audioPlayers.length <= 1) return;
-    
-    audioPlayers[currentAudioIndex].style.display = 'none';
-    currentAudioIndex = currentAudioIndex > 0 ? currentAudioIndex - 1 : audioPlayers.length - 1;
-    audioPlayers[currentAudioIndex].style.display = 'block';
-    
-    // Pause current and start new one
-    const newPlayer = audioPlayers[currentAudioIndex].querySelector('audio');
-    if (newPlayer) newPlayer.play();
+    if (currentAudioIndex > 0) {
+        switchToAudio(currentAudioIndex - 1);
+    }
 }
 
 function nextAudio() {
-    const audioPlayers = document.querySelectorAll('.composition-audio-player');
-    if (audioPlayers.length <= 1) return;
-    
-    audioPlayers[currentAudioIndex].style.display = 'none';
-    currentAudioIndex = currentAudioIndex < audioPlayers.length - 1 ? currentAudioIndex + 1 : 0;
-    audioPlayers[currentAudioIndex].style.display = 'block';
-    
-    // Pause current and start new one
-    const newPlayer = audioPlayers[currentAudioIndex].querySelector('audio');
-    if (newPlayer) newPlayer.play();
+    if (currentAudioIndex < totalAudioCount - 1) {
+        switchToAudio(currentAudioIndex + 1);
+    }
 }
 
 // Function to scroll to the score section

@@ -238,7 +238,11 @@ function transformMediaPage(page) {
     
     return {
         id: page.id,
-        title: getTextContent(properties.Name) || getTextContent(properties.Title) || 'Untitled Media',
+        title: getTextContent(properties.Name) || 
+               getTextContent(properties.Title) || 
+               getTextContent(properties['File Name']) ||
+               getTextContent(properties.Filename) ||
+               'Untitled Media',
         type: properties.Type?.select?.name || 'Unknown',
         category: properties.Category?.select?.name || 'performance',
         url: mediaUrl,
@@ -438,7 +442,6 @@ const transformNotionPage = (page) => {
         created: page.created_time,
         lastEdited: page.last_edited_time,
         popular: properties.Popular?.checkbox || false,
-        multiple: properties.Multiple?.checkbox || false, // Force multi-movement interface
         slug: properties.Slug?.rich_text[0]?.plain_text || '',
         shortInstrumentList: notionRichTextToHtml(properties['Short Instrument List']?.rich_text) || '',
     };
@@ -463,11 +466,25 @@ app.get('/api/debug/all-media', async (req, res) => {
         
         console.log(`🔍 DEBUG - Found ${response.results.length} total media items`);
         
+        // Debug: Log the actual property structure for first few items
+        response.results.slice(0, 3).forEach((item, index) => {
+            console.log(`🔍 DEBUG Item ${index + 1} (${item.id}):`);
+            console.log(`  - Name property:`, item.properties.Name);
+            console.log(`  - Title property:`, item.properties.Title);
+            console.log(`  - Available properties:`, Object.keys(item.properties));
+        });
+        
         const mediaItems = response.results.map(item => {
-            const name = item.properties.Name?.title?.[0]?.text?.content || 'Unnamed';
+            // Try multiple possible name properties
+            const name = getTextContent(item.properties.Name) || 
+                        getTextContent(item.properties.Title) ||
+                        getTextContent(item.properties['File Name']) ||
+                        getTextContent(item.properties.Filename) ||
+                        'Unnamed';
             const type = item.properties.Type?.select?.name || 'No Type';
             const audioToComp = item.properties['Audio to Comp']?.relation?.length || 0;
             const videoToComp = item.properties['Video to Comp']?.relation?.length || 0;
+            
             return {
                 id: item.id,
                 name,
