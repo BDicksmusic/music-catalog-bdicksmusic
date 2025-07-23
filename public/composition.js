@@ -164,9 +164,14 @@ function renderComposition(comp) {
 
 const linksContainer = document.querySelector('.composition-links-container');
 if (linksContainer) {
+    // Check if score is available (same logic as score carousel)
+    const scoreFiles = comp.scoreFiles || [];
+    const hasLegacyScore = comp.scoreLink && !scoreFiles.length;
+    const hasScore = scoreFiles.length > 0 || hasLegacyScore;
+    
     linksContainer.innerHTML = `
         ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
-        ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
+        ${hasScore ? `<button onclick="scrollToScore()" class="btn-secondary">📄 View Score</button>` : ''}
     `;
 }
 
