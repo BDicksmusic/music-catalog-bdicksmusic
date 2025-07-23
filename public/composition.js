@@ -250,7 +250,7 @@ if (perfContainer) {
                     <div class="score-iframe-container">
                         <iframe 
                             id="score-iframe"
-                            src="/pdfjs/web/viewer.html?file=${encodeURIComponent(comp.scoreLink)}#page=1&zoom=page-width&toolbar=0&navpanes=0&spreadModeOnLoad=1"
+                            src="/pdfjs/web/viewer.html?file=${encodeURIComponent(comp.scoreLink)}#page=1&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=2&scrollModeOnLoad=0"
                             width="100%"
                             height="700px"
                             style="border: none; border-radius: 8px;">
@@ -271,7 +271,7 @@ if (perfContainer) {
             </div>
         `;
         
-        // Initialize spread PDF navigation
+        // Initialize spread PDF navigation (2-page spread view)
         initSimplePDFNavigation(comp.scoreLink);
     }
 }
@@ -282,7 +282,16 @@ let totalPages = 0;
 let scoreIframe = null;
 
 function initSimplePDFNavigation(pdfUrl) {
-    console.log('🔄 Initializing spread PDF navigation for:', pdfUrl);
+    console.log('🔄 Initializing spread PDF navigation (17x11 two-page layout) for:', pdfUrl);
+    
+    /*
+     * PDF.js URL Parameters for Spread View:
+     * - zoom=page-fit: Fits pages to viewport
+     * - toolbar=0: Hides PDF.js toolbar
+     * - navpanes=0: Hides navigation panes
+     * - spreadModeOnLoad=2: Forces spread mode (2 pages side by side)
+     * - scrollModeOnLoad=0: Page scrolling mode (not horizontal)
+     */
     
     scoreIframe = document.getElementById('score-iframe');
     
@@ -374,7 +383,7 @@ function goToSpread(spreadNumber) {
     
     // Update iframe src with new spread
     const baseUrl = scoreIframe.src.split('#')[0];
-    scoreIframe.src = `${baseUrl}#page=${startPage}&zoom=page-width&toolbar=0&navpanes=0&spreadModeOnLoad=1`;
+    scoreIframe.src = `${baseUrl}#page=${startPage}&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=2&scrollModeOnLoad=0`;
     
     updatePageInfo();
     updateNavigationButtons();

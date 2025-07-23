@@ -313,7 +313,7 @@
         .spread-score-viewer {
             margin: 3rem auto;
             width: 100%;
-            max-width: 98%;
+            max-width: min(99%, 1440px); /* Accommodate larger spread view */
             background: var(--gray-50);
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
@@ -339,10 +339,10 @@
         
         .score-iframe-container iframe {
             /* Two 8.5x11 pages side by side: 17x11 aspect ratio */
-            width: 1190px; /* 17 * 70px per inch */
-            height: 770px; /* 11 * 70px per inch */
-            max-width: min(95vw, 1190px);
-            max-height: min(80vh, 770px);
+            width: 1360px; /* 17 * 80px per inch for better clarity */
+            height: 880px; /* 11 * 80px per inch for better clarity */
+            max-width: min(95vw, 1360px);
+            max-height: min(85vh, 880px);
             border-radius: 8px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.15);
         }
@@ -439,9 +439,9 @@
             
             .score-iframe-container iframe {
                 width: 100% !important;
-                height: 400px !important;
+                height: 500px !important;
                 max-width: 100% !important;
-                max-height: 400px !important;
+                max-height: 500px !important;
             }
             
             .score-navigation-bottom {
