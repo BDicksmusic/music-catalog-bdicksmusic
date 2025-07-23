@@ -197,7 +197,7 @@ if (shortInstrContainer && comp.shortInstrumentList) {
        let perfHtml = '';
    
        if (comp.performanceNotes) {
-           notesHtml += `
+           perfsHtml += `
                <section class="composition-performance-notes">
                    <h3>Performance Notes</h3>
                    <div class="performance-notes-content">${comp.performanceNotes}</div>
@@ -205,7 +205,7 @@ if (shortInstrContainer && comp.shortInstrumentList) {
            `;
        }
        if (perfContainer) {
-           perfContainer.innerHTML = notesHtml;
+           perfContainer.innerHTML = perfHtml;
        }
 
     // Score PDF
@@ -228,21 +228,19 @@ if (shortInstrContainer && comp.shortInstrumentList) {
 // Purchase function for Stripe integration
 async function purchaseComposition(compositionId, title, price) {
     try {
-        const confirmed = confirm(`Purchase "${title}" for $${price}?\n\nYou'll be redirected to Stripe checkout.`);
-        if (confirmed) {
-            const response = await fetch('/api/create-checkout-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ compositionId: compositionId })
-            });
-            const data = await response.json();
-            if (data.checkoutUrl) {
-                window.location.href = data.checkoutUrl;
-            } else {
-                alert('Error creating checkout session. Please try again.');
-            }
+        // Remove the confirm() and always proceed
+        const response = await fetch('/api/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ compositionId: compositionId })
+        });
+        const data = await response.json();
+        if (data.checkoutUrl) {
+            window.location.href = data.checkoutUrl;
+        } else {
+            alert('Error creating checkout session. Please try again.');
         }
     } catch (error) {
         console.error('Error:', error);
