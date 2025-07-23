@@ -292,9 +292,20 @@ if (audioContainer) {
         
         audioContainer.innerHTML = audioPlayersHtml;
         
-        // Add audio player controls for multiple files
+        // Reset audio index for new composition
+        currentAudioIndex = 0;
+        
+        // For multiple audio files, show only the first one initially
         if (audioFiles.length > 1) {
-            addMultiAudioControls(audioContainer);
+            const audioPlayers = audioContainer.querySelectorAll('.composition-audio-player');
+            audioPlayers.forEach((player, index) => {
+                if (index === 0) {
+                    player.style.display = 'block';
+                } else {
+                    player.style.display = 'none';
+                }
+            });
+            addMultiAudioControls(audioContainer, audioFiles.length);
         }
     } else {
         audioContainer.style.display = 'none';
@@ -610,8 +621,13 @@ function formatDate(dateString) {
     });
 }
 
+// Global variable to track current audio player
+let currentAudioIndex = 0;
+let totalAudioCount = 0;
+
 // Add controls for multiple audio files
-function addMultiAudioControls(audioContainer) {
+function addMultiAudioControls(audioContainer, audioCount) {
+    totalAudioCount = audioCount;
     const audioPlayers = audioContainer.querySelectorAll('audio');
     
     // Pause all other players when one starts playing
@@ -625,17 +641,68 @@ function addMultiAudioControls(audioContainer) {
         });
     });
     
-    // Add navigation controls if more than one audio file
-    if (audioPlayers.length > 1) {
-        const controlsHtml = `
-            <div class="audio-nav-container">
-                <button class="audio-nav-btn" onclick="previousAudio()">⏮ Previous</button>
-                <span class="audio-nav-info">Multiple recordings available</span>
-                <button class="audio-nav-btn" onclick="nextAudio()">Next ⏭</button>
-            </div>
-        `;
-        audioContainer.insertAdjacentHTML('afterend', controlsHtml);
+    // Add navigation controls
+    const controlsHtml = `
+        <div class="audio-nav-container">
+            <button class="audio-nav-btn" onclick="previousAudio()" id="prevAudioBtn">⏮ Previous</button>
+            <span class="audio-nav-info" id="audioNavInfo">Recording 1 of ${audioCount}</span>
+            <button class="audio-nav-btn" onclick="nextAudio()" id="nextAudioBtn">Next ⏭</button>
+        </div>
+    `;
+    audioContainer.insertAdjacentHTML('afterend', controlsHtml);
+    
+    // Update button states
+    updateAudioNavButtons();
+}
+
+// Navigate to previous audio
+function previousAudio() {
+    if (currentAudioIndex > 0) {
+        switchToAudio(currentAudioIndex - 1);
     }
+}
+
+// Navigate to next audio
+function nextAudio() {
+    if (currentAudioIndex < totalAudioCount - 1) {
+        switchToAudio(currentAudioIndex + 1);
+    }
+}
+
+// Switch to specific audio player
+function switchToAudio(index) {
+    const audioContainer = document.querySelector('.composition-audio-container');
+    const audioPlayers = audioContainer.querySelectorAll('.composition-audio-player');
+    
+    // Hide current audio player
+    if (audioPlayers[currentAudioIndex]) {
+        audioPlayers[currentAudioIndex].style.display = 'none';
+        // Pause current audio if playing
+        const currentAudio = audioPlayers[currentAudioIndex].querySelector('audio');
+        if (currentAudio && !currentAudio.paused) {
+            currentAudio.pause();
+        }
+    }
+    
+    // Show new audio player
+    currentAudioIndex = index;
+    if (audioPlayers[currentAudioIndex]) {
+        audioPlayers[currentAudioIndex].style.display = 'block';
+    }
+    
+    // Update navigation
+    updateAudioNavButtons();
+}
+
+// Update navigation button states
+function updateAudioNavButtons() {
+    const prevBtn = document.getElementById('prevAudioBtn');
+    const nextBtn = document.getElementById('nextAudioBtn');
+    const navInfo = document.getElementById('audioNavInfo');
+    
+    if (prevBtn) prevBtn.disabled = currentAudioIndex === 0;
+    if (nextBtn) nextBtn.disabled = currentAudioIndex === totalAudioCount - 1;
+    if (navInfo) navInfo.textContent = `Recording ${currentAudioIndex + 1} of ${totalAudioCount}`;
 }
 
 // Navigation functions for multiple audio files
