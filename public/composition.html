@@ -57,17 +57,18 @@
         .composition-audio-container {
             width: 100%;
             max-width: 362px;
-            margin-bottom: 1.5rem; /* Space below audio, above cover */
+            margin-top: 1.5rem; /* Space above audio, below cover */
+            margin-bottom: 1.5rem;
         }
         
         .composition-audio-player {
             width: 100%;
             margin-bottom: 1rem;
-            background: var(--gray-50);
+            background: transparent; /* Remove background */
             border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: 1px solid var(--gray-200);
+            padding: 0.5rem 0; /* Reduced padding */
+            box-shadow: none; /* Remove shadow */
+            border: none; /* Remove border */
         }
         
         .composition-audio-player:last-child {
@@ -94,6 +95,9 @@
             color: var(--gray-600);
             margin-bottom: 0.5rem;
             line-height: 1.4;
+            background: transparent; /* Ensure transparent background */
+            padding: 0.25rem 0; /* Reduced padding */
+            border-radius: 4px;
         }
         
         .composition-audio-metadata .performance-info {
@@ -574,17 +578,17 @@
     <main>
         <div class="composition-main">
             <div class="composition-detail-card">
-                <div class="composition-audio-container" id="composition-audio-container">
-                    <!-- Audio players will be injected here -->
-                </div>
-                <div class="composition-video-container" id="composition-video-container" style="display: none;">
-                    <!-- Video players will be injected here -->
-                </div>
                 <div class="composition-cover-container">
                     <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" 
                          alt="" 
                          class="composition-cover" 
                          id="composition-cover">
+                </div>
+                <div class="composition-audio-container" id="composition-audio-container">
+                    <!-- Audio players will be injected here -->
+                </div>
+                <div class="composition-video-container" id="composition-video-container" style="display: none;">
+                    <!-- Video players will be injected here -->
                 </div>
             </div>
                 <div class="composition-content-container">
