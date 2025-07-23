@@ -438,6 +438,7 @@ const transformNotionPage = (page) => {
         created: page.created_time,
         lastEdited: page.last_edited_time,
         popular: properties.Popular?.checkbox || false,
+        multiple: properties.Multiple?.checkbox || false, // Force multi-movement interface
         slug: properties.Slug?.rich_text[0]?.plain_text || '',
         shortInstrumentList: notionRichTextToHtml(properties['Short Instrument List']?.rich_text) || '',
     };
