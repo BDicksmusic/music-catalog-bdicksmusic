@@ -1,16 +1,16 @@
 :root {
   /* ===== COLOR PALETTE ===== */
   /* Primary Brand Colors (Blue) */
-  --primary-50:  hsl(220, 35%, 97%);
-  --primary-100: hsl(220, 40%, 94%);
-  --primary-200: hsl(220, 45%, 90%);
-  --primary-300: hsl(220, 50%, 83%);
-  --primary-400: hsl(220, 55%, 70%);
-  --primary-500: hsl(220, 60%, 56%);
-  --primary-600: hsl(220, 65%, 48%);
-  --primary-700: hsl(220, 70%, 40%);
-  --primary-800: hsl(220, 75%, 32%);
-  --primary-900: hsl(220, 80%, 24%);
+  --primary-50:  hsl(220, 15%, 97%);
+  --primary-100: hsl(220, 20%, 94%);
+  --primary-200: hsl(220, 25%, 90%);
+  --primary-300: hsl(220, 30%, 83%);
+  --primary-400: hsl(220, 32%, 70%);  /* Music Catalog button level - ultra muted */
+  --primary-500: hsl(220, 40%, 56%);  /* Interactive elements */
+  --primary-600: hsl(220, 50%, 48%);  /* Buttons and links */
+  --primary-700: hsl(220, 60%, 40%);  /* Active states */
+  --primary-800: hsl(220, 65%, 32%);
+  --primary-900: hsl(220, 70%, 24%);
 
   /* Secondary Colors (Orange) - Professional Muted */
   --secondary-50:  hsl(35, 40%, 97%);
@@ -193,13 +193,14 @@
   --blur-2xl: 40px;
   --blur-3xl: 64px;
 
-  /* ===== GRADIENTS ===== */
-  --gradient-primary: linear-gradient(135deg, hsl(220, 90%, 56%) 0%, hsl(35, 90%, 56%) 100%);
-  --gradient-secondary: linear-gradient(135deg, hsl(35, 90%, 56%) 0%, hsl(220, 90%, 56%) 100%);
-  --gradient-warm: linear-gradient(135deg, hsl(35, 90%, 56%) 0%, hsl(35, 85%, 48%) 100%);
-  --gradient-cool: linear-gradient(135deg, hsl(220, 90%, 56%) 0%, hsl(220, 85%, 48%) 100%);
-  --gradient-sunset: linear-gradient(135deg, hsl(35, 100%, 94%) 0%, hsl(35, 90%, 56%) 50%, hsl(35, 70%, 24%) 100%);
-  --gradient-ocean: linear-gradient(135deg, hsl(220, 100%, 66%) 0%, hsl(220, 100%, 70%) 20%, hsl(220, 90%, 56%) 50%);
+  /* ===== GRADIENTS - Ultra Professional (Ultra Muted) ===== */
+  --gradient-primary: linear-gradient(135deg, hsl(220, 40%, 56%) 0%, hsl(35, 50%, 56%) 100%);
+  --gradient-secondary: linear-gradient(135deg, hsl(35, 50%, 56%) 0%, hsl(220, 40%, 56%) 100%);
+  --gradient-warm: linear-gradient(135deg, hsl(35, 50%, 56%) 0%, hsl(35, 55%, 48%) 100%);
+  --gradient-cool: linear-gradient(135deg, hsl(220, 40%, 56%) 0%, hsl(220, 45%, 48%) 100%);
+  --gradient-sunset: linear-gradient(135deg, hsl(35, 25%, 94%) 0%, hsl(35, 50%, 56%) 50%, hsl(35, 70%, 24%) 100%);
+  --gradient-ocean: linear-gradient(135deg, hsl(220, 30%, 66%) 0%, hsl(220, 32%, 70%) 20%, hsl(220, 35%, 56%) 50%);
+  
   /* Glass morphism */
   --glass-background: rgba(255, 255, 255, 0.25);
   --glass-border: rgba(255, 255, 255, 0.18);
@@ -221,16 +222,16 @@
   --gray-800: hsl(220, 14%, 96%);
   --gray-900: hsl(210, 20%, 98%);
 
-  /* Dark mode primary colors - same hue (220), reversed lightness */
-  --primary-50: hsl(220, 70%, 24%);
-  --primary-100: hsl(220, 75%, 32%);
-  --primary-200: hsl(220, 80%, 40%);
-  --primary-300: hsl(220, 85%, 48%);
-  --primary-400: hsl(220, 90%, 56%);
-  --primary-500: hsl(220, 95%, 70%);
-  --primary-600: hsl(220, 98%, 83%);
-  --primary-700: hsl(220, 100%, 90%);
-  --primary-800: hsl(220, 100%, 94%);
+  /* Dark mode primary colors - slightly desaturated but more colorful than light mode */
+  --primary-50: hsl(220, 55%, 24%);
+  --primary-100: hsl(220, 60%, 32%);
+  --primary-200: hsl(220, 65%, 40%);
+  --primary-300: hsl(220, 70%, 48%);
+  --primary-400: hsl(220, 75%, 56%);
+  --primary-500: hsl(220, 80%, 70%);
+  --primary-600: hsl(220, 85%, 83%);
+  --primary-700: hsl(220, 90%, 90%);
+  --primary-800: hsl(220, 95%, 94%);
   --primary-900: hsl(220, 100%, 97%);
 
   /* Dark mode secondary colors - same hue (35), reversed lightness */

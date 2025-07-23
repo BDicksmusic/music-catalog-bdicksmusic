@@ -2,12 +2,13 @@
 
 /* Hero Section */
 .media-hero {
-    background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
+    background: linear-gradient(135deg, var(--primary-400), var(--primary-300));
     color: white;
     text-align: center;
     padding: 6rem 2rem;
     margin-top: 0px;
 }
+
 
 .hero-content h1 {
     font-size: clamp(2.5rem, 5vw, 4rem);
@@ -52,8 +53,8 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    transition: left 0.8s ease;
 }
 
 .filter-btn:hover:before {
@@ -65,8 +66,8 @@
     background: var(--primary-500);
     border-color: var(--primary-500);
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 /* Featured Video Section */
@@ -129,6 +130,7 @@
 
 /* Media Grid Section */
 .media-grid-section {
+    background-color: var(--primary-400);
     padding: 4rem 0;
 }
 
@@ -150,7 +152,7 @@
 }
 
 .media-item {
-    background: white;
+    background: linear-gradient(145deg, var(--gray-50) 0%, var(--gray-200) 50%, var(--gray-100) 100%);
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: 0 5px 20px rgba(0,0,0,0.1);
@@ -168,6 +170,7 @@
 .media-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    background: linear-gradient(145deg, var(--gray-50) 0%, var(--primary-100) 50%, var(--primary-50) 100%);
 }
 
 /* Hidden items - completely removed from grid flow */
@@ -272,7 +275,7 @@
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: var(--primary-500);
+    background: var(--primary-400);
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 15px;
@@ -282,7 +285,7 @@
 
 /* Audio Thumbnail */
 .audio-thumbnail {
-    background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
+    background: linear-gradient(135deg, var(--primary-200), var(--primary-300));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -415,7 +418,7 @@
 
 .progress {
     height: 100%;
-    background: var(--primary-500);
+    background: var(--primary-400);
     width: 0%;
     transition: width 0.3s ease;
 }
@@ -540,7 +543,7 @@
     width: 40px;
     height: 40px;
     border: 4px solid var(--gray-200);
-    border-top: 4px solid var(--primary-500);
+    border-top: 4px solid var(--primary-400);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
@@ -655,4 +658,117 @@
     .video-container iframe {
         height: 250px;
     }
+} 
+
+/* ===== DARK MODE ENHANCEMENTS ===== */
+
+/* Dark mode media hero */
+[data-theme="dark"] .media-hero {
+    background: linear-gradient(135deg, var(--primary-300), var(--primary-400));
+    color: var(--gray-100);
+}
+
+/* Dark mode filter navigation */
+[data-theme="dark"] .media-filters {
+    background: var(--gray-100);
+    border-bottom-color: var(--gray-200);
+}
+
+/* Dark mode filter buttons */
+[data-theme="dark"] .filter-btn {
+    background: var(--gray-200);
+    border-color: var(--gray-300);
+    color: var(--gray-700);
+}
+
+[data-theme="dark"] .filter-btn:hover,
+[data-theme="dark"] .filter-btn.active {
+    background: var(--primary-400);
+    border-color: var(--primary-400);
+    color: var(--gray-100);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Dark mode media items */
+[data-theme="dark"] .media-item {
+    background: linear-gradient(145deg, var(--gray-200) 0%, var(--gray-400) 50%, var(--gray-300) 100%);
+    border: 1px solid var(--gray-300);
+}
+
+[data-theme="dark"] .media-item:hover {
+    background: linear-gradient(145deg, var(--gray-300) 0%, var(--primary-300) 50%, var(--primary-200) 100%);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 25px rgba(59, 130, 246, 0.2);
+}
+
+/* Dark mode media info */
+[data-theme="dark"] .media-info h3 {
+    color: var(--gray-800);
+}
+
+[data-theme="dark"] .media-info p {
+    color: var(--gray-600);
+}
+
+/* Dark mode audio showcase */
+[data-theme="dark"] .audio-showcase {
+    background: var(--gray-100);
+}
+
+/* Dark mode audio players */
+[data-theme="dark"] .audio-player {
+    background: var(--gray-200);
+    border: 1px solid var(--gray-300);
+}
+
+[data-theme="dark"] .audio-player:hover {
+    background: var(--gray-300);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+}
+
+/* Dark mode audio info */
+[data-theme="dark"] .audio-info h3 {
+    color: var(--gray-800);
+}
+
+[data-theme="dark"] .audio-info p {
+    color: var(--gray-600);
+}
+
+/* Dark mode play button */
+[data-theme="dark"] .play-btn {
+    background: var(--primary-400);
+    color: var(--gray-100);
+}
+
+[data-theme="dark"] .play-btn:hover {
+    background: var(--primary-500);
+}
+
+/* Dark mode progress bar */
+[data-theme="dark"] .progress-bar {
+    background: var(--gray-300);
+}
+
+[data-theme="dark"] .progress {
+    background: var(--primary-400);
+}
+
+/* Dark mode time display */
+[data-theme="dark"] .time {
+    color: var(--gray-600);
+}
+
+/* Dark mode video info */
+[data-theme="dark"] .video-info h3 {
+    color: var(--gray-800);
+}
+
+[data-theme="dark"] .video-info p {
+    color: var(--gray-600);
+}
+
+/* Dark mode video meta */
+[data-theme="dark"] .video-meta span {
+    background: var(--gray-300);
+    color: var(--gray-700);
 } 
