@@ -1091,26 +1091,63 @@ input:focus, textarea:focus, select:focus {
 .carousel-controls {
     display: flex;
     justify-content: center;
-    gap: 5px;
+    gap: 12px;
+    margin: 2rem 0;
 }
 
 .carousel-btn {
-    background: var(--primary-500);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 24px;
-    font-size: 1.5rem;
+    background: linear-gradient(145deg, var(--gray-50), var(--gray-100));
+    color: var(--gray-700);
+    border: 2px solid var(--gray-200);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
     cursor: pointer;
-    box-shadow: none;
-    transition: background 0.2s, transform 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     margin: 0;
     outline: none;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .carousel-btn:hover {
-    background: var(--primary-700);
-    transform: translateY(-2px) scale(1.04);
+    background: linear-gradient(145deg, var(--primary-50), var(--primary-100));
+    color: var(--primary-700);
+    border-color: var(--primary-300);
+    transform: translateY(-2px) scale(1.08);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+}
+
+.carousel-btn:active {
+    transform: translateY(0) scale(0.95);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Modern arrow icons */
+.carousel-btn::before {
+    content: '';
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.carousel-btn.prev::before {
+    content: '‹';
+    font-weight: bold;
+    margin-right: 2px;
+}
+
+.carousel-btn.next::before {
+    content: '›';
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+.carousel-btn:hover::before {
+    transform: scale(1.2);
 }
 
 /* Spacing for first/last cards */
