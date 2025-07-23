@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const compression = require('compression');
 const { Client } = require('@notionhq/client');
 require('dotenv').config();
 
@@ -30,6 +31,7 @@ const notion = new Client({
 // Middleware
 // Middleware - IMPORTANT: Raw body parser for Stripe webhook MUST come before express.json()
 app.use('/api/stripe-webhook', express.raw({type: 'application/json'}));
+app.use(compression()); // Enable gzip compression for faster responses
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -40,7 +42,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Helper function to query related media for a composition
 async function queryRelatedMedia(compositionId, mediaType = null) {
     try {
-        console.log(`🔍 Querying related media for composition: ${compositionId}`);
+        if (process.env.NODE_ENV !== 'production') {
+            console.log(`🔍 Querying related media for composition: ${compositionId}`);
+        }
         
             // Query the media database for items related to this composition
     // Check both audio and video relations
@@ -78,7 +82,14 @@ async function queryRelatedMedia(compositionId, mediaType = null) {
         
         const response = await notion.databases.query({
             database_id: process.env.NOTION_MEDIA_DATABASE_ID,
-            filter: filter
+            filter: filter,
+            page_size: 10, // Limit results to prevent large responses
+            sorts: [
+                {
+                    property: 'Type',
+                    direction: 'ascending'
+                }
+            ]
         });
         
         return response.results.map(transformMediaPage);
@@ -148,7 +159,10 @@ function transformMediaPage(page) {
         }
     }
     
-    console.log(`🔍 Media: "${getTextContent(properties.Name)}" -> URL: ${mediaUrl}`);
+    // Only log in development mode to reduce processing time
+    if (process.env.NODE_ENV !== 'production') {
+        console.log(`🔍 Media: "${getTextContent(properties.Name)}" -> URL: ${mediaUrl}`);
+    }
     
     return {
         id: page.id,
@@ -187,8 +201,16 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
     }
     
     try {
-        // Query all related media
-        const allMedia = await queryRelatedMedia(page.id);
+        // Query all related media with timeout and error handling
+        const allMedia = await Promise.race([
+            queryRelatedMedia(page.id),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Media query timeout')), 2500)
+            )
+        ]).catch(error => {
+            console.warn(`⚠️ Media query failed for ${page.id}:`, error.message);
+            return []; // Return empty array on error, don't break the page
+        });
         
         // Separate by type
         const audioMedia = allMedia.filter(media => media.type === 'Audio');
@@ -598,6 +620,12 @@ app.get('/api/compositions/slug/:slug', async (req, res) => {
             CACHE_DURATIONS.singleComposition,
             fetchCompositionBySlug
         );
+
+        // Add browser caching headers for better performance
+        res.set({
+            'Cache-Control': 'public, max-age=300', // Cache for 5 minutes in browser
+            'ETag': `"${slug}-${Date.now()}"`
+        });
 
         res.json(result);
 

@@ -54,12 +54,18 @@
     flex-shrink: 0;
 }
         
+        /* Dedicated Media Section */
+        .composition-media-section {
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            box-sizing: border-box;
+        }
+        
         .composition-audio-container {
             width: 100%;
-            max-width: 454px; /* Match cover container max-width */
-            min-width: 220px;  /* Match cover container min-width */
-            margin-top: 1.5rem; /* Space above audio, below cover */
-            margin-bottom: 1.5rem;
+            max-width: 800px; /* Wider for better presentation */
+            margin: 0 auto 2rem auto; /* Center the container */
         }
         
         .composition-audio-player {
@@ -279,10 +285,14 @@
                 box-sizing: border-box;
             }
             
+            .composition-media-section {
+                padding: 0 0.5rem;
+                margin: 1.5rem auto;
+            }
+            
             .composition-audio-container {
                 max-width: 100%;
-                min-width: 100%;
-                margin-top: 1rem;
+                margin: 0 auto 1.5rem auto;
             }
             
             .composition-audio-player {
@@ -589,12 +599,6 @@
                          class="composition-cover" 
                          id="composition-cover">
                 </div>
-                <div class="composition-audio-container" id="composition-audio-container">
-                    <!-- Audio players will be injected here -->
-                </div>
-                <div class="composition-video-container" id="composition-video-container" style="display: none;">
-                    <!-- Video players will be injected here -->
-                </div>
             </div>
                 <div class="composition-content-container">
                     <div class="composition-title-container">
@@ -620,6 +624,16 @@
                         <!-- Program and Performance Notes will be injected here -->
                     </div>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Dedicated Audio/Video Section -->
+        <div class="composition-media-section">
+            <div class="composition-audio-container" id="composition-audio-container">
+                <!-- Audio players will be injected here -->
+            </div>
+            <div class="composition-video-container" id="composition-video-container" style="display: none;">
+                <!-- Video players will be injected here -->
             </div>
         </div>
     </main>
