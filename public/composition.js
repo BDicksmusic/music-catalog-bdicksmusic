@@ -439,6 +439,25 @@ if (perfContainer) {
                     `;
                 }
                 
+                // Check if this is a YouTube video or regular video file
+                const isYouTube = isYouTubeUrl(videoFile.url);
+                
+                let videoPlayerHtml = '';
+                if (isYouTube) {
+                    // Use YouTube embed for YouTube URLs
+                    videoPlayerHtml = createYouTubeEmbed(videoFile.url, displayName);
+                } else {
+                    // Use standard video element for direct video files
+                    videoPlayerHtml = `
+                        <video controls preload="metadata" data-video-id="${videoFile.id}">
+                            <source src="${videoFile.url}" type="video/mp4">
+                            <source src="${videoFile.url}" type="video/webm">
+                            <source src="${videoFile.url}" type="video/ogg">
+                            Your browser does not support the video element.
+                        </video>
+                    `;
+                }
+                
                 return `
                     <div class="composition-video-player" data-video-index="${index}">
                         <div class="composition-video-title">
@@ -446,12 +465,7 @@ if (perfContainer) {
                             ${videoFiles.length > 1 ? `<span class="video-counter">(${index + 1}/${videoFiles.length})</span>` : ''}
                         </div>
                         ${metadataHtml}
-                        <video controls preload="metadata" data-video-id="${videoFile.id}">
-                            <source src="${videoFile.url}" type="video/mp4">
-                            <source src="${videoFile.url}" type="video/webm">
-                            <source src="${videoFile.url}" type="video/ogg">
-                            Your browser does not support the video element.
-                        </video>
+                        ${videoPlayerHtml}
                         ${videoFile.duration ? `<div class="video-duration">Duration: ${videoFile.duration}</div>` : ''}
                     </div>
                 `;
@@ -663,6 +677,37 @@ async function purchaseComposition(compositionId, title, price) {
 }
 
 // ===== UTILITY FUNCTIONS FOR ENHANCED MEDIA =====
+
+// YouTube URL helper functions
+function isYouTubeUrl(url) {
+    if (!url) return false;
+    return /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i.test(url);
+}
+
+function getYouTubeVideoId(url) {
+    if (!url) return null;
+    const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+    return match ? match[1] : null;
+}
+
+function createYouTubeEmbed(url, title = 'Video') {
+    const videoId = getYouTubeVideoId(url);
+    if (!videoId) return null;
+    
+    return `
+        <div class="youtube-embed-container">
+            <iframe 
+                width="100%" 
+                height="315" 
+                src="https://www.youtube.com/embed/${videoId}" 
+                title="${title}"
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+            </iframe>
+        </div>
+    `;
+}
 
 // Extract movement order from filename (Roman numerals or Arabic numbers)
 function extractMovementOrder(title) {
