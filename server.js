@@ -107,12 +107,42 @@ async function queryRelatedCompositions(mediaId) {
 function transformMediaPage(page) {
     const properties = page.properties;
     
+    // Get URL - handle both uploaded files and URL properties
+    let mediaUrl = '';
+    
+    // Try URL properties first
+    if (properties.URL?.url) {
+        mediaUrl = properties.URL.url;
+    } else if (properties.VideoURL?.url) {
+        mediaUrl = properties.VideoURL.url;
+    } else if (properties.AudioURL?.url) {
+        mediaUrl = properties.AudioURL.url;
+    }
+    // Try uploaded files (for direct audio file uploads)
+    else if (properties['Audio File']?.files?.[0]) {
+        mediaUrl = properties['Audio File'].files[0].file?.url || properties['Audio File'].files[0].external?.url || '';
+    } else if (properties['Video File']?.files?.[0]) {
+        mediaUrl = properties['Video File'].files[0].file?.url || properties['Video File'].files[0].external?.url || '';
+    }
+    // Fallback to any file property
+    else {
+        const fileProps = ['Media File', 'File', 'Upload'];
+        for (const prop of fileProps) {
+            if (properties[prop]?.files?.[0]) {
+                mediaUrl = properties[prop].files[0].file?.url || properties[prop].files[0].external?.url || '';
+                break;
+            }
+        }
+    }
+    
+    console.log(`🔍 Media: "${getTextContent(properties.Name)}" -> URL: ${mediaUrl}`);
+    
     return {
         id: page.id,
         title: getTextContent(properties.Name) || getTextContent(properties.Title) || 'Untitled Media',
         type: properties.Type?.select?.name || 'Unknown',
         category: properties.Category?.select?.name || 'performance',
-        url: properties.URL?.url || properties.VideoURL?.url || properties.AudioURL?.url || '',
+        url: mediaUrl,
         thumbnail: getFileUrl(properties.Thumbnail),
         duration: getTextContent(properties.Duration) || '',
         performanceBy: getTextContent(properties['Performance By']) || '',

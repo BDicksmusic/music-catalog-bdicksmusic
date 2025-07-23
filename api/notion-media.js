@@ -138,7 +138,7 @@ function transformNotionPage(page) {
         
         // Enhanced relational data
         type: props.Type?.select?.name || 'Unknown',
-        url: props.URL?.url || props.VideoURL?.url || props.AudioURL?.url || '',
+        url: getMediaUrl(props),
         performanceBy: getTextFromRichText(props['Performance By']?.rich_text) || '',
         recordingDate: props['Recording Date']?.date?.start || '',
         quality: props.Quality?.select?.name || 'Standard',
@@ -153,6 +153,35 @@ function transformNotionPage(page) {
 function getTextFromRichText(richText) {
     if (!richText || !Array.isArray(richText)) return '';
     return richText.map(text => text.plain_text).join('');
+}
+
+// Helper function to get media URL - handles both files and URLs
+function getMediaUrl(properties) {
+    // Try URL properties first
+    if (properties.URL?.url) {
+        return properties.URL.url;
+    } else if (properties.VideoURL?.url) {
+        return properties.VideoURL.url;
+    } else if (properties.AudioURL?.url) {
+        return properties.AudioURL.url;
+    }
+    // Try uploaded files (for direct audio file uploads)
+    else if (properties['Audio File']?.files?.[0]) {
+        return properties['Audio File'].files[0].file?.url || properties['Audio File'].files[0].external?.url || '';
+    } else if (properties['Video File']?.files?.[0]) {
+        return properties['Video File'].files[0].file?.url || properties['Video File'].files[0].external?.url || '';
+    }
+    // Fallback to any file property
+    else {
+        const fileProps = ['Media File', 'File', 'Upload'];
+        for (const prop of fileProps) {
+            if (properties[prop]?.files?.[0]) {
+                return properties[prop].files[0].file?.url || properties[prop].files[0].external?.url || '';
+            }
+        }
+    }
+    
+    return '';
 }
 
 // Helper function to get thumbnail URL

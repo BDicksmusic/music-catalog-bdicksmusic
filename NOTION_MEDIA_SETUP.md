@@ -44,9 +44,15 @@ This guide explains how to set up your enhanced Notion databases with four key r
 |---------------|------|-------------|
 | **Name** | Title | Media title |
 | **Type** | Select | Audio, Video, Score |
-| **URL** | URL | Direct link to media file |
-| **Category** | Select | performance, composition, editing, audio |
 | **Composition Relations** | Relation | Link to Compositions database |
+| **Category** | Select | performance, composition, editing, audio |
+
+### Media File Properties (Choose Based on Type)
+| Property Name | Type | Description | Use For |
+|---------------|------|-------------|---------|
+| **Audio File** | Files & Media | Upload audio files directly | Audio files (.mp3, .wav, .m4a) |
+| **VideoURL** | URL | Link to video (YouTube, etc.) | Video links |
+| **URL** | URL | Generic media URL | Any URL-based media |
 
 ### Enhanced Metadata Properties
 | Property Name | Type | Description | Frontend Display |
@@ -232,10 +238,18 @@ For each audio/video file:
 ## Troubleshooting
 
 ### Common Issues:
-1. **Media not showing**: Check Composition Relations are set
-2. **Performance slow**: Use `includeMedia=false` for list views
-3. **Links broken**: Verify URL property is populated
-4. **Cache issues**: Use `/api/cache/clear` endpoint
+1. **Media not showing**: Check Composition Relations are set in Media database
+2. **Audio not playing**: Verify "Audio File" property has uploaded file OR "URL" property has link
+3. **Video not loading**: Verify "VideoURL" property has valid YouTube/video link
+4. **Performance slow**: Use `includeMedia=false` for list views
+5. **Cache issues**: Use `/api/cache/clear` endpoint
+
+### Database Property Setup:
+```
+For Audio: Use "Audio File" (Files & Media) property to upload .mp3/.wav files
+For Video: Use "VideoURL" (URL) property for YouTube links  
+For Relations: Use "Composition Relations" (Relation) to link to compositions
+```
 
 ### Environment Setup:
 ```bash

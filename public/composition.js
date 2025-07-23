@@ -176,6 +176,13 @@ if (audioContainer) {
     const audioFiles = comp.audioFiles || [];
     const hasLegacyAudio = comp.audioLink && !audioFiles.length;
     
+    console.log('🎵 Audio debug info:');
+    console.log('- audioFiles array:', audioFiles);
+    console.log('- audioFiles.length:', audioFiles.length);
+    console.log('- legacy audioLink:', comp.audioLink);
+    console.log('- hasLegacyAudio:', hasLegacyAudio);
+    console.log('- full composition object:', comp);
+    
     if (audioFiles.length > 0 || hasLegacyAudio) {
         let audioPlayersHtml = '';
         
