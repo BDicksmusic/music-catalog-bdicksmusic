@@ -30,23 +30,7 @@ async function handler(req, res) {
     try {
         // Query the Notion database
         const response = await notion.databases.query({
-            database_id: DATABASE_ID,
-            filter: {
-                property: 'Status',
-                select: {
-                    equals: 'published'
-                }
-            },
-            sorts: [
-                {
-                    property: 'Featured',
-                    direction: 'descending'
-                },
-                {
-                    property: 'Created',
-                    direction: 'descending'
-                }
-            ]
+            database_id: DATABASE_ID
         });
 
         // Transform the data for frontend consumption
