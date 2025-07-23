@@ -1,16 +1,24 @@
 // Media Portfolio JavaScript
 
+// Configuration
+const YOUTUBE_API_KEY = 'YOUR_YOUTUBE_API_KEY'; // Replace with your API key
+const YOUTUBE_CHANNEL_ID = 'UCrKhLmCV6fTbM7oZMb6_Q1A'; // Your actual channel ID
+const NOTION_DATABASE_URL = '/api/notion-media'; // Local API endpoint
+
 document.addEventListener('DOMContentLoaded', function() {
     initMediaFilters();
     initAudioPlayers();
     initVideoPlayers();
     initMobileMenu();
+    initSecondaryNavigation();
+    loadDynamicContent(); // New function to load content
 });
 
-// Filter functionality
+// Enhanced filter functionality with immediate content display
 function initMediaFilters() {
     const filterBtns = document.querySelectorAll('.filter-btn');
     const mediaItems = document.querySelectorAll('.media-item');
+    const audioShowcase = document.querySelector('.audio-showcase');
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -20,26 +28,140 @@ function initMediaFilters() {
             filterBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             
-            // Filter media items
+            // First, hide all items immediately
             mediaItems.forEach(item => {
-                const category = item.getAttribute('data-category');
-                
-                if (filter === 'all' || category === filter) {
-                    item.classList.remove('hidden');
-                    item.classList.add('visible');
-                } else {
-                    item.classList.add('hidden');
-                    item.classList.remove('visible');
-                }
+                item.classList.add('hidden');
+                item.classList.remove('visible');
             });
+            
+            // Small delay to allow hiding animation, then show relevant items
+            setTimeout(() => {
+                let visibleItems = [];
+                
+                mediaItems.forEach(item => {
+                    const category = item.getAttribute('data-category');
+                    
+                    if (filter === 'all' || category === filter) {
+                        visibleItems.push(item);
+                    }
+                });
+                
+                // Show visible items with staggered animation
+                visibleItems.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.classList.remove('hidden');
+                        item.classList.add('visible');
+                    }, index * 100); // Stagger by 100ms for smooth effect
+                });
+                
+            }, 150); // Brief delay for hide animation
+            
+            // Special handling for audio filter - auto-scroll to audio section
+            if (filter === 'audio') {
+                setTimeout(() => {
+                    audioShowcase.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                    // Highlight the audio section briefly
+                    audioShowcase.style.background = 'var(--primary-50)';
+                    setTimeout(() => {
+                        audioShowcase.style.background = '';
+                    }, 2000);
+                }, 600); // Wait for items to appear first
+            }
         });
     });
 }
 
-// Audio player functionality
+// New function to integrate secondary navigation
+function initSecondaryNavigation() {
+    const secondaryButtons = document.querySelectorAll('.secondary-button');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    
+    // Map secondary nav to media filters
+    const navToFilterMap = {
+        'composer': 'composition',
+        'trumpeter': 'performance', 
+        'educator': 'editing' // or could be 'audio' for educational content
+    };
+    
+    secondaryButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const role = this.getAttribute('href').replace('/', '');
+            const correspondingFilter = navToFilterMap[role];
+            
+            if (correspondingFilter) {
+                // Trigger the corresponding media filter
+                const targetFilterBtn = document.querySelector(`[data-filter="${correspondingFilter}"]`);
+                if (targetFilterBtn) {
+                    targetFilterBtn.click();
+                    
+                    // Scroll to media grid
+                    setTimeout(() => {
+                        document.querySelector('.media-grid-section').scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }, 100);
+                }
+            }
+        });
+    });
+}
+
+// Enhanced audio player functionality with auto-scroll
 function initAudioPlayers() {
     const audioPlayers = document.querySelectorAll('.audio-player');
+    const audioItems = document.querySelectorAll('.media-item.audio');
     
+    // Handle clicks on audio media items - auto-scroll to audio section
+    audioItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const title = this.querySelector('h3').textContent;
+            const audioShowcase = document.querySelector('.audio-showcase');
+            
+            // Scroll to audio section
+            audioShowcase.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+            
+            // Find and highlight the corresponding audio player
+            setTimeout(() => {
+                const matchingPlayer = Array.from(audioPlayers).find(player => {
+                    const playerTitle = player.querySelector('h3').textContent;
+                    return playerTitle.toLowerCase().includes(title.toLowerCase().split(' ')[0]);
+                });
+                
+                if (matchingPlayer) {
+                    // Highlight the player
+                    matchingPlayer.style.background = 'var(--primary-100)';
+                    matchingPlayer.style.transform = 'scale(1.02)';
+                    matchingPlayer.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.3)';
+                    
+                    // Auto-play the audio
+                    const playBtn = matchingPlayer.querySelector('.play-btn');
+                    if (playBtn && playBtn.textContent === '▶') {
+                        playBtn.click();
+                    }
+                    
+                    // Remove highlight after a few seconds
+                    setTimeout(() => {
+                        matchingPlayer.style.background = '';
+                        matchingPlayer.style.transform = '';
+                        matchingPlayer.style.boxShadow = '';
+                    }, 3000);
+                }
+            }, 500);
+        });
+    });
+    
+    // Original audio player functionality
     audioPlayers.forEach(player => {
         const playBtn = player.querySelector('.play-btn');
         const progressBar = player.querySelector('.progress-bar');
@@ -64,6 +186,16 @@ function initAudioPlayers() {
         
         // Play button click
         playBtn.addEventListener('click', function() {
+            // Stop other players first
+            audioPlayers.forEach(otherPlayer => {
+                if (otherPlayer !== player) {
+                    const otherPlayBtn = otherPlayer.querySelector('.play-btn');
+                    if (otherPlayBtn.textContent === '⏸') {
+                        otherPlayBtn.click(); // Pause other players
+                    }
+                }
+            });
+            
             if (isPlaying) {
                 pauseAudio();
             } else {
@@ -189,6 +321,335 @@ function showVideoModal(title, description) {
     });
 }
 
+// Load dynamic content from YouTube and/or Notion
+async function loadDynamicContent() {
+    const mediaGrid = document.getElementById('media-grid');
+    
+    // Show loading state
+    const loadingElement = document.createElement('div');
+    loadingElement.className = 'loading-media';
+    loadingElement.innerHTML = `
+        <div class="loading-spinner"></div>
+        <p>Loading latest content...</p>
+    `;
+    mediaGrid.appendChild(loadingElement);
+    
+    try {
+        // Try to load from both sources
+        const [youtubeVideos, notionContent] = await Promise.allSettled([
+            loadYouTubeVideos(),
+            loadNotionContent()
+        ]);
+        
+        // Remove loading element
+        loadingElement.remove();
+        
+        // Process YouTube videos
+        if (youtubeVideos.status === 'fulfilled' && youtubeVideos.value.length > 0) {
+            youtubeVideos.value.forEach(video => {
+                const videoElement = createVideoElement(video, 'youtube');
+                mediaGrid.appendChild(videoElement);
+            });
+        }
+        
+        // Process Notion content
+        if (notionContent.status === 'fulfilled' && notionContent.value.length > 0) {
+            notionContent.value.forEach(item => {
+                const contentElement = createContentElement(item, 'notion');
+                mediaGrid.appendChild(contentElement);
+            });
+        }
+        
+        // Reinitialize video players for new content
+        initVideoPlayers();
+        
+    } catch (error) {
+        console.error('Error loading dynamic content:', error);
+        loadingElement.innerHTML = `
+            <p>Using static content. Dynamic loading will be available when APIs are configured.</p>
+        `;
+        setTimeout(() => loadingElement.remove(), 3000);
+    }
+}
+
+// YouTube API Integration
+async function loadYouTubeVideos() {
+    if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === 'YOUR_YOUTUBE_API_KEY') {
+        console.log('YouTube API key not configured');
+        return [];
+    }
+    
+    try {
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?` +
+            `key=${YOUTUBE_API_KEY}&` +
+            `channelId=${YOUTUBE_CHANNEL_ID}&` +
+            `part=snippet,id&` +
+            `order=date&` +
+            `maxResults=10&` +
+            `type=video`
+        );
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            throw new Error(data.error.message);
+        }
+        
+        return data.items.map(item => ({
+            id: item.id.videoId,
+            title: item.snippet.title,
+            description: item.snippet.description,
+            thumbnail: item.snippet.thumbnails.medium.url,
+            publishedAt: item.snippet.publishedAt,
+            channelTitle: item.snippet.channelTitle,
+            url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+            embedUrl: `https://www.youtube.com/embed/${item.id.videoId}`
+        }));
+        
+    } catch (error) {
+        console.error('YouTube API Error:', error);
+        return [];
+    }
+}
+
+// Notion API Integration
+async function loadNotionContent() {
+    if (!NOTION_DATABASE_URL || NOTION_DATABASE_URL === 'YOUR_NOTION_API_ENDPOINT') {
+        console.log('Notion API not configured');
+        return [];
+    }
+    
+    try {
+        const response = await fetch(NOTION_DATABASE_URL, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.error || 'Failed to fetch Notion content');
+        }
+        
+        return data.results.map(item => ({
+            id: item.id,
+            title: item.title || 'Untitled',
+            description: item.description || '',
+            category: item.category || 'performance',
+            thumbnail: item.thumbnail || '/imgs/placeholder.png',
+            videoUrl: item.videoUrl,
+            audioUrl: item.audioUrl,
+            duration: item.duration,
+            featured: item.featured || false,
+            tags: item.tags || [],
+            instrument: item.instrument,
+            venue: item.venue,
+            year: item.year,
+            difficulty: item.difficulty
+        }));
+        
+    } catch (error) {
+        console.error('Notion API Error:', error);
+        return [];
+    }
+}
+
+// Create video element from YouTube data
+function createVideoElement(video, source) {
+    const videoElement = document.createElement('div');
+    videoElement.className = `media-item performance dynamic-content ${source}`;
+    videoElement.setAttribute('data-category', 'performance');
+    videoElement.setAttribute('data-video-id', video.id);
+    
+    // Truncate description for display
+    const shortDescription = video.description.length > 150 
+        ? video.description.substring(0, 150) + '...' 
+        : video.description;
+    
+    videoElement.innerHTML = `
+        <div class="media-thumbnail">
+            <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+            <div class="play-overlay">
+                <span class="play-icon">▶</span>
+            </div>
+            <div class="media-type">YouTube</div>
+            <div class="media-source">${source === 'youtube' ? 'Live' : 'Curated'}</div>
+        </div>
+        <div class="media-info">
+            <h3>${video.title}</h3>
+            <p>${shortDescription}</p>
+            <div class="media-meta">
+                <span>${formatDate(video.publishedAt)}</span>
+                <span>YouTube</span>
+            </div>
+        </div>
+    `;
+    
+    // Add click handler for YouTube videos
+    videoElement.addEventListener('click', () => {
+        showYouTubeModal(video);
+    });
+    
+    return videoElement;
+}
+
+// Create content element from Notion data
+function createContentElement(item, source) {
+    const contentElement = document.createElement('div');
+    contentElement.className = `media-item ${item.category} dynamic-content ${source}`;
+    contentElement.setAttribute('data-category', item.category);
+    contentElement.setAttribute('data-content-id', item.id);
+    
+    const mediaType = item.videoUrl ? 'Video' : item.audioUrl ? 'Audio' : 'Content';
+    const thumbnail = item.thumbnail || '/imgs/placeholder.png';
+    
+    contentElement.innerHTML = `
+        <div class="media-thumbnail ${item.audioUrl ? 'audio-thumbnail' : ''}">
+            ${item.audioUrl ? `
+                <div class="waveform">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+            ` : `
+                <img src="${thumbnail}" alt="${item.title}" loading="lazy">
+            `}
+            <div class="play-overlay">
+                <span class="play-icon">▶</span>
+            </div>
+            <div class="media-type">${mediaType}</div>
+            <div class="media-source">Notion</div>
+        </div>
+        <div class="media-info">
+            <h3>${item.title}</h3>
+            <p>${item.description}</p>
+            <div class="media-meta">
+                ${item.duration ? `<span>${item.duration}</span>` : ''}
+                <span>${item.category}</span>
+                ${item.featured ? '<span class="featured-badge">Featured</span>' : ''}
+            </div>
+            ${item.tags.length > 0 ? `
+                <div class="content-tags">
+                    ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+            ` : ''}
+        </div>
+    `;
+    
+    // Add click handler
+    contentElement.addEventListener('click', () => {
+        if (item.audioUrl && item.category === 'audio') {
+            // Handle audio content - scroll to audio section
+            const audioShowcase = document.querySelector('.audio-showcase');
+            audioShowcase.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (item.videoUrl) {
+            showNotionVideoModal(item);
+        }
+    });
+    
+    return contentElement;
+}
+
+// YouTube video modal
+function showYouTubeModal(video) {
+    const modal = document.createElement('div');
+    modal.className = 'video-modal-overlay';
+    modal.innerHTML = `
+        <div class="video-modal-content">
+            <button class="modal-close">&times;</button>
+            <h2>${video.title}</h2>
+            <div class="video-container">
+                <iframe 
+                    src="${video.embedUrl}?autoplay=1" 
+                    frameborder="0" 
+                    allowfullscreen
+                    allow="autoplay; encrypted-media">
+                </iframe>
+            </div>
+            <p>${video.description}</p>
+            <div class="video-actions">
+                <a href="${video.url}" target="_blank" class="btn-secondary">
+                    Watch on YouTube
+                </a>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    addModalCloseHandlers(modal);
+}
+
+// Notion video modal
+function showNotionVideoModal(item) {
+    const modal = document.createElement('div');
+    modal.className = 'video-modal-overlay';
+    modal.innerHTML = `
+        <div class="video-modal-content">
+            <button class="modal-close">&times;</button>
+            <h2>${item.title}</h2>
+            <div class="video-container">
+                ${item.videoUrl.includes('youtube.com') || item.videoUrl.includes('youtu.be') ? `
+                    <iframe 
+                        src="${getYouTubeEmbedUrl(item.videoUrl)}" 
+                        frameborder="0" 
+                        allowfullscreen>
+                    </iframe>
+                ` : `
+                    <video controls>
+                        <source src="${item.videoUrl}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                `}
+            </div>
+            <p>${item.description}</p>
+            ${item.tags.length > 0 ? `
+                <div class="modal-tags">
+                    ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+            ` : ''}
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    addModalCloseHandlers(modal);
+}
+
+// Utility functions
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    });
+}
+
+function getYouTubeEmbedUrl(url) {
+    const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+    return videoId ? `https://www.youtube.com/embed/${videoId[1]}` : url;
+}
+
+function addModalCloseHandlers(modal) {
+    const closeBtn = modal.querySelector('.modal-close');
+    closeBtn.addEventListener('click', () => modal.remove());
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+    });
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') modal.remove();
+    });
+}
+
 // Mobile menu functionality
 function initMobileMenu() {
     const hamburger = document.querySelector('.hamburger');
@@ -200,10 +661,49 @@ function initMobileMenu() {
             navMenu.classList.toggle('active');
         });
 
-        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        }));
+        // Handle dropdown clicks on mobile
+        document.querySelectorAll('.nav-item.dropdown').forEach(dropdown => {
+            const navLink = dropdown.querySelector('.nav-link');
+            navLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Close other dropdowns
+                document.querySelectorAll('.nav-item.dropdown').forEach(other => {
+                    if (other !== dropdown) {
+                        other.classList.remove('active');
+                    }
+                });
+                
+                // Toggle this dropdown
+                dropdown.classList.toggle('active');
+            });
+        });
+
+        // Close dropdowns when clicking regular nav links
+        document.querySelectorAll('.nav-link').forEach(n => {
+            if (!n.closest('.nav-item.dropdown')) {
+                n.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                    // Close all dropdowns
+                    document.querySelectorAll('.nav-item.dropdown').forEach(dropdown => {
+                        dropdown.classList.remove('active');
+                    });
+                });
+            }
+        });
+
+        // Close dropdowns when clicking dropdown menu items
+        document.querySelectorAll('.dropdown-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.querySelectorAll('.nav-item.dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            });
+        });
     }
 }
 

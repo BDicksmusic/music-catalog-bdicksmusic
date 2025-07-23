@@ -1,19 +1,30 @@
 {
   "name": "music-catalog",
   "version": "1.0.0",
+  "description": "Brandon Dicks Music Catalog with Dynamic Content",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "notion-api": "node api/notion-media.js",
+    "test-notion": "node -e \"require('./api/notion-media.js')\""
   },
   "dependencies": {
-    "@notionhq/client": "^2.2.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "ioredis": "^5.6.1",
-    "stripe": "^18.3.0"
+    "@notionhq/client": "^2.2.15",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
-  }
+  },
+  "keywords": [
+    "music",
+    "portfolio",
+    "notion",
+    "youtube",
+    "brandon-dicks"
+  ],
+  "author": "Brandon Dicks",
+  "license": "MIT"
 }

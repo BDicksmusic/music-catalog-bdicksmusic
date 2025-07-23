@@ -14,6 +14,9 @@ const {
   deleteFromCache
 } = require('./lib/cache');
 
+// Import the media API handler
+const mediaApiHandler = require('./api/notion-media');
+
 // Install stripe: npm install stripe
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
@@ -114,6 +117,12 @@ const transformNotionPage = (page) => {
         shortInstrumentList: notionRichTextToHtml(properties['Short Instrument List']?.rich_text) || '',
     };
 };
+
+// ===== MEDIA PORTFOLIO API ROUTES =====
+
+// GET media content from Notion (for media page)
+app.get('/api/notion-media', mediaApiHandler);
+app.post('/api/notion-media', mediaApiHandler);
 
 // ===== CACHED NOTION API ROUTES =====
 
