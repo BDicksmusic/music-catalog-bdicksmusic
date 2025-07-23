@@ -193,17 +193,17 @@ if (shortInstrContainer && comp.shortInstrumentList) {
     }
 
        // Perf
-       const perfContainer = document.querySelector('.composition-perf-container');
        let perfHtml = '';
    
        if (comp.performanceNotes) {
-           perfsHtml += `
+           perfHtml += `
                <section class="composition-performance-notes">
                    <h3>Performance Notes</h3>
                    <div class="performance-notes-content">${comp.performanceNotes}</div>
                </section>
            `;
        }
+       const perfContainer = document.querySelector('.composition-performance-notes-container');
        if (perfContainer) {
            perfContainer.innerHTML = perfHtml;
        }
