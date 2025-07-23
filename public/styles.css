@@ -253,20 +253,20 @@ nav {
 .logo {
     font-size: 40px;
     justify-content: flex-start;
-    font-weight: var(--font-bold);
+    font-weight: 900;
     color: var(--gray-800);
     text-decoration: none;
-    transition: var(--transition-fast);
     font-weight: var(--font-black);
     line-height: 1.1;
     margin: 0;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+
     flex-shrink: 0;
     min-width: 0;
     max-width: 60%;
 }
+
+
 
 .music-catalog-btn {
     margin-right: 1.25rem;
@@ -296,6 +296,7 @@ nav {
     gap: 0;
     flex-wrap: nowrap;
     height: 100%;
+    visibility: visible;
 }
 
 .nav-item {
@@ -1044,55 +1045,139 @@ input:focus, textarea:focus, select:focus {
 }
 
 @media (max-width: 1080px) {
-    /* Navigation Mobile Styles */
+    /* Show hamburger menu */
     .hamburger {
         display: flex;
         margin-right: 1rem;
     }
     
+    /* Mobile menu styles */
     .nav-menu {
         position: fixed;
-        left: -100%;
-        top: 60px; /* Start below the fixed nav */
-        flex-direction: column;
+        left: 0;
+        bottom: 0;
+        flex-direction: column-reverse;
         background-color: var(--gray-50);
         width: 100%;
-        height: calc(100vh - 60px); /* Subtract nav height */
+        height: auto;
+        max-height: 80vh;
+        overflow-y: auto; /* Allow scrolling for long menus */
         text-align: center;
-        transition: var(--transition-base);
+        transition: transform 0.3s ease-in-out, visibility 0.3s;
         box-shadow: var(--shadow-lg);
         gap: 0;
-        border: none;
         z-index: 2000;
-        padding-top: 0;
+        display: flex;
+        transform: translateY(100%);
+        visibility: hidden;
+        padding-bottom: var(--space-4);
     }
     
     .nav-menu.active {
-        left: 0;
+        transform: translateY(0);
+        visibility: visible;
     }
     
     .nav-item {
-        border-bottom: 1px solid var(--gray-200);
+        border-top: 1px solid var(--gray-200);
         width: 100%;
+        position: relative; /* Needed for absolute dropdown */
     }
     
-    .nav-item:last-child {
-        border-bottom: none;
+    .nav-item:first-child {
+        border-top: 1px solid var(--gray-200);
     }
     
     .nav-link {
-        padding: var(--space-6);
-        width: 100%;
-        display: block;
+        width: 92vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: var(--text-lg);
+        position: relative;
+        line-height: 1.2;
+    }
+
+    /* Use ::before for consistent alignment */
+    .nav-link::before {
+        content: ''; /* Empty placeholder */
+        width: 1em; /* Reserve space */
+        display: inline-block;
+        text-align: center;
+    }
+
+    .nav-item.dropdown > .nav-link::before {
+        content: '▾'; /* Icon for dropdowns */
+        margin-right: var(--space-1);
+    }
+    
+    /* Mobile Dropdown Menu Styling - Slide from left, 35% width */
+    .dropdown-menu {
+        display: block; 
+        position: absolute;
+        left: -60px; /* Align with parent nav item */
+        width: 10vw; /* Maximum 35% of page width */
+        max-width: 10%;
+        transform: translateX(-100%); /* Start hidden to the left */
+        margin-top: -3.5rem;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 2100;
+        padding: 0; /* Remove all padding */
+        margin-left: 1em; /* Offset to align with parent text after the icon */
+        box-sizing: border-box;
+        overflow: hidden; /* Prevent any overflow that might cause scrollbars */
+    }
+    
+    /* Hover animation for parent nav item */
+    .nav-item.dropdown:hover {
+        background: var(--gray-200);
+        transition: background 0.3s ease;
+    }
+    
+    .nav-item.dropdown:hover .dropdown-menu,
+    .nav-item.dropdown.active .dropdown-menu {
+        transform: translateX(0); /* Slide in from left */
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .dropdown-menu li {
+        border-bottom: 1px solid var(--primary-100);
+        transition: background 0.2s ease;
+        margin: 0; /* Remove any margin */
+        padding: 0; /* Remove any padding */
+    }
+    
+    .dropdown-menu li:last-child {
+        border-bottom: none;
+    }
+    
+    .dropdown-menu li:hover {
+        background: var(--primary-100);
+    }
+
+    .dropdown-menu a {
+        font-size: var(--text-sm); /* Smaller font size */
+        color: var(--primary-100); /* Distinct dark blue text */
+        background: var(--gray-600);
+        display: block;
+        text-align: right; /* Left-aligned text as requested */
+        font-weight: var(--font-medium);
+        transition: all 0.2s ease;
+        padding: var(--space-1) var(--space-2); /* Much smaller padding */
+        margin: 0;
+        line-height: 1.2; /* Tighter line height */
+    }
+    
+    .dropdown-menu a:hover {
+        background: var(--primary-200);
+        color: var(--primary-900);
+        transform: translateX(4px); /* Slight slide effect on hover */
     }
     
     .nav-link::after {
         display: none;
-    }
-    
-    .nav-link:hover {
-        background: var(--gray-100);
     }
     
     /* Works Grid Mobile Styles */
