@@ -93,6 +93,12 @@
             font-size: 0.98rem;
             font-weight: 500;
         }
+        .composition-meta-container {
+            margin-bottom: 2rem;
+        }
+        .composition-links-container {
+            margin-bottom: 1.5rem;
+        }
         .composition-description {
             font-size: 1.08rem;
             color: var(--gray-800);
@@ -111,9 +117,22 @@
             border: none;
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             cursor: pointer;
-            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .composition-buy-btn:hover {
+            background: linear-gradient(90deg, var(--primary-600), var(--primary-800));
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+        }
+        
+        .composition-buy-btn:active {
+            transform: translateY(-1px) scale(1.01);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .composition-buy-btn:disabled,
         .composition-buy-btn.btn-disabled {
@@ -230,30 +249,30 @@
             <a href="/index.html" class="logo">BRANDON DICKS</a>
             <div class="nav-right">
                 <ul class="nav-menu">
-                    <li class="nav-item"><a href="media.html" class="nav-link">Media</a></li>
+                    <li class="nav-item"><a href="/media.html" class="nav-link">Media</a></li>
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link">News</a>
                         <ul class="dropdown-menu">
-                            <li><a href="news.html">Latest News</a></li>
-                            <li><a href="updates.html">Updates</a></li>
-                            <li><a href="events.html">Events</a></li>
+                            <li><a href="/news.html">Latest News</a></li>
+                            <li><a href="/updates.html">Updates</a></li>
+                            <li><a href="/events.html">Events</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link">Teaching Material</a>
                         <ul class="dropdown-menu">
-                            <li><a href="exercises.html">Exercises</a></li>
-                            <li><a href="tutorials.html">Tutorials</a></li>
-                            <li><a href="resources.html">Resources</a></li>
+                            <li><a href="/exercises.html">Exercises</a></li>
+                            <li><a href="/tutorials.html">Tutorials</a></li>
+                            <li><a href="/resources.html">Resources</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="/about.html" class="nav-link">About</a></li>
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link">Contact</a>
                         <ul class="dropdown-menu">
-                            <li><a href="contact.html">Get in Touch</a></li>
-                            <li><a href="booking.html">Book a Lesson</a></li>
-                            <li><a href="inquiries.html">General Inquiries</a></li>
+                            <li><a href="/contact.html">Get in Touch</a></li>
+                            <li><a href="/booking.html">Book a Lesson</a></li>
+                            <li><a href="/inquiries.html">General Inquiries</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -273,7 +292,7 @@
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
                 </button>
-                  <button class="music-catalog-btn"><a href="music-catalog.html">Music Catalog</a></button>
+                  <button class="music-catalog-btn"><a href="/music-catalog.html">Music Catalog</a></button>
         
                   <div class="hamburger">
                     <span></span>
