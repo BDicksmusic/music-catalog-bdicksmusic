@@ -97,7 +97,7 @@
         
               <button class="music-catalog-btn">Music Catalog</button>
               <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-                <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 22" fill="none" stroke="currentColor" stroke-width="2.5">
+                <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <circle cx="12" cy="12" r="5"></circle>
                     <line x1="12" y1="1" x2="12" y2="3"></line>
                     <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -108,7 +108,7 @@
                     <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                     <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                 </svg>
-                <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 22" fill="none" stroke="currentColor" stroke-width="2.5">
+                <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
             </button>
@@ -876,15 +876,21 @@ document.addEventListener('DOMContentLoaded', function() {
               const sunIcon = themeToggle.querySelector('.sun-icon');
               const moonIcon = themeToggle.querySelector('.moon-icon');
               
+              console.log('Theme:', theme);
+              console.log('Sun icon found:', !!sunIcon);
+              console.log('Moon icon found:', !!moonIcon);
+              
               if (theme === 'dark') {
-                  sunIcon.style.setProperty('opacity', '1', 'important');
+                  console.log('Setting dark mode - sun visible, moon hidden');
+                  sunIcon.style.opacity = '1';
                   sunIcon.style.transform = 'rotate(0deg)';
-                  moonIcon.style.setProperty('opacity', '0', 'important');
+                  moonIcon.style.opacity = '0';
                   moonIcon.style.transform = 'rotate(-90deg)';
               } else {
-                  sunIcon.style.setProperty('opacity', '0', 'important');
+                  console.log('Setting light mode - moon visible, sun hidden');
+                  sunIcon.style.opacity = '0';
                   sunIcon.style.transform = 'rotate(90deg)';
-                  moonIcon.style.setProperty('opacity', '1', 'important');
+                  moonIcon.style.opacity = '1';
                   moonIcon.style.transform = 'rotate(0deg)';
               }
           }
