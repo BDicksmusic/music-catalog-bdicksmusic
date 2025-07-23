@@ -67,10 +67,32 @@
         </div>
         <div class="nav-right">
             <ul class="nav-menu">
-                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Catalog</a></li>
+                <li class="nav-item"><a href="index.html" class="nav-link">Media</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">News</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="news.html">Latest News</a></li>
+                        <li><a href="updates.html">Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Teaching Material</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exercises.html">Exercises</a></li>
+                        <li><a href="tutorials.html">Tutorials</a></li>
+                        <li><a href="resources.html">Resources</a></li>
+                    </ul>
+                </li>
                 <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="contact.html">Get in Touch</a></li>
+                        <li><a href="booking.html">Book a Lesson</a></li>
+                        <li><a href="inquiries.html">General Inquiries</a></li>
+                    </ul>
+                </li>
             </ul>
             <button class="music-catalog-btn">Music Catalog</button>
             <div class="hamburger">
@@ -767,15 +789,38 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Simple smooth scroll function
-        function smoothScrollTo(targetId) {
+        // Enhanced smooth scroll function that waits for content
+        async function smoothScrollTo(targetId) {
             const target = document.querySelector(targetId);
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+            if (!target) {
+                console.log('Target not found:', targetId);
+                return;
+            }
+            
+            // Wait a bit for any dynamic content to load
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // Check if the carousel has loaded content
+            const carousel = document.getElementById('popular-works');
+            if (carousel && carousel.innerHTML.includes('Loading compositions...')) {
+                // Wait for compositions to load
+                await new Promise(resolve => {
+                    const checkLoading = () => {
+                        if (!carousel.innerHTML.includes('Loading compositions...')) {
+                            resolve();
+                        } else {
+                            setTimeout(checkLoading, 100);
+                        }
+                    };
+                    checkLoading();
                 });
             }
+            
+            // Now scroll to the target
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
         }
 
         // Load everything when page loads

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Portfolio - Brandon Dicks</title>
+    <link rel="stylesheet" href="variables.css"> 
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="media-styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">BRANDON DICKS</a>
+            <div class="nav-right">
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">News</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="news.html">Latest News</a></li>
+                            <li><a href="updates.html">Updates</a></li>
+                            <li><a href="events.html">Events</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">Teaching Material</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="exercises.html">Exercises</a></li>
+                            <li><a href="tutorials.html">Tutorials</a></li>
+                            <li><a href="resources.html">Resources</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">Contact</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="contact.html">Get in Touch</a></li>
+                            <li><a href="booking.html">Book a Lesson</a></li>
+                            <li><a href="inquiries.html">General Inquiries</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <button class="music-catalog-btn">Music Catalog</button>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>   
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Secondary Navigation -->
+    <nav class="secondary-nav">
+        <a href="/composer" class="secondary-button">Composer</a>
+        <a href="/trumpeter" class="secondary-button">Trumpeter</a>
+        <a href="/educator" class="secondary-button">Educator</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="media-hero">
+        <div class="hero-content">
+            <h1>Media Portfolio</h1>
+            <p>Showcasing musical performances, video editing, and creative projects</p>
+        </div>
+    </header>
+
+    <!-- Filter Navigation -->
+    <div class="media-filters">
+        <button class="filter-btn active" data-filter="all">All Media</button>
+        <button class="filter-btn" data-filter="performance">Performances</button>
+        <button class="filter-btn" data-filter="editing">Video Editing</button>
+        <button class="filter-btn" data-filter="composition">Compositions</button>
+        <button class="filter-btn" data-filter="audio">Audio Samples</button>
+    </div>
+
+    <!-- Featured Video Section -->
+    <section class="featured-video">
+        <div class="container">
+            <h2>Featured Performance</h2>
+            <div class="video-player">
+                <video controls poster="/imgs/video-thumbnail.jpg">
+                    <source src="/videos/featured-performance.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="video-info">
+                    <h3>Trumpet Concerto in C Major</h3>
+                    <p>A stunning performance showcasing technical mastery and musical expression. This piece demonstrates both classical technique and modern interpretation.</p>
+                    <div class="video-meta">
+                        <span>Duration: 8:45</span>
+                        <span>Venue: Carnegie Hall</span>
+                        <span>Date: 2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Media Grid -->
+    <section class="media-grid-section">
+        <div class="container">
+            <h2>Portfolio</h2>
+            <div class="media-grid" id="media-grid">
+                <!-- Performance Videos -->
+                <div class="media-item performance" data-category="performance">
+                    <div class="media-thumbnail">
+                        <img src="/imgs/performance-1.jpg" alt="Jazz Performance">
+                        <div class="play-overlay">
+                            <span class="play-icon">▶</span>
+                        </div>
+                        <div class="media-type">Video</div>
+                    </div>
+                    <div class="media-info">
+                        <h3>Jazz Improvisation</h3>
+                        <p>Live jazz performance demonstrating improvisational skills and musical creativity.</p>
+                        <div class="media-meta">
+                            <span>5:32</span>
+                            <span>Live Performance</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Editing -->
+                <div class="media-item editing" data-category="editing">
+                    <div class="media-thumbnail">
+                        <img src="/imgs/editing-1.jpg" alt="Video Editing Project">
+                        <div class="play-overlay">
+                            <span class="play-icon">▶</span>
+                        </div>
+                        <div class="media-type">Video</div>
+                    </div>
+                    <div class="media-info">
+                        <h3>Concert Promo Video</h3>
+                        <p>Professional concert promotion video with dynamic editing, color grading, and sound design.</p>
+                        <div class="media-meta">
+                            <span>2:15</span>
+                            <span>Video Editing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio Samples -->
+                <div class="media-item audio" data-category="audio">
+                    <div class="media-thumbnail audio-thumbnail">
+                        <div class="waveform">
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                        </div>
+                        <div class="play-overlay">
+                            <span class="play-icon">▶</span>
+                        </div>
+                        <div class="media-type">Audio</div>
+                    </div>
+                    <div class="media-info">
+                        <h3>Original Composition</h3>
+                        <p>Original trumpet composition with orchestral backing, showcasing compositional skills.</p>
+                        <div class="media-meta">
+                            <span>4:18</span>
+                            <span>Original Music</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More items... -->
+                <div class="media-item performance" data-category="performance">
+                    <div class="media-thumbnail">
+                        <img src="/imgs/performance-2.jpg" alt="Classical Performance">
+                        <div class="play-overlay">
+                            <span class="play-icon">▶</span>
+                        </div>
+                        <div class="media-type">Video</div>
+                    </div>
+                    <div class="media-info">
+                        <h3>Classical Repertoire</h3>
+                        <p>Haydn Trumpet Concerto performance with full orchestra accompaniment.</p>
+                        <div class="media-meta">
+                            <span>12:45</span>
+                            <span>Classical</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="media-item editing" data-category="editing">
+                    <div class="media-thumbnail">
+                        <img src="/imgs/editing-2.jpg" alt="Music Video">
+                        <div class="play-overlay">
+                            <span class="play-icon">▶</span>
+                        </div>
+                        <div class="media-type">Video</div>
+                    </div>
+                    <div class="media-info">
+                        <h3>Music Video Production</h3>
+                        <p>Complete music video production including filming, editing, and post-production effects.</p>
+                        <div class="media-meta">
+                            <span>3:42</span>
+                            <span>Music Video</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="media-item composition" data-category="composition">
+                    <div class="media-thumbnail">
+                        <img src="/imgs/composition-1.jpg" alt="Score Preview">
+                        <div class="play-overlay">
+                            <span class="play-icon">▶</span>
+                        </div>
+                        <div class="media-type">Video</div>
+                    </div>
+                    <div class="media-info">
+                        <h3>Composition Process</h3>
+                        <p>Behind-the-scenes look at the composition process, from concept to final recording.</p>
+                        <div class="media-meta">
+                            <span>6:28</span>
+                            <span>Process Video</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audio Player Section -->
+    <section class="audio-showcase">
+        <div class="container">
+            <h2>Audio Samples</h2>
+            <div class="audio-grid">
+                <div class="audio-player">
+                    <div class="audio-info">
+                        <h3>Jazz Standards</h3>
+                        <p>Collection of jazz standards performed with contemporary arrangements.</p>
+                    </div>
+                    <div class="audio-controls">
+                        <button class="play-btn">▶</button>
+                        <div class="progress-bar">
+                            <div class="progress"></div>
+                        </div>
+                        <span class="time">0:00 / 4:32</span>
+                    </div>
+                </div>
+
+                <div class="audio-player">
+                    <div class="audio-info">
+                        <h3>Classical Pieces</h3>
+                        <p>Traditional classical repertoire with modern interpretation.</p>
+                    </div>
+                    <div class="audio-controls">
+                        <button class="play-btn">▶</button>
+                        <div class="progress-bar">
+                            <div class="progress"></div>
+                        </div>
+                        <span class="time">0:00 / 8:15</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="text-align: center; padding: 2rem; background: var(--gray-100); margin-top: 4rem;">
+        <p>&copy; 2025 Brandon Dicks. All rights reserved.</p>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="media.js"></script>
+</body>
+</html>

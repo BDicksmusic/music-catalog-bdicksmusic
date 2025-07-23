@@ -250,15 +250,23 @@ nav {
 }
 
 .logo {
-    font-size: 20px;
+    font-size: clamp(16px, 3.5vw, 28px);
     justify-content: flex-start;
     font-weight: var(--font-bold);
     color: var(--gray-800);
     text-decoration: none;
     transition: var(--transition-fast);
     font-weight: var(--font-black);
-    line-height: 20px;
+    line-height: 1.1;
     margin: auto;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    flex: 1;
+    min-width: 0;
+    max-width: 60%;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 .music-catalog-btn {
@@ -281,25 +289,43 @@ nav {
     display: flex;
     flex: 1 1 auto;
     justify-content: flex-end;
+    align-items: center;
     margin: 0;
     padding: 0;
     list-style: none;
+    gap: 0;
+    flex-wrap: nowrap;
+    height: 100%;
 }
 
 .nav-item {
     position: relative;
-    flex-shrink: 1;
+    flex-shrink: 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 .nav-link {
-    color: var(--gray-700);
+    color: var(--gray-800);
     text-decoration: none;
-    font-weight: var(--font-medium);
-    padding: var(--space-6) var(--space-4);
-    display: block;
-    transition: var(--transition-base);
+    font-weight: var(--font-semibold);
+    padding: var(--space-3) clamp(8px, 0.6vw, 16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
     position: relative;
-    font-size: var(--text-base);
+    font-size: clamp(15px, 0.8vw, 19px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex-shrink: 0;
+    height: 100%;
+    letter-spacing: 0.02em;
+    font-size: clamp(13px, 0.7vw, 16px);
 }
 
 /* Hover effect with underline animation */
@@ -307,11 +333,12 @@ nav {
     content: '';
     position: absolute;
     width: 0;
-    height: 2px;
+    height: 3px;
     bottom: 0;
     left: 50%;
-    background: var(--primary-500);
-    transition: var(--transition-base);
+    background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+    transition: all 0.3s ease;
+    border-radius: 2px;
 }
 
 .nav-link:hover::after,
@@ -321,11 +348,19 @@ nav {
 }
 
 .nav-link:hover {
-    color: var(--primary-500);
+    color: var(--primary-600);
+    transform: translateY(-1px);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(37, 99, 235, 0.1));
+    border-radius: 8px;
 }
 
 .nav-link.active {
-    color: var(--primary-500);
+    color: var(--primary-600);
+    font-weight: var(--font-bold);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.15));
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 /* ===== MOBILE HAMBURGER MENU ===== */
@@ -410,6 +445,13 @@ nav {
 /* ===== DROPDOWN MENU ===== */
 .nav-item.dropdown {
     position: relative;
+}
+
+.nav-item.dropdown .nav-link::before {
+    content: '▾';
+    margin-right: 4px;
+    font-size: 0.8em;
+    opacity: 0.7;
 }
 
 .dropdown-menu {
@@ -985,6 +1027,22 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* ===== MOBILE RESPONSIVE STYLES ===== */
+@media (max-width: 800px) {
+    .logo {
+        font-size: clamp(12px, 1.8vw, 18px);
+        max-width: 50%;
+    }
+    
+    .nav-link {
+        padding: var(--space-6) clamp(8px, 1vw, 16px);
+        font-size: clamp(13px, 0.8vw, 15px);
+    }
+    
+    .nav-menu {
+        gap: clamp(2px, 0.3vw, 8px);
+    }
+}
+
 @media (max-width: 880px) {
     /* Navigation Mobile Styles */
     .hamburger {
@@ -1088,6 +1146,13 @@ input:focus, textarea:focus, select:focus {
         padding-top: 22.75px;
         padding-bottom: 22.75px;
     }
+    
+    .logo {
+        font-size: clamp(14px, 2.2vw, 20px);
+        text-align: center;
+        margin: 0 auto 1rem auto;
+        max-width: 80%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1107,6 +1172,10 @@ input:focus, textarea:focus, select:focus {
     
     .modal-content {
         padding: var(--space-6) var(--space-4);
+    }
+    
+    .logo {
+        font-size: clamp(16px, 3vw, 24px);
     }
 }
 
