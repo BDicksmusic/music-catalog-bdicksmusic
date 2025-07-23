@@ -42,13 +42,24 @@ async function queryRelatedMedia(compositionId, mediaType = null) {
     try {
         console.log(`🔍 Querying related media for composition: ${compositionId}`);
         
-        // Query the media database for items related to this composition
-        let filter = {
-            property: 'Composition Relations', // The relation property in media DB
-            relation: {
-                contains: compositionId
+            // Query the media database for items related to this composition
+    // Check both audio and video relations
+    let filter = {
+        or: [
+            {
+                property: 'Audio to Comp',
+                relation: {
+                    contains: compositionId
+                }
+            },
+            {
+                property: 'Video to Comp', 
+                relation: {
+                    contains: compositionId
+                }
             }
-        };
+        ]
+    };
         
         // Add media type filter if specified
         if (mediaType) {
@@ -82,9 +93,11 @@ async function queryRelatedCompositions(mediaId) {
     try {
         console.log(`🔍 Querying related compositions for media: ${mediaId}`);
         
-        // First get the media item to see its composition relations
-        const mediaPage = await notion.pages.retrieve({ page_id: mediaId });
-        const compositionRelations = mediaPage.properties['Composition Relations']?.relation || [];
+            // First get the media item to see its composition relations
+    const mediaPage = await notion.pages.retrieve({ page_id: mediaId });
+    const audioRelations = mediaPage.properties['Audio to Comp']?.relation || [];
+    const videoRelations = mediaPage.properties['Video to Comp']?.relation || [];
+    const compositionRelations = [...audioRelations, ...videoRelations];
         
         if (compositionRelations.length === 0) {
             return [];
@@ -156,7 +169,10 @@ function transformMediaPage(page) {
         instrument: properties.Instrument?.select?.name || '',
         difficulty: properties.Difficulty?.select?.name || '',
         status: properties.Status?.select?.name || 'published',
-        compositionRelations: properties['Composition Relations']?.relation?.map(rel => rel.id) || [],
+        compositionRelations: [
+            ...(properties['Audio to Comp']?.relation?.map(rel => rel.id) || []),
+            ...(properties['Video to Comp']?.relation?.map(rel => rel.id) || [])
+        ],
         created: page.created_time,
         lastEdited: page.last_edited_time
     };
