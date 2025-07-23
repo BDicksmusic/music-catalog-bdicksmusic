@@ -162,8 +162,7 @@
         .composition-audio-player[data-is-movement="true"] {
             border-left: 3px solid var(--primary-300);
             padding-left: 1rem;
-            margin-bottom: 0.75rem; /* Reduced for better balance */
-            padding-bottom: 0.5rem; /* Added to create better spacing within card */
+            margin-bottom: 1.5rem;
         }
         
         .composition-audio-title.movement-title {
@@ -228,22 +227,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 0.25rem 0 0.25rem 0; /* Reduced bottom margin for better balance */
-            padding: 0.4rem 0.75rem; /* Slightly reduced padding */
+            margin: 0.5rem 0; /* Reduced margin */
+            padding: 0.5rem 0.75rem; /* Reduced vertical padding */
             background: var(--gray-50);
             border-radius: 8px;
-            border: none;
-            margin-left: 0.5rem; /* Adjust alignment to match audio player indent */
+            border: none; /* Remove border for cleaner look */
         }
 
         .audio-nav-btn {
             background: var(--gray-100);
             color: var(--gray-700);
-            border: none;
-            padding: 0.375rem 0.75rem;
+            border: none; /* Remove border for cleaner look */
+            padding: 0.375rem 0.75rem; /* Compact padding */
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.8rem; /* Smaller font */
             font-weight: 500;
             transition: all 0.15s ease;
             min-width: 70px;
@@ -267,54 +265,6 @@
             box-shadow: none;
         }
 
-        /* Dark Mode Overrides for Navigation - Make light in dark mode */
-        @media (prefers-color-scheme: dark) {
-            .audio-nav-container {
-                background: rgba(255, 255, 255, 0.1) !important;
-                backdrop-filter: blur(10px);
-            }
-            
-            .audio-nav-btn {
-                background: rgba(255, 255, 255, 0.15) !important;
-                color: var(--gray-200) !important;
-            }
-            
-            .audio-nav-btn:hover:not(:disabled) {
-                background: rgba(255, 255, 255, 0.25) !important;
-                color: white !important;
-            }
-            
-            .audio-nav-btn:disabled {
-                background: rgba(255, 255, 255, 0.05) !important;
-                color: var(--gray-500) !important;
-            }
-            
-            .audio-nav-info {
-                color: var(--gray-300) !important;
-            }
-            
-            .audio-nav-divider {
-                background: rgba(255, 255, 255, 0.15) !important;
-            }
-            
-            /* Audio player dark mode styles */
-            .composition-audio-metadata {
-                color: var(--gray-400) !important;
-            }
-            
-            .composition-audio-metadata .performance-info {
-                color: var(--gray-300) !important;
-            }
-            
-            .composition-audio-title {
-                color: var(--gray-200) !important;
-            }
-            
-            .composition-audio-title.movement-title {
-                color: var(--primary-400) !important;
-            }
-        }
-
         .audio-nav-info {
             font-size: 0.8rem; /* Smaller font */
             color: var(--gray-600);
@@ -325,8 +275,8 @@
         
         .audio-nav-divider {
             height: 1px;
-            background: var(--gray-200);
-            margin: 0.5rem 0.5rem 0.4rem 0.5rem; /* Adjusted margins for better balance and alignment */
+            background: var(--gray-200); /* Faint divider */
+            margin: 0.75rem 0 0.5rem 0;
             opacity: 0.6;
         }
 
