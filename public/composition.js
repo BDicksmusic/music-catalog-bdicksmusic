@@ -706,8 +706,6 @@ function updateAudioNavButtons() {
 }
 
 // Navigation functions for multiple audio files
-let currentAudioIndex = 0;
-
 function previousAudio() {
     const audioPlayers = document.querySelectorAll('.composition-audio-player');
     if (audioPlayers.length <= 1) return;
