@@ -137,7 +137,7 @@ button {
     cursor: pointer;
     font-weight: var(--font-medium);
     font-size: var(--text-base);
-    transition: var(--transition-fast);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button:hover {
@@ -840,7 +840,7 @@ input:focus, textarea:focus, select:focus {
     font-size: 0.8rem;
     padding: var(--space-3) var(--space-4);
     border-radius: var(--radius-lg);
-    transition: all var(--transition-base);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
@@ -853,6 +853,7 @@ input:focus, textarea:focus, select:focus {
     background: var(--gradient-primary);
     color: var(--gray-50);
     box-shadow: var(--shadow-md);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-primary:hover {
@@ -864,6 +865,7 @@ input:focus, textarea:focus, select:focus {
     background: var(--gray-50);
     color: var(--primary-600);
     border: 2px solid var(--primary-500);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-secondary:hover {
@@ -878,6 +880,7 @@ input:focus, textarea:focus, select:focus {
     background: linear-gradient(135deg, #00d4aa 0%, #00a085 100%) !important;
     position: relative;
     overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .payment-btn:hover {
