@@ -142,18 +142,33 @@
         .score-pdf-viewer {
             display: flex;
             justify-content: center;
-            align-items: center; /* Optional: for vertical centering if you set a height */
-            margin: 2rem 0; /* Add some vertical spacing if you like */
-            width: 60vw;
-            height: 700px;
+            align-items: center;
+            margin: 3rem auto;
+            width: 100vw;
+            height: auto;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .score-pdf-viewer iframe {
-            /* Optional: set a max-width for the PDF viewer */
-            max-width: 900px;
-            width: 100%;
+            /* 8.5 x 11 aspect ratio: width = height * (8.5/11) = height * 0.773 */
+            width: 680px;
+            height: 880px;
+            max-width: min(80vw, 680px);
+            max-height: min(90vh, 880px);
             border-radius: 8px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            border: 1px solid var(--gray-200);
+        }
+
+        /* Maintain aspect ratio on smaller screens */
+        @media (max-width: 768px) {
+            .score-pdf-viewer iframe {
+                width: 85vw;
+                height: calc(85vw * 1.294); /* 11/8.5 = 1.294 */
+                max-height: 85vh;
+            }
         }
     
         @media (max-width: 900px) {
@@ -182,11 +197,11 @@
     }
 
         .score-carousel {
-            display: relative;
+            display: flex;
             align-items: center;
-            width: 500px;
-            height: 700px;
-
+            justify-content: center;
+            width: 100%;
+            height: auto;
         }
         .score-carousel-viewer {
             flex: 1;
