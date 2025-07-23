@@ -628,7 +628,7 @@ function addMultiAudioControls(audioContainer) {
     // Add navigation controls if more than one audio file
     if (audioPlayers.length > 1) {
         const controlsHtml = `
-            <div class="multi-audio-controls">
+            <div class="audio-nav-container">
                 <button class="audio-nav-btn" onclick="previousAudio()">⏮ Previous</button>
                 <span class="audio-nav-info">Multiple recordings available</span>
                 <button class="audio-nav-btn" onclick="nextAudio()">Next ⏭</button>
