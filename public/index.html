@@ -91,18 +91,29 @@
 
 
     <!-- Hero Section -->
-
-    <video 
-    autoplay 
-    loop 
-    muted 
-    preload="metadata"
-    disablePictureInPicture
-    class="hero-video"
->
-    <source src="https://file.notion.so/f/f/fa29efda-948c-4378-9da5-ea0d4058a01f/707daaf2-3013-4c03-9806-aa94085783dc/v1.0_Website_Promo_8.12.mp4?table=block&id=2348cc9f-36f1-8048-838d-ea53f873224d&spaceId=fa29efda-948c-4378-9da5-ea0d4058a01f&expirationTimestamp=1753156800000&signature=wE1KQdxOcKqfpwMjdpZU9wz04wqLa__hYjbR-CcmzKc&downloadName=v1.0+Website+Promo+%5B8.12%5D.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
+    <div class="hero-container">
+        <!-- Fallback Image -->
+        <img 
+            src="/imgs/Coming Home (Cover Photo).png" 
+            alt="Hero Background" 
+            class="hero-fallback-image"
+            id="hero-fallback"
+        >
+        
+        <!-- Video -->
+        <video 
+            autoplay 
+            loop 
+            muted 
+            preload="metadata"
+            disablePictureInPicture
+            class="hero-video"
+            id="hero-video"
+        >
+            <source src="https://file.notion.so/f/f/fa29efda-948c-4378-9da5-ea0d4058a01f/707daaf2-3013-4c03-9806-aa94085783dc/v1.0_Website_Promo_8.12.mp4?table=block&id=2348cc9f-36f1-8048-838d-ea53f873224d&spaceId=fa29efda-948c-4378-9da5-ea0d4058a01f&expirationTimestamp=1753156800000&signature=wE1KQdxOcKqfpwMjdpZU9wz04wqLa__hYjbR-CcmzKc&downloadName=v1.0+Website+Promo+%5B8.12%5D.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
 
     <div style="
     position: relative;
@@ -704,10 +715,59 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        // Video fallback and loading logic
+        function initHeroVideo() {
+            const video = document.getElementById('hero-video');
+            const fallback = document.getElementById('hero-fallback');
+            
+            if (!video || !fallback) return;
+            
+            // Set a timeout to show fallback if video doesn't load
+            const videoTimeout = setTimeout(() => {
+                console.log('Video loading timeout - keeping fallback visible');
+            }, 3000); // 3 second timeout
+            
+            // Video loading events
+            video.addEventListener('loadeddata', function() {
+                console.log('Video loaded successfully');
+                clearTimeout(videoTimeout);
+                
+                // Smooth transition from fallback to video
+                setTimeout(() => {
+                    video.classList.add('loaded');
+                    fallback.classList.add('hidden');
+                }, 100);
+            });
+            
+            video.addEventListener('canplay', function() {
+                console.log('Video can start playing');
+            });
+            
+            video.addEventListener('error', function(e) {
+                console.log('Video failed to load:', e);
+                clearTimeout(videoTimeout);
+                // Keep fallback visible, video will remain hidden
+            });
+            
+            video.addEventListener('loadstart', function() {
+                console.log('Video loading started');
+            });
+            
+            // Handle autoplay policy issues
+            video.addEventListener('play', function() {
+                console.log('Video started playing');
+            });
+            
+            video.addEventListener('pause', function() {
+                console.log('Video paused');
+            });
+        }
+
         // Load everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadCompositions();
             initMobileMenu();
+            initHeroVideo();
         });
     </script>
     

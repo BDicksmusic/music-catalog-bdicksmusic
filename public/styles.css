@@ -58,24 +58,56 @@ main {
     max-width: 100vw;
 }
 
-.hero-video {
+.hero-container {
     position: relative;
     top: -100px; /* Negative of body padding-top */
     margin-bottom: -100px; /* Compensate for negative top */
-    left: 0;
     width: 100%;
     max-width: 100vw;
     min-width: 0;
     height: 100vh;
     min-height: 100vh;
     max-height: 100vh;
-    object-fit: cover;
-    object-position: center top;
     z-index: -1;
     border-radius: 0;
     margin: 0;
     padding: 0;
     background: black;
+    overflow: hidden;
+}
+
+.hero-fallback-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    opacity: 1;
+    transition: opacity 0.8s ease-in-out;
+    z-index: 1;
+}
+
+.hero-fallback-image.hidden {
+    opacity: 0;
+}
+
+.hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+    z-index: 2;
+}
+
+.hero-video.loaded {
+    opacity: 1;
 }
 
 /* ===== COMPOSITION CARDS ===== */
