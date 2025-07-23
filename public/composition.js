@@ -219,47 +219,65 @@ if (audioContainer) {
         
         // Handle new relational audio files
         if (audioFiles.length > 0) {
-            // Sort files by movement order (Roman numerals or numbers)
-            audioFiles.sort((a, b) => {
-                const orderA = extractMovementOrder(a.title);
-                const orderB = extractMovementOrder(b.title);
-                return orderA - orderB;
-            });
+            // Sort files by movement order (Roman numerals or numbers) with error handling
+            try {
+                audioFiles.sort((a, b) => {
+                    try {
+                        const orderA = extractMovementOrder(a.title);
+                        const orderB = extractMovementOrder(b.title);
+                        return orderA - orderB;
+                    } catch (error) {
+                        console.error('Error sorting audio files:', error);
+                        return 0; // Keep original order if sorting fails
+                    }
+                });
 
-            // Debug: Log movement analysis for sorted files
-            if (process.env.NODE_ENV !== 'production') {
+                // Debug: Log movement analysis for sorted files
                 console.log('🎵 Movement Analysis (sorted):');
                 audioFiles.forEach((file, index) => {
-                    const order = extractMovementOrder(file.title);
-                    const extractedTitle = extractMovementTitle(file.title);
-                    console.log(`  ${index + 1}. Order: ${order}, Extracted: "${extractedTitle}" from "${file.title}"`);
+                    try {
+                        const order = extractMovementOrder(file.title);
+                        const extractedTitle = extractMovementTitle(file.title);
+                        console.log(`  ${index + 1}. Order: ${order}, Extracted: "${extractedTitle}" from "${file.title}"`);
+                    } catch (error) {
+                        console.log(`  ${index + 1}. Error processing: "${file.title}"`);
+                    }
                 });
+            } catch (error) {
+                console.error('Error in sorting process:', error);
+                // Continue without sorting if there's an error
             }
 
             audioPlayersHtml = audioFiles.map((audioFile, index) => {
-                // Enhanced movement-based title logic
-                const hasNotionMovementTitle = audioFile.numberOfMovements > 1 || audioFile.movementTitle;
-                const notionTitle = hasNotionMovementTitle ? audioFile.movementTitle : '';
+                // Simple approach: just show extracted movement titles
+                let displayTitle = '';
+                let shouldShowTitle = false;
                 
-                // Extract title from filename as fallback
-                const extractedTitle = extractMovementTitle(audioFile.title);
-                const movementOrder = extractMovementOrder(audioFile.title);
-                
-                // Use Notion movement title if available, otherwise extracted title
-                const displayTitle = notionTitle || extractedTitle;
-                const shouldShowTitle = displayTitle && displayTitle.length > 0;
+                // Try to extract title from filename
+                try {
+                    const extractedTitle = extractMovementTitle(audioFile.title);
+                    const movementOrder = extractMovementOrder(audioFile.title);
+                    
+                    if (extractedTitle && extractedTitle.length > 0) {
+                        displayTitle = extractedTitle;
+                        shouldShowTitle = true;
+                        
+                        // Add Roman numeral if we have a valid movement order
+                        if (movementOrder >= 1 && movementOrder <= 10) {
+                            const romanNumeral = getRomanNumeral(movementOrder);
+                            displayTitle = `${romanNumeral}. ${displayTitle}`;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error processing movement title:', error);
+                    shouldShowTitle = false;
+                }
                 
                 let titleHtml = '';
                 if (shouldShowTitle) {
-                    // Show movement title with Roman numeral if available
-                    const romanNumeral = getRomanNumeral(movementOrder);
-                    const fullTitle = romanNumeral && romanNumeral !== 'Unknown' ? 
-                        `${romanNumeral}. ${displayTitle}` : displayTitle;
-                    
                     titleHtml = `
                         <div class="composition-audio-title movement-title">
-                            🎵 ${fullTitle}
-                            ${audioFiles.length > 1 ? `<span class="audio-counter">(Movement ${index + 1})</span>` : ''}
+                            🎵 ${displayTitle}
                         </div>
                     `;
                 }
@@ -636,24 +654,30 @@ async function purchaseComposition(compositionId, title, price) {
 function extractMovementOrder(title) {
     if (!title) return 999; // Put untitled at end
     
-    // Look for Roman numerals (I, II, III, IV, V, VI, VII, VIII, IX, X)
-    const romanMatch = title.match(/\b([IVX]+)\b[._-]/i);
-    if (romanMatch) {
-        const roman = romanMatch[1].toUpperCase();
-        const romanToArabic = {
-            'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 
-            'VI': 6, 'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10
-        };
-        return romanToArabic[roman] || 999;
+    try {
+        // Look for Roman numerals (I, II, III, IV, V, VI, VII, VIII, IX, X)
+        const romanMatch = title.match(/\b([IVX]+)\b[._-]/i);
+        if (romanMatch) {
+            const roman = romanMatch[1].toUpperCase();
+            const romanToArabic = {
+                'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 
+                'VI': 6, 'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10
+            };
+            return romanToArabic[roman] || 999;
+        }
+        
+        // Look for Arabic numbers (1, 2, 3, etc.)
+        const numberMatch = title.match(/\b(\d+)\b[._-]/);
+        if (numberMatch) {
+            const num = parseInt(numberMatch[1]);
+            return isNaN(num) ? 999 : num;
+        }
+        
+        return 999; // Default for unordered files
+    } catch (error) {
+        console.error('Error extracting movement order:', error);
+        return 999;
     }
-    
-    // Look for Arabic numbers (1, 2, 3, etc.)
-    const numberMatch = title.match(/\b(\d+)\b[._-]/);
-    if (numberMatch) {
-        return parseInt(numberMatch[1]);
-    }
-    
-    return 999; // Default for unordered files
 }
 
 // Convert number back to Roman numeral for display
@@ -669,25 +693,27 @@ function getRomanNumeral(number) {
 function extractMovementTitle(title) {
     if (!title) return '';
     
-    // Remove common prefixes (Master_MP3_, etc.)
-    let cleaned = title.replace(/^(Master_MP3_|Master_|MP3_|Audio_)/i, '');
-    
-    // Look for pattern: "Composition - Roman/Number. Title"
-    const match = cleaned.match(/.*?[._-]([IVX]+|Avenida_IV|No\.?\s*\d+)[._-](.+?)(?:\.(mp3|wav|m4a|aac))?$/i);
-    if (match) {
-        const movementTitle = match[2]
-            .replace(/[._]/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
-        return movementTitle;
+    try {
+        // Remove common prefixes (Master_MP3_, etc.)
+        let cleaned = title.replace(/^(Master_MP3_|Master_|MP3_|Audio_)/i, '');
+        
+        // Look for pattern: "Composition_Roman/Number_Title"
+        // Example: "Resolutions_IV._Growing_Empathy" -> "Growing Empathy"
+        const match = cleaned.match(/.*?[._-]([IVX]+|No\.?\s*\d+)[._-](.+?)(?:\.(mp3|wav|m4a|aac))?$/i);
+        if (match && match[2]) {
+            const movementTitle = match[2]
+                .replace(/[._]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            return movementTitle;
+        }
+        
+        // Fallback: return empty string to avoid displaying garbled titles
+        return '';
+    } catch (error) {
+        console.error('Error extracting movement title:', error);
+        return '';
     }
-    
-    // Fallback: try to clean up the full title
-    return cleaned
-        .replace(/[._]/g, ' ')
-        .replace(/\.(mp3|wav|m4a|aac)$/i, '')
-        .replace(/\s+/g, ' ')
-        .trim();
 }
 
 // Extract display name from file URL
