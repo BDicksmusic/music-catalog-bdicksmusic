@@ -170,41 +170,91 @@ if (linksContainer) {
     `;
 }
 
-// Add embedded audio player at the top of the left column
+// Enhanced multi-audio player with rollup data
 const audioContainer = document.querySelector('.composition-audio-container');
-if (audioContainer && comp.audioLink) {
-    // Extract filename from URL for display (remove path and extension)
-    const audioFileName = comp.audioLink.split('/').pop().replace(/\.[^/.]+$/, "");
-    const displayName = audioFileName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+if (audioContainer) {
+    const audioFiles = comp.audioFiles || [];
+    const hasLegacyAudio = comp.audioLink && !audioFiles.length;
     
-    // Build metadata section if additional info is available
-    let metadataHtml = '';
-    if (comp.performanceBy || comp.recordingDate || comp.audioDescription) {
-        metadataHtml = `
-            <div class="composition-audio-metadata">
-                ${comp.performanceBy ? `<div class="performance-info">Performed by: ${comp.performanceBy}</div>` : ''}
-                ${comp.recordingDate ? `<div>Recorded: ${comp.recordingDate}</div>` : ''}
-                ${comp.audioDescription ? `<div>${comp.audioDescription}</div>` : ''}
-            </div>
-        `;
+    if (audioFiles.length > 0 || hasLegacyAudio) {
+        let audioPlayersHtml = '';
+        
+        // Handle new relational audio files
+        if (audioFiles.length > 0) {
+            audioPlayersHtml = audioFiles.map((audioFile, index) => {
+                const displayName = audioFile.title || extractDisplayName(audioFile.url);
+                
+                let metadataHtml = '';
+                if (audioFile.performanceBy || audioFile.recordingDate || audioFile.description) {
+                    metadataHtml = `
+                        <div class="composition-audio-metadata">
+                            ${audioFile.performanceBy ? `<div class="performance-info">Performed by: ${audioFile.performanceBy}</div>` : ''}
+                            ${audioFile.recordingDate ? `<div>Recorded: ${formatDate(audioFile.recordingDate)}</div>` : ''}
+                            ${audioFile.venue ? `<div>Venue: ${audioFile.venue}</div>` : ''}
+                            ${audioFile.description ? `<div>${audioFile.description}</div>` : ''}
+                            ${audioFile.quality ? `<div>Quality: ${audioFile.quality}</div>` : ''}
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="composition-audio-player" data-audio-index="${index}">
+                        <div class="composition-audio-title">
+                            🎵 ${displayName}
+                            ${audioFiles.length > 1 ? `<span class="audio-counter">(${index + 1}/${audioFiles.length})</span>` : ''}
+                        </div>
+                        ${metadataHtml}
+                        <audio controls preload="metadata" data-audio-id="${audioFile.id}">
+                            <source src="${audioFile.url}" type="audio/mpeg">
+                            <source src="${audioFile.url}" type="audio/mp4">
+                            <source src="${audioFile.url}" type="audio/wav">
+                            <source src="${audioFile.url}" type="audio/ogg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        ${audioFile.duration ? `<div class="audio-duration">Duration: ${audioFile.duration}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+        // Handle legacy single audio link
+        else if (hasLegacyAudio) {
+            const displayName = extractDisplayName(comp.audioLink);
+            
+            let metadataHtml = '';
+            if (comp.performanceBy || comp.recordingDate || comp.audioDescription) {
+                metadataHtml = `
+                    <div class="composition-audio-metadata">
+                        ${comp.performanceBy ? `<div class="performance-info">Performed by: ${comp.performanceBy}</div>` : ''}
+                        ${comp.recordingDate ? `<div>Recorded: ${comp.recordingDate}</div>` : ''}
+                        ${comp.audioDescription ? `<div>${comp.audioDescription}</div>` : ''}
+                    </div>
+                `;
+            }
+            
+            audioPlayersHtml = `
+                <div class="composition-audio-player">
+                    <div class="composition-audio-title">🎵 ${displayName}</div>
+                    ${metadataHtml}
+                    <audio controls preload="metadata">
+                        <source src="${comp.audioLink}" type="audio/mpeg">
+                        <source src="${comp.audioLink}" type="audio/mp4">
+                        <source src="${comp.audioLink}" type="audio/wav">
+                        <source src="${comp.audioLink}" type="audio/ogg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            `;
+        }
+        
+        audioContainer.innerHTML = audioPlayersHtml;
+        
+        // Add audio player controls for multiple files
+        if (audioFiles.length > 1) {
+            addMultiAudioControls(audioContainer);
+        }
+    } else {
+        audioContainer.style.display = 'none';
     }
-    
-    audioContainer.innerHTML = `
-        <div class="composition-audio-player">
-            <div class="composition-audio-title">🎵 ${displayName}</div>
-            ${metadataHtml}
-            <audio controls preload="metadata">
-                <source src="${comp.audioLink}" type="audio/mpeg">
-                <source src="${comp.audioLink}" type="audio/mp4">
-                <source src="${comp.audioLink}" type="audio/wav">
-                <source src="${comp.audioLink}" type="audio/ogg">
-                Your browser does not support the audio element.
-            </audio>
-        </div>
-    `;
-} else if (audioContainer) {
-    // Hide the container if there's no audio
-    audioContainer.style.display = 'none';
 }
 
 const shortInstrContainer = document.querySelector('.composition-short-instrument-container');
@@ -254,18 +304,68 @@ if (perfContainer) {
     perfContainer.innerHTML = perfHtml;
 }
 
-    // Simple PDF Score Viewer with Carousel Navigation
+    // Enhanced video display with multiple videos
+    const videoContainer = document.querySelector('.composition-video-container');
+    if (videoContainer) {
+        const videoFiles = comp.videoFiles || [];
+        
+        if (videoFiles.length > 0) {
+            const videosHtml = videoFiles.map((videoFile, index) => {
+                const displayName = videoFile.title || extractDisplayName(videoFile.url);
+                
+                let metadataHtml = '';
+                if (videoFile.performanceBy || videoFile.recordingDate || videoFile.venue || videoFile.description) {
+                    metadataHtml = `
+                        <div class="composition-video-metadata">
+                            ${videoFile.performanceBy ? `<div class="performance-info">Performed by: ${videoFile.performanceBy}</div>` : ''}
+                            ${videoFile.recordingDate ? `<div>Recorded: ${formatDate(videoFile.recordingDate)}</div>` : ''}
+                            ${videoFile.venue ? `<div>Venue: ${videoFile.venue}</div>` : ''}
+                            ${videoFile.description ? `<div>${videoFile.description}</div>` : ''}
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="composition-video-player" data-video-index="${index}">
+                        <div class="composition-video-title">
+                            🎬 ${displayName}
+                            ${videoFiles.length > 1 ? `<span class="video-counter">(${index + 1}/${videoFiles.length})</span>` : ''}
+                        </div>
+                        ${metadataHtml}
+                        <video controls preload="metadata" data-video-id="${videoFile.id}">
+                            <source src="${videoFile.url}" type="video/mp4">
+                            <source src="${videoFile.url}" type="video/webm">
+                            <source src="${videoFile.url}" type="video/ogg">
+                            Your browser does not support the video element.
+                        </video>
+                        ${videoFile.duration ? `<div class="video-duration">Duration: ${videoFile.duration}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+            
+            videoContainer.innerHTML = videosHtml;
+            videoContainer.style.display = 'block';
+        } else {
+            videoContainer.style.display = 'none';
+        }
+    }
+
+    // Enhanced PDF Score Viewer with multiple scores support
     const scoreCarouselContainer = document.querySelector('.score-carousel-container');
-    if (scoreCarouselContainer && comp.scoreLink) {
-        console.log('Score PDF link:', comp.scoreLink);
+    const scoreFiles = comp.scoreFiles || [];
+    const hasLegacyScore = comp.scoreLink && !scoreFiles.length;
+    
+    if (scoreCarouselContainer && (scoreFiles.length > 0 || hasLegacyScore)) {
+        // Use first available score (relational or legacy)
+        const scoreUrl = scoreFiles.length > 0 ? scoreFiles[0].url : comp.scoreLink;
+        console.log('Score PDF link:', scoreUrl);
         scoreCarouselContainer.innerHTML = `
-            <h3>Preview Score</h3>
             <div class="spread-score-viewer">
                 <div class="score-container">
                     <div class="score-iframe-container">
                         <iframe 
                             id="score-iframe"
-                            src="/pdfjs/web/viewer.html?file=${encodeURIComponent(comp.scoreLink)}#page=1&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=2&scrollModeOnLoad=0"
+                            src="/pdfjs/web/viewer.html?file=${encodeURIComponent(scoreUrl)}#page=1&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=2&scrollModeOnLoad=0"
                             width="100%"
                             height="700px"
                             style="border: none; border-radius: 8px;">
@@ -287,7 +387,7 @@ if (perfContainer) {
         `;
         
         // Initialize spread PDF navigation (2-page spread view)
-        initSimplePDFNavigation(comp.scoreLink);
+        initSimplePDFNavigation(scoreUrl);
     }
 }
 
@@ -457,6 +557,83 @@ async function purchaseComposition(compositionId, title, price) {
         console.error('Error:', error);
         alert('Error processing purchase. Please try again.');
     }
+}
+
+// ===== UTILITY FUNCTIONS FOR ENHANCED MEDIA =====
+
+// Extract display name from file URL
+function extractDisplayName(url) {
+    if (!url) return 'Unknown';
+    const fileName = url.split('/').pop().replace(/\.[^/.]+$/, "");
+    return fileName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+
+// Format date for display
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+}
+
+// Add controls for multiple audio files
+function addMultiAudioControls(audioContainer) {
+    const audioPlayers = audioContainer.querySelectorAll('audio');
+    
+    // Pause all other players when one starts playing
+    audioPlayers.forEach((player, index) => {
+        player.addEventListener('play', () => {
+            audioPlayers.forEach((otherPlayer, otherIndex) => {
+                if (otherIndex !== index && !otherPlayer.paused) {
+                    otherPlayer.pause();
+                }
+            });
+        });
+    });
+    
+    // Add navigation controls if more than one audio file
+    if (audioPlayers.length > 1) {
+        const controlsHtml = `
+            <div class="multi-audio-controls">
+                <button class="audio-nav-btn" onclick="previousAudio()">⏮ Previous</button>
+                <span class="audio-nav-info">Multiple recordings available</span>
+                <button class="audio-nav-btn" onclick="nextAudio()">Next ⏭</button>
+            </div>
+        `;
+        audioContainer.insertAdjacentHTML('afterend', controlsHtml);
+    }
+}
+
+// Navigation functions for multiple audio files
+let currentAudioIndex = 0;
+
+function previousAudio() {
+    const audioPlayers = document.querySelectorAll('.composition-audio-player');
+    if (audioPlayers.length <= 1) return;
+    
+    audioPlayers[currentAudioIndex].style.display = 'none';
+    currentAudioIndex = currentAudioIndex > 0 ? currentAudioIndex - 1 : audioPlayers.length - 1;
+    audioPlayers[currentAudioIndex].style.display = 'block';
+    
+    // Pause current and start new one
+    const newPlayer = audioPlayers[currentAudioIndex].querySelector('audio');
+    if (newPlayer) newPlayer.play();
+}
+
+function nextAudio() {
+    const audioPlayers = document.querySelectorAll('.composition-audio-player');
+    if (audioPlayers.length <= 1) return;
+    
+    audioPlayers[currentAudioIndex].style.display = 'none';
+    currentAudioIndex = currentAudioIndex < audioPlayers.length - 1 ? currentAudioIndex + 1 : 0;
+    audioPlayers[currentAudioIndex].style.display = 'block';
+    
+    // Pause current and start new one
+    const newPlayer = audioPlayers[currentAudioIndex].querySelector('audio');
+    if (newPlayer) newPlayer.play();
 }
 
 // Initialize when DOM is ready

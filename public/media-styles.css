@@ -771,4 +771,229 @@
 [data-theme="dark"] .video-meta span {
     background: var(--gray-300);
     color: var(--gray-700);
+}
+
+/* ===== ENHANCED MEDIA CARDS WITH COMPOSITION RELATIONS ===== */
+
+.performance-info {
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin: var(--space-3) 0;
+    font-size: 0.85rem;
+    border-left: 3px solid var(--primary-400);
+}
+
+.performance-info .performer,
+.performance-info .venue,
+.performance-info .date {
+    margin: var(--space-1) 0;
+    color: var(--gray-700);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.related-compositions {
+    margin-top: var(--space-4);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--gray-200);
+}
+
+.compositions-header {
+    margin-bottom: var(--space-3);
+}
+
+.compositions-label {
+    font-weight: var(--font-semibold);
+    color: var(--primary-700);
+    font-size: 0.9rem;
+}
+
+.compositions-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.composition-chip {
+    background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
+    border: 1px solid var(--primary-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.composition-chip:hover {
+    background: linear-gradient(135deg, var(--primary-100), var(--primary-200));
+    border-color: var(--primary-400);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.composition-chip:active {
+    transform: translateY(0);
+}
+
+.comp-title {
+    display: block;
+    font-weight: var(--font-semibold);
+    color: var(--primary-800);
+    font-size: 0.9rem;
+    margin-bottom: var(--space-1);
+}
+
+.comp-instrument {
+    display: inline-block;
+    font-size: 0.8rem;
+    color: var(--primary-600);
+    background: var(--primary-200);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    margin-right: var(--space-2);
+}
+
+.comp-year {
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    font-style: italic;
+}
+
+/* Enhanced media meta with icons */
+.media-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: 0.8rem;
+}
+
+/* Audio and Video Container Styling for Composition Pages */
+.composition-audio-container,
+.composition-video-container {
+    margin: var(--space-6) 0;
+}
+
+.composition-audio-player,
+.composition-video-player {
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    margin-bottom: var(--space-4);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.composition-audio-player:hover,
+.composition-video-player:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-300);
+}
+
+.composition-audio-title,
+.composition-video-title {
+    font-size: 1.1rem;
+    font-weight: var(--font-semibold);
+    color: var(--primary-700);
+    margin-bottom: var(--space-3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.audio-counter,
+.video-counter {
+    font-size: 0.8rem;
+    background: var(--primary-100);
+    color: var(--primary-700);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-weight: var(--font-medium);
+}
+
+.composition-audio-metadata,
+.composition-video-metadata {
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin: var(--space-3) 0;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--primary-400);
+}
+
+.composition-audio-metadata div,
+.composition-video-metadata div {
+    margin: var(--space-2) 0;
+    color: var(--gray-700);
+}
+
+.audio-duration,
+.video-duration {
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    margin-top: var(--space-2);
+    font-style: italic;
+}
+
+.multi-audio-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+    padding: var(--space-4);
+    background: var(--gray-100);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+}
+
+.audio-nav-btn {
+    background: var(--primary-500);
+    color: white;
+    border: none;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: var(--font-medium);
+    transition: all 0.3s ease;
+}
+
+.audio-nav-btn:hover {
+    background: var(--primary-600);
+    transform: translateY(-1px);
+}
+
+.audio-nav-info {
+    font-size: 0.9rem;
+    color: var(--gray-700);
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .compositions-list {
+        gap: var(--space-3);
+    }
+    
+    .composition-chip {
+        padding: var(--space-4);
+    }
+    
+    .comp-title {
+        font-size: 0.95rem;
+    }
+    
+    .multi-audio-controls {
+        flex-direction: column;
+        gap: var(--space-3);
+        text-align: center;
+    }
+    
+    .audio-nav-btn {
+        min-width: 120px;
+    }
 } 

@@ -426,7 +426,7 @@ async function loadYouTubeVideos() {
     }
 }
 
-// Notion API Integration
+// Enhanced Notion API Integration with Composition Relations
 async function loadNotionContent() {
     if (!NOTION_DATABASE_URL || NOTION_DATABASE_URL === 'YOUR_NOTION_API_ENDPOINT') {
         console.log('Notion API not configured');
@@ -434,7 +434,8 @@ async function loadNotionContent() {
     }
     
     try {
-        const response = await fetch(NOTION_DATABASE_URL, {
+        // Request media with composition relations included
+        const response = await fetch(`${NOTION_DATABASE_URL}?includeCompositions=true`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -447,6 +448,8 @@ async function loadNotionContent() {
             throw new Error(data.error || 'Failed to fetch Notion content');
         }
         
+        console.log(`📊 Loaded ${data.count} media items${data.includesCompositions ? ' with composition relations' : ''}`);
+        
         return data.results.map(item => ({
             id: item.id,
             title: item.title || 'Untitled',
@@ -455,13 +458,23 @@ async function loadNotionContent() {
             thumbnail: item.thumbnail || '/imgs/placeholder.png',
             videoUrl: item.videoUrl,
             audioUrl: item.audioUrl,
+            url: item.url, // Enhanced URL property
             duration: item.duration,
             featured: item.featured || false,
             tags: item.tags || [],
             instrument: item.instrument,
             venue: item.venue,
             year: item.year,
-            difficulty: item.difficulty
+            difficulty: item.difficulty,
+            performanceBy: item.performanceBy || '',
+            recordingDate: item.recordingDate || '',
+            quality: item.quality || 'Standard',
+            type: item.type || 'Unknown',
+            
+            // New relational data
+            relatedCompositions: item.relatedCompositions || [],
+            compositionCount: item.compositionCount || 0,
+            compositionRelations: item.compositionRelations || []
         }));
         
     } catch (error) {
@@ -544,11 +557,43 @@ function createContentElement(item, source) {
         <div class="media-info">
             <h3>${item.title}</h3>
             <p>${item.description}</p>
+            
+            <!-- Enhanced metadata with performance info -->
             <div class="media-meta">
-                ${item.duration ? `<span>${item.duration}</span>` : ''}
-                <span>${item.category}</span>
-                ${item.featured ? '<span class="featured-badge">Featured</span>' : ''}
+                ${item.duration ? `<span>⏱ ${item.duration}</span>` : ''}
+                <span>📂 ${item.category}</span>
+                ${item.quality && item.quality !== 'Standard' ? `<span>🔹 ${item.quality}</span>` : ''}
+                ${item.featured ? '<span class="featured-badge">⭐ Featured</span>' : ''}
             </div>
+            
+            <!-- Performance information -->
+            ${item.performanceBy || item.venue || item.recordingDate ? `
+                <div class="performance-info">
+                    ${item.performanceBy ? `<div class="performer">🎭 ${item.performanceBy}</div>` : ''}
+                    ${item.venue ? `<div class="venue">📍 ${item.venue}</div>` : ''}
+                    ${item.recordingDate ? `<div class="date">📅 ${formatMediaDate(item.recordingDate)}</div>` : ''}
+                </div>
+            ` : ''}
+            
+            <!-- Related compositions display -->
+            ${item.relatedCompositions && item.relatedCompositions.length > 0 ? `
+                <div class="related-compositions">
+                    <div class="compositions-header">
+                        <span class="compositions-label">🎼 Related Compositions:</span>
+                    </div>
+                    <div class="compositions-list">
+                        ${item.relatedCompositions.map(comp => `
+                            <div class="composition-chip" onclick="openComposition('${comp.slug || comp.id}')">
+                                <span class="comp-title">${comp.title}</span>
+                                ${comp.instrumentation ? `<span class="comp-instrument">${comp.instrumentation}</span>` : ''}
+                                ${comp.year ? `<span class="comp-year">(${comp.year})</span>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+            
+            <!-- Tags -->
             ${item.tags.length > 0 ? `
                 <div class="content-tags">
                     ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
@@ -777,6 +822,39 @@ function addModalCloseHandlers(modal) {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') modal.remove();
     });
+}
+
+// ===== ENHANCED COMPOSITION INTEGRATION =====
+
+// Function to open a composition page
+function openComposition(slugOrId) {
+    if (!slugOrId) {
+        console.error('No composition identifier provided');
+        return;
+    }
+    
+    // If it looks like a slug, use pretty URL
+    if (slugOrId.includes('-') || !slugOrId.match(/^[a-f0-9]{32}$/i)) {
+        window.open(`/composition/${slugOrId}`, '_blank');
+    } else {
+        // Use ID-based URL
+        window.open(`/composition.html?id=${slugOrId}`, '_blank');
+    }
+}
+
+// Enhanced format date function for media
+function formatMediaDate(dateString) {
+    if (!dateString) return '';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+    } catch (error) {
+        return dateString; // Return original if parsing fails
+    }
 }
 
 // Add CSS for video modal
