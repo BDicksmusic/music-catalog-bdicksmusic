@@ -256,17 +256,11 @@ if (audioContainer) {
                 // Try to extract title from filename
                 try {
                     const extractedTitle = extractMovementTitle(audioFile.title);
-                    const movementOrder = extractMovementOrder(audioFile.title);
                     
                     if (extractedTitle && extractedTitle.length > 0) {
                         displayTitle = extractedTitle;
                         shouldShowTitle = true;
-                        
-                        // Add Roman numeral if we have a valid movement order
-                        if (movementOrder >= 1 && movementOrder <= 10) {
-                            const romanNumeral = getRomanNumeral(movementOrder);
-                            displayTitle = `${romanNumeral}. ${displayTitle}`;
-                        }
+                        // Don't add Roman numeral prefix since API titles already contain them
                     }
                 } catch (error) {
                     console.error('Error processing movement title:', error);
@@ -305,6 +299,14 @@ if (audioContainer) {
                             Your browser does not support the audio element.
                         </audio>
                         ${audioFile.duration ? `<div class="audio-duration">Duration: ${audioFile.duration}</div>` : ''}
+                        ${audioFiles.length > 1 ? `
+                        <div class="audio-nav-divider"></div>
+                        <div class="audio-nav-container">
+                            <button class="audio-nav-btn" onclick="previousAudio()" id="prevAudioBtn">⏮ Previous</button>
+                            <span class="audio-nav-info" id="audioNavInfo">Movement ${index + 1} of ${audioFiles.length}</span>
+                            <button class="audio-nav-btn" onclick="nextAudio()" id="nextAudioBtn">Next ⏭</button>
+                        </div>
+                        ` : ''}
                     </div>
                 `;
             }).join('');
@@ -366,7 +368,7 @@ if (audioContainer) {
                     player.style.display = 'none';
                 }
             });
-            addMultiAudioControls(audioContainer, audioFiles.length);
+            // Navigation controls are now embedded within each audio player card
         }
     } else {
         audioContainer.style.display = 'none';
