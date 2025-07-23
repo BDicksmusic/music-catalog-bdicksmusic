@@ -188,13 +188,53 @@ if (audioContainer) {
     console.log('- hasLegacyAudio:', hasLegacyAudio);
     console.log('- full composition object:', comp);
     
+    // Movement-specific debug info
+    if (audioFiles.length > 0) {
+        console.log('🎼 Movement analysis:');
+        audioFiles.forEach((audioFile, index) => {
+            console.log(`  File ${index + 1}:`, {
+                title: audioFile.title,
+                movementTitle: audioFile.movementTitle,
+                numberOfMovements: audioFile.numberOfMovements,
+                shouldShow: audioFile.numberOfMovements > 1 || audioFile.movementTitle
+            });
+        });
+    }
+    
     if (audioFiles.length > 0 || hasLegacyAudio) {
+        // Detect if this is a multi-movement composition
+        const hasMovements = audioFiles.some(file => file.numberOfMovements > 1 || file.movementTitle);
+        const isMultiMovement = hasMovements && audioFiles.length > 1;
+        
+        console.log('🎼 Composition analysis:', {
+            hasMovements,
+            isMultiMovement,
+            totalFiles: audioFiles.length
+        });
+        
+        // Add classes to container for styling
+        audioContainer.className = `composition-audio-container ${hasMovements ? 'has-movements' : 'single-composition'} ${isMultiMovement ? 'multi-movement' : ''}`;
+        
         let audioPlayersHtml = '';
         
         // Handle new relational audio files
         if (audioFiles.length > 0) {
             audioPlayersHtml = audioFiles.map((audioFile, index) => {
-                const displayName = audioFile.title || extractDisplayName(audioFile.url);
+                // Movement-based title logic
+                const shouldShowTitle = audioFile.numberOfMovements > 1 || audioFile.movementTitle;
+                const displayTitle = shouldShowTitle ? audioFile.movementTitle : '';
+                
+                let titleHtml = '';
+                if (shouldShowTitle && displayTitle) {
+                    // Multi-movement composition - show movement title
+                    titleHtml = `
+                        <div class="composition-audio-title movement-title">
+                            🎵 ${displayTitle}
+                            ${audioFiles.length > 1 ? `<span class="audio-counter">(${index + 1}/${audioFiles.length})</span>` : ''}
+                        </div>
+                    `;
+                }
+                // If no movement title to show, leave titleHtml empty (hidden by default)
                 
                 let metadataHtml = '';
                 if (audioFile.performanceBy || audioFile.recordingDate) {
@@ -207,11 +247,8 @@ if (audioContainer) {
                 }
                 
                 return `
-                    <div class="composition-audio-player" data-audio-index="${index}">
-                        <div class="composition-audio-title">
-                            🎵 ${displayName}
-                            ${audioFiles.length > 1 ? `<span class="audio-counter">(${index + 1}/${audioFiles.length})</span>` : ''}
-                        </div>
+                    <div class="composition-audio-player" data-audio-index="${index}" data-is-movement="${shouldShowTitle}">
+                        ${titleHtml}
                         ${metadataHtml}
                         <audio controls preload="metadata" data-audio-id="${audioFile.id}">
                             <source src="${audioFile.url}" type="audio/mpeg">
@@ -227,8 +264,7 @@ if (audioContainer) {
         }
         // Handle legacy single audio link
         else if (hasLegacyAudio) {
-            const displayName = extractDisplayName(comp.audioLink);
-            
+            // Legacy audio - no movement data available, so hide title by default
             let metadataHtml = '';
             if (comp.performanceBy || comp.recordingDate) {
                 metadataHtml = `
@@ -240,8 +276,8 @@ if (audioContainer) {
             }
             
             audioPlayersHtml = `
-                <div class="composition-audio-player">
-                    <div class="composition-audio-title">🎵 ${displayName}</div>
+                <div class="composition-audio-player legacy-audio" data-is-movement="false">
+                    <!-- Title hidden by default for legacy audio (no movement data) -->
                     ${metadataHtml}
                     <audio controls preload="metadata">
                         <source src="${comp.audioLink}" type="audio/mpeg">
@@ -629,6 +665,27 @@ function nextAudio() {
     // Pause current and start new one
     const newPlayer = audioPlayers[currentAudioIndex].querySelector('audio');
     if (newPlayer) newPlayer.play();
+}
+
+// Function to scroll to the score section
+function scrollToScore() {
+    const scoreContainer = document.querySelector('.score-carousel-container');
+    if (scoreContainer) {
+        scoreContainer.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+        });
+        
+        // Optional: Add a subtle highlight effect
+        scoreContainer.style.transition = 'all 0.3s ease';
+        scoreContainer.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+            scoreContainer.style.transform = 'scale(1)';
+        }, 300);
+    } else {
+        console.warn('Score container not found - make sure the PDF is loaded');
+    }
 }
 
 // Initialize when DOM is ready

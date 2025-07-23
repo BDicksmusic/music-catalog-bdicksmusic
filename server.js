@@ -183,6 +183,10 @@ function transformMediaPage(page) {
         instrument: properties.Instrument?.select?.name || '',
         difficulty: properties.Difficulty?.select?.name || '',
         status: properties.Status?.select?.name || 'published',
+        
+        // Movement-related properties
+        movementTitle: getTextContent(properties['Movement Title']) || '',
+        numberOfMovements: properties['Number of Movements']?.number || null,
         compositionRelations: [
             ...(properties['Audio to Comp']?.relation?.map(rel => rel.id) || []),
             ...(properties['Video to Comp']?.relation?.map(rel => rel.id) || [])

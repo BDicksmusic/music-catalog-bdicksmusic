@@ -73,6 +73,29 @@
             margin: 1.5rem 0; /* Space above and below */
         }
         
+        /* Multi-movement composition styling */
+        .composition-audio-container.has-movements {
+            border-radius: 8px;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--gray-50), var(--primary-50));
+            border: 1px solid var(--primary-100);
+        }
+        
+        .composition-audio-container.multi-movement {
+            position: relative;
+        }
+        
+        .composition-audio-container.multi-movement::before {
+            content: "Multi-Movement Composition";
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-600);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
         .composition-audio-player {
             width: 100%;
             margin-bottom: 1rem;
@@ -82,6 +105,24 @@
             box-shadow: none; /* Remove shadow */
             border: none; /* Remove border */
             min-height: 80px; /* Ensure adequate height */
+        }
+        
+        /* Movement-specific styling */
+        .composition-audio-player[data-is-movement="true"] {
+            border-left: 3px solid var(--primary-300);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .composition-audio-title.movement-title {
+            font-weight: 600;
+            color: var(--primary-600);
+            font-size: 1rem;
+        }
+        
+        /* Legacy audio styling */
+        .composition-audio-player.legacy-audio {
+            opacity: 0.95;
         }
         
         .composition-audio-player:last-child {
@@ -301,6 +342,22 @@
             
             .composition-audio-container {
                 margin: 1rem 0;
+            }
+            
+            .composition-audio-container.has-movements {
+                padding: 0.75rem;
+                background: var(--gray-50);
+                border: 1px solid var(--gray-200);
+            }
+            
+            .composition-audio-container.multi-movement::before {
+                font-size: 0.7rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .composition-audio-player[data-is-movement="true"] {
+                padding-left: 0.75rem;
+                border-left-width: 2px;
             }
             
             .composition-audio-player {
