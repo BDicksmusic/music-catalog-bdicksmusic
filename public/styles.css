@@ -413,7 +413,7 @@ nav {
     display: none;
     flex-direction: column;
     cursor: pointer;
-    padding: 10px;
+
     z-index: 2100;
     position: relative;
     background: none;
