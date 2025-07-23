@@ -176,37 +176,35 @@ if (shortInstrContainer && comp.shortInstrumentList) {
 }
 
 
-    // Notes
-    const notesContainer = document.querySelector('.composition-notes-container');
-    let notesHtml = '';
-    if (comp.programNotes) {
-        notesHtml += `
-            <section class="composition-program-notes">
-                <h3>Program Notes</h3>
-                <div class="program-notes-content">${comp.programNotes}</div>
-            </section>
-        `;
-    }
-   
-    if (notesContainer) {
-        notesContainer.innerHTML = notesHtml;
-    }
+// Program Notes
+const notesContainer = document.querySelector('.composition-notes-container');
+let notesHtml = '';
+if (comp.programNotes) {
+    notesHtml += `
+        <section class="composition-program-notes">
+            <h3>Program Notes</h3>
+            <div class="program-notes-content">${comp.programNotes}</div>
+        </section>
+    `;
+}
+if (notesContainer) {
+    notesContainer.innerHTML = notesHtml;
+}
 
-       // Perf
-       let perfHtml = '';
-   
-       if (comp.performanceNotes) {
-           perfHtml += `
-               <section class="composition-performance-notes">
-                   <h3>Performance Notes</h3>
-                   <div class="performance-notes-content">${comp.performanceNotes}</div>
-               </section>
-           `;
-       }
-       const perfContainer = document.querySelector('.composition-performance-container');
-       if (perfContainer) {
-           perfContainer.innerHTML = perfHtml;
-       }
+// Performance Notes
+const perfContainer = document.querySelector('.composition-performance-container');
+let perfHtml = '';
+if (comp.performanceNotes) {
+    perfHtml += `
+        <section class="composition-performance-notes">
+            <h3>Performance Notes</h3>
+            <div class="performance-notes-content">${comp.performanceNotes}</div>
+        </section>
+    `;
+}
+if (perfContainer) {
+    perfContainer.innerHTML = perfHtml;
+}
 
     // Score PDF
     const scoreCarouselContainer = document.querySelector('.score-carousel-container');
