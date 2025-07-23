@@ -514,11 +514,14 @@ app.get('/api/compositions/genre/:genre', async (req, res) => {
     }
 });
 
-// GET single composition by slug (WITH CACHING)
+// GET single composition by slug (WITH CACHING & MEDIA ROLLUP)
 app.get('/api/compositions/slug/:slug', async (req, res) => {
     try {
         const slug = req.params.slug;
+        const includeMedia = req.query.includeMedia !== 'false'; // Default to true
+        
         const fetchCompositionBySlug = async () => {
+            console.log(`🔄 Fetching composition with slug "${slug}" with media rollup...`);
             const response = await notion.databases.query({
                 database_id: process.env.NOTION_DATABASE_ID,
                 filter: {
@@ -534,13 +537,22 @@ app.get('/api/compositions/slug/:slug', async (req, res) => {
             }
 
             const page = response.results[0];
-            const composition = transformNotionPage(page);
+            const composition = await transformNotionPageWithMedia(page, includeMedia);
 
             return { success: true, composition };
         };
 
-        // Use cache wrapper if you want, or just call directly:
-        const result = await fetchCompositionBySlug();
+        // Use cache wrapper with media inclusion in cache key
+        const cacheKey = includeMedia ? 
+            `composition_slug_${slug}_with_media` :
+            `composition_slug_${slug}`;
+            
+        const result = await withCache(
+            cacheKey,
+            CACHE_DURATIONS.singleComposition,
+            fetchCompositionBySlug
+        );
+
         res.json(result);
 
     } catch (error) {
