@@ -54,7 +54,7 @@
     flex-shrink: 0;
 }
         
-        /* Dedicated Media Section */
+        /* Dedicated Media Section (for videos) */
         .composition-media-section {
             width: 100%;
             margin: 2rem auto;
@@ -62,10 +62,15 @@
             box-sizing: border-box;
         }
         
+        .composition-video-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
         .composition-audio-container {
             width: 100%;
-            max-width: 800px; /* Wider for better presentation */
-            margin: 0 auto 2rem auto; /* Center the container */
+            margin: 1.5rem 0; /* Space above and below */
         }
         
         .composition-audio-player {
@@ -290,9 +295,12 @@
                 margin: 1.5rem auto;
             }
             
-            .composition-audio-container {
+            .composition-video-container {
                 max-width: 100%;
-                margin: 0 auto 1.5rem auto;
+            }
+            
+            .composition-audio-container {
+                margin: 1rem 0;
             }
             
             .composition-audio-player {
