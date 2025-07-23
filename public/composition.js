@@ -217,20 +217,336 @@ if (perfContainer) {
     perfContainer.innerHTML = perfHtml;
 }
 
-    // Score PDF
+    // Enhanced Score PDF Viewer
     const scoreCarouselContainer = document.querySelector('.score-carousel-container');
     if (scoreCarouselContainer && comp.scoreLink) {
         console.log('Score PDF link:', comp.scoreLink);
         scoreCarouselContainer.innerHTML = `
-          <div class="score-pdf-viewer">
-            <iframe
-                src="/pdfjs/web/viewer.html?file=${encodeURIComponent(comp.scoreLink)}#toolbar=0&navpanes=0&scrollHorizontal"
-                width="500px"
-                height="700px"
-                style="border: none;"
-            ></iframe>
-        </div>
+            <div class="enhanced-score-viewer">
+                <div class="score-viewer-container">
+                    <div class="score-pages-display" id="score-pages-display">
+                        <!-- PDF pages will be rendered here -->
+                    </div>
+                    <div class="score-navigation">
+                        <button class="nav-btn prev-btn" id="prev-pages">‹ Previous</button>
+                        <span class="page-info" id="page-info">Pages 1-2 of ?</span>
+                        <button class="nav-btn next-btn" id="next-pages">Next ›</button>
+                    </div>
+                </div>
+                <div class="score-thumbnails" id="score-thumbnails">
+                    <!-- Thumbnail navigation will be generated here -->
+                </div>
+            </div>
         `;
+        
+        // Initialize the enhanced PDF viewer
+        initEnhancedPDFViewer(comp.scoreLink);
+    }
+}
+
+// Enhanced PDF Viewer Implementation
+let pdfDoc = null;
+let currentPagePair = 1; // Starting with pages 1-2
+let totalPages = 0;
+let pageScale = 1.2;
+
+async function initEnhancedPDFViewer(pdfUrl) {
+    try {
+        console.log('🔄 Loading PDF:', pdfUrl);
+        
+        // Load PDF.js if not already loaded
+        if (!window.pdfjsLib) {
+            await loadPDFJS();
+        }
+        
+        // Load the PDF document
+        const loadingTask = pdfjsLib.getDocument(pdfUrl);
+        pdfDoc = await loadingTask.promise;
+        totalPages = pdfDoc.numPages;
+        
+        console.log(`✅ PDF loaded: ${totalPages} pages`);
+        
+        // Render initial pages (1-2)
+        await renderPagePair(currentPagePair);
+        
+        // Generate thumbnails
+        await generateThumbnails();
+        
+        // Set up navigation
+        setupPDFNavigation();
+        
+        // Set up scroll navigation
+        setupScrollNavigation();
+        
+    } catch (error) {
+        console.error('❌ Error loading PDF:', error);
+        const container = document.getElementById('score-pages-display');
+        if (container) {
+            container.innerHTML = `
+                <div class="pdf-error">
+                    <h3>Unable to load score</h3>
+                    <p>Please try refreshing the page or contact support.</p>
+                    <a href="${pdfUrl}" target="_blank" class="btn-primary">Open PDF in New Tab</a>
+                </div>
+            `;
+        }
+    }
+}
+
+async function loadPDFJS() {
+    return new Promise((resolve, reject) => {
+        if (window.pdfjsLib) {
+            resolve();
+            return;
+        }
+        
+        // Try to load PDF.js as ES module
+        import('/pdfjs/build/pdf.mjs').then((pdfjsLib) => {
+            window.pdfjsLib = pdfjsLib;
+            // Set worker source
+            pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdfjs/build/pdf.worker.mjs';
+            resolve();
+        }).catch(() => {
+            // Fallback to script tag method
+            const script = document.createElement('script');
+            script.src = '/pdfjs/build/pdf.mjs';
+            script.type = 'module';
+            script.onload = () => {
+                // Set worker source
+                if (window.pdfjsLib) {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdfjs/build/pdf.worker.mjs';
+                }
+                resolve();
+            };
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    });
+}
+
+async function renderPagePair(pairNumber) {
+    if (!pdfDoc) return;
+    
+    const container = document.getElementById('score-pages-display');
+    if (!container) return;
+    
+    // Calculate which pages to show
+    const leftPageNum = (pairNumber - 1) * 2 + 1;
+    const rightPageNum = leftPageNum + 1;
+    
+    console.log(`🔄 Rendering pages ${leftPageNum}-${rightPageNum}`);
+    
+    container.innerHTML = '<div class="loading-pages">Loading pages...</div>';
+    
+    try {
+        const pagesHtml = [];
+        
+        // Render left page
+        if (leftPageNum <= totalPages) {
+            const leftPageCanvas = await renderSinglePage(leftPageNum);
+            pagesHtml.push(`
+                <div class="score-page left-page">
+                    <div class="page-number">Page ${leftPageNum}</div>
+                    ${leftPageCanvas.outerHTML}
+                </div>
+            `);
+        }
+        
+        // Render right page
+        if (rightPageNum <= totalPages) {
+            const rightPageCanvas = await renderSinglePage(rightPageNum);
+            pagesHtml.push(`
+                <div class="score-page right-page">
+                    <div class="page-number">Page ${rightPageNum}</div>
+                    ${rightPageCanvas.outerHTML}
+                </div>
+            `);
+        }
+        
+        container.innerHTML = `
+            <div class="pages-container">
+                ${pagesHtml.join('')}
+            </div>
+        `;
+        
+        // Update page info
+        const pageInfo = document.getElementById('page-info');
+        if (pageInfo) {
+            const endPage = Math.min(rightPageNum, totalPages);
+            pageInfo.textContent = `Pages ${leftPageNum}${endPage > leftPageNum ? `-${endPage}` : ''} of ${totalPages}`;
+        }
+        
+        // Update navigation buttons
+        updateNavigationButtons();
+        
+    } catch (error) {
+        console.error('❌ Error rendering pages:', error);
+        container.innerHTML = '<div class="pdf-error">Error rendering pages</div>';
+    }
+}
+
+async function renderSinglePage(pageNumber) {
+    const page = await pdfDoc.getPage(pageNumber);
+    const viewport = page.getViewport({ scale: pageScale });
+    
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    
+    const renderContext = {
+        canvasContext: context,
+        viewport: viewport
+    };
+    
+    await page.render(renderContext).promise;
+    return canvas;
+}
+
+async function generateThumbnails() {
+    const thumbnailsContainer = document.getElementById('score-thumbnails');
+    if (!thumbnailsContainer || !pdfDoc) return;
+    
+    console.log('🖼️ Generating thumbnails...');
+    
+    const thumbnailsHtml = [];
+    const maxPairs = Math.ceil(totalPages / 2);
+    
+    for (let pairNum = 1; pairNum <= maxPairs; pairNum++) {
+        const leftPageNum = (pairNum - 1) * 2 + 1;
+        const rightPageNum = leftPageNum + 1;
+        
+        try {
+            // Generate thumbnail for the pair
+            const leftThumb = await renderThumbnail(leftPageNum);
+            const rightThumb = rightPageNum <= totalPages ? await renderThumbnail(rightPageNum) : null;
+            
+            thumbnailsHtml.push(`
+                <div class="thumbnail-pair ${pairNum === currentPagePair ? 'active' : ''}" 
+                     data-pair="${pairNum}" 
+                     onclick="goToPagePair(${pairNum})">
+                    <div class="thumb-pages">
+                        ${leftThumb.outerHTML}
+                        ${rightThumb ? rightThumb.outerHTML : '<div class="empty-page"></div>'}
+                    </div>
+                    <div class="thumb-label">
+                        ${leftPageNum}${rightThumb ? `-${rightPageNum}` : ''}
+                    </div>
+                </div>
+            `);
+        } catch (error) {
+            console.error(`Error generating thumbnail for pair ${pairNum}:`, error);
+        }
+    }
+    
+    thumbnailsContainer.innerHTML = `
+        <div class="thumbnails-scroll">
+            ${thumbnailsHtml.join('')}
+        </div>
+    `;
+}
+
+async function renderThumbnail(pageNumber) {
+    const page = await pdfDoc.getPage(pageNumber);
+    const viewport = page.getViewport({ scale: 0.2 }); // Small scale for thumbnails
+    
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    canvas.className = 'thumbnail-canvas';
+    
+    const renderContext = {
+        canvasContext: context,
+        viewport: viewport
+    };
+    
+    await page.render(renderContext).promise;
+    return canvas;
+}
+
+function setupPDFNavigation() {
+    const prevBtn = document.getElementById('prev-pages');
+    const nextBtn = document.getElementById('next-pages');
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentPagePair > 1) {
+                goToPagePair(currentPagePair - 1);
+            }
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            const maxPairs = Math.ceil(totalPages / 2);
+            if (currentPagePair < maxPairs) {
+                goToPagePair(currentPagePair + 1);
+            }
+        });
+    }
+}
+
+function setupScrollNavigation() {
+    const container = document.querySelector('.enhanced-score-viewer');
+    if (!container) return;
+    
+    let scrollTimeout;
+    
+    container.addEventListener('wheel', (e) => {
+        // Clear existing timeout
+        clearTimeout(scrollTimeout);
+        
+        // Prevent default scrolling
+        e.preventDefault();
+        
+        // Set timeout to handle scroll after user stops scrolling
+        scrollTimeout = setTimeout(() => {
+            const maxPairs = Math.ceil(totalPages / 2);
+            
+            if (e.deltaY > 0 && currentPagePair < maxPairs) {
+                // Scroll down - next pages
+                goToPagePair(currentPagePair + 1);
+            } else if (e.deltaY < 0 && currentPagePair > 1) {
+                // Scroll up - previous pages
+                goToPagePair(currentPagePair - 1);
+            }
+        }, 150); // Small delay to prevent too rapid navigation
+    });
+}
+
+async function goToPagePair(pairNumber) {
+    const maxPairs = Math.ceil(totalPages / 2);
+    if (pairNumber < 1 || pairNumber > maxPairs) return;
+    
+    currentPagePair = pairNumber;
+    await renderPagePair(currentPagePair);
+    
+    // Update thumbnail selection
+    document.querySelectorAll('.thumbnail-pair').forEach(thumb => {
+        thumb.classList.remove('active');
+    });
+    
+    const activeThumb = document.querySelector(`[data-pair="${pairNumber}"]`);
+    if (activeThumb) {
+        activeThumb.classList.add('active');
+        activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+
+function updateNavigationButtons() {
+    const prevBtn = document.getElementById('prev-pages');
+    const nextBtn = document.getElementById('next-pages');
+    const maxPairs = Math.ceil(totalPages / 2);
+    
+    if (prevBtn) {
+        prevBtn.disabled = currentPagePair <= 1;
+        prevBtn.style.opacity = currentPagePair <= 1 ? '0.5' : '1';
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = currentPagePair >= maxPairs;
+        nextBtn.style.opacity = currentPagePair >= maxPairs ? '0.5' : '1';
     }
 }
 
