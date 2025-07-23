@@ -34,6 +34,14 @@ page-title {
     text-align: center;
 }
 
+.html {
+    scroll-snap-type: y mandatory;
+}
+
+.section {
+    scroll-snap-align: start;
+}
+
 /* ===== MAIN CONTENT ===== */
 main {
     margin: var(--space-2) auto;
@@ -1095,4 +1103,42 @@ input:focus, textarea:focus, select:focus {
 }
 .composition-buy-btn {
     align-self: flex-start;
+}
+
+/* Performance Notes List Styling */
+.performance-notes-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.performance-notes-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+    text-indent: -1.5rem;
+}
+
+.performance-notes-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--primary-500);
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.composition-performance-notes h3 {
+    color: var(--primary-700);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.composition-program-notes h3 {
+    color: var(--primary-700);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 600;
 }

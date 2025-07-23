@@ -195,10 +195,21 @@ if (notesContainer) {
 const perfContainer = document.querySelector('.composition-performance-container');
 let perfHtml = '';
 if (comp.performanceNotes) {
+    // Convert markdown-style dashes to HTML list
+    const formattedNotes = comp.performanceNotes
+        .split('- ')
+        .filter(item => item.trim()) // Remove empty items
+        .map(item => `<li>${item.trim()}</li>`)
+        .join('');
+    
     perfHtml += `
         <section class="composition-performance-notes">
             <h3>Performance Notes</h3>
-            <div class="performance-notes-content">${comp.performanceNotes}</div>
+            <div class="performance-notes-content">
+                <ul class="performance-notes-list">
+                    ${formattedNotes}
+                </ul>
+            </div>
         </section>
     `;
 }
