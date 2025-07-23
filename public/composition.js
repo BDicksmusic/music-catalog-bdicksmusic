@@ -219,18 +219,47 @@ if (audioContainer) {
         
         // Handle new relational audio files
         if (audioFiles.length > 0) {
+            // Sort files by movement order (Roman numerals or numbers)
+            audioFiles.sort((a, b) => {
+                const orderA = extractMovementOrder(a.title);
+                const orderB = extractMovementOrder(b.title);
+                return orderA - orderB;
+            });
+
+            // Debug: Log movement analysis for sorted files
+            if (process.env.NODE_ENV !== 'production') {
+                console.log('🎵 Movement Analysis (sorted):');
+                audioFiles.forEach((file, index) => {
+                    const order = extractMovementOrder(file.title);
+                    const extractedTitle = extractMovementTitle(file.title);
+                    console.log(`  ${index + 1}. Order: ${order}, Extracted: "${extractedTitle}" from "${file.title}"`);
+                });
+            }
+
             audioPlayersHtml = audioFiles.map((audioFile, index) => {
-                // Movement-based title logic
-                const shouldShowTitle = audioFile.numberOfMovements > 1 || audioFile.movementTitle;
-                const displayTitle = shouldShowTitle ? audioFile.movementTitle : '';
+                // Enhanced movement-based title logic
+                const hasNotionMovementTitle = audioFile.numberOfMovements > 1 || audioFile.movementTitle;
+                const notionTitle = hasNotionMovementTitle ? audioFile.movementTitle : '';
+                
+                // Extract title from filename as fallback
+                const extractedTitle = extractMovementTitle(audioFile.title);
+                const movementOrder = extractMovementOrder(audioFile.title);
+                
+                // Use Notion movement title if available, otherwise extracted title
+                const displayTitle = notionTitle || extractedTitle;
+                const shouldShowTitle = displayTitle && displayTitle.length > 0;
                 
                 let titleHtml = '';
-                if (shouldShowTitle && displayTitle) {
-                    // Multi-movement composition - show movement title
+                if (shouldShowTitle) {
+                    // Show movement title with Roman numeral if available
+                    const romanNumeral = getRomanNumeral(movementOrder);
+                    const fullTitle = romanNumeral && romanNumeral !== 'Unknown' ? 
+                        `${romanNumeral}. ${displayTitle}` : displayTitle;
+                    
                     titleHtml = `
                         <div class="composition-audio-title movement-title">
-                            🎵 ${displayTitle}
-                            ${audioFiles.length > 1 ? `<span class="audio-counter">(${index + 1}/${audioFiles.length})</span>` : ''}
+                            🎵 ${fullTitle}
+                            ${audioFiles.length > 1 ? `<span class="audio-counter">(Movement ${index + 1})</span>` : ''}
                         </div>
                     `;
                 }
@@ -603,6 +632,64 @@ async function purchaseComposition(compositionId, title, price) {
 
 // ===== UTILITY FUNCTIONS FOR ENHANCED MEDIA =====
 
+// Extract movement order from filename (Roman numerals or Arabic numbers)
+function extractMovementOrder(title) {
+    if (!title) return 999; // Put untitled at end
+    
+    // Look for Roman numerals (I, II, III, IV, V, VI, VII, VIII, IX, X)
+    const romanMatch = title.match(/\b([IVX]+)\b[._-]/i);
+    if (romanMatch) {
+        const roman = romanMatch[1].toUpperCase();
+        const romanToArabic = {
+            'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 
+            'VI': 6, 'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10
+        };
+        return romanToArabic[roman] || 999;
+    }
+    
+    // Look for Arabic numbers (1, 2, 3, etc.)
+    const numberMatch = title.match(/\b(\d+)\b[._-]/);
+    if (numberMatch) {
+        return parseInt(numberMatch[1]);
+    }
+    
+    return 999; // Default for unordered files
+}
+
+// Convert number back to Roman numeral for display
+function getRomanNumeral(number) {
+    const arabicToRoman = {
+        1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V',
+        6: 'VI', 7: 'VII', 8: 'VIII', 9: 'IX', 10: 'X'
+    };
+    return arabicToRoman[number] || 'Unknown';
+}
+
+// Extract movement title from filename
+function extractMovementTitle(title) {
+    if (!title) return '';
+    
+    // Remove common prefixes (Master_MP3_, etc.)
+    let cleaned = title.replace(/^(Master_MP3_|Master_|MP3_|Audio_)/i, '');
+    
+    // Look for pattern: "Composition - Roman/Number. Title"
+    const match = cleaned.match(/.*?[._-]([IVX]+|Avenida_IV|No\.?\s*\d+)[._-](.+?)(?:\.(mp3|wav|m4a|aac))?$/i);
+    if (match) {
+        const movementTitle = match[2]
+            .replace(/[._]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        return movementTitle;
+    }
+    
+    // Fallback: try to clean up the full title
+    return cleaned
+        .replace(/[._]/g, ' ')
+        .replace(/\.(mp3|wav|m4a|aac)$/i, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
 // Extract display name from file URL
 function extractDisplayName(url) {
     if (!url) return 'Unknown';
@@ -642,13 +729,13 @@ function addMultiAudioControls(audioContainer, audioCount) {
     });
     
     // Add navigation controls
-    const controlsHtml = `
-        <div class="audio-nav-container">
-            <button class="audio-nav-btn" onclick="previousAudio()" id="prevAudioBtn">⏮ Previous</button>
-            <span class="audio-nav-info" id="audioNavInfo">Recording 1 of ${audioCount}</span>
-            <button class="audio-nav-btn" onclick="nextAudio()" id="nextAudioBtn">Next ⏭</button>
-        </div>
-    `;
+            const controlsHtml = `
+            <div class="audio-nav-container">
+                <button class="audio-nav-btn" onclick="previousAudio()" id="prevAudioBtn">⏮ Previous</button>
+                <span class="audio-nav-info" id="audioNavInfo">Movement 1 of ${audioCount}</span>
+                <button class="audio-nav-btn" onclick="nextAudio()" id="nextAudioBtn">Next ⏭</button>
+            </div>
+        `;
     audioContainer.insertAdjacentHTML('afterend', controlsHtml);
     
     // Update button states
@@ -702,7 +789,7 @@ function updateAudioNavButtons() {
     
     if (prevBtn) prevBtn.disabled = currentAudioIndex === 0;
     if (nextBtn) nextBtn.disabled = currentAudioIndex === totalAudioCount - 1;
-    if (navInfo) navInfo.textContent = `Recording ${currentAudioIndex + 1} of ${totalAudioCount}`;
+    if (navInfo) navInfo.textContent = `Movement ${currentAudioIndex + 1} of ${totalAudioCount}`;
 }
 
 // Navigation functions for multiple audio files
