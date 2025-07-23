@@ -57,7 +57,7 @@
         .composition-audio-container {
             width: 100%;
             max-width: 362px;
-            margin-top: 1.5rem;
+            margin-bottom: 1.5rem; /* Space below audio, above cover */
         }
         
         .composition-audio-player {
@@ -84,8 +84,21 @@
         
         .composition-audio-player audio {
             width: 100%;
-            height: 40px;
+            height: 42px;
             outline: none;
+            border-radius: 6px;
+        }
+        
+        .composition-audio-metadata {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .composition-audio-metadata .performance-info {
+            font-weight: 500;
+            color: var(--gray-700);
         }
         
         .composition-audio-player audio::-webkit-media-controls-panel {
@@ -561,14 +574,14 @@
     <main>
         <div class="composition-main">
             <div class="composition-detail-card">
+                <div class="composition-audio-container" id="composition-audio-container">
+                    <!-- Audio players will be injected here -->
+                </div>
                 <div class="composition-cover-container">
                     <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" 
                          alt="" 
                          class="composition-cover" 
                          id="composition-cover">
-                </div>
-                <div class="composition-audio-container" id="composition-audio-container">
-                    <!-- Audio players will be injected here -->
                 </div>
             </div>
                 <div class="composition-content-container">

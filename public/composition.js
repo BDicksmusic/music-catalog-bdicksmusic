@@ -170,20 +170,34 @@ if (linksContainer) {
     `;
 }
 
-// Add embedded audio player under the cover image
+// Add embedded audio player at the top of the left column
 const audioContainer = document.querySelector('.composition-audio-container');
 if (audioContainer && comp.audioLink) {
     // Extract filename from URL for display (remove path and extension)
     const audioFileName = comp.audioLink.split('/').pop().replace(/\.[^/.]+$/, "");
     const displayName = audioFileName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     
+    // Build metadata section if additional info is available
+    let metadataHtml = '';
+    if (comp.performanceBy || comp.recordingDate || comp.audioDescription) {
+        metadataHtml = `
+            <div class="composition-audio-metadata">
+                ${comp.performanceBy ? `<div class="performance-info">Performed by: ${comp.performanceBy}</div>` : ''}
+                ${comp.recordingDate ? `<div>Recorded: ${comp.recordingDate}</div>` : ''}
+                ${comp.audioDescription ? `<div>${comp.audioDescription}</div>` : ''}
+            </div>
+        `;
+    }
+    
     audioContainer.innerHTML = `
         <div class="composition-audio-player">
             <div class="composition-audio-title">🎵 ${displayName}</div>
+            ${metadataHtml}
             <audio controls preload="metadata">
                 <source src="${comp.audioLink}" type="audio/mpeg">
                 <source src="${comp.audioLink}" type="audio/mp4">
                 <source src="${comp.audioLink}" type="audio/wav">
+                <source src="${comp.audioLink}" type="audio/ogg">
                 Your browser does not support the audio element.
             </audio>
         </div>
