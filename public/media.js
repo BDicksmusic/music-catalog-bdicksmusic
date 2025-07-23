@@ -567,10 +567,9 @@ function createContentElement(item, source) {
             </div>
             
             <!-- Performance information -->
-            ${item.performanceBy || item.venue || item.recordingDate ? `
+            ${item.performanceBy || item.recordingDate ? `
                 <div class="performance-info">
                     ${item.performanceBy ? `<div class="performer">🎭 ${item.performanceBy}</div>` : ''}
-                    ${item.venue ? `<div class="venue">📍 ${item.venue}</div>` : ''}
                     ${item.recordingDate ? `<div class="date">📅 ${formatMediaDate(item.recordingDate)}</div>` : ''}
                 </div>
             ` : ''}

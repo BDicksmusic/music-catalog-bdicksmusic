@@ -185,14 +185,11 @@ if (audioContainer) {
                 const displayName = audioFile.title || extractDisplayName(audioFile.url);
                 
                 let metadataHtml = '';
-                if (audioFile.performanceBy || audioFile.recordingDate || audioFile.description) {
+                if (audioFile.performanceBy || audioFile.recordingDate) {
                     metadataHtml = `
                         <div class="composition-audio-metadata">
                             ${audioFile.performanceBy ? `<div class="performance-info">Performed by: ${audioFile.performanceBy}</div>` : ''}
                             ${audioFile.recordingDate ? `<div>Recorded: ${formatDate(audioFile.recordingDate)}</div>` : ''}
-                            ${audioFile.venue ? `<div>Venue: ${audioFile.venue}</div>` : ''}
-                            ${audioFile.description ? `<div>${audioFile.description}</div>` : ''}
-                            ${audioFile.quality ? `<div>Quality: ${audioFile.quality}</div>` : ''}
                         </div>
                     `;
                 }
@@ -221,12 +218,11 @@ if (audioContainer) {
             const displayName = extractDisplayName(comp.audioLink);
             
             let metadataHtml = '';
-            if (comp.performanceBy || comp.recordingDate || comp.audioDescription) {
+            if (comp.performanceBy || comp.recordingDate) {
                 metadataHtml = `
                     <div class="composition-audio-metadata">
                         ${comp.performanceBy ? `<div class="performance-info">Performed by: ${comp.performanceBy}</div>` : ''}
                         ${comp.recordingDate ? `<div>Recorded: ${comp.recordingDate}</div>` : ''}
-                        ${comp.audioDescription ? `<div>${comp.audioDescription}</div>` : ''}
                     </div>
                 `;
             }
@@ -314,13 +310,11 @@ if (perfContainer) {
                 const displayName = videoFile.title || extractDisplayName(videoFile.url);
                 
                 let metadataHtml = '';
-                if (videoFile.performanceBy || videoFile.recordingDate || videoFile.venue || videoFile.description) {
+                if (videoFile.performanceBy || videoFile.recordingDate) {
                     metadataHtml = `
                         <div class="composition-video-metadata">
                             ${videoFile.performanceBy ? `<div class="performance-info">Performed by: ${videoFile.performanceBy}</div>` : ''}
                             ${videoFile.recordingDate ? `<div>Recorded: ${formatDate(videoFile.recordingDate)}</div>` : ''}
-                            ${videoFile.venue ? `<div>Venue: ${videoFile.venue}</div>` : ''}
-                            ${videoFile.description ? `<div>${videoFile.description}</div>` : ''}
                         </div>
                     `;
                 }

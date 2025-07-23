@@ -49,20 +49,22 @@ This guide explains how to set up your enhanced Notion databases with four key r
 | **Composition Relations** | Relation | Link to Compositions database |
 
 ### Enhanced Metadata Properties
-| Property Name | Type | Description |
-|---------------|------|-------------|
-| **Performance By** | Rich Text | Performer information |
-| **Recording Date** | Date | When recorded |
-| **Venue** | Rich Text | Performance location |
-| **Description** | Rich Text | Media description |
-| **Duration** | Rich Text | Media length |
-| **Quality** | Select | High, Standard, Demo |
-| **Featured** | Checkbox | Featured content |
-| **Tags** | Multi-select | Content tags |
-| **Thumbnail** | Files & Media | Preview image |
-| **Instrument** | Select | Primary instrument |
-| **Difficulty** | Select | Performance difficulty |
-| **Status** | Select | published, draft, archived |
+| Property Name | Type | Description | Frontend Display |
+|---------------|------|-------------|------------------|
+| **Performance By** | Rich Text | Performer information | ✅ Shown on compositions |
+| **Recording Date** | Date | When recorded | ✅ Shown on compositions |
+| **Duration** | Rich Text | Media length | ✅ Shown on compositions |
+| **Venue** | Rich Text | Performance location | 📊 Data only |
+| **Description** | Rich Text | Media description | 📊 Data only |
+| **Quality** | Select | High, Standard, Demo | 📊 Data only |
+| **Featured** | Checkbox | Featured content | 📊 Data only |
+| **Tags** | Multi-select | Content tags | 📊 Data only |
+| **Thumbnail** | Files & Media | Preview image | 📊 Data only |
+| **Instrument** | Select | Primary instrument | 📊 Data only |
+| **Difficulty** | Select | Performance difficulty | 📊 Data only |
+| **Status** | Select | published, draft, archived | 📊 Data only |
+
+> **Note**: All properties are stored in the database and available via API. Properties marked "📊 Data only" are available for organization, filtering, and future features but don't display on composition pages for a clean user experience.
 
 ## Implementation Steps
 
@@ -122,18 +124,14 @@ For each audio/video file:
       "title": "Studio Recording",
       "url": "https://example.com/studio.mp3",
       "performanceBy": "Brandon Dicks, Trumpet",
-      "recordingDate": "2023-10-15",
-      "venue": "Studio A",
-      "quality": "High"
+      "recordingDate": "2023-10-15"
     },
     {
       "id": "audio2", 
       "title": "Live Performance",
       "url": "https://example.com/live.mp3",
       "performanceBy": "NAU Brass Quintet",
-      "recordingDate": "2023-11-20",
-      "venue": "Concert Hall",
-      "quality": "Standard"
+      "recordingDate": "2023-11-20"
     }
   ],
   "videoFiles": [
@@ -142,7 +140,7 @@ For each audio/video file:
       "title": "Performance Video",
       "url": "https://example.com/performance.mp4",
       "performanceBy": "NAU Brass Quintet",
-      "venue": "Concert Hall"
+      "recordingDate": "2023-11-20"
     }
   ]
 }
@@ -180,18 +178,21 @@ For each audio/video file:
 
 ## Frontend Features
 
-### Composition Pages Now Display:
-- **Multiple Audio Players** with metadata
-- **Multiple Video Players** with metadata  
-- **Enhanced Performance Information**
+### Composition Pages Display:
+- **Multiple Audio Players** with clean metadata (performer, recording date)
+- **Multiple Video Players** with clean metadata (performer, recording date)
 - **Navigation Controls** for multiple files
 - **Backward Compatibility** with single audio/score links
 
-### Media Pages Now Display:
-- **Related Compositions** as clickable chips
-- **Enhanced Metadata** (performer, venue, date)
-- **Quality Indicators**
+### Media Pages Display:
+- **Related Compositions** as clickable chips  
+- **Enhanced Metadata** (performer, recording date)
 - **Direct Links** to composition pages
+
+### Full Data Available via API:
+- **All properties** are stored and queryable via API endpoints
+- **Rich filtering capabilities** using venue, quality, instrument, etc.
+- **Future-ready** for advanced features without database migration
 
 ## Migration Strategy
 
@@ -241,6 +242,20 @@ For each audio/video file:
 # Test your setup
 curl http://localhost:3000/api/media-with-compositions
 curl http://localhost:3000/api/compositions/YOUR_ID?includeMedia=true
+
+# Example API response showing all properties available:
+# {
+#   "audioFiles": [{
+#     "title": "Studio Recording",
+#     "performanceBy": "Brandon Dicks, Trumpet",     // ✅ Displays
+#     "recordingDate": "2023-10-15",                // ✅ Displays  
+#     "venue": "Studio A",                          // 📊 Available via API
+#     "quality": "High",                            // 📊 Available via API
+#     "description": "Professional recording",       // 📊 Available via API
+#     "instrument": "Trumpet",                      // 📊 Available via API
+#     "tags": ["studio", "professional"]           // 📊 Available via API
+#   }]
+# }
 ```
 
 This enhanced relational system provides the four key relationships you requested while maintaining backward compatibility and providing a rich, scalable media management solution. 

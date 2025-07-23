@@ -162,10 +162,12 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
             audioLink: audioMedia.length > 0 ? audioMedia[0].url : baseComposition.audioLink,
             scoreLink: scoreMedia.length > 0 ? scoreMedia[0].url : baseComposition.scoreLink,
             
-            // Enhanced metadata from first audio file
+            // Enhanced metadata from first audio file (for backward compatibility)
             performanceBy: audioMedia.length > 0 ? audioMedia[0].performanceBy : '',
             recordingDate: audioMedia.length > 0 ? audioMedia[0].recordingDate : '',
             audioDescription: audioMedia.length > 0 ? audioMedia[0].description : '',
+            venue: audioMedia.length > 0 ? audioMedia[0].venue : '',
+            quality: audioMedia.length > 0 ? audioMedia[0].quality : '',
             
             // Media counts for UI
             mediaCount: {
