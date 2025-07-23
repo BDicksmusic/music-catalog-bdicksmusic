@@ -132,13 +132,29 @@
 
     <!-- Hero Section -->
     <div class="hero-container">
-        <!-- Fallback Image -->
-        <img 
-            src="/imgs/CJL07828.JPG" 
-            alt="Hero Background - Live Musical Performance" 
-            class="hero-fallback-image"
-            id="hero-fallback"
-        >
+        <!-- Image Carousel -->
+        <div class="hero-carousel" id="hero-carousel">
+            <img 
+                src="/Index Photos/CJL07828.JPG" 
+                alt="Hero Background - Live Musical Performance" 
+                class="hero-fallback-image active"
+            >
+            <img 
+                src="/Index Photos/Playing Photo.jpg" 
+                alt="Hero Background - Performance Photo" 
+                class="hero-fallback-image"
+            >
+            <img 
+                src="/Index Photos/Letters Playing Photo.png" 
+                alt="Hero Background - Letters Performance" 
+                class="hero-fallback-image"
+            >
+            <img 
+                src="/Index Photos/[Master Video] Resolutions MVT 1.00_00_21_06.Still001.jpg" 
+                alt="Hero Background - Master Video Still" 
+                class="hero-fallback-image"
+            >
+        </div>
         
         <!-- Video -->
         <video 
@@ -822,10 +838,54 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        // Hero Image Carousel
+        function initHeroCarousel() {
+            const images = document.querySelectorAll('.hero-fallback-image');
+            const video = document.getElementById('hero-video');
+            let currentIndex = 0;
+            let carouselInterval;
+            
+            if (images.length <= 1) return; // No carousel needed for single image
+            
+            function showNextImage() {
+                // Hide current image
+                images[currentIndex].classList.remove('active');
+                
+                // Move to next image
+                currentIndex = (currentIndex + 1) % images.length;
+                
+                // Show next image
+                images[currentIndex].classList.add('active');
+            }
+            
+            function startCarousel() {
+                // Start carousel with 4.5-second intervals for smoother experience
+                carouselInterval = setInterval(showNextImage, 4500);
+            }
+            
+            function stopCarousel() {
+                if (carouselInterval) {
+                    clearInterval(carouselInterval);
+                }
+            }
+            
+            // Start carousel immediately
+            startCarousel();
+            
+            // Stop carousel when video loads and plays
+            if (video) {
+                video.addEventListener('loadeddata', function() {
+                    // Small delay to ensure smooth transition to video
+                    setTimeout(stopCarousel, 1000);
+                });
+            }
+        }
+
         // Load everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadCompositions();
             initHeroVideo();
+            initHeroCarousel();
             // Mobile menu and theme toggle are now handled by main.js
         });
     </script>
