@@ -251,8 +251,8 @@
             background: var(--primary-700);
         }
         
-        /* Enhanced Score Viewer Styles */
-        .enhanced-score-viewer {
+        /* Simple Score Viewer Styles */
+        .simple-score-viewer {
             margin: 3rem auto;
             width: 100%;
             max-width: 95%;
@@ -263,63 +263,24 @@
             box-sizing: border-box;
         }
         
-        .score-viewer-container {
+        .score-container {
             padding: 2rem;
             background: white;
         }
         
-        .score-pages-display {
-            min-height: 600px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .pages-container {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            align-items: flex-start;
-        }
-        
-        .score-page {
-            position: relative;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-            background: white;
-            padding: 1rem;
-        }
-        
-        .score-page canvas {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 4px;
-        }
-        
-        .page-number {
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary-500);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .score-navigation {
+        .score-navigation-top {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 2rem;
-            margin-top: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+            position: relative;
         }
         
-        .nav-btn {
+        .score-nav-btn {
             background: var(--primary-500);
             color: white;
             border: none;
@@ -328,159 +289,99 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
         
-        .nav-btn:hover:not(:disabled) {
+        .score-nav-btn:hover:not(:disabled) {
             background: var(--primary-600);
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
         
-        .nav-btn:disabled {
+        .score-nav-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
         
-        .page-info {
+        .score-page-info {
             font-weight: 600;
             color: var(--gray-700);
             font-size: 1rem;
-        }
-        
-        .score-thumbnails {
-            background: var(--gray-100);
-            padding: 1.5rem;
-            border-top: 1px solid var(--gray-200);
-        }
-        
-        .thumbnails-scroll {
-            display: flex;
-            gap: 1rem;
-            overflow-x: auto;
-            padding: 0.5rem;
-            scrollbar-width: thin;
-        }
-        
-        .thumbnails-scroll::-webkit-scrollbar {
-            height: 6px;
-        }
-        
-        .thumbnails-scroll::-webkit-scrollbar-track {
-            background: var(--gray-200);
-            border-radius: 3px;
-        }
-        
-        .thumbnails-scroll::-webkit-scrollbar-thumb {
-            background: var(--primary-400);
-            border-radius: 3px;
-        }
-        
-        .thumbnail-pair {
-            flex-shrink: 0;
-            cursor: pointer;
-            border-radius: 8px;
-            padding: 0.5rem;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
             background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--gray-200);
         }
         
-        .thumbnail-pair:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        
-        .thumbnail-pair.active {
-            border-color: var(--primary-500);
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-        }
-        
-        .thumb-pages {
-            display: flex;
-            gap: 0.25rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .thumbnail-canvas {
-            border-radius: 2px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        
-        .empty-page {
-            width: 40px;
-            height: 52px;
-            background: var(--gray-200);
-            border-radius: 2px;
-            border: 1px dashed var(--gray-400);
-        }
-        
-        .thumb-label {
-            text-align: center;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: var(--gray-600);
-        }
-        
-        .loading-pages {
+        .score-iframe-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 400px;
-            font-size: 1.2rem;
-            color: var(--gray-600);
+            background: var(--gray-100);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .pdf-error {
-            text-align: center;
-            padding: 3rem;
-            color: var(--error-700);
-        }
-        
-        .pdf-error h3 {
-            color: var(--error-800);
-            margin-bottom: 1rem;
+        .score-iframe-container iframe {
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
         }
         
         /* Mobile responsiveness */
         @media (max-width: 768px) {
-            .enhanced-score-viewer {
+            .simple-score-viewer {
                 margin: 2rem auto;
                 width: 100%;
                 max-width: 100%;
                 border-radius: 8px;
-                padding: 0;
             }
             
-            .score-viewer-container {
+            .score-container {
                 padding: 1rem;
             }
             
-            .pages-container {
+            .score-navigation-top {
                 flex-direction: column;
                 gap: 1rem;
+                margin-bottom: 1rem;
             }
             
-            .score-page {
-                width: 100%;
-                max-width: 300px;
-                margin: 0 auto;
-            }
-            
-            .score-navigation {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .nav-btn {
+            .score-nav-btn {
                 width: 100%;
                 max-width: 200px;
+                padding: 1rem 1.5rem;
             }
             
-            .thumbnails-scroll {
-                gap: 0.5rem;
+            .score-page-info {
+                order: -1;
+                margin-bottom: 0.5rem;
             }
             
-            .thumbnail-pair {
-                min-width: 80px;
+            .score-iframe-container {
+                padding: 0.5rem;
+            }
+            
+            .score-iframe-container iframe {
+                height: 500px !important;
+            }
+        }
+        
+        /* Keyboard navigation hint */
+        .score-navigation-top::after {
+            content: "💡 Use ← → arrow keys to navigate";
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            position: absolute;
+            bottom: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        @media (max-width: 768px) {
+            .score-navigation-top::after {
+                display: none;
             }
         }
 }
