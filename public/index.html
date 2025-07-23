@@ -67,7 +67,7 @@
         </div>
         <div class="nav-right">
             <ul class="nav-menu">
-                <li class="nav-item"><a href="index.html" class="nav-link">Media</a></li>
+                <li class="nav-item"><a href="media.html" class="nav-link">Media</a></li>
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link">News</a>
                     <ul class="dropdown-menu">
@@ -94,8 +94,25 @@
                     </ul>
                 </li>
             </ul>
-            <button class="music-catalog-btn">Music Catalog</button>
-            <div class="hamburger">
+        
+              <button class="music-catalog-btn">Music Catalog</button>
+              <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 22" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 22" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+              <div class="hamburger">
                 <span></span>
                 <span></span>   
                 <span></span>
@@ -823,10 +840,60 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Load everything when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCompositions();
-            initMobileMenu();
+                  // Theme toggle functionality
+          function initThemeToggle() {
+              const themeToggle = document.getElementById('theme-toggle');
+              const html = document.documentElement;
+              
+              // Check for saved theme preference or default to light mode
+              const savedTheme = localStorage.getItem('theme') || 'light';
+              html.setAttribute('data-theme', savedTheme);
+              
+              // Update button state based on current theme
+              updateThemeButton(savedTheme);
+              
+              themeToggle.addEventListener('click', function() {
+                  const currentTheme = html.getAttribute('data-theme');
+                  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                  
+                  // Update theme
+                  html.setAttribute('data-theme', newTheme);
+                  localStorage.setItem('theme', newTheme);
+                  
+                  // Update button
+                  updateThemeButton(newTheme);
+                  
+                  // Add transition effect
+                  html.style.transition = 'all 0.3s ease';
+                  setTimeout(() => {
+                      html.style.transition = '';
+                  }, 300);
+              });
+          }
+
+          function updateThemeButton(theme) {
+              const themeToggle = document.getElementById('theme-toggle');
+              const sunIcon = themeToggle.querySelector('.sun-icon');
+              const moonIcon = themeToggle.querySelector('.moon-icon');
+              
+              if (theme === 'dark') {
+                  sunIcon.style.setProperty('opacity', '1', 'important');
+                  sunIcon.style.transform = 'rotate(0deg)';
+                  moonIcon.style.setProperty('opacity', '0', 'important');
+                  moonIcon.style.transform = 'rotate(-90deg)';
+              } else {
+                  sunIcon.style.setProperty('opacity', '0', 'important');
+                  sunIcon.style.transform = 'rotate(90deg)';
+                  moonIcon.style.setProperty('opacity', '1', 'important');
+                  moonIcon.style.transform = 'rotate(0deg)';
+              }
+          }
+
+          // Load everything when page loads
+          document.addEventListener('DOMContentLoaded', function() {
+              initThemeToggle();
+              loadCompositions();
+              initMobileMenu();
             initHeroVideo();
         });
     </script>

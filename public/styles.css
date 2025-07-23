@@ -1243,3 +1243,68 @@ input:focus, textarea:focus, select:focus {
     font-size: 1.3rem;
     font-weight: 600;
 }
+
+/* ===== THEME TOGGLE ===== */
+.theme-toggle {
+    background: transparent;
+    border: 2px solid var(--gray-300);
+    color: var(--gray-700);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+    border-color: var(--primary-500);
+    color: var(--primary-600);
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+.theme-toggle svg {
+    transition: all 0.3s ease;
+}
+
+.sun-icon {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+.moon-icon {
+    opacity: 0;
+    transform: rotate(-90deg);
+    position: absolute;
+}
+
+/* Dark mode theme toggle icon states */
+[data-theme="dark"] .theme-toggle {
+    border-color: var(--gray-400);
+    color: var(--gray-300);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+    border-color: var(--primary-400);
+    color: var(--primary-500);
+}
+
+[data-theme="dark"] .sun-icon {
+    opacity: 0;
+    transform: rotate(90deg);
+}
+
+[data-theme="dark"] .moon-icon {
+    opacity: 1;
+    transform: rotate(0deg);
+}
