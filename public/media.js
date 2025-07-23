@@ -10,7 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
     initAudioPlayers();
     initVideoPlayers();
     initSecondaryNavigation();
-    loadDynamicContent(); // New function to load content
+    
+    // Test Notion connection first, then load content
+    testNotionConnection().then(() => {
+        loadDynamicContent();
+    });
+    
     // Mobile menu is now handled by main.js
 });
 
@@ -346,6 +351,7 @@ async function loadDynamicContent() {
         
         // Process YouTube videos
         if (youtubeVideos.status === 'fulfilled' && youtubeVideos.value.length > 0) {
+            console.log(`✅ Loaded ${youtubeVideos.value.length} YouTube videos`);
             youtubeVideos.value.forEach(video => {
                 const videoElement = createVideoElement(video, 'youtube');
                 mediaGrid.appendChild(videoElement);
@@ -354,14 +360,21 @@ async function loadDynamicContent() {
         
         // Process Notion content
         if (notionContent.status === 'fulfilled' && notionContent.value.length > 0) {
+            console.log(`✅ Loaded ${notionContent.value.length} Notion media items`);
             notionContent.value.forEach(item => {
+                console.log(`📹 Processing: ${item.title} - Video URL: ${item.videoUrl}`);
                 const contentElement = createContentElement(item, 'notion');
                 mediaGrid.appendChild(contentElement);
             });
+        } else {
+            console.log('⚠️ No Notion media content loaded');
         }
         
         // Reinitialize video players for new content
         initVideoPlayers();
+        
+        // Update filter counts
+        updateFilterCounts();
         
     } catch (error) {
         console.error('Error loading dynamic content:', error);
@@ -544,16 +557,35 @@ function createContentElement(item, source) {
         </div>
     `;
     
-    // Add click handler
-    contentElement.addEventListener('click', () => {
+    // Add click handler with better visual feedback
+    contentElement.addEventListener('click', (e) => {
+        e.preventDefault();
+        
         if (item.audioUrl && item.category === 'audio') {
             // Handle audio content - scroll to audio section
             const audioShowcase = document.querySelector('.audio-showcase');
             audioShowcase.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else if (item.videoUrl) {
+            console.log(`🎬 Opening video modal for: ${item.title}`);
+            console.log(`🔗 Video URL: ${item.videoUrl}`);
             showNotionVideoModal(item);
+        } else {
+            console.log(`⚠️ No video URL found for: ${item.title}`);
         }
     });
+    
+    // Add hover effect for items with video URLs
+    if (item.videoUrl) {
+        contentElement.style.cursor = 'pointer';
+        contentElement.addEventListener('mouseenter', () => {
+            contentElement.style.transform = 'translateY(-2px)';
+            contentElement.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+        });
+        contentElement.addEventListener('mouseleave', () => {
+            contentElement.style.transform = 'translateY(0)';
+            contentElement.style.boxShadow = '';
+        });
+    }
     
     return contentElement;
 }
@@ -587,39 +619,78 @@ function showYouTubeModal(video) {
     addModalCloseHandlers(modal);
 }
 
-// Notion video modal
+// Notion video modal with enhanced error handling
 function showNotionVideoModal(item) {
+    if (!item.videoUrl) {
+        console.error('❌ No video URL provided for modal');
+        alert('Sorry, this video is not available.');
+        return;
+    }
+    
     const modal = document.createElement('div');
     modal.className = 'video-modal-overlay';
+    
+    // Determine video type and create appropriate embed
+    const isYouTube = item.videoUrl.includes('youtube.com') || item.videoUrl.includes('youtu.be');
+    const videoEmbed = isYouTube ? 
+        `<iframe 
+            src="${getYouTubeEmbedUrl(item.videoUrl)}?autoplay=1" 
+            frameborder="0" 
+            allowfullscreen
+            allow="autoplay; encrypted-media">
+        </iframe>` :
+        `<video controls autoplay>
+            <source src="${item.videoUrl}" type="video/mp4">
+            <source src="${item.videoUrl}" type="video/webm">
+            <source src="${item.videoUrl}" type="video/ogg">
+            Your browser does not support the video tag.
+        </video>`;
+    
     modal.innerHTML = `
         <div class="video-modal-content">
             <button class="modal-close">&times;</button>
             <h2>${item.title}</h2>
             <div class="video-container">
-                ${item.videoUrl.includes('youtube.com') || item.videoUrl.includes('youtu.be') ? `
-                    <iframe 
-                        src="${getYouTubeEmbedUrl(item.videoUrl)}" 
-                        frameborder="0" 
-                        allowfullscreen>
-                    </iframe>
-                ` : `
-                    <video controls>
-                        <source src="${item.videoUrl}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                `}
+                ${videoEmbed}
             </div>
-            <p>${item.description}</p>
-            ${item.tags.length > 0 ? `
+            <div class="video-info">
+                <p>${item.description || 'No description available.'}</p>
+                ${item.duration ? `<p><strong>Duration:</strong> ${item.duration}</p>` : ''}
+                ${item.venue ? `<p><strong>Venue:</strong> ${item.venue}</p>` : ''}
+                ${item.year ? `<p><strong>Year:</strong> ${item.year}</p>` : ''}
+            </div>
+            ${item.tags && item.tags.length > 0 ? `
                 <div class="modal-tags">
                     ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                 </div>
             ` : ''}
+            <div class="video-actions">
+                <a href="${item.videoUrl}" target="_blank" class="btn-secondary">
+                    ${isYouTube ? 'Watch on YouTube' : 'Open Video'}
+                </a>
+            </div>
         </div>
     `;
     
     document.body.appendChild(modal);
     addModalCloseHandlers(modal);
+    
+    // Add error handling for video loading
+    const video = modal.querySelector('video');
+    if (video) {
+        video.addEventListener('error', (e) => {
+            console.error('❌ Video loading error:', e);
+            const container = modal.querySelector('.video-container');
+            container.innerHTML = `
+                <div class="video-error">
+                    <p>❌ Unable to load video</p>
+                    <a href="${item.videoUrl}" target="_blank" class="btn-primary">
+                        Open in New Tab
+                    </a>
+                </div>
+            `;
+        });
+    }
 }
 
 // Utility functions
@@ -635,6 +706,64 @@ function formatDate(dateString) {
 function getYouTubeEmbedUrl(url) {
     const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
     return videoId ? `https://www.youtube.com/embed/${videoId[1]}` : url;
+}
+
+// Update filter button counts based on loaded content
+function updateFilterCounts() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const mediaItems = document.querySelectorAll('.media-item');
+    
+    filterBtns.forEach(btn => {
+        const filter = btn.getAttribute('data-filter');
+        let count = 0;
+        
+        if (filter === 'all') {
+            count = mediaItems.length;
+        } else {
+            mediaItems.forEach(item => {
+                const category = item.getAttribute('data-category');
+                if (category === filter) count++;
+            });
+        }
+        
+        // Update button text with count (optional)
+        const originalText = btn.textContent.split(' (')[0];
+        if (count > 0) {
+            btn.textContent = `${originalText} (${count})`;
+        }
+    });
+}
+
+// Test Notion API connection
+async function testNotionConnection() {
+    try {
+        console.log('🔍 Testing Notion API connection...');
+        const response = await fetch('/api/notion-media', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log(`✅ Notion API connected successfully`);
+            console.log(`📊 Found ${data.count} media items`);
+            
+            // Log items with video URLs
+            const videoItems = data.results.filter(item => item.videoUrl);
+            console.log(`🎥 Items with video URLs: ${videoItems.length}`);
+            videoItems.forEach(item => {
+                console.log(`  - ${item.title}: ${item.videoUrl}`);
+            });
+        } else {
+            console.error('❌ Notion API error:', data.error);
+        }
+        
+        return data;
+    } catch (error) {
+        console.error('❌ Failed to connect to Notion API:', error);
+        return null;
+    }
 }
 
 function addModalCloseHandlers(modal) {
