@@ -361,12 +361,12 @@ if (perfContainer) {
         const scoreUrl = scoreFiles.length > 0 ? scoreFiles[0].url : comp.scoreLink;
         console.log('Score PDF link:', scoreUrl);
         scoreCarouselContainer.innerHTML = `
-            <div class="spread-score-viewer">
+            <div class="single-page-score-viewer">
                 <div class="score-container">
                     <div class="score-iframe-container">
                         <iframe 
                             id="score-iframe"
-                            src="/pdfjs/web/viewer.html?file=${encodeURIComponent(scoreUrl)}#page=1&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=2&scrollModeOnLoad=0"
+                            src="/pdfjs/web/viewer.html?file=${encodeURIComponent(scoreUrl)}#page=1&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=0&scrollModeOnLoad=1"
                             width="100%"
                             height="700px"
                             style="border: none; border-radius: 8px;">
@@ -375,11 +375,11 @@ if (perfContainer) {
                     <div class="score-navigation-bottom">
                         <button class="score-nav-btn prev-btn" id="score-prev">
                             <span class="nav-icon">←</span>
-                            <span class="nav-text">Previous Spread</span>
+                            <span class="nav-text">Previous Page</span>
                         </button>
-                        <span class="score-page-info" id="score-page-info">Pages 1-2 of ?</span>
+                        <span class="score-page-info" id="score-page-info">Page 1 of ?</span>
                         <button class="score-nav-btn next-btn" id="score-next">
-                            <span class="nav-text">Next Spread</span>
+                            <span class="nav-text">Next Page</span>
                             <span class="nav-icon">→</span>
                         </button>
                     </div>
@@ -387,26 +387,26 @@ if (perfContainer) {
             </div>
         `;
         
-        // Initialize spread PDF navigation (2-page spread view)
-        initSimplePDFNavigation(scoreUrl);
+        // Initialize single-page PDF navigation
+        initSinglePagePDFNavigation(scoreUrl);
     }
 }
 
-// Spread PDF Navigation Implementation
-let currentSpread = 1;
+// Single Page PDF Navigation Implementation
+let currentPage = 1;
 let totalPages = 0;
 let scoreIframe = null;
 
-function initSimplePDFNavigation(pdfUrl) {
-    console.log('🔄 Initializing spread PDF navigation (17x11 two-page layout) for:', pdfUrl);
+function initSinglePagePDFNavigation(pdfUrl) {
+    console.log('🔄 Initializing single-page PDF navigation for:', pdfUrl);
     
     /*
-     * PDF.js URL Parameters for Spread View:
+     * PDF.js URL Parameters for Single Page View:
      * - zoom=page-fit: Fits pages to viewport
      * - toolbar=0: Hides PDF.js toolbar
      * - navpanes=0: Hides navigation panes
-     * - spreadModeOnLoad=2: Forces spread mode (2 pages side by side)
-     * - scrollModeOnLoad=0: Page scrolling mode (not horizontal)
+     * - spreadModeOnLoad=0: Single page mode
+     * - scrollModeOnLoad=1: Page scrolling mode
      */
     
     scoreIframe = document.getElementById('score-iframe');
@@ -445,27 +445,26 @@ function initSimplePDFNavigation(pdfUrl) {
         }, 1000);
     });
     
-    // Set up spread navigation buttons
-    setupSimpleNavigation();
+    // Set up single-page navigation buttons
+    setupSinglePageNavigation();
 }
 
-function setupSimpleNavigation() {
+function setupSinglePageNavigation() {
     const prevBtn = document.getElementById('score-prev');
     const nextBtn = document.getElementById('score-next');
     
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
-            if (currentSpread > 1) {
-                goToSpread(currentSpread - 1);
+            if (currentPage > 1) {
+                goToPage(currentPage - 1);
             }
         });
     }
     
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
-            const maxSpreads = Math.ceil(totalPages / 2);
-            if (currentSpread < maxSpreads) {
-                goToSpread(currentSpread + 1);
+            if (currentPage < totalPages) {
+                goToPage(currentPage + 1);
             }
         });
     }
@@ -473,50 +472,41 @@ function setupSimpleNavigation() {
     // Add keyboard support
     document.addEventListener('keydown', (e) => {
         if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-            const maxSpreads = Math.ceil(totalPages / 2);
-            if (e.key === 'ArrowLeft' && currentSpread > 1) {
+            if (e.key === 'ArrowLeft' && currentPage > 1) {
                 e.preventDefault();
-                goToSpread(currentSpread - 1);
-            } else if (e.key === 'ArrowRight' && currentSpread < maxSpreads) {
+                goToPage(currentPage - 1);
+            } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
                 e.preventDefault();
-                goToSpread(currentSpread + 1);
+                goToPage(currentPage + 1);
             }
         }
     });
 }
 
-function goToSpread(spreadNumber) {
-    const maxSpreads = Math.ceil(totalPages / 2);
-    if (spreadNumber < 1 || (totalPages !== 999 && spreadNumber > maxSpreads)) {
+function goToPage(pageNumber) {
+    if (pageNumber < 1 || (totalPages !== 999 && pageNumber > totalPages)) {
         return;
     }
     
-    currentSpread = spreadNumber;
+    currentPage = pageNumber;
     
-    // Calculate the starting page for this spread
-    // Spread 1: pages 1-2, Spread 2: pages 3-4, etc.
-    const startPage = (spreadNumber - 1) * 2 + 1;
-    
-    // Update iframe src with new spread
+    // Update iframe src with new page
     const baseUrl = scoreIframe.src.split('#')[0];
-    scoreIframe.src = `${baseUrl}#page=${startPage}&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=2&scrollModeOnLoad=0`;
+    scoreIframe.src = `${baseUrl}#page=${pageNumber}&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=0&scrollModeOnLoad=1`;
     
     updatePageInfo();
     updateNavigationButtons();
     
-    console.log(`📖 Navigated to spread ${spreadNumber} (pages ${startPage}-${startPage + 1})`);
+    console.log(`📖 Navigated to page ${pageNumber}`);
 }
 
 function updatePageInfo() {
     const pageInfo = document.getElementById('score-page-info');
     if (pageInfo) {
-        const startPage = (currentSpread - 1) * 2 + 1;
-        const endPage = Math.min(startPage + 1, totalPages);
-        
         if (totalPages === 999) {
-            pageInfo.textContent = `Pages ${startPage}-${endPage}`;
+            pageInfo.textContent = `Page ${currentPage}`;
         } else {
-            pageInfo.textContent = `Pages ${startPage}-${endPage} of ${totalPages}`;
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
         }
     }
 }
@@ -524,16 +514,15 @@ function updatePageInfo() {
 function updateNavigationButtons() {
     const prevBtn = document.getElementById('score-prev');
     const nextBtn = document.getElementById('score-next');
-    const maxSpreads = Math.ceil(totalPages / 2);
     
     if (prevBtn) {
-        prevBtn.disabled = currentSpread <= 1;
-        prevBtn.style.opacity = currentSpread <= 1 ? '0.5' : '1';
+        prevBtn.disabled = currentPage <= 1;
+        prevBtn.style.opacity = currentPage <= 1 ? '0.5' : '1';
     }
     
     if (nextBtn) {
-        nextBtn.disabled = totalPages !== 999 && currentSpread >= maxSpreads;
-        nextBtn.style.opacity = (totalPages !== 999 && currentSpread >= maxSpreads) ? '0.5' : '1';
+        nextBtn.disabled = totalPages !== 999 && currentPage >= totalPages;
+        nextBtn.style.opacity = (totalPages !== 999 && currentPage >= totalPages) ? '0.5' : '1';
     }
 }
 
