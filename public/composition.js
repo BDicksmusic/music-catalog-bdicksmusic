@@ -203,7 +203,7 @@ if (shortInstrContainer && comp.shortInstrumentList) {
                </section>
            `;
        }
-       const perfContainer = document.querySelector('.composition-performance-notes-container');
+       const perfContainer = document.querySelector('.composition-performance-container');
        if (perfContainer) {
            perfContainer.innerHTML = perfHtml;
        }
