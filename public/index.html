@@ -12,34 +12,88 @@
     }
     @keyframes pulse-glow {
         0%, 100% { 
-            opacity: 0.6; 
+            opacity: 0.85; 
             transform: scale(1);
         }
         50% { 
-            opacity: 0.8; 
+            opacity: .98; 
             transform: scale(1.03);
         }
     }
-    /* Hover effect for the button */
-    a[href="#catalog"] {
-        transition: all 0.3s ease;
-        border-radius: 25px;
-        animation: pulse-glow 5s infinite;
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
-    a[href="#catalog"]:hover { 
-        color: #ffffff !important;
-        background: linear-gradient(135deg, #81d9ff, #43a7ff) !important;
-        border-radius: 10px !important;
-        padding: 7px 10px !important;
-        transform: scale(1.05) !important;
-        opacity: 1 !important;
-        animation: none !important;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.2) !important;
+    @keyframes subtleShimmer {
+        0% {
+            background-position: -200% 0, 0 0;
+        }
+        100% {
+            background-position: 200% 0, 0 0;
+        }
+    }
+    /* Explore Button Styles */
+    .explore-btn {
+        display: inline-block;
+        color: var(--gray-100);
+        font-size: 25px;
+        background: var(--primary-400);
+        font-weight: 900;
+        text-decoration: none;
+        cursor: pointer;
+        border-radius: 50px;
+        padding: 7px 10px;
+        border: 1px solid var(--primary-400);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.13);
+        position: relative;
+        overflow: hidden;
+        
+        /* Initial hidden state for animation */
+        opacity: 0;
+        transform: translateY(20px);
+        
+        /* Animation sequence */
+        animation: 
+            fadeInUp 0.8s ease-out 0.6s forwards,
+            pulse-glow 6.5s infinite 2s;
+    }
+    
+    .explore-btn:hover { 
+        color: var(--gray-100);
+        background: 
+            linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.3) 20%,
+                rgba(255, 255, 255, 0.6) 50%,
+                rgba(255, 255, 255, 0.3) 80%,
+                transparent 100%
+            ),
+            var(--primary-500);
+        background-size: 200% 100%, 100% 100%;
+        border-color: var(--primary-500);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        
+        /* Only pause pulse animation, keep fadeInUp intact, add shimmer */
+        animation: 
+            fadeInUp 0.8s ease-out 0.6s forwards,
+            pulse-glow 6.5s infinite 2s paused,
+            subtleShimmer 4s linear infinite;
+            
+        /* Override transform for hover effect */
+        transform: scale(1.05) translateY(-1px) !important;
+        transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
     @media (max-width: 768px) {
-        a[href="#catalog"] {
-            font-size: 12px !important;
-            padding: 10px 20px !important;
+        .explore-btn {
+            font-size: 18px;
+            padding: 8px 16px;
         }
     }
     .works-grid.dragging {
@@ -179,22 +233,7 @@
     z-index: 10;
     pointer-events: auto;
 ">
-    <a href="#catalog" style="
-        display: inline-block;
-        color: var(--gray-300);
-        font-size: 25px;
-        background: var(--primary-900);
-        font-weight: 900;
-        text-decoration: none;
-        opacity: 1;
-        animation: pulse-glow 6.5s infinite;
-        cursor: pointer;
-        transition: all 10s ease;
-        border-radius: 50px;
-        padding: 7px 10px;
-        border: 1px solid var(--primary-900);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.13);    
-    "onclick="smoothScrollTo('#catalog'); return false;">
+    <a href="#catalog" id="explore-button" class="explore-btn" onclick="smoothScrollTo('#catalog'); return false;">
         Click to Explore
     </a>
 </div>
