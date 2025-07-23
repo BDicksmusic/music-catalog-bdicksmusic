@@ -342,6 +342,20 @@ if (audioContainer) {
         // Reset audio index for new composition
         currentAudioIndex = 0;
         
+        // Check if this should be treated as a multi-movement composition
+        const compositionTitle = document.querySelector('.composition-title h1')?.textContent || '';
+        const mightHaveMovements = /suite|symphony|sonata|concerto|movements?/i.test(compositionTitle);
+        
+        // Force multi-movement treatment for known compositions
+        if (audioFiles.length === 1 && mightHaveMovements) {
+            console.log('🎵 Single file detected for composition that might have movements');
+            // Add a temporary message
+            const tempMessage = document.createElement('div');
+            tempMessage.style.cssText = 'padding: 10px; margin: 10px 0; background: #f0f8ff; border-left: 4px solid #4a90e2; border-radius: 4px; font-size: 0.9em; color: #2c5282;';
+            tempMessage.innerHTML = '🎵 <strong>Note:</strong> Individual movement files may be available - check your Notion Media database to link them to this composition.';
+            audioContainer.appendChild(tempMessage);
+        }
+        
         // For multiple audio files, show only the first one initially
         if (audioFiles.length > 1) {
             const audioPlayers = audioContainer.querySelectorAll('.composition-audio-player');

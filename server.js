@@ -114,17 +114,13 @@ async function findMovementFilesByPattern(compositionTitle, linkedMediaIds = [])
     try {
         console.log(`🔍 Looking for movement files matching pattern: "${compositionTitle}"`);
         
-        // Query all audio files from media database
+        // Query all files from media database (don't filter by type yet)
         const response = await notion.databases.query({
             database_id: process.env.NOTION_MEDIA_DATABASE_ID,
-            filter: {
-                property: 'Type',
-                select: {
-                    equals: 'Audio'
-                }
-            },
             page_size: 100
         });
+        
+        console.log(`🔍 Pattern search found ${response.results.length} total items in media database`);
         
         // Look for files that match the composition name pattern
         const compositionPattern = compositionTitle.toLowerCase()
@@ -137,14 +133,32 @@ async function findMovementFilesByPattern(compositionTitle, linkedMediaIds = [])
             const fileName = item.properties.Name?.title?.[0]?.text?.content || '';
             const fileNameNormalized = fileName.toLowerCase().replace(/[^a-z0-9]/g, '');
             
+            console.log(`  🔍 Checking file: "${fileName}"`);
+            console.log(`    - Normalized: "${fileNameNormalized}"`);
+            
             // Check if this file matches the composition pattern and has movement indicators
             const hasCompositionMatch = fileNameNormalized.includes(compositionPattern) || 
-                                      fileNameNormalized.includes('resolutions');
-            const hasMovementIndicator = /[._-](i{1,3}v?|v|[1-9])[._-]/i.test(fileName);
+                                      fileNameNormalized.includes('resolutions') ||
+                                      fileName.toLowerCase().includes('resolutions');
+            
+            // More flexible movement indicator patterns
+            const hasMovementIndicator = /[._-](i{1,3}v?|v|[1-9])[._-]/i.test(fileName) ||
+                                       /\b(i{1,3}v?|v)\b[._]/i.test(fileName) ||
+                                       /movement|mvt/i.test(fileName);
+            
+            console.log(`    - Composition match: ${hasCompositionMatch}`);
+            console.log(`    - Movement indicator: ${hasMovementIndicator}`);
+            console.log(`    - Already linked: ${linkedMediaIds.includes(item.id)}`);
             
             if (hasCompositionMatch && hasMovementIndicator && !linkedMediaIds.includes(item.id)) {
-                movementFiles.push(transformMediaPage(item));
-                console.log(`  ✅ Found movement file: "${fileName}"`);
+                const mediaItem = transformMediaPage(item);
+                // Only include audio files in final results
+                if (mediaItem.type === 'Audio') {
+                    movementFiles.push(mediaItem);
+                    console.log(`  ✅ Found movement file: "${fileName}" (Type: ${mediaItem.type})`);
+                } else {
+                    console.log(`  ⚠️ Skipping non-audio file: "${fileName}" (Type: ${mediaItem.type})`);
+                }
             }
         });
         
@@ -284,6 +298,11 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
             const linkedIds = allMedia.map(m => m.id);
             const movementFiles = await findMovementFilesByPattern(compositionTitle, linkedIds);
             allMedia.push(...movementFiles);
+            
+            // If pattern matching failed but this is "Resolutions", provide helpful message
+            if (movementFiles.length === 0 && compositionTitle.toLowerCase().includes('resolutions')) {
+                console.log(`⚠️ No movement files found for Resolutions. Make sure individual movement files are added to Media database with proper "Audio to Comp" relations.`);
+            }
         }
 
         // Debug: Log what media was actually returned
