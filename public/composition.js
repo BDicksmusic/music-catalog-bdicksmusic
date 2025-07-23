@@ -170,6 +170,29 @@ if (linksContainer) {
     `;
 }
 
+// Add embedded audio player under the cover image
+const audioContainer = document.querySelector('.composition-audio-container');
+if (audioContainer && comp.audioLink) {
+    // Extract filename from URL for display (remove path and extension)
+    const audioFileName = comp.audioLink.split('/').pop().replace(/\.[^/.]+$/, "");
+    const displayName = audioFileName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    
+    audioContainer.innerHTML = `
+        <div class="composition-audio-player">
+            <div class="composition-audio-title">🎵 ${displayName}</div>
+            <audio controls preload="metadata">
+                <source src="${comp.audioLink}" type="audio/mpeg">
+                <source src="${comp.audioLink}" type="audio/mp4">
+                <source src="${comp.audioLink}" type="audio/wav">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    `;
+} else if (audioContainer) {
+    // Hide the container if there's no audio
+    audioContainer.style.display = 'none';
+}
+
 const shortInstrContainer = document.querySelector('.composition-short-instrument-container');
 if (shortInstrContainer && comp.shortInstrumentList) {
     shortInstrContainer.innerHTML = `<div class="short-instrument-list"><strong>Short Instrument List:</strong> ${comp.shortInstrumentList}</div>`;
@@ -222,38 +245,44 @@ if (perfContainer) {
     if (scoreCarouselContainer && comp.scoreLink) {
         console.log('Score PDF link:', comp.scoreLink);
         scoreCarouselContainer.innerHTML = `
-            <div class="simple-score-viewer">
+            <div class="spread-score-viewer">
                 <div class="score-container">
-                    <div class="score-navigation-top">
-                        <button class="score-nav-btn prev-btn" id="score-prev">‹ Previous Page</button>
-                        <span class="score-page-info" id="score-page-info">Page 1 of ?</span>
-                        <button class="score-nav-btn next-btn" id="score-next">Next Page ›</button>
-                    </div>
                     <div class="score-iframe-container">
                         <iframe 
                             id="score-iframe"
-                            src="/pdfjs/web/viewer.html?file=${encodeURIComponent(comp.scoreLink)}#page=1&zoom=page-fit&toolbar=0&navpanes=0"
+                            src="/pdfjs/web/viewer.html?file=${encodeURIComponent(comp.scoreLink)}#page=1&zoom=page-width&toolbar=0&navpanes=0&spreadModeOnLoad=1"
                             width="100%"
                             height="700px"
                             style="border: none; border-radius: 8px;">
                         </iframe>
                     </div>
+                    <div class="score-navigation-bottom">
+                        <button class="score-nav-btn prev-btn" id="score-prev">
+                            <span class="nav-icon">←</span>
+                            <span class="nav-text">Previous Spread</span>
+                        </button>
+                        <span class="score-page-info" id="score-page-info">Pages 1-2 of ?</span>
+                        <button class="score-nav-btn next-btn" id="score-next">
+                            <span class="nav-text">Next Spread</span>
+                            <span class="nav-icon">→</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
         
-        // Initialize simple PDF navigation
+        // Initialize spread PDF navigation
         initSimplePDFNavigation(comp.scoreLink);
     }
 }
 
-// Simple PDF Navigation Implementation
-let currentPage = 1;
+// Spread PDF Navigation Implementation
+let currentSpread = 1;
 let totalPages = 0;
 let scoreIframe = null;
 
 function initSimplePDFNavigation(pdfUrl) {
-    console.log('🔄 Initializing simple PDF navigation for:', pdfUrl);
+    console.log('🔄 Initializing spread PDF navigation for:', pdfUrl);
     
     scoreIframe = document.getElementById('score-iframe');
     
@@ -291,7 +320,7 @@ function initSimplePDFNavigation(pdfUrl) {
         }, 1000);
     });
     
-    // Set up navigation buttons
+    // Set up spread navigation buttons
     setupSimpleNavigation();
 }
 
@@ -301,16 +330,17 @@ function setupSimpleNavigation() {
     
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
-            if (currentPage > 1) {
-                goToPage(currentPage - 1);
+            if (currentSpread > 1) {
+                goToSpread(currentSpread - 1);
             }
         });
     }
     
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
-            if (currentPage < totalPages) {
-                goToPage(currentPage + 1);
+            const maxSpreads = Math.ceil(totalPages / 2);
+            if (currentSpread < maxSpreads) {
+                goToSpread(currentSpread + 1);
             }
         });
     }
@@ -318,41 +348,50 @@ function setupSimpleNavigation() {
     // Add keyboard support
     document.addEventListener('keydown', (e) => {
         if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-            if (e.key === 'ArrowLeft' && currentPage > 1) {
+            const maxSpreads = Math.ceil(totalPages / 2);
+            if (e.key === 'ArrowLeft' && currentSpread > 1) {
                 e.preventDefault();
-                goToPage(currentPage - 1);
-            } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
+                goToSpread(currentSpread - 1);
+            } else if (e.key === 'ArrowRight' && currentSpread < maxSpreads) {
                 e.preventDefault();
-                goToPage(currentPage + 1);
+                goToSpread(currentSpread + 1);
             }
         }
     });
 }
 
-function goToPage(pageNumber) {
-    if (pageNumber < 1 || (totalPages !== 999 && pageNumber > totalPages)) {
+function goToSpread(spreadNumber) {
+    const maxSpreads = Math.ceil(totalPages / 2);
+    if (spreadNumber < 1 || (totalPages !== 999 && spreadNumber > maxSpreads)) {
         return;
     }
     
-    currentPage = pageNumber;
+    currentSpread = spreadNumber;
     
-    // Update iframe src with new page
+    // Calculate the starting page for this spread
+    // Spread 1: pages 1-2, Spread 2: pages 3-4, etc.
+    const startPage = (spreadNumber - 1) * 2 + 1;
+    
+    // Update iframe src with new spread
     const baseUrl = scoreIframe.src.split('#')[0];
-    scoreIframe.src = `${baseUrl}#page=${pageNumber}&zoom=page-fit&toolbar=0&navpanes=0`;
+    scoreIframe.src = `${baseUrl}#page=${startPage}&zoom=page-width&toolbar=0&navpanes=0&spreadModeOnLoad=1`;
     
     updatePageInfo();
     updateNavigationButtons();
     
-    console.log(`📖 Navigated to page ${pageNumber}`);
+    console.log(`📖 Navigated to spread ${spreadNumber} (pages ${startPage}-${startPage + 1})`);
 }
 
 function updatePageInfo() {
     const pageInfo = document.getElementById('score-page-info');
     if (pageInfo) {
+        const startPage = (currentSpread - 1) * 2 + 1;
+        const endPage = Math.min(startPage + 1, totalPages);
+        
         if (totalPages === 999) {
-            pageInfo.textContent = `Page ${currentPage}`;
+            pageInfo.textContent = `Pages ${startPage}-${endPage}`;
         } else {
-            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            pageInfo.textContent = `Pages ${startPage}-${endPage} of ${totalPages}`;
         }
     }
 }
@@ -360,15 +399,16 @@ function updatePageInfo() {
 function updateNavigationButtons() {
     const prevBtn = document.getElementById('score-prev');
     const nextBtn = document.getElementById('score-next');
+    const maxSpreads = Math.ceil(totalPages / 2);
     
     if (prevBtn) {
-        prevBtn.disabled = currentPage <= 1;
-        prevBtn.style.opacity = currentPage <= 1 ? '0.5' : '1';
+        prevBtn.disabled = currentSpread <= 1;
+        prevBtn.style.opacity = currentSpread <= 1 ? '0.5' : '1';
     }
     
     if (nextBtn) {
-        nextBtn.disabled = totalPages !== 999 && currentPage >= totalPages;
-        nextBtn.style.opacity = (totalPages !== 999 && currentPage >= totalPages) ? '0.5' : '1';
+        nextBtn.disabled = totalPages !== 999 && currentSpread >= maxSpreads;
+        nextBtn.style.opacity = (totalPages !== 999 && currentSpread >= maxSpreads) ? '0.5' : '1';
     }
 }
 
