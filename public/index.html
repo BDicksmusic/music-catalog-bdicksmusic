@@ -12,28 +12,29 @@
     }
     @keyframes pulse-glow {
         0%, 100% { 
-            opacity: 1; 
+            opacity: 0.6; 
             transform: scale(1);
         }
         50% { 
-            opacity: 1; 
-            transform: scale(1.2);
-    
+            opacity: 0.8; 
+            transform: scale(1.03);
         }
     }
     /* Hover effect for the button */
     a[href="#catalog"] {
-        transition: color 0.4s, background 0.6s, transform 0.3s, opacity 0.3s, border-radius 1s;
-        border-radius: 25px; /* or any value you like */
+        transition: all 0.3s ease;
+        border-radius: 25px;
+        animation: pulse-glow 3s infinite;
     }
     a[href="#catalog"]:hover { 
-        color: #ffffff;
-        background: linear-gradient(135deg, #81d9ff, #43a7ff);
-        border-radius: 10px;
-        padding: 10px 20px; /* keep the same or make it more/less rounded on hover */
-        transform: scale(1.08) !important;
-        opacity: 0.8 !important;
-        animation-play-state: paused;
+        color: #ffffff !important;
+        background: linear-gradient(135deg, #81d9ff, #43a7ff) !important;
+        border-radius: 10px !important;
+        padding: 7px 10px !important;
+        transform: scale(1.05) !important;
+        opacity: 1 !important;
+        animation: none !important;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2) !important;
     }
     @media (max-width: 768px) {
         a[href="#catalog"] {
@@ -126,17 +127,23 @@
     <a href="#catalog" style="
         display: inline-block;
 
-        color: rgb(228, 228, 228);
+        color: var(--gray-300);
 
         font-size: 25px;
+
+        background: var(--primary-900);
         font-weight: 900;
         text-decoration: none;
         opacity: 1;
         animation: pulse-glow 3s infinite;
         cursor: pointer;
         transition: all 10s ease;
+        border-radius: 50px;
+        padding: 7px 10px;
+        border: 1px solid var(--primary-900);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.13);    
     "onclick="smoothScrollTo('#catalog'); return false;">
-        ↓ Explore Music Catalog ↓
+        Explore Music Catalog
     </a>
 </div>
 </head>
