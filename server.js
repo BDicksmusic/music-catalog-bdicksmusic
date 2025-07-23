@@ -36,6 +36,151 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ===== HELPER FUNCTIONS =====
+
+// Helper function to query related media for a composition
+async function queryRelatedMedia(compositionId, mediaType = null) {
+    try {
+        console.log(`🔍 Querying related media for composition: ${compositionId}`);
+        
+        // Query the media database for items related to this composition
+        let filter = {
+            property: 'Composition Relations', // The relation property in media DB
+            relation: {
+                contains: compositionId
+            }
+        };
+        
+        // Add media type filter if specified
+        if (mediaType) {
+            filter = {
+                and: [
+                    filter,
+                    {
+                        property: 'Type',
+                        select: {
+                            equals: mediaType
+                        }
+                    }
+                ]
+            };
+        }
+        
+        const response = await notion.databases.query({
+            database_id: process.env.NOTION_MEDIA_DATABASE_ID,
+            filter: filter
+        });
+        
+        return response.results.map(transformMediaPage);
+    } catch (error) {
+        console.error('Error querying related media:', error);
+        return [];
+    }
+}
+
+// Helper function to query related compositions for a media item
+async function queryRelatedCompositions(mediaId) {
+    try {
+        console.log(`🔍 Querying related compositions for media: ${mediaId}`);
+        
+        // First get the media item to see its composition relations
+        const mediaPage = await notion.pages.retrieve({ page_id: mediaId });
+        const compositionRelations = mediaPage.properties['Composition Relations']?.relation || [];
+        
+        if (compositionRelations.length === 0) {
+            return [];
+        }
+        
+        // Query each related composition
+        const compositionPromises = compositionRelations.map(relation => 
+            notion.pages.retrieve({ page_id: relation.id })
+        );
+        
+        const compositions = await Promise.all(compositionPromises);
+        return compositions.map(transformNotionPage);
+    } catch (error) {
+        console.error('Error querying related compositions:', error);
+        return [];
+    }
+}
+
+// Transform media page from Notion to clean format
+function transformMediaPage(page) {
+    const properties = page.properties;
+    
+    return {
+        id: page.id,
+        title: getTextContent(properties.Name) || getTextContent(properties.Title) || 'Untitled Media',
+        type: properties.Type?.select?.name || 'Unknown',
+        category: properties.Category?.select?.name || 'performance',
+        url: properties.URL?.url || properties.VideoURL?.url || properties.AudioURL?.url || '',
+        thumbnail: getFileUrl(properties.Thumbnail),
+        duration: getTextContent(properties.Duration) || '',
+        performanceBy: getTextContent(properties['Performance By']) || '',
+        recordingDate: properties['Recording Date']?.date?.start || '',
+        venue: getTextContent(properties.Venue) || '',
+        year: properties.Year?.number || null,
+        description: notionRichTextToHtml(properties.Description?.rich_text) || '',
+        featured: properties.Featured?.checkbox || false,
+        tags: properties.Tags?.multi_select?.map(tag => tag.name) || [],
+        quality: properties.Quality?.select?.name || 'Standard',
+        instrument: properties.Instrument?.select?.name || '',
+        difficulty: properties.Difficulty?.select?.name || '',
+        status: properties.Status?.select?.name || 'published',
+        compositionRelations: properties['Composition Relations']?.relation?.map(rel => rel.id) || [],
+        created: page.created_time,
+        lastEdited: page.last_edited_time
+    };
+}
+
+// Enhanced transform function for compositions with media rollup
+const transformNotionPageWithMedia = async (page, includeMedia = true) => {
+    const baseComposition = transformNotionPage(page);
+    
+    if (!includeMedia) {
+        return baseComposition;
+    }
+    
+    try {
+        // Query all related media
+        const allMedia = await queryRelatedMedia(page.id);
+        
+        // Separate by type
+        const audioMedia = allMedia.filter(media => media.type === 'Audio');
+        const videoMedia = allMedia.filter(media => media.type === 'Video');
+        const scoreMedia = allMedia.filter(media => media.type === 'Score');
+        
+        // Roll up media data
+        return {
+            ...baseComposition,
+            // Enhanced media arrays
+            audioFiles: audioMedia,
+            videoFiles: videoMedia,
+            scoreFiles: scoreMedia,
+            allMedia: allMedia,
+            
+            // Keep original single links for backward compatibility
+            audioLink: audioMedia.length > 0 ? audioMedia[0].url : baseComposition.audioLink,
+            scoreLink: scoreMedia.length > 0 ? scoreMedia[0].url : baseComposition.scoreLink,
+            
+            // Enhanced metadata from first audio file
+            performanceBy: audioMedia.length > 0 ? audioMedia[0].performanceBy : '',
+            recordingDate: audioMedia.length > 0 ? audioMedia[0].recordingDate : '',
+            audioDescription: audioMedia.length > 0 ? audioMedia[0].description : '',
+            
+            // Media counts for UI
+            mediaCount: {
+                audio: audioMedia.length,
+                video: videoMedia.length,
+                score: scoreMedia.length,
+                total: allMedia.length
+            }
+        };
+    } catch (error) {
+        console.error('Error rolling up media for composition:', error);
+        return baseComposition; // Return base composition if media rollup fails
+    }
+};
+
 function notionRichTextToHtml(richTextArr) {
     if (!Array.isArray(richTextArr)) return '';
     return richTextArr.map(rt => {
@@ -124,6 +269,104 @@ const transformNotionPage = (page) => {
 app.get('/api/notion-media', mediaApiHandler);
 app.post('/api/notion-media', mediaApiHandler);
 
+// ===== ENHANCED MEDIA RELATIONS API =====
+
+// GET all media with composition relations
+app.get('/api/media-with-compositions', async (req, res) => {
+    try {
+        console.log('🔄 Fetching media with composition relations...');
+        
+        const response = await notion.databases.query({
+            database_id: process.env.NOTION_MEDIA_DATABASE_ID,
+            sorts: [
+                {
+                    property: 'Created',
+                    direction: 'descending'
+                }
+            ]
+        });
+        
+        const mediaWithCompositions = await Promise.all(
+            response.results.map(async (mediaPage) => {
+                const mediaData = transformMediaPage(mediaPage);
+                const relatedCompositions = await queryRelatedCompositions(mediaPage.id);
+                
+                return {
+                    ...mediaData,
+                    relatedCompositions: relatedCompositions
+                };
+            })
+        );
+        
+        res.json({
+            success: true,
+            count: mediaWithCompositions.length,
+            media: mediaWithCompositions,
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('Error fetching media with compositions:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch media with compositions'
+        });
+    }
+});
+
+// GET specific media item with its composition relations
+app.get('/api/media/:id/compositions', async (req, res) => {
+    try {
+        const mediaId = req.params.id;
+        console.log(`🔄 Fetching compositions for media ${mediaId}...`);
+        
+        const relatedCompositions = await queryRelatedCompositions(mediaId);
+        
+        res.json({
+            success: true,
+            mediaId: mediaId,
+            compositions: relatedCompositions,
+            count: relatedCompositions.length,
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('Error fetching compositions for media:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch compositions for media'
+        });
+    }
+});
+
+// GET specific composition's media by type
+app.get('/api/compositions/:id/media/:type?', async (req, res) => {
+    try {
+        const compositionId = req.params.id;
+        const mediaType = req.params.type; // Optional: 'audio', 'video', 'score'
+        
+        console.log(`🔄 Fetching ${mediaType || 'all'} media for composition ${compositionId}...`);
+        
+        const relatedMedia = await queryRelatedMedia(compositionId, mediaType);
+        
+        res.json({
+            success: true,
+            compositionId: compositionId,
+            mediaType: mediaType || 'all',
+            media: relatedMedia,
+            count: relatedMedia.length,
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('Error fetching media for composition:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch media for composition'
+        });
+    }
+});
+
 // ===== CACHED NOTION API ROUTES =====
 
 // GET all compositions from Notion (WITH CACHING)
@@ -174,18 +417,19 @@ app.get('/api/compositions', async (req, res) => {
     }
 });
 
-// GET single composition by ID (WITH CACHING)
+// GET single composition by ID (WITH CACHING & MEDIA ROLLUP)
 app.get('/api/compositions/:id', async (req, res) => {
     try {
         const compositionId = req.params.id;
+        const includeMedia = req.query.includeMedia !== 'false'; // Default to true
         
         const fetchSingleComposition = async () => {
-            console.log(`🔄 Fetching composition ${compositionId} from Notion...`);
+            console.log(`🔄 Fetching composition ${compositionId} from Notion with media rollup...`);
             const response = await notion.pages.retrieve({
                 page_id: compositionId,
             });
             
-            const compositionData = transformNotionPage(response);
+            const compositionData = await transformNotionPageWithMedia(response, includeMedia);
             
             return { 
                 success: true, 
@@ -195,9 +439,13 @@ app.get('/api/compositions/:id', async (req, res) => {
             };
         };
 
-        // Use cache wrapper
+        // Use cache wrapper with media inclusion in cache key
+        const cacheKey = includeMedia ? 
+            CACHE_KEYS.compositionById(compositionId) + '_with_media' :
+            CACHE_KEYS.compositionById(compositionId);
+            
         const result = await withCache(
-            CACHE_KEYS.compositionById(compositionId),
+            cacheKey,
             CACHE_DURATIONS.singleComposition,
             fetchSingleComposition
         );

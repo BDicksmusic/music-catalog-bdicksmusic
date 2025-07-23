@@ -259,6 +259,7 @@ if (perfContainer) {
     if (scoreCarouselContainer && comp.scoreLink) {
         console.log('Score PDF link:', comp.scoreLink);
         scoreCarouselContainer.innerHTML = `
+            <h3>Preview Score</h3>
             <div class="spread-score-viewer">
                 <div class="score-container">
                     <div class="score-iframe-container">

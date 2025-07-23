@@ -28,18 +28,43 @@ async function handler(req, res) {
     }
 
     try {
+        // Check if compositions should be included
+        const includeCompositions = req.query.includeCompositions === 'true' || req.body?.includeCompositions;
+        
         // Query the Notion database
         const response = await notion.databases.query({
-            database_id: DATABASE_ID
+            database_id: DATABASE_ID,
+            sorts: [
+                {
+                    property: 'Created',
+                    direction: 'descending'
+                }
+            ]
         });
 
         // Transform the data for frontend consumption
-        const mediaItems = response.results.map(transformNotionPage);
+        let mediaItems = response.results.map(transformNotionPage);
+        
+        // Optionally include related compositions
+        if (includeCompositions) {
+            console.log('🔗 Including composition relations...');
+            mediaItems = await Promise.all(
+                mediaItems.map(async (item) => {
+                    const relatedCompositions = await queryRelatedCompositions(item.id);
+                    return {
+                        ...item,
+                        relatedCompositions: relatedCompositions,
+                        compositionCount: relatedCompositions.length
+                    };
+                })
+            );
+        }
 
         res.status(200).json({
             success: true,
             count: mediaItems.length,
-            results: mediaItems
+            results: mediaItems,
+            includesCompositions: includeCompositions
         });
 
     } catch (error) {
@@ -49,6 +74,51 @@ async function handler(req, res) {
             error: error.message || 'Failed to fetch media content'
         });
     }
+}
+
+// Helper function to query related compositions for a media item
+async function queryRelatedCompositions(mediaId) {
+    try {
+        console.log(`🔍 Querying related compositions for media: ${mediaId}`);
+        
+        // First get the media item to see its composition relations
+        const mediaPage = await notion.pages.retrieve({ page_id: mediaId });
+        const compositionRelations = mediaPage.properties['Composition Relations']?.relation || [];
+        
+        if (compositionRelations.length === 0) {
+            return [];
+        }
+        
+        // Query each related composition from the main compositions database
+        const compositionPromises = compositionRelations.map(relation => 
+            notion.pages.retrieve({ page_id: relation.id })
+        );
+        
+        const compositions = await Promise.all(compositionPromises);
+        return compositions.map(transformCompositionPage);
+    } catch (error) {
+        console.error('Error querying related compositions:', error);
+        return [];
+    }
+}
+
+// Transform composition page data
+function transformCompositionPage(page) {
+    const props = page.properties;
+    
+    return {
+        id: page.id,
+        title: getTextFromRichText(props.Name?.title) || getTextFromRichText(props.Title?.title) || 'Untitled',
+        slug: getTextFromRichText(props.Slug?.rich_text) || '',
+        instrumentation: getTextFromRichText(props.Instrumentation?.rich_text) || 'Unknown',
+        year: props.Year?.number || null,
+        duration: getTextFromRichText(props.Duration?.rich_text) || '',
+        difficulty: props.Difficulty?.select?.name || '',
+        genre: props.Genre?.select?.name || '',
+        tags: props.Tags?.multi_select?.map(tag => tag.name) || [],
+        popular: props.Popular?.checkbox || false,
+        price: props.Price?.number || null
+    };
 }
 
 // Transform Notion page data to frontend format
@@ -71,6 +141,15 @@ function transformNotionPage(page) {
         year: props.Year?.number || null,
         difficulty: props.Difficulty?.select?.name || null,
         status: props.Status?.select?.name || 'published',
+        
+        // Enhanced relational data
+        type: props.Type?.select?.name || 'Unknown',
+        url: props.URL?.url || props.VideoURL?.url || props.AudioURL?.url || '',
+        performanceBy: getTextFromRichText(props['Performance By']?.rich_text) || '',
+        recordingDate: props['Recording Date']?.date?.start || '',
+        quality: props.Quality?.select?.name || 'Standard',
+        compositionRelations: props['Composition Relations']?.relation?.map(rel => rel.id) || [],
+        
         created: page.created_time,
         lastEdited: page.last_edited_time
     };
