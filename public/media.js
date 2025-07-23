@@ -9,9 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initMediaFilters();
     initAudioPlayers();
     initVideoPlayers();
-    initMobileMenu();
     initSecondaryNavigation();
     loadDynamicContent(); // New function to load content
+    // Mobile menu is now handled by main.js
 });
 
 // Enhanced filter functionality with immediate content display
@@ -648,63 +648,6 @@ function addModalCloseHandlers(modal) {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') modal.remove();
     });
-}
-
-// Mobile menu functionality
-function initMobileMenu() {
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-
-    if (hamburger && navMenu) {
-        hamburger.addEventListener('click', function() {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-
-        // Handle dropdown clicks on mobile
-        document.querySelectorAll('.nav-item.dropdown').forEach(dropdown => {
-            const navLink = dropdown.querySelector('.nav-link');
-            navLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Close other dropdowns
-                document.querySelectorAll('.nav-item.dropdown').forEach(other => {
-                    if (other !== dropdown) {
-                        other.classList.remove('active');
-                    }
-                });
-                
-                // Toggle this dropdown
-                dropdown.classList.toggle('active');
-            });
-        });
-
-        // Close dropdowns when clicking regular nav links
-        document.querySelectorAll('.nav-link').forEach(n => {
-            if (!n.closest('.nav-item.dropdown')) {
-                n.addEventListener('click', () => {
-                    hamburger.classList.remove('active');
-                    navMenu.classList.remove('active');
-                    // Close all dropdowns
-                    document.querySelectorAll('.nav-item.dropdown').forEach(dropdown => {
-                        dropdown.classList.remove('active');
-                    });
-                });
-            }
-        });
-
-        // Close dropdowns when clicking dropdown menu items
-        document.querySelectorAll('.dropdown-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
-                document.querySelectorAll('.nav-item.dropdown').forEach(dropdown => {
-                    dropdown.classList.remove('active');
-                });
-            });
-        });
-    }
 }
 
 // Add CSS for video modal
