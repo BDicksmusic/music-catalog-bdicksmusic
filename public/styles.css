@@ -177,7 +177,7 @@ nav {
     justify-content: space-between;
     gap: 10px;
     width: 100vw;
-    padding: 0 var(--space-4);
+    padding: 0 var(--space-4) 0 var(--space-4);
     box-sizing: border-box;
     position: fixed;
     left: 0;
@@ -1174,10 +1174,16 @@ input:focus, textarea:focus, select:focus {
 }
 
 @media (max-width: 1080px) {
+    /* Adjust nav padding for mobile to allow hamburger to be flush right */
+    nav {
+        padding: 0 0 0 var(--space-4);
+    }
+    
     /* Show hamburger menu */
     .hamburger {
         display: flex;
-        margin-right: 1rem;
+        margin-left: 1rem;
+        margin-right: var(--space-4);
     }
     
     /* Mobile menu styles */
@@ -1240,22 +1246,24 @@ input:focus, textarea:focus, select:focus {
         margin-right: var(--space-1);
     }
     
-    /* Mobile Dropdown Menu Styling - Slide from left, 35% width */
+    /* Mobile Dropdown Menu Styling - Slide from left, better width */
     .dropdown-menu {
         display: block; 
         position: absolute;
-        left: -60px; /* Align with parent nav item */
-        width: 10vw; /* Maximum 35% of page width */
-        max-width: 10%;
+        left: -40px; /* Align with parent nav item */
+        width: 200px; /* Fixed width that's readable on mobile */
+        min-width: 180px;
+        max-width: 250px;
         transform: translateX(-100%); /* Start hidden to the left */
-        margin-top: -3.5rem;
+        margin-top: -1rem;
         opacity: 0;
         visibility: hidden;
         z-index: 2100;
         padding: 0; /* Remove all padding */
-        margin-left: 1em; /* Offset to align with parent text after the icon */
         box-sizing: border-box;
         overflow: hidden; /* Prevent any overflow that might cause scrollbars */
+        border-radius: var(--radius-lg);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
     
     /* Hover animation for parent nav item */
@@ -1269,6 +1277,21 @@ input:focus, textarea:focus, select:focus {
         transform: translateX(0); /* Slide in from left */
         opacity: 1;
         visibility: visible;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Add smooth transition for all states */
+    .dropdown-menu {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Animate the existing dropdown indicator */
+    .nav-item.dropdown > .nav-link::before {
+        transition: transform 0.3s ease;
+    }
+    
+    .nav-item.dropdown.active > .nav-link::before {
+        transform: rotate(180deg);
     }
 
     .dropdown-menu li {
