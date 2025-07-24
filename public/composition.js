@@ -778,7 +778,21 @@ if (notesContainer) {
     const scoreVideoContainer = document.querySelector('#composition-score-video-container');
     const scoreVideoContent = document.querySelector('#score-video-content');
     
-    if (scoreVideoContainer && scoreVideoContent) {
+    console.log('🎼 DEBUG - Score video DOM elements:', {
+        container: !!scoreVideoContainer,
+        content: !!scoreVideoContent
+    });
+    
+    if (scoreVideoContainer) {
+        // Ensure score video content element exists
+        if (!scoreVideoContent) {
+            console.warn('🎼 DEBUG - Score video content element missing, creating it');
+            const contentDiv = document.createElement('div');
+            contentDiv.id = 'score-video-content';
+            scoreVideoContainer.appendChild(contentDiv);
+        }
+        
+        const finalScoreVideoContent = document.querySelector('#score-video-content');
         console.log('🎼 DEBUG - Score video container found:', !!scoreVideoContainer);
         console.log('🎼 DEBUG - Server properly separates videos now - videoFiles contains both regular and score videos');
         console.log('🎼 DEBUG - All video files from server:', comp.videoFiles?.length || 0);
@@ -815,6 +829,12 @@ if (notesContainer) {
             console.log('🎼 DEBUG - Rendering', allScoreVideos.length, 'score videos');
             
             try {
+                // Add section title for score videos
+                const sectionTitle = allScoreVideos.length > 1 ? 
+                    '<h3 class="score-video-section-title">📹 Score Videos</h3>' : 
+                    '<h3 class="score-video-section-title">📹 Score Video</h3>';
+                
+                finalScoreVideoContent.innerHTML = sectionTitle;
                 const scoreVideosHtml = allScoreVideos.map((scoreVideo, index) => {
                     console.log(`🎼 DEBUG - Processing score video ${index + 1}:`, scoreVideo);
                     
@@ -862,14 +882,14 @@ if (notesContainer) {
                 }).join('');
                 
                 console.log('🎼 DEBUG - Final score videos HTML length:', scoreVideosHtml.length);
-                scoreVideoContent.innerHTML = scoreVideosHtml;
+                finalScoreVideoContent.innerHTML += scoreVideosHtml;
                 scoreVideoContainer.style.display = 'block';
                 console.log('🎼 DEBUG - Score video container display set to block');
                 console.log('🎼 SUCCESS - Score videos rendered successfully');
                 
             } catch (error) {
                 console.error('🎼 ERROR - Failed to render score videos:', error);
-                scoreVideoContent.innerHTML = `
+                finalScoreVideoContent.innerHTML = `
                     <div style="padding: 20px; background: #ffe6e6; border: 2px solid #ff9999; text-align: center; color: #cc0000;">
                         <strong>Error Rendering Score Videos</strong><br>
                         ${error.message}<br>
