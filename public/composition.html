@@ -92,12 +92,27 @@
         
         .composition-video-player {
             margin: 1.5rem 0;
-            padding: 1rem;
+            padding: 0.5rem 1rem 1rem; /* Reduced top padding */
             background: var(--gray-50);
             border-radius: 12px;
             border: 1px solid var(--gray-200);
             display: flex;
+            flex-direction: row; /* Changed to row layout */
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .video-content {
+            flex: 2;
+            min-width: 0;
+        }
+        
+        .video-metadata-section {
+            flex: 1;
+            display: flex;
             flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 0.25rem;
         }
         
         .composition-video-title {
@@ -654,12 +669,284 @@
             text-align: center;
         }
         
+        /* Scores Section Styling */
+        .scores-section {
+            display: flex;
+            gap: 2rem;
+            width: 100%;
+            max-width: 100%;
+            margin: 2rem auto 0;
+            padding: 0 1rem;
+            box-sizing: border-box;
+        }
+        
+        .score-pdf-column {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .score-video-column {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .composition-score-video-container {
+            width: 100%;
+        }
+        
+        .composition-score-video-player {
+            margin: 1.5rem 0;
+            padding: 0.5rem 1rem 1rem;
+            background: var(--gray-50);
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .score-video-content {
+            flex: 2;
+            min-width: 0;
+        }
+        
+        .score-video-metadata-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 1rem;
+        }
+        
+        .score-video-metadata {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+        
+        /* Metadata Section Styling */
+        .metadata-section {
+            width: 100%;
+            max-width: 100%;
+            margin: 2rem auto 0;
+            padding: 0 1rem;
+            box-sizing: border-box;
+        }
+        
+        .metadata-container {
+            width: 100%;
+        }
+        
+        .metadata-card {
+            background: var(--gray-50);
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .metadata-title {
+            color: var(--primary-600);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .metadata-toggle-item {
+            margin-bottom: 1rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .metadata-toggle-header {
+            background: var(--gray-100);
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            color: var(--gray-700);
+            transition: background-color 0.2s ease;
+        }
+        
+        .metadata-toggle-header:hover {
+            background: var(--gray-200);
+        }
+        
+        .metadata-toggle-icon {
+            transition: transform 0.2s ease;
+        }
+        
+        .metadata-toggle-item.active .metadata-toggle-icon {
+            transform: rotate(180deg);
+        }
+        
+        .metadata-toggle-content {
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        
+        .metadata-toggle-item.active .metadata-toggle-content {
+            max-height: 500px;
+            padding: 1rem;
+        }
+        
+        .metadata-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        
+        .metadata-item:last-child {
+            border-bottom: none;
+        }
+        
+        .metadata-label {
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+        
+        .metadata-value {
+            color: var(--gray-800);
+            text-align: right;
+        }
+        
+        /* Related Compositions Section Styling */
+        .related-compositions-section {
+            width: 100%;
+            max-width: 100%;
+            margin: 2rem auto 0;
+            padding: 0 1rem;
+            box-sizing: border-box;
+        }
+        
+        .related-compositions-container {
+            width: 100%;
+        }
+        
+        .related-compositions-title {
+            color: var(--primary-600);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .related-compositions-carousel {
+            display: flex;
+            flex-direction: row;
+            overflow-x: auto;
+            overflow-y: hidden;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            scroll-behavior: smooth;
+            cursor: grab;
+        }
+        
+        .related-compositions-carousel::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .related-compositions-carousel::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 4px;
+        }
+        
+        .related-compositions-carousel::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 4px;
+        }
+        
+        .related-compositions-carousel::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-400);
+        }
+        
+        .related-composition-card {
+            flex: 0 0 280px;
+            background: var(--gray-50);
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .related-composition-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .related-composition-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .related-composition-content {
+            padding: 1rem;
+        }
+        
+        .related-composition-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+        
+        .related-composition-instrumentation {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-composition-year {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+        
         /* Mobile responsiveness */
         @media (max-width: 768px) {
             section.program-video-section {
                 flex-direction: column;
                 gap: 1.5rem;
             }
+            
+            .composition-video-player {
+                flex-direction: column !important;
+                gap: 0.75rem;
+            }
+            
+            .video-metadata-section {
+                padding-top: 0;
+            }
+            
+            .scores-section {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .composition-score-video-player {
+                flex-direction: column !important;
+                gap: 0.75rem;
+            }
+            
+            .score-video-metadata-section {
+                padding-top: 0;
+            }
+            
+            .related-composition-card {
+                flex: 0 0 250px;
+            }
+        }
             
             .single-page-score-viewer {
                 margin: 2rem auto;
@@ -726,7 +1013,7 @@
                 display: none;
             }
         }
-}
+
     </style>
 </head>
 <body>
@@ -855,13 +1142,39 @@
         </div>
     </section>
     
-        <!-- Dedicated Audio/Video Section - Videos now in two-column layout above -->
-    <section>
-        <div class="composition-performance-container">
-            <!-- Program and Performance Notes will be injected here -->
+    <!-- Scores Section (PDF + Score Video) -->
+    <section class="scores-section">
+        <div class="score-pdf-column">
+            <div class="score-carousel-container" id="score-carousel-container"></div>
         </div>
-        <div class="score-carousel-container" id="score-carousel-container"></div>
-        </section>
+        <div class="score-video-column">
+            <div class="composition-score-video-container" id="composition-score-video-container" style="display: none;">
+                <!-- Score videos will be injected here -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- Metadata Container -->
+    <section class="metadata-section">
+        <div class="metadata-container">
+            <div class="metadata-card">
+                <h3 class="metadata-title">Composition Details</h3>
+                <div class="metadata-toggle-system" id="metadata-toggle-system">
+                    <!-- Metadata toggles will be injected here -->
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Related Compositions Carousel -->
+    <section class="related-compositions-section">
+        <div class="related-compositions-container">
+            <h3 class="related-compositions-title">Related Works</h3>
+            <div class="related-compositions-carousel" id="related-compositions-carousel">
+                <!-- Related compositions will be injected here -->
+            </div>
+        </div>
+    </section>
     <script src="/composition.js"></script>
     <script>
         function showUnavailableMessage(title) {

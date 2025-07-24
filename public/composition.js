@@ -422,10 +422,29 @@ if (perfContainer) {
     perfContainer.innerHTML = perfHtml;
 }
 
-    // Enhanced video display with multiple videos
+    // Enhanced video display with multiple videos (excluding score videos)
     const videoContainer = document.querySelector('#composition-video-container-main');
     if (videoContainer) {
-        const videoFiles = comp.videoFiles || [];
+        let videoFiles = (comp.videoFiles || []).filter(video => 
+            video.type !== 'Score Video' && video.category !== 'score'
+        );
+        
+        // Sort videos by Roman numerals in title
+        videoFiles = videoFiles.sort((a, b) => {
+            const romanToNumber = (roman) => {
+                const romanNumerals = { 'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10 };
+                const match = (a.title || '').match(/\b(I{1,3}V?|IV|VI{0,3}|IX|X)\b/);
+                return match ? romanNumerals[match[0]] || 0 : 0;
+            };
+            
+            const aNum = romanToNumber(a.title || '');
+            const bNum = romanToNumber(b.title || '');
+            
+            if (aNum === 0 && bNum === 0) return 0;
+            if (aNum === 0) return 1;
+            if (bNum === 0) return -1;
+            return aNum - bNum;
+        });
         
         if (videoFiles.length > 0) {
             // Initialize video navigation
@@ -465,21 +484,25 @@ if (perfContainer) {
                 }
                 
                 return `
-                    <div class="composition-video-player" data-video-index="${index}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
-                        ${videoPlayerHtml}
-                        <div class="composition-video-title">
-                            ${displayName}
+                    <div class="composition-video-player" data-video-index="${index}" style="${index === 0 ? 'display: flex;' : 'display: none;'}">
+                        <div class="video-content">
+                            ${videoPlayerHtml}
+                            ${videoFile.duration ? `<div class="video-duration">Duration: ${videoFile.duration}</div>` : ''}
+                            ${videoFiles.length > 1 ? `
+                            <div class="audio-nav-divider"></div>
+                            <div class="audio-nav-container">
+                                <button class="audio-nav-btn" onclick="previousVideo()" data-nav-type="prev">⏮ Previous</button>
+                                <span class="audio-nav-info">Video ${index + 1} of ${videoFiles.length}</span>
+                                <button class="audio-nav-btn" onclick="nextVideo()" data-nav-type="next">Next ⏭</button>
+                            </div>
+                            ` : ''}
                         </div>
-                        ${metadataHtml}
-                        ${videoFile.duration ? `<div class="video-duration">Duration: ${videoFile.duration}</div>` : ''}
-                        ${videoFiles.length > 1 ? `
-                        <div class="audio-nav-divider"></div>
-                        <div class="audio-nav-container">
-                            <button class="audio-nav-btn" onclick="previousVideo()" data-nav-type="prev">⏮ Previous</button>
-                            <span class="audio-nav-info">Video ${index + 1} of ${videoFiles.length}</span>
-                            <button class="audio-nav-btn" onclick="nextVideo()" data-nav-type="next">Next ⏭</button>
+                        <div class="video-metadata-section">
+                            <div class="composition-video-title">
+                                ${displayName}
+                            </div>
+                            ${metadataHtml}
                         </div>
-                        ` : ''}
                     </div>
                 `;
             }).join('');
@@ -488,6 +511,41 @@ if (perfContainer) {
             videoContainer.style.display = 'block';
         } else {
             videoContainer.style.display = 'none';
+        }
+    }
+
+    // Score Video Display (separate from regular videos)
+    const scoreVideoContainer = document.querySelector('#composition-score-video-container');
+    if (scoreVideoContainer) {
+        let scoreVideoFiles = (comp.videoFiles || []).filter(video => 
+            video.type === 'Score Video' || video.category === 'score'
+        );
+
+        if (scoreVideoFiles.length > 0) {
+            const scoreVideosHtml = scoreVideoFiles.map((scoreVideo, index) => {
+                const videoPlayerHtml = createVideoPlayer(scoreVideo.url, scoreVideo.title);
+                const metadataHtml = scoreVideo.performanceBy ? `
+                    <div class="score-video-metadata">
+                        <div class="performance-info">Performed by: ${scoreVideo.performanceBy}</div>
+                    </div>
+                ` : '';
+
+                return `
+                    <div class="composition-score-video-player" data-video-index="${index}" style="${index === 0 ? 'display: flex;' : 'display: none;'}">
+                        <div class="score-video-content">
+                            ${videoPlayerHtml}
+                        </div>
+                        <div class="score-video-metadata-section">
+                            ${metadataHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            scoreVideoContainer.innerHTML = scoreVideosHtml;
+            scoreVideoContainer.style.display = 'block';
+        } else {
+            scoreVideoContainer.style.display = 'none';
         }
     }
 
@@ -529,6 +587,66 @@ if (perfContainer) {
         
         // Initialize single-page PDF navigation
         initSinglePagePDFNavigation(scoreUrl);
+    }
+    
+    // Metadata Toggle System
+    const metadataContainer = document.querySelector('#metadata-toggle-system');
+    if (metadataContainer) {
+        const metadataToggles = [
+            {
+                title: 'Basic Information',
+                items: [
+                    { label: 'Title', value: comp.title || 'Unknown' },
+                    { label: 'Year Composed', value: comp.year || 'Unknown' },
+                    { label: 'Duration', value: comp.duration || 'Unknown' },
+                    { label: 'Difficulty', value: comp.difficulty || 'Unknown' },
+                    { label: 'Genre', value: comp.genre || 'Unknown' }
+                ]
+            },
+            {
+                title: 'Instrumentation',
+                items: [
+                    { label: 'Full Instrumentation', value: comp.instrumentation || 'Unknown' },
+                    { label: 'Short Instrument List', value: comp.shortInstrumentList || 'Not provided' }
+                ]
+            },
+            {
+                title: 'Additional Details',
+                items: [
+                    { label: 'Created', value: formatDate(comp.created) || 'Unknown' },
+                    { label: 'Last Edited', value: formatDate(comp.lastEdited) || 'Unknown' },
+                    { label: 'Tags', value: comp.tags && comp.tags.length > 0 ? comp.tags.join(', ') : 'None' },
+                    { label: 'Popular', value: comp.popular ? 'Yes' : 'No' }
+                ]
+            }
+        ];
+
+        const metadataHtml = metadataToggles.map((section, index) => `
+            <div class="metadata-toggle-item" data-toggle="${index}">
+                <div class="metadata-toggle-header" onclick="toggleMetadataSection(${index})">
+                    <span>${section.title}</span>
+                    <span class="metadata-toggle-icon">▼</span>
+                </div>
+                <div class="metadata-toggle-content">
+                    ${section.items.map(item => `
+                        <div class="metadata-item">
+                            <div class="metadata-label">${item.label}:</div>
+                            <div class="metadata-value">${item.value}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+
+        metadataContainer.innerHTML = metadataHtml;
+    }
+    
+    // Related Compositions Carousel
+    if (comp.similarWorks && comp.similarWorks.length > 0) {
+        renderRelatedCompositions(comp.similarWorks);
+    } else {
+        // Try to fetch related compositions if not provided
+        fetchRelatedCompositions(comp.id);
     }
 }
 
@@ -906,25 +1024,43 @@ function nextAudio() {
     }
 }
 
+// Helper function to stop a video (both HTML5 and YouTube)
+function stopVideo(videoPlayer) {
+    if (!videoPlayer) return;
+    
+    // Pause regular HTML5 videos
+    const htmlVideo = videoPlayer.querySelector('video');
+    if (htmlVideo && !htmlVideo.paused) {
+        htmlVideo.pause();
+    }
+    
+    // Stop YouTube videos by resetting iframe src
+    const youtubeIframe = videoPlayer.querySelector('iframe[src*="youtube.com"]');
+    if (youtubeIframe) {
+        const originalSrc = youtubeIframe.src;
+        youtubeIframe.src = '';
+        // Restore src after a brief delay to stop the video
+        setTimeout(() => {
+            youtubeIframe.src = originalSrc;
+        }, 100);
+    }
+}
+
 // Switch to specific video player
 function switchToVideo(index) {
     const videoContainer = document.querySelector('#composition-video-container-main');
     const videoPlayers = videoContainer.querySelectorAll('.composition-video-player');
     
-    // Hide current video player
+    // Hide current video player and stop all videos
     if (videoPlayers[currentVideoIndex]) {
         videoPlayers[currentVideoIndex].style.display = 'none';
-        // Pause current video if playing (YouTube videos can't be controlled this way, but regular videos can)
-        const currentVideo = videoPlayers[currentVideoIndex].querySelector('video');
-        if (currentVideo && !currentVideo.paused) {
-            currentVideo.pause();
-        }
+        stopVideo(videoPlayers[currentVideoIndex]);
     }
     
     // Show new video player
     currentVideoIndex = index;
     if (videoPlayers[currentVideoIndex]) {
-        videoPlayers[currentVideoIndex].style.display = 'block';
+        videoPlayers[currentVideoIndex].style.display = 'flex';
     }
     
     // Update navigation
@@ -979,10 +1115,87 @@ function scrollToScore() {
     }
 }
 
+// Function to stop all playing videos on the page
+function stopAllVideos() {
+    // Stop all regular HTML5 videos
+    const htmlVideos = document.querySelectorAll('video');
+    htmlVideos.forEach(video => {
+        if (!video.paused) {
+            video.pause();
+        }
+    });
+    
+    // Stop all YouTube videos by resetting their src
+    const youtubeIframes = document.querySelectorAll('iframe[src*="youtube.com"]');
+    youtubeIframes.forEach(iframe => {
+        const originalSrc = iframe.src;
+        iframe.src = '';
+        setTimeout(() => {
+            iframe.src = originalSrc;
+        }, 100);
+    });
+}
+
+// Metadata Toggle System Functions
+function toggleMetadataSection(index) {
+    const toggleItem = document.querySelector(`[data-toggle="${index}"]`);
+    if (toggleItem) {
+        toggleItem.classList.toggle('active');
+    }
+}
+
+// Related Compositions Functions
+function renderRelatedCompositions(compositions) {
+    const carouselContainer = document.querySelector('#related-compositions-carousel');
+    if (!carouselContainer || !compositions || compositions.length === 0) {
+        return;
+    }
+
+    const carouselHtml = compositions.map(comp => `
+        <div class="related-composition-card" onclick="navigateToComposition('${comp.slug}')">
+            ${comp.coverImage ? `
+                <img src="${comp.coverImage}" alt="${comp.title}" class="related-composition-image" loading="lazy">
+            ` : ''}
+            <div class="related-composition-content">
+                <h4 class="related-composition-title">${comp.title}</h4>
+                <div class="related-composition-instrumentation">${comp.instrumentation}</div>
+                ${comp.year ? `<div class="related-composition-year">${comp.year}</div>` : ''}
+            </div>
+        </div>
+    `).join('');
+
+    carouselContainer.innerHTML = carouselHtml;
+}
+
+async function fetchRelatedCompositions(compositionId) {
+    try {
+        const response = await fetch(`/api/compositions/${compositionId}/similar`);
+        const data = await response.json();
+        
+        if (data.success && data.compositions) {
+            renderRelatedCompositions(data.compositions);
+        }
+    } catch (error) {
+        console.error('Error fetching related compositions:', error);
+    }
+}
+
+function navigateToComposition(slug) {
+    if (slug) {
+        window.location.href = `/composition/${slug}`;
+    }
+}
+
 // Initialize when DOM is ready
 // Call both loadCompositions and loadCompositionDetail after DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing composition detail page...');
     loadCompositions();
     loadCompositionDetail();
+    
+    // Stop all videos when the user navigates away from the page
+    window.addEventListener('beforeunload', stopAllVideos);
+    
+    // Stop all videos when the user navigates to a different page (for SPA navigation)
+    window.addEventListener('pagehide', stopAllVideos);
 });
