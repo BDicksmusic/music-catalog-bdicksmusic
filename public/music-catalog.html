@@ -791,6 +791,7 @@
             </button>
             <div class="sort-controls-inline">
                 <select id="sort-by-inline" class="filter-select">
+                    <option value="smart" selected>Sort: Smart (Featured → Original → Ensemble)</option>
                     <option value="title">Sort: Title A-Z</option>
                     <option value="title-desc">Sort: Title Z-A</option>
                     <option value="year">Sort: Year (Newest)</option>
@@ -879,7 +880,9 @@
                 if (data.success) {
                     allCompositions = data.compositions;
                     filteredCompositions = [...allCompositions];
-                    renderCompositions();
+                    
+                    // Apply smart sorting by default
+                    applySorting();
                     updateResultsCount();
                     hideLoadingState();
                 } else {
@@ -991,6 +994,8 @@
             
             filteredCompositions.sort((a, b) => {
                 switch (sortBy) {
+                    case 'smart':
+                        return smartSort(a, b);
                     case 'title':
                         return a.title.localeCompare(b.title);
                     case 'title-desc':
@@ -1004,11 +1009,115 @@
                     case 'duration-desc':
                         return (parseInt(b.duration) || 0) - (parseInt(a.duration) || 0);
                     default:
-                        return 0;
+                        return smartSort(a, b); // Default to smart sort
                 }
             });
 
+            // Debug: Log sorted compositions when using smart sort
+            if (sortBy === 'smart' || !sortBy) {
+                logSortingResults();
+            }
+
             renderCompositions();
+        }
+
+        function logSortingResults() {
+            console.log('🎼 Smart Sort Results:');
+            console.log('=====================');
+            
+            filteredCompositions.forEach((comp, index) => {
+                const featured = comp.featured || comp.popular ? '⭐ FEATURED' : '';
+                const original = comp.type === 'Original' ? '📝 ORIGINAL' : `📄 ${comp.type || 'Unknown Type'}`;
+                const ensemble = getEnsembleTypeLabel(comp.instrumentation || '');
+                
+                console.log(`${index + 1}. ${comp.title}`);
+                console.log(`   ${featured} ${original} ${ensemble}`);
+                console.log(`   Instrumentation: ${comp.instrumentation || 'Not specified'}`);
+                console.log('');
+            });
+        }
+
+        function getEnsembleTypeLabel(instrumentation) {
+            const inst = instrumentation.toLowerCase();
+            
+            if (inst.match(/(quartet|quintet|trio|sextet|septet|octet|nonet|dectet)/i)) {
+                return '🎵 CHAMBER';
+            }
+            if (inst.includes('solo') || inst.includes('unaccompanied')) {
+                return '👤 SOLO';
+            }
+            if (inst.match(/(ensemble|band|orchestra)/i)) {
+                return '🎪 LARGE';
+            }
+            if (inst.includes('brass')) {
+                return '🎺 BRASS';
+            }
+            if (inst.includes('wind')) {
+                return '🌬️ WIND';
+            }
+            
+            return '❓ OTHER';
+        }
+
+        function smartSort(a, b) {
+            // 1. Featured compositions first
+            const aFeatured = a.featured || a.popular || false;
+            const bFeatured = b.featured || b.popular || false;
+            
+            if (aFeatured !== bFeatured) {
+                return bFeatured ? 1 : -1; // Featured items come first
+            }
+            
+            // 2. Original compositions next
+            const aOriginal = (a.type === 'Original');
+            const bOriginal = (b.type === 'Original');
+            
+            if (aOriginal !== bOriginal) {
+                return bOriginal ? 1 : -1; // Original compositions come first
+            }
+            
+            // 3. Sort by ensemble type priority
+            const aEnsemblePriority = getEnsemblePriority(a.instrumentation || '');
+            const bEnsemblePriority = getEnsemblePriority(b.instrumentation || '');
+            
+            if (aEnsemblePriority !== bEnsemblePriority) {
+                return aEnsemblePriority - bEnsemblePriority; // Lower priority number = higher position
+            }
+            
+            // 4. Finally, sort by title alphabetically
+            return a.title.localeCompare(b.title);
+        }
+
+        function getEnsemblePriority(instrumentation) {
+            const inst = instrumentation.toLowerCase();
+            
+            // Chamber Ensemble (highest priority)
+            if (inst.match(/(quartet|quintet|trio|sextet|septet|octet|nonet|dectet)/i)) {
+                return 1;
+            }
+            
+            // Solo Ensemble (second priority)
+            if (inst.includes('solo') || inst.includes('unaccompanied')) {
+                return 2;
+            }
+            
+            // Large Ensemble (third priority)
+            if (inst.match(/(ensemble|band|orchestra)/i)) {
+                return 3;
+            }
+            
+            // Brass ensembles (fourth priority)
+            if (inst.includes('brass')) {
+                return 4;
+            }
+            
+            // Wind ensembles (fifth priority)
+            if (inst.includes('wind')) {
+                return 5;
+            }
+            
+            // Other/unknown ensembles (lowest priority)
+            return 6;
         }
 
         function renderCompositions() {

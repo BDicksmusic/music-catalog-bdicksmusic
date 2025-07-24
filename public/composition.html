@@ -929,18 +929,12 @@
         
         /* Scores Section Styling */
         .scores-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
+            display: flex;
+            flex-direction: row;
             width: 100%;
-            max-width: 1400px;
             margin: 3rem auto 0;
-            padding: 3rem 2rem;
-            box-sizing: border-box;
-            background: var(--purple-50);
-            border-top: 3px solid var(--purple-200);
-            border-bottom: 3px solid var(--purple-200);
-            box-shadow: inset 0 0 20px rgba(147, 51, 234, 0.05);
+            padding: 1rem 2rem;
+            flex-wrap: wrap;
         }
         
         .score-pdf-column {
@@ -952,7 +946,7 @@
         .score-video-column {
             display: flex;
             flex-direction: column;
-            min-width: 0;
+            min-width: 400px;
         }
         
         /* Responsive layout for mobile */
