@@ -101,10 +101,11 @@
         }
         
         .composition-video-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -117,27 +118,27 @@
         }
         
         .composition-video-metadata {
-            font-size: 0.85rem;
-            color: var(--gray-600);
-            margin-top: 1rem; /* Changed from margin-bottom to margin-top */
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+            margin-bottom: 0.75rem;
             line-height: 1.4;
-            align-self: flex-end; /* Align to the end (right side) */
-            text-align: right; /* Right-align the text */
         }
         
         .composition-video-metadata .performance-info {
-            font-weight: 500;
-            color: var(--gray-700);
+            font-weight: 400;
+            color: var(--gray-500);
         }
         
-        /* Two-column layout for Program Notes and Videos - Separate container */
+        /* Two-column layout for Program Notes and Videos - Match composition main container */
         section.program-video-section {
             display: flex;
             gap: 2rem;
-            padding: 2rem;
             width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 100%;
+            margin: 2rem auto 0;
+            padding: 0 1rem;
+            box-sizing: border-box;
         }
         
         .program-notes-column {
@@ -658,7 +659,6 @@
             section.program-video-section {
                 flex-direction: column;
                 gap: 1.5rem;
-                padding: 1rem;
             }
             
             .single-page-score-viewer {

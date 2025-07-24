@@ -466,10 +466,11 @@ if (perfContainer) {
                 
                 return `
                     <div class="composition-video-player" data-video-index="${index}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
-                        <div class="composition-video-title">
-                            🎬 ${displayName}
-                        </div>
                         ${videoPlayerHtml}
+                        <div class="composition-video-title">
+                            ${displayName}
+                        </div>
+                        ${metadataHtml}
                         ${videoFile.duration ? `<div class="video-duration">Duration: ${videoFile.duration}</div>` : ''}
                         ${videoFiles.length > 1 ? `
                         <div class="audio-nav-divider"></div>
@@ -479,7 +480,6 @@ if (perfContainer) {
                             <button class="audio-nav-btn" onclick="nextVideo()" data-nav-type="next">Next ⏭</button>
                         </div>
                         ` : ''}
-                        ${metadataHtml}
                     </div>
                 `;
             }).join('');
