@@ -341,10 +341,27 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
             });
         }
         
+        // Debug: Show all media items with their types
+        console.log('🎼 DEBUG SERVER - All media items with types:');
+        allMedia.forEach((media, index) => {
+            console.log(`  ${index + 1}. "${media.title}" - Type: "${media.type}" - Category: "${media.category}" - URL: ${media.url ? 'YES' : 'NO'}`);
+        });
+
         // Separate by type
         const audioMedia = allMedia.filter(media => media.type === 'Audio');
         const videoMedia = allMedia.filter(media => media.type === 'Video' || media.type === 'Score Video'); // Include score videos in videoFiles for client filtering
         const scoreMedia = allMedia.filter(media => media.type === 'Score' || media.type === 'Score Video');
+        
+        // Debug: Show filtered results
+        console.log('🎼 DEBUG SERVER - Video media (includes Score Video):', videoMedia.length);
+        videoMedia.forEach((video, index) => {
+            console.log(`  Video ${index + 1}. "${video.title}" - Type: "${video.type}" - Category: "${video.category}"`);
+        });
+        
+        console.log('🎼 DEBUG SERVER - Score media (PDF + Score Video):', scoreMedia.length);
+        scoreMedia.forEach((score, index) => {
+            console.log(`  Score ${index + 1}. "${score.title}" - Type: "${score.type}" - Category: "${score.category}"`);
+        });
         
         // Debug: Log the filtering results
         if (process.env.NODE_ENV !== 'production') {

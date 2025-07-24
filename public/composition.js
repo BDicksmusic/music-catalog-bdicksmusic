@@ -96,8 +96,13 @@ async function loadCompositionDetail() {
         // Try API first
         const response = await fetch(`/api/compositions/slug/${encodeURIComponent(slug)}`);
         const data = await response.json();
-        console.log('API response:', data);
+        console.log('🔍 API response:', data);
         if (data.success && data.composition) {
+            console.log('🔍 Composition data received:', data.composition);
+            console.log('🔍 Video files in composition:', data.composition.videoFiles?.length || 0);
+            if (data.composition.videoFiles?.length > 0) {
+                console.log('🔍 All video files from API:', data.composition.videoFiles);
+            }
             renderComposition(data.composition);
         } else {
             // Fallback to example data
@@ -580,17 +585,57 @@ if (notesContainer) {
     // Score Video Display (separate from regular videos)
     const scoreVideoContainer = document.querySelector('#composition-score-video-container');
     if (scoreVideoContainer) {
-        console.log('🎼 DEBUG - All video files for score filtering:', comp.videoFiles?.map(v => ({ title: v.title, type: v.type, category: v.category })));
+        console.log('🎼 DEBUG - Score video container found:', !!scoreVideoContainer);
+        console.log('🎼 DEBUG - Full composition object:', comp);
+        console.log('🎼 DEBUG - All video files for score filtering:', comp.videoFiles);
+        if (comp.videoFiles && comp.videoFiles.length > 0) {
+            console.log('🎼 DEBUG - Video files detailed:', comp.videoFiles.map(v => ({ 
+                title: v.title, 
+                type: v.type, 
+                category: v.category,
+                url: v.url
+            })));
+        }
         
+        // Try multiple ways to find score videos
+        console.log('🎼 DEBUG - Trying different filtering approaches:');
+        
+        // Method 1: Exact type match
+        const method1 = (comp.videoFiles || []).filter(video => video.type === 'Score Video');
+        console.log('🎼 DEBUG - Method 1 (type === "Score Video"):', method1.length, method1);
+        
+        // Method 2: Category match
+        const method2 = (comp.videoFiles || []).filter(video => video.category === 'score');
+        console.log('🎼 DEBUG - Method 2 (category === "score"):', method2.length, method2);
+        
+        // Method 3: Case-insensitive type match
+        const method3 = (comp.videoFiles || []).filter(video => 
+            video.type && video.type.toLowerCase().includes('score')
+        );
+        console.log('🎼 DEBUG - Method 3 (type includes "score"):', method3.length, method3);
+        
+        // Method 4: Title-based detection
+        const method4 = (comp.videoFiles || []).filter(video => 
+            video.title && video.title.toLowerCase().includes('score')
+        );
+        console.log('🎼 DEBUG - Method 4 (title includes "score"):', method4.length, method4);
+        
+        // Use more permissive filtering temporarily to catch more potential score videos
         let scoreVideoFiles = (comp.videoFiles || []).filter(video => 
-            video.type === 'Score Video' || video.category === 'score'
+            video.type === 'Score Video' || 
+            video.category === 'score' ||
+            (video.type && video.type.toLowerCase().includes('score')) ||
+            (video.title && video.title.toLowerCase().includes('score'))
         );
         
-        console.log('🎼 DEBUG - Filtered score videos:', scoreVideoFiles.length, scoreVideoFiles.map(v => ({ title: v.title, type: v.type, category: v.category })));
+        console.log('🎼 DEBUG - Final filtered score videos:', scoreVideoFiles.length, scoreVideoFiles);
 
         if (scoreVideoFiles.length > 0) {
+            console.log('🎼 DEBUG - Rendering', scoreVideoFiles.length, 'score videos');
             const scoreVideosHtml = scoreVideoFiles.map((scoreVideo, index) => {
+                console.log(`🎼 DEBUG - Processing score video ${index + 1}:`, scoreVideo);
                 const videoPlayerHtml = createVideoPlayer(scoreVideo.url, scoreVideo.title);
+                console.log(`🎼 DEBUG - Generated video player HTML:`, videoPlayerHtml);
                 const metadataHtml = scoreVideo.performanceBy ? `
                     <div class="score-video-metadata">
                         <div class="performance-info">Performed by: ${scoreVideo.performanceBy}</div>
@@ -609,10 +654,22 @@ if (notesContainer) {
                 `;
             }).join('');
             
+            console.log('🎼 DEBUG - Final score videos HTML:', scoreVideosHtml);
             scoreVideoContainer.innerHTML = scoreVideosHtml;
             scoreVideoContainer.style.display = 'block';
+            console.log('🎼 DEBUG - Score video container display set to block');
+            console.log('🎼 DEBUG - Score video container final HTML:', scoreVideoContainer.innerHTML);
         } else {
-            scoreVideoContainer.style.display = 'none';
+            console.log('🎼 DEBUG - No score videos found, hiding container');
+            // Add a temporary message to show that the container exists but has no videos
+            scoreVideoContainer.innerHTML = `
+                <div style="padding: 20px; background: #f0f0f0; border: 2px dashed #ccc; text-align: center;">
+                    <strong>Score Video Container Active</strong><br>
+                    No score videos found with current filtering.<br>
+                    Check console for debugging info.
+                </div>
+            `;
+            scoreVideoContainer.style.display = 'block';
         }
     }
 
@@ -1283,6 +1340,32 @@ function previousAudio() {
 function nextAudio() {
     if (currentAudioIndex < totalAudioCount - 1) {
         switchToAudio(currentAudioIndex + 1);
+    }
+}
+
+// Create video player HTML (works for both YouTube and direct video files)
+function createVideoPlayer(url, title = 'Video') {
+    if (!url) {
+        console.warn('No URL provided for video player');
+        return '<div class="video-error">Video URL not available</div>';
+    }
+    
+    // Check if this is a YouTube video
+    const isYouTube = isYouTubeUrl(url);
+    
+    if (isYouTube) {
+        // Use YouTube embed for YouTube URLs
+        return createYouTubeEmbed(url, title);
+    } else {
+        // Use standard video element for direct video files
+        return `
+            <video controls preload="metadata" style="width: 100%; height: auto;">
+                <source src="${url}" type="video/mp4">
+                <source src="${url}" type="video/webm">
+                <source src="${url}" type="video/ogg">
+                Your browser does not support the video element.
+            </video>
+        `;
     }
 }
 
