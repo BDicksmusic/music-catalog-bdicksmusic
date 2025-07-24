@@ -141,17 +141,24 @@
         object-fit: cover;
         z-index: 2;
         opacity: 1;
-        transition: opacity 0.8s ease;
+        transition: all 0.8s ease;
+        filter: brightness(0.8);
     }
 
     .hero-fallback-image.hidden {
         opacity: 0;
-        z-index: 0;
+        z-index: 1 !important;
+        transform: scale(0.98);
+        visibility: hidden;
+        pointer-events: none;
     }
 
     .hero-fallback-image.active {
         opacity: 1;
-        z-index: 2;
+        z-index: 2 !important;
+        transform: scale(1);
+        visibility: visible;
+        pointer-events: auto;
     }
 
     .works-grid.dragging {
@@ -903,14 +910,18 @@
 
       .hero-fallback-image.hidden {
           opacity: 0;
-          z-index: 0;
+          z-index: 1 !important;
           transform: scale(0.98);
+          visibility: hidden;
+          pointer-events: none;
       }
 
       .hero-fallback-image.active {
           opacity: 1;
-          z-index: 2;
+          z-index: 2 !important;
           transform: scale(1);
+          visibility: visible;
+          pointer-events: auto;
       }
       
       /* Hero Content Overlay */
@@ -2021,8 +2032,11 @@
             });
         }
 
-        // Enhanced Video Loading and Fallback Logic
+        // Enhanced Video Loading and Fallback Logic with Retry Mechanism
         let heroCarouselInitialized = false;
+        let videoRetryCount = 0;
+        const maxVideoRetries = 3;
+        let videoRetryTimeout;
         
         function initHeroVideo() {
             const video = document.getElementById('hero-video');
@@ -2035,7 +2049,7 @@
                 return;
             }
             
-            console.log('Initializing hero video...');
+            console.log(`Initializing hero video... (attempt ${videoRetryCount + 1}/${maxVideoRetries})`);
             
             // Start with carousel active as fallback
             if (!heroCarouselInitialized) {
@@ -2045,27 +2059,43 @@
             // Force video load attempt
             video.load();
             
-            // Set a timeout to ensure fallback stays active if video doesn't load
+            // Set a timeout to retry video loading or use carousel fallback
             const videoTimeout = setTimeout(() => {
-                console.log('Video loading timeout - using carousel fallback');
+                console.log('Video loading timeout - checking retry options');
                 video.style.display = 'none';
                 video.classList.remove('loaded');
                 
-                // Ensure all fallback images are visible
-                fallbackImages.forEach(img => {
-                    img.classList.remove('hidden');
-                });
-                
-                // Make sure carousel is running
-                if (!heroCarouselInitialized) {
-                    initHeroCarousel();
+                if (videoRetryCount < maxVideoRetries - 1) {
+                    // Retry video loading
+                    videoRetryCount++;
+                    console.log(`⏳ Retrying video load in 2 seconds... (attempt ${videoRetryCount + 1}/${maxVideoRetries})`);
+                    
+                    videoRetryTimeout = setTimeout(() => {
+                        video.style.display = 'block';
+                        initHeroVideo(); // Recursive retry
+                    }, 2000); // Wait 2 seconds before retry
+                } else {
+                    // Max retries reached - use carousel permanently
+                    console.log('❌ Max video retries reached - using carousel fallback');
+                    
+                    // Ensure all fallback images are visible
+                    fallbackImages.forEach(img => {
+                        img.classList.remove('hidden');
+                    });
+                    
+                    // Make sure carousel is running
+                    if (!heroCarouselInitialized) {
+                        initHeroCarousel();
+                    }
                 }
-            }, 3000); // Reduced timeout to 3 seconds
+            }, 4000); // Give more time for each attempt
             
             // Video loading events
             video.addEventListener('loadeddata', function() {
                 console.log('✅ Video loaded successfully');
                 clearTimeout(videoTimeout);
+                clearTimeout(videoRetryTimeout);
+                videoRetryCount = 0; // Reset retry count on success
                 
                 // Try to play the video
                 video.play().then(() => {
@@ -2091,15 +2121,29 @@
             video.addEventListener('error', function(e) {
                 console.log('❌ Video failed to load:', e);
                 clearTimeout(videoTimeout);
+                clearTimeout(videoRetryTimeout);
                 video.style.display = 'none';
                 
-                // Ensure carousel is visible and active
-                fallbackImages.forEach(img => {
-                    img.classList.remove('hidden');
-                });
-                
-                if (!heroCarouselInitialized) {
-                    initHeroCarousel();
+                // Try again if we haven't reached max retries
+                if (videoRetryCount < maxVideoRetries - 1) {
+                    videoRetryCount++;
+                    console.log(`⏳ Video error - retrying in 3 seconds... (attempt ${videoRetryCount + 1}/${maxVideoRetries})`);
+                    
+                    videoRetryTimeout = setTimeout(() => {
+                        video.style.display = 'block';
+                        initHeroVideo(); // Recursive retry
+                    }, 3000);
+                } else {
+                    console.log('❌ Max video retries reached after error - using carousel fallback');
+                    
+                    // Ensure carousel is visible and active
+                    fallbackImages.forEach(img => {
+                        img.classList.remove('hidden');
+                    });
+                    
+                    if (!heroCarouselInitialized) {
+                        initHeroCarousel();
+                    }
                 }
             });
             
@@ -2180,27 +2224,48 @@
                 return; // No carousel needed for single image
             }
             
-            // Ensure first image is active
+            // Ensure first image is active and all others are hidden
             images.forEach((img, index) => {
                 if (index === 0) {
                     img.classList.add('active');
                     img.classList.remove('hidden');
+                    img.style.zIndex = '2';
                 } else {
                     img.classList.remove('active');
+                    img.classList.add('hidden');
+                    img.style.zIndex = '1';
                 }
             });
             
             function showNextImage() {
-                // Hide current image
-                images[currentIndex].classList.remove('active');
+                console.log(`Carousel transition: from image ${currentIndex + 1} to next`);
+                
+                // Hide ALL images first to ensure clean state
+                images.forEach((img, index) => {
+                    img.classList.remove('active');
+                    img.classList.add('hidden');
+                    img.style.zIndex = '1';
+                });
                 
                 // Move to next image
+                const previousIndex = currentIndex;
                 currentIndex = (currentIndex + 1) % images.length;
                 
-                // Show next image
-                images[currentIndex].classList.add('active');
+                // Show only the current image
+                const currentImg = images[currentIndex];
+                currentImg.classList.add('active');
+                currentImg.classList.remove('hidden');
+                currentImg.style.zIndex = '2';
                 
-                console.log('Carousel showing image', currentIndex + 1, 'of', images.length);
+                console.log(`Carousel showing image ${currentIndex + 1} of ${images.length} (was ${previousIndex + 1})`);
+                
+                // Double-check that the previous image is definitely hidden
+                if (previousIndex !== currentIndex) {
+                    const prevImg = images[previousIndex];
+                    prevImg.classList.remove('active');
+                    prevImg.classList.add('hidden');
+                    prevImg.style.zIndex = '1';
+                }
             }
             
             function startCarousel() {
