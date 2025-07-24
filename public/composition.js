@@ -138,6 +138,38 @@ function renderComposition(comp) {
         scoreLink: comp.scoreLink,
         allMedia: comp.allMedia?.filter(m => m.type === 'Score' || m.type === 'Score Video')
     });
+
+    // Helper function to check if URL is a PDF (defined at top for global access)
+    const isPdfUrl = (url) => {
+        if (!url) return false;
+        const urlLower = url.toLowerCase();
+        return urlLower.includes('.pdf') || urlLower.includes('pdf') || 
+               (!urlLower.includes('youtube.com') && !urlLower.includes('youtu.be'));
+    };
+
+    // FIXED: Server now properly separates PDF scores from score videos
+    const scoreFiles = comp.scoreFiles || []; // Now contains PDF scores only from server
+    const scoreVideoFiles = (comp.videoFiles || []).filter(video => video.type === 'Score Video' || video.category === 'score');
+    
+    // No need to filter scoreFiles anymore - server already provides PDF scores only
+    const pdfScoreFiles = scoreFiles;
+
+    // Priority: Direct scoreLink from Notion database, but only if it's a PDF
+    const hasDirectPdfScore = comp.scoreLink && comp.scoreLink.trim() !== '' && isPdfUrl(comp.scoreLink);
+    const hasMediaScore = pdfScoreFiles.length > 0;
+    const hasPdfScore = hasDirectPdfScore || hasMediaScore;
+    
+    // Check if scoreLink is actually a video (should go to score video section)
+    const scoreVideoFromLink = comp.scoreLink && !isPdfUrl(comp.scoreLink) ? {
+        url: comp.scoreLink,
+        title: `${comp.title} - Score Video`,
+        type: 'Score Video',
+        category: 'score'
+    } : null;
+    
+    // Combine score videos from media database and potential score video from scoreLink
+    const allScoreVideos = scoreVideoFiles.concat(scoreVideoFromLink ? [scoreVideoFromLink] : []);
+    const hasScoreVideo = allScoreVideos.length > 0;
     
     // Update cover image
     const coverImg = document.getElementById('composition-cover');
@@ -694,37 +726,7 @@ if (notesContainer) {
         }
     }
 
-    // Helper function to check if URL is a PDF (moved to top for global access)
-    const isPdfUrl = (url) => {
-        if (!url) return false;
-        const urlLower = url.toLowerCase();
-        return urlLower.includes('.pdf') || urlLower.includes('pdf') || 
-               (!urlLower.includes('youtube.com') && !urlLower.includes('youtu.be'));
-    };
 
-    // FIXED: Server now properly separates PDF scores from score videos
-    const scoreFiles = comp.scoreFiles || []; // Now contains PDF scores only from server
-    const scoreVideoFiles = (comp.videoFiles || []).filter(video => video.type === 'Score Video' || video.category === 'score');
-    
-    // No need to filter scoreFiles anymore - server already provides PDF scores only
-    const pdfScoreFiles = scoreFiles;
-
-    // Priority: Direct scoreLink from Notion database, but only if it's a PDF
-    const hasDirectPdfScore = comp.scoreLink && comp.scoreLink.trim() !== '' && isPdfUrl(comp.scoreLink);
-    const hasMediaScore = pdfScoreFiles.length > 0;
-    const hasPdfScore = hasDirectPdfScore || hasMediaScore;
-    
-    // Check if scoreLink is actually a video (should go to score video section)
-    const scoreVideoFromLink = comp.scoreLink && !isPdfUrl(comp.scoreLink) ? {
-        url: comp.scoreLink,
-        title: `${comp.title} - Score Video`,
-        type: 'Score Video',
-        category: 'score'
-    } : null;
-    
-    // Combine score videos from media database and potential score video from scoreLink
-    const allScoreVideos = scoreVideoFiles.concat(scoreVideoFromLink ? [scoreVideoFromLink] : []);
-    const hasScoreVideo = allScoreVideos.length > 0;
 
     // Enhanced PDF Score Viewer with multiple scores support
     console.log('📄 DEBUG - Score rendering started');
