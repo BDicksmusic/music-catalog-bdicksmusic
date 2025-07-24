@@ -489,14 +489,6 @@ if (audioContainer) {
                             Your browser does not support the audio element.
                         </audio>
                         ${audioFile.duration ? `<div class="audio-duration">Duration: ${audioFile.duration}</div>` : ''}
-                        ${audioFiles.length > 1 ? `
-                        <div class="audio-nav-divider"></div>
-                        <div class="audio-nav-container">
-                            <button class="audio-nav-btn" onclick="previousAudio()" data-nav-type="prev">⏮ Previous</button>
-                            <span class="audio-nav-info">Movement ${index + 1} of ${audioFiles.length}</span>
-                            <button class="audio-nav-btn" onclick="nextAudio()" data-nav-type="next">Next ⏭</button>
-                        </div>
-                        ` : ''}
                     </div>
                 `;
             }).join('');
@@ -532,10 +524,8 @@ if (audioContainer) {
         audioContainer.innerHTML = audioPlayersHtml;
         
         // Clean up any existing navigation controls
-        const existingNavControls = document.querySelector('.audio-nav-container');
-        if (existingNavControls) {
-            existingNavControls.remove();
-        }
+        const existingNavControls = document.querySelectorAll('.audio-nav-container');
+        existingNavControls.forEach(control => control.remove());
         
         // Reset audio index and total count for new composition
         currentAudioIndex = 0;
@@ -946,14 +936,33 @@ if (notesContainer) {
     }
     
     // New Structured Composition Details System
-    // Render simplified instrumentation section
-    renderSimplifiedInstrumentation(comp);
+    // Related Compositions Carousel
+    console.log('🔗 DEBUG - Similar works data:', comp.similarWorks?.length, comp.similarWorks);
+    console.log('🔗 DEBUG - Similar works slugs data:', comp.similarWorksSlugs?.length, comp.similarWorksSlugs);
     
-    // Related Compositions functionality temporarily disabled
-    console.log('🔗 DEBUG - Related compositions functionality disabled');
     const relatedSection = document.querySelector('.related-compositions-section');
-    if (relatedSection) {
-        relatedSection.style.display = 'none';
+    
+    if (comp.similarWorks && comp.similarWorks.length > 0) {
+        console.log('🔗 DEBUG - Rendering related compositions from slug-based fetch:', comp.similarWorks.length);
+        renderRelatedCompositions(comp.similarWorks);
+        if (relatedSection) {
+            relatedSection.style.display = 'block';
+        }
+    } else if (comp.similarWorksSlugs && comp.similarWorksSlugs.length > 0) {
+        console.log('🔗 DEBUG - Similar works slugs found but no compositions loaded, this indicates a server-side issue');
+        if (relatedSection) {
+            relatedSection.style.display = 'block';
+        }
+        // The server should have already fetched these, but fallback to API if needed
+        fetchRelatedCompositions(comp.id);
+    } else {
+        console.log('🔗 DEBUG - No similar works or slugs found, fetching via API fallback...');
+        // Keep the section visible and fetch related compositions via API
+        if (relatedSection) {
+            relatedSection.style.display = 'block';
+        }
+        // Try to fetch related compositions if not provided
+        fetchRelatedCompositions(comp.id);
     }
 }
 
@@ -1365,6 +1374,10 @@ function formatDate(dateString) {
 
 // Add controls for multiple audio files
 function addMultiAudioControls(audioContainer, audioCount) {
+    // Clean up any existing navigation controls first
+    const existingNavControls = document.querySelectorAll('.audio-nav-container');
+    existingNavControls.forEach(control => control.remove());
+    
     totalAudioCount = audioCount;
     const audioPlayers = audioContainer.querySelectorAll('audio');
     
@@ -1470,22 +1483,7 @@ window.previousAudio = previousAudio;
 window.nextAudio = nextAudio;
 window.switchToAudio = switchToAudio;
 
-// Simplified Instrumentation Rendering Function
-function renderSimplifiedInstrumentation(comp) {
-    const instrumentationContainer = document.querySelector('#full-instrumentation-content');
-    if (instrumentationContainer) {
-        const instrumentation = comp.instrumentation || 'Instrumentation not specified';
-        
-        instrumentationContainer.innerHTML = `
-            <div class="instrumentation-display">
-                <p class="instrumentation-text">${instrumentation}</p>
-                ${comp.duration ? `<div class="composition-meta-detail"><strong>Duration:</strong> ${comp.duration}</div>` : ''}
-                ${comp.year ? `<div class="composition-meta-detail"><strong>Year:</strong> ${comp.year}</div>` : ''}
-                ${comp.difficulty ? `<div class="composition-meta-detail"><strong>Difficulty:</strong> ${comp.difficulty}</div>` : ''}
-            </div>
-        `;
-    }
-}
+
 
 // Create video player HTML (works for both YouTube and direct video files)
 function createVideoPlayer(url, title = 'Video') {
