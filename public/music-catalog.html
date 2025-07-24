@@ -83,45 +83,32 @@
         }
 
         .catalog-hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 2rem;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            padding: 2rem 1rem;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .catalog-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 1;
+            border-bottom: 1px solid var(--gray-200);
         }
 
         .catalog-hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 700px;
+            max-width: 600px;
             margin: 0 auto;
-            text-align: left;
+            text-align: center;
         }
 
         .catalog-hero h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            animation: slideInUp 0.8s ease;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--gray-900);
         }
 
         .catalog-hero p {
-            font-size: 1rem;
-            line-height: 1.5;
-            opacity: 0.95;
-            animation: slideInUp 0.8s ease 0.2s both;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: var(--gray-600);
+            max-width: 500px;
+            margin: 0 auto;
         }
 
         .catalog-filters {
@@ -513,12 +500,16 @@
 
         /* Mobile Responsive - 768px breakpoint */
         @media (max-width: 768px) {
+            .catalog-hero {
+                padding: 1.5rem 0.75rem;
+            }
+            
             .catalog-hero h1 {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
             }
 
             .catalog-hero p {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
 
             .catalog-filters {
@@ -687,13 +678,17 @@
 
 
     <!-- Filtering System -->
-    <section class="catalog-filters">
+     <section class="Main Opening">
+        <div class="Main Opening Header">
         <h1>Music Catalog</h1>
+        </div>
+        <div class="Main Opening Content">
         <p>This part of the website includes the full catalog of compositions created by Brandon Dicks. You can learn more about each composition by clicking the name of the work. There is a specific page for each work that includes a perusal score, example parts <em>(if applicable)</em>, audio example, and download links for those compositions that are available.</p>
         <br>
         <p><strong>Every composition is available for purchase.</strong> If a work is not available for download, you can contact Brandon directly to get a quote for the piece and get your own copy of the composition. Compositions are also available in physical form if requested by the ensemble/individual.</p>
-    </div>
-</section>
+    </section>  
+    
+    <section class="catalog-filters">
         <div class="filter-row">
             <div class="filter-section">
                 <input type="text" id="search" class="search-box" placeholder="Search by title, instrumentation, or keywords...">
