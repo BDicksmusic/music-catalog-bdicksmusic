@@ -929,11 +929,12 @@
         
         /* Scores Section Styling */
         .scores-section {
-            display: flex;
-            gap: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
             width: 100%;
-            max-width: 100%;
-            margin: 3rem 0 0 0;
+            max-width: 1400px;
+            margin: 3rem auto 0;
             padding: 3rem 2rem;
             box-sizing: border-box;
             background: var(--purple-50);
@@ -943,13 +944,24 @@
         }
         
         .score-pdf-column {
-            flex: 1;
+            display: flex;
+            flex-direction: column;
             min-width: 0;
         }
         
         .score-video-column {
-            flex: 1;
+            display: flex;
+            flex-direction: column;
             min-width: 0;
+        }
+        
+        /* Responsive layout for mobile */
+        @media (max-width: 1024px) {
+            .scores-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem 1rem;
+            }
         }
         
         .composition-score-video-container {
@@ -1228,14 +1240,10 @@
         /* Metadata Section Styling */
         .metadata-section {
             width: 100%;
-            max-width: 100%;
-            margin: 2rem auto 0;
-            padding: 1.5rem;
+            max-width: 1400px;
+            margin: 4rem auto 0;
+            padding: 0 2rem;
             box-sizing: border-box;
-            background: var(--pink-50);
-            border: 1px solid var(--pink-100);
-            border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
         }
         
         .metadata-container {
@@ -1253,6 +1261,16 @@
         
         .metadata-card:hover {
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .metadata-title {
+            color: var(--primary-600);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-100);
         }
         
         /* Essential Composition Details Styling */
@@ -1443,22 +1461,7 @@
             font-weight: 500;
         }
         
-        /* Mobile Styles for Metadata Section */
-        @media (max-width: 768px) {
-            .metadata-section {
-                padding: 0 0.75rem;
-                margin: 1.5rem auto 0;
-            }
-            
-            .metadata-card {
-                padding: 1.5rem;
-                border-radius: 12px;
-            }
-            
-            .metadata-title {
-                font-size: 1.5rem;
-                margin-bottom: 1.25rem;
-            }
+        /* Removed duplicate mobile styles - handled in consolidated mobile section above */
             
             .metadata-toggle-item {
                 margin-bottom: 1rem;
@@ -1522,25 +1525,33 @@
         /* Related Compositions Section Styling */
         .related-compositions-section {
             width: 100%;
-            max-width: 100%;
-            margin: 2rem auto 0;
-            padding: 1.5rem;
+            max-width: 1400px;
+            margin: 4rem auto 0;
+            padding: 0 2rem;
             box-sizing: border-box;
-            background: var(--yellow-50);
-            border: 1px solid var(--yellow-100);
-            border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
         }
         
         .related-compositions-container {
-            width: 100%;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--gray-200);
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .related-compositions-container:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
         
         .related-compositions-title {
             color: var(--primary-600);
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
             font-size: 1.5rem;
-            font-weight: 600;
+            font-weight: 700;
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-100);
         }
         
         .related-compositions-carousel {
@@ -1685,12 +1696,7 @@
                 gap: 0.5rem;
             }
             
-            .scores-section {
-                flex-direction: column;
-                gap: 1.5rem;
-                padding: 2rem 1rem;
-                margin: 2rem 0 0 0;
-            }
+            /* Removed duplicate scores-section mobile styles - handled above */
             
             .composition-score-video-player {
                 flex-direction: column !important;
@@ -1769,6 +1775,31 @@
         @media (max-width: 768px) {
             .score-navigation-bottom::after {
                 display: none;
+            }
+        }
+
+        /* Mobile Responsive Adjustments */
+        @media (max-width: 768px) {
+            .metadata-section,
+            .related-compositions-section {
+                padding: 0 1rem;
+                margin: 3rem auto 0;
+            }
+            
+            .metadata-card,
+            .related-compositions-container {
+                padding: 1.5rem;
+                border-radius: 12px;
+            }
+            
+            .metadata-title,
+            .related-compositions-title {
+                font-size: 1.3rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .score-video-section-title {
+                font-size: 1.1rem;
             }
         }
 
