@@ -285,41 +285,56 @@
          background: var(--gray-100);
      }
 
+     .section-header {
+         text-align: center;
+         margin-bottom: 3rem;
+     }
+
      .section-title {
          font-size: 2.5rem;
          font-weight: 700;
-         text-align: center;
-         margin-bottom: 3rem;
+         margin-bottom: 1rem;
          color: var(--gray-900);
      }
 
-     /* Catalog Highlights Section */
+     .section-subtitle {
+         font-size: 1.1rem;
+         color: var(--gray-600);
+         max-width: 600px;
+         margin: 0 auto;
+         line-height: 1.6;
+     }
+
+     /* Enhanced Catalog Highlights Section */
      .catalog-highlights-grid {
          display: grid;
          grid-template-columns: 2fr 1fr;
          gap: 3rem;
-         align-items: center;
+         align-items: start;
          max-width: 1200px;
          margin: 0 auto;
      }
 
      .featured-composition {
          background: white;
-         border-radius: 12px;
+         border-radius: 16px;
          overflow: hidden;
          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-         transition: transform 0.3s ease;
+         transition: transform 0.3s ease, box-shadow 0.3s ease;
          display: flex;
-         min-height: 280px;
+         min-height: 400px;
      }
 
      .featured-composition:hover {
          transform: translateY(-5px);
+         box-shadow: 0 20px 40px rgba(0,0,0,0.15);
      }
 
      .featured-composition-image {
          flex: 1;
+         position: relative;
          overflow: hidden;
+         min-height: 400px;
      }
 
      .composition-highlight-img {
@@ -333,23 +348,98 @@
          transform: scale(1.05);
      }
 
+     /* Audio Preview Overlay */
+     .audio-preview-overlay {
+         position: absolute;
+         top: 0;
+         left: 0;
+         right: 0;
+         bottom: 0;
+         background: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         opacity: 0;
+         transition: opacity 0.3s ease;
+     }
+
+     .featured-composition:hover .audio-preview-overlay {
+         opacity: 1;
+     }
+
+     .preview-play-btn {
+         background: rgba(255, 255, 255, 0.9);
+         border: none;
+         border-radius: 50px;
+         padding: 1rem 1.5rem;
+         display: flex;
+         align-items: center;
+         gap: 0.5rem;
+         font-weight: 600;
+         color: var(--gray-900);
+         cursor: pointer;
+         transition: all 0.3s ease;
+         backdrop-filter: blur(10px);
+         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+     }
+
+     .preview-play-btn:hover {
+         background: white;
+         transform: scale(1.05);
+         box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+     }
+
+     .play-icon {
+         font-size: 1.2rem;
+         color: var(--primary-500);
+     }
+
      .featured-composition-content {
          flex: 1;
-         padding: 2rem;
+         padding: 2.5rem;
          display: flex;
          flex-direction: column;
-         justify-content: center;
+         justify-content: space-between;
+     }
+
+     .composition-header {
+         margin-bottom: 1.5rem;
      }
 
      .featured-title {
-         font-size: 1.5rem;
+         font-size: 1.8rem;
          font-weight: 700;
-         margin-bottom: 0.5rem;
+         margin-bottom: 1rem;
          color: var(--gray-900);
+         line-height: 1.3;
+     }
+
+     .composition-badges {
+         display: flex;
+         gap: 0.5rem;
+         flex-wrap: wrap;
+     }
+
+     .difficulty-badge {
+         background: var(--primary-100);
+         color: var(--primary-700);
+         padding: 0.25rem 0.75rem;
+         border-radius: 20px;
+         font-size: 0.85rem;
+         font-weight: 600;
+     }
+
+     .year-badge {
+         background: var(--gray-100);
+         color: var(--gray-700);
+         padding: 0.25rem 0.75rem;
+         border-radius: 20px;
+         font-size: 0.85rem;
+         font-weight: 600;
      }
 
      .featured-instrumentation {
-         font-size: 1rem;
+         font-size: 1.1rem;
          color: var(--primary-600);
          font-weight: 600;
          margin-bottom: 1rem;
@@ -362,29 +452,92 @@
          flex-grow: 1;
      }
 
-     .featured-link {
-         align-self: flex-start;
+     /* Audio Player Styling */
+     .composition-audio-preview {
+         margin-bottom: 1.5rem;
+         padding: 1rem;
+         background: var(--gray-50);
+         border-radius: 12px;
+         border: 1px solid var(--gray-200);
      }
 
+     .composition-audio-preview audio {
+         width: 100%;
+         height: 40px;
+         border-radius: 8px;
+     }
+
+     .composition-actions {
+         display: flex;
+         gap: 1rem;
+         flex-wrap: wrap;
+     }
+
+     .composition-actions .btn-primary {
+         flex: 1;
+         min-width: 140px;
+         text-align: center;
+     }
+
+     .composition-actions .btn-secondary {
+         flex: 1;
+         min-width: 140px;
+         text-align: center;
+         background: transparent;
+         color: var(--gray-700);
+         border: 2px solid var(--gray-300);
+     }
+
+     .composition-actions .btn-secondary:hover {
+         background: var(--gray-100);
+         border-color: var(--gray-400);
+     }
+
+     /* Enhanced Stats Section */
      .catalog-stats {
          display: flex;
          flex-direction: column;
          gap: 1.5rem;
+         background: white;
+         padding: 2rem;
+         border-radius: 16px;
+         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+         height: fit-content;
      }
 
-     .catalog-browse-btn {
-         width: 100%;
+     .stats-header {
          text-align: center;
-         padding: 1rem !important;
-         border-radius: 8px !important;
+         margin-bottom: 1rem;
+         padding-bottom: 1rem;
+         border-bottom: 2px solid var(--gray-100);
+     }
+
+     .stats-header h3 {
+         font-size: 1.3rem;
+         font-weight: 700;
+         color: var(--gray-900);
+         margin: 0;
      }
 
      .stat-item {
          text-align: center;
          padding: 1.5rem;
-         background: white;
+         background: var(--gray-50);
          border-radius: 12px;
-         box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+         transition: all 0.3s ease;
+         border: 2px solid transparent;
+     }
+
+     .stat-item:hover {
+         background: white;
+         border-color: var(--primary-200);
+         transform: translateY(-2px);
+         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+     }
+
+     .featured-stat {
+         background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
+         border: 2px solid var(--primary-200);
      }
 
      .stat-number {
@@ -393,12 +546,60 @@
          font-weight: 900;
          color: var(--primary-500);
          margin-bottom: 0.5rem;
+         line-height: 1;
      }
 
      .stat-label {
-         font-size: 0.9rem;
+         font-size: 1rem;
+         color: var(--gray-800);
+         font-weight: 600;
+         display: block;
+         margin-bottom: 0.25rem;
+     }
+
+     .stat-detail {
+         font-size: 0.85rem;
          color: var(--gray-600);
-         font-weight: 500;
+         font-style: italic;
+     }
+
+     .cta-stat {
+         background: var(--primary-500);
+         color: white;
+         padding: 0;
+         border-radius: 12px;
+         overflow: hidden;
+     }
+
+     .cta-stat:hover {
+         background: var(--primary-600);
+         transform: translateY(-3px);
+     }
+
+     .catalog-browse-btn {
+         width: 100%;
+         padding: 1.5rem 1rem !important;
+         border-radius: 12px !important;
+         background: transparent !important;
+         color: white !important;
+         border: none !important;
+         font-weight: 700;
+         font-size: 1rem;
+         display: flex !important;
+         align-items: center;
+         justify-content: center;
+         gap: 0.5rem;
+         text-decoration: none;
+         transition: all 0.3s ease;
+     }
+
+     .catalog-browse-btn:hover {
+         background: rgba(255,255,255,0.1) !important;
+         transform: none;
+     }
+
+     .btn-icon {
+         font-size: 1.2rem;
      }
 
      /* Education Section */
@@ -512,40 +713,62 @@
          }
 
          .featured-composition-image {
-             height: 200px;
+             height: 250px;
+             min-height: 250px;
          }
 
          .featured-composition-content {
-             padding: 1.5rem;
+             padding: 2rem 1.5rem;
+         }
+
+         .featured-title {
+             font-size: 1.5rem;
+         }
+
+         .composition-actions {
+             flex-direction: column;
+         }
+
+         .composition-actions .btn-primary,
+         .composition-actions .btn-secondary {
+             flex: none;
+             width: 100%;
          }
 
          .catalog-stats {
-             flex-direction: row;
+             padding: 1.5rem;
              gap: 1rem;
-             flex-wrap: wrap;
          }
 
-         .catalog-stats .stat-item {
-             flex: 1;
-             min-width: 120px;
+         .stats-header {
+             margin-bottom: 0.5rem;
+             padding-bottom: 0.5rem;
          }
 
-         .catalog-browse-btn {
-             flex-basis: 100%;
-         }
-
-         .section-title {
-             font-size: 2rem;
+         .stat-item {
+             padding: 1rem;
          }
 
          .stat-number {
              font-size: 2rem;
          }
 
-                   .education-card, .testimonial-card {
-              padding: 1.5rem;
-          }
-      }
+         .catalog-browse-btn {
+             padding: 1.25rem 1rem !important;
+         }
+
+         .section-title {
+             font-size: 2rem;
+         }
+
+         .section-subtitle {
+             font-size: 1rem;
+         }
+
+         .education-card, .testimonial-card {
+             padding: 1.5rem;
+         }
+     }
 
       /* Call to Action Section */
       .cta-section {
@@ -787,7 +1010,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadCompositions();
     loadFeaturedComposition();
-    enableCardClickWithoutDrag();
+    enableCardClicks();
     initHeroRotation();
     // Mobile menu is now handled by main.js
 });
@@ -796,37 +1019,73 @@ document.addEventListener('DOMContentLoaded', function() {
     <!-- Music Catalog Highlights Section -->
     <section id="performances" class="section-showcase" style="scroll-margin-top: 120px;">
         <div class="container">
-            <h2 class="section-title">🎼 Music Catalog Highlights</h2>
+            <div class="section-header">
+                <h2 class="section-title">🎼 Music Catalog</h2>
+                <p class="section-subtitle">Original compositions for professional musicians and ensembles</p>
+            </div>
             <div class="catalog-highlights-grid">
                 <div class="highlight-featured">
                     <div class="featured-composition" id="featured-highlight">
                         <div class="featured-composition-image">
                             <img src="/imgs/Coming Home (Cover Photo).png" alt="Featured Composition" class="composition-highlight-img">
+                            <div class="audio-preview-overlay">
+                                <button class="preview-play-btn" id="featured-play-btn">
+                                    <span class="play-icon">▶</span>
+                                    <span class="play-text">Preview</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="featured-composition-content">
-                            <h3 class="featured-title">Loading Featured Work...</h3>
+                            <div class="composition-header">
+                                <h3 class="featured-title">Loading Featured Work...</h3>
+                                <div class="composition-badges">
+                                    <span class="difficulty-badge" id="featured-difficulty">Medium</span>
+                                    <span class="year-badge" id="featured-year">2024</span>
+                                </div>
+                            </div>
                             <p class="featured-instrumentation">Loading...</p>
                             <p class="featured-description">Loading composition details...</p>
-                            <a href="#" class="btn-primary featured-link">View Details</a>
+                            
+                            <!-- Embedded Audio Player -->
+                            <div class="composition-audio-preview" id="featured-audio-container" style="display: none;">
+                                <audio controls preload="metadata" id="featured-audio-player">
+                                    <source src="" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
+                            
+                            <div class="composition-actions">
+                                <a href="#" class="btn-primary featured-link">View Full Score</a>
+                                <button class="btn-secondary listen-more-btn" onclick="smoothScrollTo('#compositions'); return false;">
+                                    Browse All Works
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="catalog-stats">
-                    <div class="stat-item">
+                    <div class="stats-header">
+                        <h3>Composition Portfolio</h3>
+                    </div>
+                    <div class="stat-item featured-stat">
                         <span class="stat-number" id="total-compositions">25+</span>
                         <span class="stat-label">Original Compositions</span>
+                        <span class="stat-detail">Across multiple genres</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number">8</span>
                         <span class="stat-label">Instrumentation Types</span>
+                        <span class="stat-detail">From solo to large ensemble</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">12+</span>
-                        <span class="stat-label">Years Composing</span>
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">Downloads</span>
+                        <span class="stat-detail">By musicians worldwide</span>
                     </div>
-                    <div class="stat-item">
-                        <a href="/music-catalog" class="btn-secondary catalog-browse-btn">
-                            Browse Full Catalog →
+                    <div class="stat-item cta-stat">
+                        <a href="/music-catalog" class="btn-primary catalog-browse-btn">
+                            <span class="btn-icon">🎼</span>
+                            Browse Full Catalog
                         </a>
                     </div>
                 </div>
@@ -1274,7 +1533,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const featuredLink = document.querySelector('.featured-link');
                     const featuredImg = document.querySelector('.composition-highlight-img');
                     const totalCompositions = document.getElementById('total-compositions');
+                    const featuredDifficulty = document.getElementById('featured-difficulty');
+                    const featuredYear = document.getElementById('featured-year');
                     
+                    // Update content
                     if (featuredTitle) featuredTitle.textContent = featured.title;
                     if (featuredInstrumentation) featuredInstrumentation.textContent = featured.instrumentation;
                     if (featuredDescription) {
@@ -1284,13 +1546,94 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (featuredLink) featuredLink.href = `/composition/${featured.slug}`;
                     if (featuredImg && featured.coverImage) featuredImg.src = featured.coverImage;
                     if (totalCompositions) totalCompositions.textContent = `${data.compositions.length}+`;
+                    if (featuredDifficulty) featuredDifficulty.textContent = featured.difficulty || 'Medium';
+                    if (featuredYear) featuredYear.textContent = featured.year || '2024';
+                    
+                    // Setup audio preview if available
+                    setupAudioPreview(featured);
+                    
+                    console.log('Featured composition loaded:', featured.title);
                 }
             } catch (error) {
                 console.log('Could not load featured composition, using fallback');
             }
         }
 
-        //Popular Compositions
+        // Setup Audio Preview Functionality
+        function setupAudioPreview(composition) {
+            const playBtn = document.getElementById('featured-play-btn');
+            const audioContainer = document.getElementById('featured-audio-container');
+            const audioPlayer = document.getElementById('featured-audio-player');
+            
+            if (!playBtn || !audioContainer || !audioPlayer) return;
+            
+            // Check if composition has audio
+            const audioUrl = composition.audioLink || 
+                           (composition.audioFiles && composition.audioFiles.length > 0 ? composition.audioFiles[0].url : null);
+            
+            if (audioUrl) {
+                console.log('Audio preview available for:', composition.title);
+                
+                // Update audio source
+                audioPlayer.src = audioUrl;
+                
+                // Handle preview button click
+                playBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    if (audioContainer.style.display === 'none') {
+                        // Show audio player
+                        audioContainer.style.display = 'block';
+                        audioPlayer.play();
+                        
+                        // Update button text
+                        const playText = playBtn.querySelector('.play-text');
+                        if (playText) playText.textContent = 'Now Playing';
+                        
+                        // Smooth scroll to audio player
+                        setTimeout(() => {
+                            audioContainer.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'nearest' 
+                            });
+                        }, 300);
+                    } else {
+                        // Toggle play/pause
+                        if (audioPlayer.paused) {
+                            audioPlayer.play();
+                        } else {
+                            audioPlayer.pause();
+                        }
+                    }
+                });
+                
+                // Handle audio events
+                audioPlayer.addEventListener('play', function() {
+                    const playText = playBtn.querySelector('.play-text');
+                    if (playText) playText.textContent = 'Playing';
+                });
+                
+                audioPlayer.addEventListener('pause', function() {
+                    const playText = playBtn.querySelector('.play-text');
+                    if (playText) playText.textContent = 'Paused';
+                });
+                
+                audioPlayer.addEventListener('ended', function() {
+                    const playText = playBtn.querySelector('.play-text');
+                    if (playText) playText.textContent = 'Preview';
+                });
+                
+                // Show play button
+                playBtn.style.display = 'flex';
+            } else {
+                console.log('No audio preview available for:', composition.title);
+                // Hide play button if no audio
+                playBtn.style.display = 'none';
+            }
+        }
+
+        // Popular Compositions
         async function loadCompositions() {
             showLoading('popular-works');
             let data;
