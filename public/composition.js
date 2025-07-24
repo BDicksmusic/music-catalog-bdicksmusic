@@ -935,91 +935,93 @@ if (notesContainer) {
         });
     }
     
-    // Essential Composition Details (Always Visible)
+    // Enhanced Metadata Table
     const metadataContainer = document.querySelector('#metadata-toggle-system');
     if (metadataContainer) {
-        // Create always-visible essential details section
-        const essentialDetails = [
-            { label: 'Year Composed', value: comp.year, icon: '📅' },
-            { label: 'Duration', value: comp.duration, icon: '⏱️' },
-            { label: 'Difficulty Level', value: comp.difficulty, icon: '🎯' },
-            { label: 'Genre', value: comp.genre, icon: '🎵' },
-            { label: 'Number of Parts', value: comp.numberOfParts, icon: '📄' }
-        ].filter(item => item.value && item.value !== 'Not specified');
+        // Comprehensive metadata items with proper categorization
+        const metadataItems = [
+            // Basic Information Section
+            { section: 'Basic Information', label: 'Title', value: comp.title || 'Untitled', type: 'text' },
+            { section: 'Basic Information', label: 'Year Composed', value: comp.year || 'Not specified', type: 'number' },
+            { section: 'Basic Information', label: 'Duration', value: comp.duration || 'Not specified', type: 'text' },
+            { section: 'Basic Information', label: 'Difficulty Level', value: comp.difficulty || 'Not specified', type: 'text' },
+            { section: 'Basic Information', label: 'Genre', value: comp.genre || 'Not specified', type: 'text' },
+            
+            // Instrumentation Section
+            { section: 'Instrumentation', label: 'Full Instrumentation', value: comp.instrumentation || 'Not specified', type: 'text' },
+            { section: 'Instrumentation', label: 'Short Instrument List', value: comp.shortInstrumentList || 'Not specified', type: 'text' },
+            { section: 'Instrumentation', label: 'Type', value: comp.type || 'Original', type: 'text' },
+            
+            // Media & Availability Section
+            { section: 'Media & Availability', label: 'Audio Recordings', value: comp.audioFiles?.length || 0, type: 'number' },
+            { section: 'Media & Availability', label: 'Video Recordings', value: comp.videoFiles?.length || 0, type: 'number' },
+            { section: 'Media & Availability', label: 'Score Available', value: comp.scoreLink || comp.scoreFiles?.length > 0 ? 'Yes' : 'No', type: 'boolean' },
+            { section: 'Media & Availability', label: 'Featured Work', value: comp.featured ? 'Yes' : 'No', type: 'boolean' },
+            { section: 'Media & Availability', label: 'Popular', value: comp.popular ? 'Yes' : 'No', type: 'boolean' },
+            { section: 'Media & Availability', label: 'Price', value: comp.price ? `$${comp.price}` : 'Not for sale', type: 'text' },
+            
+            // Additional Information Section
+            { section: 'Additional Information', label: 'Tags', value: comp.tags && comp.tags.length > 0 ? comp.tags.join(', ') : 'None', type: 'text' },
+            { section: 'Additional Information', label: 'Related Works', value: comp.similarWorks?.length || 0, type: 'number' },
+            { section: 'Additional Information', label: 'Created', value: formatDate(comp.created) || 'Not specified', type: 'text' },
+            { section: 'Additional Information', label: 'Last Edited', value: formatDate(comp.lastEdited) || 'Not specified', type: 'text' }
+        ].filter(item => item.value !== 'Not specified' && item.value !== null && item.value !== undefined);
 
-        let essentialHtml = '';
-        if (essentialDetails.length > 0) {
-            essentialHtml = `
-                <div class="composition-essential-details">
-                    <h4>Key Details</h4>
-                    <div class="essential-details-grid">
-                        ${essentialDetails.map(detail => `
-                            <div class="essential-detail-item">
-                                <span class="detail-icon">${detail.icon}</span>
-                                <div class="detail-content">
-                                    <div class="detail-label">${detail.label}</div>
-                                    <div class="detail-value">${detail.value}</div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        const metadataToggles = [
-            {
-                title: '🎼 Instrumentation Details',
-                items: [
-                    { label: 'Full Instrumentation', value: comp.instrumentation || 'Not specified' },
-                    { label: 'Short Instrument List', value: comp.shortInstrumentList || 'Not specified' }
-                ].filter(item => item.value !== 'Not specified')
-            },
-
-            {
-                title: '📊 Performance & Media',
-                items: [
-                    { label: 'Audio Recordings', value: comp.audioFiles?.length || 0 },
-                    { label: 'Video Recordings', value: comp.videoFiles?.length || 0 },
-                    { label: 'Score Available', value: comp.scoreLink || comp.scoreFiles?.length > 0 ? 'Yes' : 'No' },
-                    { label: 'Featured Work', value: comp.featured ? 'Yes' : 'No' },
-                    { label: 'Popular', value: comp.popular ? 'Yes' : 'No' }
-                ]
-            },
-            {
-                title: '🏷️ Additional Information',
-                items: [
-                    { label: 'Tags', value: comp.tags && comp.tags.length > 0 ? comp.tags.join(', ') : 'None' },
-                    { label: 'Created', value: formatDate(comp.created) || 'Not specified' },
-                    { label: 'Last Edited', value: formatDate(comp.lastEdited) || 'Not specified' },
-                    { label: 'Related Works', value: comp.similarWorks?.length || 0 }
-                ].filter((item, index) => {
-                    // Keep tags and related works even if empty, filter others
-                    if (item.label === 'Tags' || item.label === 'Related Works') return true;
-                    return item.value !== 'Not specified';
-                })
+        // Group items by section
+        const groupedMetadata = {};
+        metadataItems.forEach(item => {
+            if (!groupedMetadata[item.section]) {
+                groupedMetadata[item.section] = [];
             }
-        ].filter(section => section.items.length > 0); // Only show sections with items
+            groupedMetadata[item.section].push(item);
+        });
 
-        const metadataHtml = metadataToggles.map((section, index) => `
-            <div class="metadata-toggle-item" data-toggle="${index}">
-                <div class="metadata-toggle-header" onclick="toggleMetadataSection(${index})">
-                    <span>${section.title}</span>
-                    <span class="metadata-toggle-icon">⌄</span>
-                </div>
-                <div class="metadata-toggle-content">
-                    ${section.items.map(item => `
-                        <div class="metadata-item">
-                            <div class="metadata-label">${item.label}:</div>
-                            <div class="metadata-value">${item.value}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `).join('');
+        // Generate table HTML
+        let tableRows = '';
+        Object.entries(groupedMetadata).forEach(([sectionName, items]) => {
+            // Add section divider
+            tableRows += `
+                <tr class="metadata-section-divider">
+                    <td colspan="2">${sectionName}</td>
+                </tr>
+            `;
+            
+            // Add items for this section
+            items.forEach(item => {
+                let valueClass = '';
+                let displayValue = item.value;
+                
+                if (item.type === 'number') {
+                    valueClass = 'number';
+                } else if (item.type === 'boolean') {
+                    valueClass = `boolean ${item.value.toLowerCase() === 'yes' ? 'true' : 'false'}`;
+                    displayValue = item.value.toLowerCase() === 'yes' ? '✅ Yes' : '❌ No';
+                }
+                
+                tableRows += `
+                    <tr class="metadata-item">
+                        <td class="metadata-label">${item.label}</td>
+                        <td class="metadata-value ${valueClass}">${displayValue}</td>
+                    </tr>
+                `;
+            });
+        });
 
-        // Combine essential details with collapsible metadata
-        metadataContainer.innerHTML = essentialHtml + (metadataHtml ? `<div style="margin-top: 1.5rem;">${metadataHtml}</div>` : '');
+        const metadataTableHtml = `
+            <table class="metadata-table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        `;
+
+        metadataContainer.innerHTML = metadataTableHtml;
     }
     
     // Related Compositions Carousel
@@ -1771,32 +1773,7 @@ function stopAllVideos() {
     });
 }
 
-// Metadata Toggle System Functions
-function toggleMetadataSection(index) {
-    const toggleItem = document.querySelector(`[data-toggle="${index}"]`);
-    if (toggleItem) {
-        // Close other open sections for accordion-style behavior
-        const allToggles = document.querySelectorAll('.metadata-toggle-item');
-        allToggles.forEach((item, i) => {
-            if (i !== index && item.classList.contains('active')) {
-                item.classList.remove('active');
-            }
-        });
-        
-        // Toggle the clicked section
-        toggleItem.classList.toggle('active');
-        
-        // Add smooth scroll to the section if it's being opened
-        if (toggleItem.classList.contains('active')) {
-            setTimeout(() => {
-                toggleItem.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'nearest' 
-                });
-            }, 200);
-        }
-    }
-}
+// Metadata is now displayed as a table - no toggle functions needed
 
 // Related Compositions Functions
 function renderRelatedCompositions(compositions) {
