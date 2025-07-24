@@ -1354,6 +1354,237 @@
          color: var(--primary-600);
      }
 
+     /* Footer Styles */
+     .main-footer {
+         background: var(--gray-50);
+         border-top: 1px solid var(--gray-200);
+         margin-top: 4rem;
+         padding: 3rem 0 0;
+     }
+
+     .footer-container {
+         max-width: 1200px;
+         margin: 0 auto;
+         padding: 0 2rem;
+         display: grid;
+         grid-template-columns: 1fr 1fr;
+         gap: 4rem;
+         margin-bottom: 3rem;
+     }
+
+     .footer-nav-section {
+         display: flex;
+         flex-direction: column;
+         gap: 2rem;
+     }
+
+     .footer-nav-groups {
+         display: flex;
+         gap: 3rem;
+     }
+
+     .footer-nav-group h3 {
+         margin: 0;
+         font-size: 1.2rem;
+         font-weight: 600;
+     }
+
+     .footer-nav-title {
+         color: var(--gray-800);
+         text-decoration: none;
+         transition: color 0.3s ease;
+     }
+
+     .footer-nav-title:hover {
+         color: var(--primary-600);
+     }
+
+     .footer-contact-info {
+         display: flex;
+         flex-direction: column;
+         gap: 0.5rem;
+     }
+
+     .contact-item {
+         margin: 0;
+     }
+
+     .contact-link {
+         color: var(--gray-700);
+         text-decoration: none;
+         font-size: 1rem;
+         transition: color 0.3s ease;
+     }
+
+     .contact-link:hover {
+         color: var(--primary-600);
+     }
+
+     .newsletter-section {
+         background: white;
+         padding: 2rem;
+         border-radius: 12px;
+         border: 1px solid var(--gray-200);
+         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+     }
+
+     .newsletter-title {
+         font-size: 1.3rem;
+         font-weight: 700;
+         color: var(--gray-900);
+         margin: 0 0 1rem 0;
+     }
+
+     .newsletter-description {
+         color: var(--gray-600);
+         line-height: 1.5;
+         margin-bottom: 1.5rem;
+         font-size: 0.95rem;
+     }
+
+     .newsletter-form {
+         margin-bottom: 1rem;
+     }
+
+     .newsletter-input-group {
+         display: flex;
+         gap: 0.5rem;
+     }
+
+     .newsletter-input {
+         flex: 1;
+         padding: 0.75rem 1rem;
+         border: 2px solid var(--gray-200);
+         border-radius: 8px;
+         font-size: 1rem;
+         transition: border-color 0.3s ease;
+     }
+
+     .newsletter-input:focus {
+         outline: none;
+         border-color: var(--primary-500);
+     }
+
+     .newsletter-btn {
+         background: var(--primary-500);
+         color: white;
+         border: none;
+         padding: 0.75rem 1.5rem;
+         border-radius: 8px;
+         font-weight: 600;
+         cursor: pointer;
+         transition: all 0.3s ease;
+         white-space: nowrap;
+     }
+
+     .newsletter-btn:hover {
+         background: var(--primary-600);
+         transform: translateY(-1px);
+     }
+
+     .privacy-note {
+         font-size: 0.85rem;
+         color: var(--gray-500);
+         margin: 0;
+         font-style: italic;
+     }
+
+     .newsletter-success {
+         background: var(--green-50);
+         border: 1px solid var(--green-200);
+         border-radius: 8px;
+         padding: 1rem;
+         margin-top: 1rem;
+     }
+
+     .newsletter-success p {
+         color: var(--green-700);
+         margin: 0;
+         font-size: 0.9rem;
+         line-height: 1.4;
+     }
+
+     .footer-bottom {
+         background: var(--gray-900);
+         padding: 1.5rem 0;
+         margin-top: 2rem;
+     }
+
+     .footer-bottom-nav {
+         max-width: 1200px;
+         margin: 0 auto;
+         padding: 0 2rem;
+         display: flex;
+         justify-content: center;
+         gap: 2rem;
+         flex-wrap: wrap;
+         margin-bottom: 1rem;
+     }
+
+     .footer-bottom-link {
+         color: var(--gray-300);
+         text-decoration: none;
+         font-size: 0.9rem;
+         transition: color 0.3s ease;
+     }
+
+     .footer-bottom-link:hover {
+         color: white;
+     }
+
+     .footer-bottom-contact {
+         max-width: 1200px;
+         margin: 0 auto;
+         padding: 0 2rem;
+         display: flex;
+         justify-content: center;
+         gap: 2rem;
+         flex-wrap: wrap;
+         border-top: 1px solid var(--gray-700);
+         padding-top: 1rem;
+     }
+
+     .footer-email,
+     .footer-phone {
+         color: var(--gray-400);
+         font-size: 0.9rem;
+         font-weight: 500;
+     }
+
+     /* Mobile Responsive */
+     @media (max-width: 768px) {
+         .footer-container {
+             grid-template-columns: 1fr;
+             gap: 2rem;
+             padding: 0 1rem;
+         }
+
+         .footer-nav-groups {
+             flex-direction: column;
+             gap: 1rem;
+         }
+
+         .newsletter-input-group {
+             flex-direction: column;
+         }
+
+         .newsletter-btn {
+             width: 100%;
+         }
+
+         .footer-bottom-nav {
+             flex-direction: column;
+             gap: 1rem;
+             text-align: center;
+         }
+
+         .footer-bottom-contact {
+             flex-direction: column;
+             gap: 0.5rem;
+             text-align: center;
+         }
+     }
+
      /* Testimonials Section */
      .testimonials-section {
          padding: 4rem 0;
@@ -2131,8 +2362,76 @@
     </section>
 
     <!-- Footer -->
-    <footer style="text-align: center; padding: 2rem; background: var(--gray-100); margin-top: 0;">
-        <p>&copy; 2025 Your Music. All rights reserved.</p>
+    <footer class="main-footer">
+        <div class="footer-container">
+            <!-- Navigation Sections -->
+            <div class="footer-nav-section">
+                <div class="footer-nav-groups">
+                    <div class="footer-nav-group">
+                        <h3><a href="/music-catalog.html" class="footer-nav-title">Compositions</a></h3>
+                    </div>
+                    <div class="footer-nav-group">
+                        <h3><a href="/arrangements" class="footer-nav-title">Arrangements</a></h3>
+                    </div>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="footer-contact-info">
+                    <div class="contact-item">
+                        <a href="tel:6786023659" class="contact-link">(678) 602-3659</a>
+                    </div>
+                    <div class="contact-item">
+                        <a href="mailto:BDicksmusic@gmail.com" class="contact-link">BDicksmusic@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Newsletter Section -->
+            <div class="newsletter-section">
+                <h3 class="newsletter-title">Newsletter Sign Up</h3>
+                <p class="newsletter-description">
+                    Sign up with your email address to receive news and updates about Brandon Dicks, 
+                    including releases of new compositions, arrangements, and etudes books.
+                </p>
+                
+                <form class="newsletter-form" id="newsletter-form">
+                    <div class="newsletter-input-group">
+                        <input 
+                            type="email" 
+                            placeholder="Email Address" 
+                            class="newsletter-input" 
+                            id="newsletter-email"
+                            required
+                        >
+                        <button type="submit" class="newsletter-btn">Sign Up</button>
+                    </div>
+                </form>
+                
+                <p class="privacy-note">We respect your privacy.</p>
+                
+                <div class="newsletter-success" id="newsletter-success" style="display: none;">
+                    <p>Thank you for signing up to the BDicksmusic mailing list! Look forward to new information about Brandon Dicks coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="footer-bottom">
+            <div class="footer-bottom-nav">
+                <a href="/music-catalog.html" class="footer-bottom-link">Music Catalog</a>
+                <a href="/teaching" class="footer-bottom-link">Teaching Material</a>
+                <a href="/news" class="footer-bottom-link">News</a>
+                <a href="/media.html" class="footer-bottom-link">Media</a>
+                <a href="/about.html" class="footer-bottom-link">About</a>
+                <a href="/contact.html" class="footer-bottom-link">Contact</a>
+                <a href="/support" class="footer-bottom-link">Support</a>
+            </div>
+            
+            <div class="footer-bottom-contact">
+                <span class="footer-email">BDicksmusic@gmail.com</span>
+                <span class="footer-phone">(678) 602-3659</span>
+            </div>
+        </div>
     </footer>
 
     <script>
@@ -2911,6 +3210,52 @@
         function learnMore(slug) {
             window.location.href = `/composition/${slug}`;
         }
+
+        // Newsletter Form Handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const newsletterForm = document.getElementById('newsletter-form');
+            const newsletterEmail = document.getElementById('newsletter-email');
+            const newsletterSuccess = document.getElementById('newsletter-success');
+            
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const email = newsletterEmail.value.trim();
+                    if (!email) {
+                        alert('Please enter a valid email address.');
+                        return;
+                    }
+                    
+                    // Simulate newsletter signup
+                    const submitBtn = this.querySelector('.newsletter-btn');
+                    const originalText = submitBtn.textContent;
+                    
+                    submitBtn.textContent = 'Signing Up...';
+                    submitBtn.disabled = true;
+                    
+                    // Simulate API call delay
+                    setTimeout(() => {
+                        // Reset form
+                        newsletterEmail.value = '';
+                        
+                        // Show success message
+                        newsletterSuccess.style.display = 'block';
+                        
+                        // Reset button
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                        
+                        // Hide success message after 5 seconds
+                        setTimeout(() => {
+                            newsletterSuccess.style.display = 'none';
+                        }, 5000);
+                        
+                        console.log('Newsletter signup for:', email);
+                    }, 1500);
+                });
+            }
+        });
 
         function toggleScoreViewer(scoreLink) {
             const scoreSection = document.getElementById('score-section');
