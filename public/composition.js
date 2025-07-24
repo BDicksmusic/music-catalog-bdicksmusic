@@ -707,28 +707,47 @@ if (notesContainer) {
         });
     }
     
-    // Metadata Toggle System
+    // Essential Composition Details (Always Visible)
     const metadataContainer = document.querySelector('#metadata-toggle-system');
     if (metadataContainer) {
+        // Create always-visible essential details section
+        const essentialDetails = [
+            { label: 'Year Composed', value: comp.year, icon: '📅' },
+            { label: 'Duration', value: comp.duration, icon: '⏱️' },
+            { label: 'Difficulty Level', value: comp.difficulty, icon: '🎯' },
+            { label: 'Genre', value: comp.genre, icon: '🎵' },
+            { label: 'Number of Parts', value: comp.numberOfParts, icon: '📄' }
+        ].filter(item => item.value && item.value !== 'Not specified');
+
+        let essentialHtml = '';
+        if (essentialDetails.length > 0) {
+            essentialHtml = `
+                <div class="composition-essential-details">
+                    <h4>Key Details</h4>
+                    <div class="essential-details-grid">
+                        ${essentialDetails.map(detail => `
+                            <div class="essential-detail-item">
+                                <span class="detail-icon">${detail.icon}</span>
+                                <div class="detail-content">
+                                    <div class="detail-label">${detail.label}</div>
+                                    <div class="detail-value">${detail.value}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
         const metadataToggles = [
-            {
-                title: '📝 Basic Information',
-                items: [
-                    { label: 'Title', value: comp.title || 'Not specified' },
-                    { label: 'Year Composed', value: comp.year || 'Not specified' },
-                    { label: 'Duration', value: comp.duration || 'Not specified' },
-                    { label: 'Difficulty Level', value: comp.difficulty || 'Not specified' },
-                    { label: 'Genre', value: comp.genre || 'Not specified' }
-                ].filter(item => item.value !== 'Not specified')
-            },
             {
                 title: '🎼 Instrumentation Details',
                 items: [
                     { label: 'Full Instrumentation', value: comp.instrumentation || 'Not specified' },
-                    { label: 'Short Instrument List', value: comp.shortInstrumentList || 'Not specified' },
-                    { label: 'Number of Parts', value: comp.numberOfParts || 'Not specified' }
+                    { label: 'Short Instrument List', value: comp.shortInstrumentList || 'Not specified' }
                 ].filter(item => item.value !== 'Not specified')
             },
+
             {
                 title: '📊 Performance & Media',
                 items: [
@@ -771,7 +790,8 @@ if (notesContainer) {
             </div>
         `).join('');
 
-        metadataContainer.innerHTML = metadataHtml;
+        // Combine essential details with collapsible metadata
+        metadataContainer.innerHTML = essentialHtml + (metadataHtml ? `<div style="margin-top: 1.5rem;">${metadataHtml}</div>` : '');
     }
     
     // Related Compositions Carousel
