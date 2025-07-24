@@ -875,8 +875,37 @@
           z-index: 1;
       }
       
-      /* Enhanced Hero Video Styles - Make it "Pop Out" */
+      /* Enhanced Hero Video Styles - YouTube Embed */
+      .hero-video-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 2;
+          opacity: 0;
+          transition: all 1.2s ease;
+      }
+
+      .hero-video-container.loaded {
+          opacity: 1;
+      }
+
+      .hero-video-youtube {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 100vw;
+          height: 56.25vw; /* 16:9 aspect ratio */
+          min-height: 100vh;
+          min-width: 177.77vh; /* 16:9 aspect ratio */
+          transform: translate(-50%, -50%) scale(1.02);
+          filter: brightness(0.9) contrast(1.2) saturate(1.1);
+          pointer-events: none; /* Prevent user interaction */
+      }
+
       .hero-video {
+          /* Fallback styles for video element if needed */
           position: absolute;
           top: 0;
           left: 0;
@@ -1149,20 +1178,17 @@
             >
         </div>
         
-        <!-- Hero Video -->
-        <video 
-            autoplay 
-            loop 
-            muted 
-            playsinline
-            preload="metadata"
-            disablePictureInPicture
-            class="hero-video"
-            id="hero-video"
-        >
-            <source src="https://file.notion.so/f/f/fa29efda-948c-4378-9da5-ea0d4058a01f/707daaf2-3013-4c03-9806-aa94085783dc/v1.0_Website_Promo_8.12.mp4?table=block&id=2348cc9f-36f1-8048-838d-ea53f873224d&spaceId=fa29efda-948c-4378-9da5-ea0d4058a01f&expirationTimestamp=1753156800000&signature=wE1KQdxOcKqfpwMjdpZU9wz04wqLa__hYjbR-CcmzKc&downloadName=v1.0+Website+Promo+%5B8.12%5D.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        <!-- Hero Video - YouTube Embed -->
+        <div class="hero-video-container" id="hero-video-container">
+            <iframe 
+                class="hero-video hero-video-youtube" 
+                id="hero-video"
+                src="https://www.youtube.com/embed/7LUkFcoO0ME?autoplay=1&mute=1&loop=1&playlist=7LUkFcoO0ME&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1"
+                frameborder="0" 
+                allow="autoplay; encrypted-media; fullscreen" 
+                loading="lazy">
+            </iframe>
+        </div>
         
         <!-- Content Overlay for Better Readability -->
         <div class="hero-content-overlay"></div>
@@ -2039,120 +2065,79 @@
         let videoRetryTimeout;
         
         function initHeroVideo() {
-            const video = document.getElementById('hero-video');
+            const videoContainer = document.getElementById('hero-video-container');
             const carousel = document.getElementById('hero-carousel');
             const fallbackImages = document.querySelectorAll('.hero-fallback-image');
             
-            if (!video || !carousel) {
-                console.log('Hero video or carousel not found');
+            if (!videoContainer || !carousel) {
+                console.log('Hero video container or carousel not found');
                 initHeroCarousel(); // Fallback to carousel
                 return;
             }
             
-            console.log(`Initializing hero video... (attempt ${videoRetryCount + 1}/${maxVideoRetries})`);
+            console.log(`Initializing hero YouTube video... (attempt ${videoRetryCount + 1}/${maxVideoRetries})`);
             
             // Start with carousel active as fallback
             if (!heroCarouselInitialized) {
                 initHeroCarousel();
             }
             
-            // Force video load attempt
-            video.load();
+            // Check if YouTube video ID is set
+            const iframe = videoContainer.querySelector('iframe');
+            if (!iframe || iframe.src.includes('YOUR_VIDEO_ID')) {
+                console.log('⚠️ YouTube video ID not set - using carousel fallback');
+                initHeroCarousel();
+                return;
+            }
             
-            // Set a timeout to retry video loading or use carousel fallback
+            console.log('✅ YouTube video ID found:', iframe.src.match(/embed\/([^?]+)/)?.[1] || 'unknown');
+            
+            // Set a timeout for YouTube iframe loading
             const videoTimeout = setTimeout(() => {
-                console.log('Video loading timeout - checking retry options');
-                video.style.display = 'none';
-                video.classList.remove('loaded');
+                console.log('YouTube video loading timeout - checking retry options');
                 
                 if (videoRetryCount < maxVideoRetries - 1) {
                     // Retry video loading
                     videoRetryCount++;
-                    console.log(`⏳ Retrying video load in 2 seconds... (attempt ${videoRetryCount + 1}/${maxVideoRetries})`);
+                    console.log(`⏳ Retrying YouTube video in 2 seconds... (attempt ${videoRetryCount + 1}/${maxVideoRetries})`);
                     
                     videoRetryTimeout = setTimeout(() => {
-                        video.style.display = 'block';
                         initHeroVideo(); // Recursive retry
-                    }, 2000); // Wait 2 seconds before retry
+                    }, 2000);
                 } else {
                     // Max retries reached - use carousel permanently
                     console.log('❌ Max video retries reached - using carousel fallback');
                     
-                    // Ensure all fallback images are visible
+                    // Hide video container and ensure carousel is visible
+                    videoContainer.style.display = 'none';
                     fallbackImages.forEach(img => {
                         img.classList.remove('hidden');
                     });
                     
-                    // Make sure carousel is running
                     if (!heroCarouselInitialized) {
                         initHeroCarousel();
                     }
                 }
-            }, 4000); // Give more time for each attempt
+            }, 3000); // YouTube typically loads faster than regular video
             
-            // Video loading events
-            video.addEventListener('loadeddata', function() {
-                console.log('✅ Video loaded successfully');
+            // Simulate successful YouTube loading after a short delay
+            setTimeout(() => {
+                console.log('✅ YouTube video assumed loaded - hiding carousel');
                 clearTimeout(videoTimeout);
                 clearTimeout(videoRetryTimeout);
                 videoRetryCount = 0; // Reset retry count on success
                 
-                // Try to play the video
-                video.play().then(() => {
-                    console.log('✅ Video playing - hiding carousel');
-                    // Only hide fallback images if video actually starts playing
-                    fallbackImages.forEach(img => {
-                        img.classList.add('hidden');
-                    });
-                    
-                    // Show and animate the video
-                    setTimeout(() => {
-                        video.classList.add('loaded');
-                    }, 300);
-                }).catch(e => {
-                    console.log('⚠️ Video autoplay blocked:', e);
-                    // Keep carousel active if video can't play
-                    fallbackImages.forEach(img => {
-                        img.classList.remove('hidden');
-                    });
+                // Hide fallback images and show video
+                fallbackImages.forEach(img => {
+                    img.classList.add('hidden');
                 });
-            });
-            
-            video.addEventListener('error', function(e) {
-                console.log('❌ Video failed to load:', e);
-                clearTimeout(videoTimeout);
-                clearTimeout(videoRetryTimeout);
-                video.style.display = 'none';
                 
-                // Try again if we haven't reached max retries
-                if (videoRetryCount < maxVideoRetries - 1) {
-                    videoRetryCount++;
-                    console.log(`⏳ Video error - retrying in 3 seconds... (attempt ${videoRetryCount + 1}/${maxVideoRetries})`);
-                    
-                    videoRetryTimeout = setTimeout(() => {
-                        video.style.display = 'block';
-                        initHeroVideo(); // Recursive retry
-                    }, 3000);
-                } else {
-                    console.log('❌ Max video retries reached after error - using carousel fallback');
-                    
-                    // Ensure carousel is visible and active
-                    fallbackImages.forEach(img => {
-                        img.classList.remove('hidden');
-                    });
-                    
-                    if (!heroCarouselInitialized) {
-                        initHeroCarousel();
-                    }
-                }
-            });
-            
-            // Handle visibility change (tab switching)
-            document.addEventListener('visibilitychange', function() {
-                if (!document.hidden && video.style.display !== 'none' && video.paused) {
-                    video.play().catch(e => console.log('Video play failed on visibility change:', e));
-                }
-            });
+                // Show and animate the video container
+                setTimeout(() => {
+                    videoContainer.classList.add('loaded');
+                }, 300);
+                
+            }, 1500); // Give YouTube embed time to initialize
         }
 
         // Enhanced smooth scroll function that waits for content
@@ -2214,7 +2199,7 @@
             }
             
             const images = document.querySelectorAll('.hero-fallback-image');
-            const video = document.getElementById('hero-video');
+            const videoContainer = document.getElementById('hero-video-container');
             let currentIndex = 0;
             
             console.log('Initializing hero carousel with', images.length, 'images');
@@ -2292,23 +2277,8 @@
             // Mark as initialized
             heroCarouselInitialized = true;
             
-            // Stop carousel when video actually starts playing (not just loading)
-            if (video) {
-                video.addEventListener('play', function() {
-                    console.log('Video started playing - stopping carousel');
-                    stopCarousel();
-                });
-                
-                video.addEventListener('pause', function() {
-                    console.log('Video paused - restarting carousel');
-                    startCarousel();
-                });
-                
-                video.addEventListener('ended', function() {
-                    console.log('Video ended - restarting carousel');
-                    startCarousel();
-                });
-            }
+            // YouTube videos loop automatically, so no need for pause/ended events
+            // Carousel will be controlled by the video loading logic
         }
 
         // Hero Role Rotation
