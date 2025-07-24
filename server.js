@@ -93,14 +93,29 @@ async function queryRelatedMedia(compositionId, mediaType = null) {
         });
         
         // Debug: Log the raw query results
-        if (process.env.NODE_ENV !== 'production') {
-            console.log(`🔍 DEBUG - Raw query returned ${response.results.length} items from Media database`);
-            response.results.forEach((item, index) => {
-                const name = item.properties.Name?.title?.[0]?.text?.content || 'Unnamed';
-                const type = item.properties.Type?.select?.name || 'No Type';
-                console.log(`  ${index + 1}. "${name}" (${type})`);
-            });
-        }
+        console.log(`🔍 DEBUG - Raw query returned ${response.results.length} items from Media database for composition ${compositionId}`);
+        response.results.forEach((item, index) => {
+            const name = item.properties.Name?.title?.[0]?.text?.content || 'Unnamed';
+            const type = item.properties.Type?.select?.name || 'No Type';
+            const audioRel = item.properties['Audio to Comp']?.relation?.length || 0;
+            const videoRel = item.properties['Video to Comp']?.relation?.length || 0;
+            console.log(`  ${index + 1}. "${name}" (${type}) - Audio Rel: ${audioRel}, Video Rel: ${videoRel}`);
+            
+            // Debug URL extraction
+            let mediaUrl = '';
+            if (item.properties.URL?.url) {
+                mediaUrl = item.properties.URL.url;
+                console.log(`    Found URL property: ${mediaUrl.substring(0, 50)}...`);
+            } else if (item.properties.VideoURL?.url) {
+                mediaUrl = item.properties.VideoURL.url;
+                console.log(`    Found VideoURL property: ${mediaUrl.substring(0, 50)}...`);
+            } else if (item.properties.AudioURL?.url) {
+                mediaUrl = item.properties.AudioURL.url;
+                console.log(`    Found AudioURL property: ${mediaUrl.substring(0, 50)}...`);
+            } else {
+                console.log(`    No URL properties found for: ${name}`);
+            }
+        });
         
         return response.results.map(transformMediaPage);
     } catch (error) {
@@ -231,9 +246,20 @@ function transformMediaPage(page) {
         }
     }
     
-    // Only log in development mode to reduce processing time
-    if (process.env.NODE_ENV !== 'production') {
-        console.log(`🔍 Media: "${getTextContent(properties.Name)}" -> URL: ${mediaUrl}`);
+    // Debug URL extraction for media items
+    const mediaName = getTextContent(properties.Name) || 'Unnamed';
+    console.log(`🔍 Media: "${mediaName}" -> URL: ${mediaUrl ? 'FOUND' : 'MISSING'}`);
+    if (!mediaUrl) {
+        console.log(`  🔍 Available properties for "${mediaName}":`, Object.keys(properties));
+        // Try to find any URL-like properties
+        for (const [key, value] of Object.entries(properties)) {
+            if (key.toLowerCase().includes('url') || key.toLowerCase().includes('link')) {
+                console.log(`    - ${key}:`, value?.url || 'no url property');
+            }
+            if (value?.files && value.files.length > 0) {
+                console.log(`    - ${key} (files):`, value.files[0]?.file?.url || value.files[0]?.external?.url || 'no file url');
+            }
+        }
     }
     
     return {
@@ -345,7 +371,13 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
         console.log('🎼 DEBUG SERVER - All media items with types:');
         allMedia.forEach((media, index) => {
             console.log(`  ${index + 1}. "${media.title}" - Type: "${media.type}" - Category: "${media.category}" - URL: ${media.url ? 'YES' : 'NO'}`);
+            if (media.url) {
+                console.log(`    URL: ${media.url.substring(0, 80)}...`);
+            }
         });
+        
+        // Debug: Show composition relations check
+        console.log('🎼 DEBUG SERVER - Checking composition relations in media database for ID:', page.id);
 
         // Separate by type - FIXED: Properly separate score PDFs from score videos
         const audioMedia = allMedia.filter(media => media.type === 'Audio');
@@ -413,7 +445,7 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
             mediaCount: {
                 audio: audioMedia.length,
                 video: videoMedia.length,
-                score: scoreMedia.length,
+                score: scorePdfMedia.length,
                 total: allMedia.length
             }
         };
@@ -513,6 +545,39 @@ app.get('/api/notion-media', mediaApiHandler);
 app.post('/api/notion-media', mediaApiHandler);
 
 // ===== TEMPORARY DEBUG ENDPOINT =====
+// DEBUG: Test specific composition's media relations
+app.get('/api/debug/composition-media/:id', async (req, res) => {
+    try {
+        const compositionId = req.params.id;
+        console.log('🔍 DEBUG - Testing media relations for composition:', compositionId);
+        
+        // First, get the composition details
+        const composition = await notion.pages.retrieve({ page_id: compositionId });
+        const compTitle = composition.properties.Name?.title?.[0]?.text?.content || 'Unknown';
+        
+        // Then query related media
+        const relatedMedia = await queryRelatedMedia(compositionId);
+        
+        res.json({
+            success: true,
+            compositionId,
+            compositionTitle: compTitle,
+            mediaFound: relatedMedia.length,
+            media: relatedMedia.map(media => ({
+                id: media.id,
+                title: media.title,
+                type: media.type,
+                category: media.category,
+                hasUrl: !!media.url,
+                url: media.url ? media.url.substring(0, 50) + '...' : 'NO URL'
+            }))
+        });
+    } catch (error) {
+        console.error('❌ Debug composition media error:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 // DEBUG: Get all media items (no filtering)
 app.get('/api/debug/all-media', async (req, res) => {
     try {

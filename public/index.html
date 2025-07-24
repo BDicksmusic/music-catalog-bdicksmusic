@@ -96,6 +96,64 @@
             padding: 8px 16px;
         }
     }
+
+    .hero-explore-section {
+        margin-top: 1.5rem;
+    }
+
+    .explore-btn.secondary {
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--gray-100);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(10px);
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .explore-btn.secondary:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.8);
+        transform: scale(1.05) translateY(-2px) !important;
+    }
+    /* Hero Video Styles */
+    .hero-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+    }
+
+    .hero-video.loaded {
+        opacity: 1;
+    }
+
+    .hero-fallback-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 2;
+        opacity: 1;
+        transition: opacity 0.8s ease;
+    }
+
+    .hero-fallback-image.hidden {
+        opacity: 0;
+        z-index: 0;
+    }
+
+    .hero-fallback-image.active {
+        opacity: 1;
+        z-index: 2;
+    }
+
     .works-grid.dragging {
         cursor: grabbing;
         user-select: none;
@@ -113,6 +171,454 @@
         scroll-behavior: smooth;
         cursor: grab;
     }
+
+    /* Dynamic Hero Styles */
+    .hero-content-dynamic {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .hero-main-title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--gray-100);
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        letter-spacing: 2px;
+    }
+
+    .hero-rotating-content {
+        position: relative;
+        min-height: 200px;
+        margin-bottom: 2rem;
+    }
+
+    .hero-role {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease;
+        text-align: center;
+    }
+
+    .hero-role.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .hero-role-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--gray-100);
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .hero-role-description {
+        font-size: 1.1rem;
+        color: var(--gray-200);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-nav-dots {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid var(--gray-300);
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .dot.active {
+        background: var(--primary-400);
+        border-color: var(--primary-400);
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    .dot:hover {
+        border-color: var(--primary-300);
+        transform: scale(1.2);
+    }
+
+    @media (max-width: 768px) {
+        .hero-main-title {
+            font-size: 2rem;
+        }
+        
+        .hero-role-title {
+            font-size: 1.5rem;
+        }
+        
+        .hero-role-description {
+            font-size: 1rem;
+        }
+        
+                 .hero-content-dynamic {
+             padding: 0 1rem;
+         }
+     }
+
+     /* Section Styles */
+     .section-showcase {
+         padding: 4rem 0;
+         background: var(--gray-50);
+     }
+
+     .section-showcase.alt-bg {
+         background: var(--gray-100);
+     }
+
+     .section-title {
+         font-size: 2.5rem;
+         font-weight: 700;
+         text-align: center;
+         margin-bottom: 3rem;
+         color: var(--gray-900);
+     }
+
+     /* Catalog Highlights Section */
+     .catalog-highlights-grid {
+         display: grid;
+         grid-template-columns: 2fr 1fr;
+         gap: 3rem;
+         align-items: center;
+         max-width: 1200px;
+         margin: 0 auto;
+     }
+
+     .featured-composition {
+         background: white;
+         border-radius: 12px;
+         overflow: hidden;
+         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+         transition: transform 0.3s ease;
+         display: flex;
+         min-height: 280px;
+     }
+
+     .featured-composition:hover {
+         transform: translateY(-5px);
+     }
+
+     .featured-composition-image {
+         flex: 1;
+         overflow: hidden;
+     }
+
+     .composition-highlight-img {
+         width: 100%;
+         height: 100%;
+         object-fit: cover;
+         transition: transform 0.3s ease;
+     }
+
+     .featured-composition:hover .composition-highlight-img {
+         transform: scale(1.05);
+     }
+
+     .featured-composition-content {
+         flex: 1;
+         padding: 2rem;
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+     }
+
+     .featured-title {
+         font-size: 1.5rem;
+         font-weight: 700;
+         margin-bottom: 0.5rem;
+         color: var(--gray-900);
+     }
+
+     .featured-instrumentation {
+         font-size: 1rem;
+         color: var(--primary-600);
+         font-weight: 600;
+         margin-bottom: 1rem;
+     }
+
+     .featured-description {
+         color: var(--gray-600);
+         line-height: 1.6;
+         margin-bottom: 1.5rem;
+         flex-grow: 1;
+     }
+
+     .featured-link {
+         align-self: flex-start;
+     }
+
+     .catalog-stats {
+         display: flex;
+         flex-direction: column;
+         gap: 1.5rem;
+     }
+
+     .catalog-browse-btn {
+         width: 100%;
+         text-align: center;
+         padding: 1rem !important;
+         border-radius: 8px !important;
+     }
+
+     .stat-item {
+         text-align: center;
+         padding: 1.5rem;
+         background: white;
+         border-radius: 12px;
+         box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+     }
+
+     .stat-number {
+         display: block;
+         font-size: 2.5rem;
+         font-weight: 900;
+         color: var(--primary-500);
+         margin-bottom: 0.5rem;
+     }
+
+     .stat-label {
+         font-size: 0.9rem;
+         color: var(--gray-600);
+         font-weight: 500;
+     }
+
+     /* Education Section */
+     .education-grid {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+         gap: 2rem;
+         max-width: 1200px;
+         margin: 0 auto;
+     }
+
+     .education-card {
+         background: white;
+         padding: 2rem;
+         border-radius: 12px;
+         text-align: center;
+         box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+         transition: all 0.3s ease;
+     }
+
+     .education-card:hover {
+         transform: translateY(-5px);
+         box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+     }
+
+     .card-icon {
+         font-size: 3rem;
+         margin-bottom: 1rem;
+     }
+
+     .education-card h3 {
+         font-size: 1.3rem;
+         font-weight: 600;
+         color: var(--gray-900);
+         margin-bottom: 1rem;
+     }
+
+     .education-card p {
+         color: var(--gray-600);
+         line-height: 1.6;
+         margin-bottom: 1.5rem;
+     }
+
+     .card-link {
+         color: var(--primary-500);
+         font-weight: 600;
+         text-decoration: none;
+         transition: color 0.3s ease;
+     }
+
+     .card-link:hover {
+         color: var(--primary-600);
+     }
+
+     /* Testimonials Section */
+     .testimonials-section {
+         padding: 4rem 0;
+         background: var(--gray-900);
+         color: white;
+     }
+
+     .testimonials-section .section-title {
+         color: white;
+     }
+
+     .testimonials-grid {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+         gap: 2rem;
+         max-width: 1200px;
+         margin: 0 auto;
+     }
+
+     .testimonial-card {
+         background: rgba(255,255,255,0.1);
+         padding: 2rem;
+         border-radius: 12px;
+         backdrop-filter: blur(10px);
+         border: 1px solid rgba(255,255,255,0.1);
+     }
+
+     .testimonial-content p {
+         font-style: italic;
+         font-size: 1.1rem;
+         line-height: 1.6;
+         margin-bottom: 1.5rem;
+         color: var(--gray-200);
+     }
+
+     .testimonial-author strong {
+         color: white;
+         display: block;
+         margin-bottom: 0.25rem;
+     }
+
+     .testimonial-author span {
+         color: var(--gray-400);
+         font-size: 0.9rem;
+     }
+
+     /* Mobile Responsiveness */
+     @media (max-width: 768px) {
+         .catalog-highlights-grid {
+             grid-template-columns: 1fr;
+             gap: 2rem;
+         }
+
+         .featured-composition {
+             flex-direction: column;
+             min-height: auto;
+         }
+
+         .featured-composition-image {
+             height: 200px;
+         }
+
+         .featured-composition-content {
+             padding: 1.5rem;
+         }
+
+         .catalog-stats {
+             flex-direction: row;
+             gap: 1rem;
+             flex-wrap: wrap;
+         }
+
+         .catalog-stats .stat-item {
+             flex: 1;
+             min-width: 120px;
+         }
+
+         .catalog-browse-btn {
+             flex-basis: 100%;
+         }
+
+         .section-title {
+             font-size: 2rem;
+         }
+
+         .stat-number {
+             font-size: 2rem;
+         }
+
+                   .education-card, .testimonial-card {
+              padding: 1.5rem;
+          }
+      }
+
+      /* Call to Action Section */
+      .cta-section {
+          padding: 4rem 0;
+          background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+          color: white;
+          text-align: center;
+      }
+
+      .cta-content h2 {
+          font-size: 2.5rem;
+          font-weight: 700;
+          margin-bottom: 1rem;
+          color: white;
+      }
+
+      .cta-content p {
+          font-size: 1.2rem;
+          margin-bottom: 2rem;
+          color: rgba(255,255,255,0.9);
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+      }
+
+      .cta-buttons {
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          flex-wrap: wrap;
+      }
+
+      .cta-buttons .btn-primary {
+          background: white;
+          color: var(--primary-600);
+          border: 2px solid white;
+      }
+
+      .cta-buttons .btn-primary:hover {
+          background: transparent;
+          color: white;
+          border-color: white;
+      }
+
+      .cta-buttons .btn-secondary {
+          background: transparent;
+          color: white;
+          border: 2px solid rgba(255,255,255,0.5);
+      }
+
+      .cta-buttons .btn-secondary:hover {
+          background: rgba(255,255,255,0.1);
+          border-color: white;
+      }
+
+      @media (max-width: 768px) {
+          .cta-content h2 {
+              font-size: 2rem;
+          }
+          
+          .cta-content p {
+              font-size: 1rem;
+          }
+          
+          .cta-buttons {
+              flex-direction: column;
+              align-items: center;
+          }
+          
+          .cta-buttons a {
+              width: 200px;
+          }
+      }
     </style>
     <!-- Navigation -->
 <nav>
@@ -232,9 +738,44 @@
     z-index: 10;
     pointer-events: auto;
 ">
-    <a href="#catalog" id="explore-button" class="explore-btn" onclick="smoothScrollTo('#catalog'); return false;">
-        Click to Explore
-    </a>
+    <div class="hero-content-dynamic">
+        <h1 class="hero-main-title">BRANDON DICKS</h1>
+        <div class="hero-rotating-content" id="hero-rotating">
+            <div class="hero-role active" data-role="composer">
+                <h2 class="hero-role-title">Composer</h2>
+                <p class="hero-role-description">Creating original compositions that inspire and challenge musicians</p>
+                <a href="#compositions" class="explore-btn" onclick="smoothScrollTo('#compositions'); return false;">
+                    🎼 Explore Compositions
+                </a>
+            </div>
+            <div class="hero-role" data-role="trumpeter">
+                <h2 class="hero-role-title">Trumpeter</h2>
+                <p class="hero-role-description">Bringing brass music to life through performance and artistry</p>
+                <a href="#performances" class="explore-btn" onclick="smoothScrollTo('#performances'); return false;">
+                    🎺 View Performances
+                </a>
+            </div>
+            <div class="hero-role" data-role="educator">
+                <h2 class="hero-role-title">Educator</h2>
+                <p class="hero-role-description">Empowering students and organizing musical experiences with innovative tools</p>
+                <a href="#education" class="explore-btn" onclick="smoothScrollTo('#education'); return false;">
+                    📚 Discover Resources
+                </a>
+            </div>
+        </div>
+        <div class="hero-nav-dots">
+            <button class="dot active" onclick="switchHeroRole(0)"></button>
+            <button class="dot" onclick="switchHeroRole(1)"></button>
+            <button class="dot" onclick="switchHeroRole(2)"></button>
+        </div>
+        
+        <!-- Explore Button -->
+        <div class="hero-explore-section">
+            <a href="#compositions" class="explore-btn secondary" onclick="smoothScrollTo('#compositions'); return false;">
+                Click to Explore All Work
+            </a>
+        </div>
+    </div>
 </div>
 </head>
 <br><br><br><br><br><br><br>
@@ -245,12 +786,119 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     loadCompositions();
+    loadFeaturedComposition();
     enableCardClickWithoutDrag();
+    initHeroRotation();
     // Mobile menu is now handled by main.js
 });
 </script>
+
+    <!-- Music Catalog Highlights Section -->
+    <section id="performances" class="section-showcase" style="scroll-margin-top: 120px;">
+        <div class="container">
+            <h2 class="section-title">🎼 Music Catalog Highlights</h2>
+            <div class="catalog-highlights-grid">
+                <div class="highlight-featured">
+                    <div class="featured-composition" id="featured-highlight">
+                        <div class="featured-composition-image">
+                            <img src="/imgs/Coming Home (Cover Photo).png" alt="Featured Composition" class="composition-highlight-img">
+                        </div>
+                        <div class="featured-composition-content">
+                            <h3 class="featured-title">Loading Featured Work...</h3>
+                            <p class="featured-instrumentation">Loading...</p>
+                            <p class="featured-description">Loading composition details...</p>
+                            <a href="#" class="btn-primary featured-link">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="catalog-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-compositions">25+</span>
+                        <span class="stat-label">Original Compositions</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">8</span>
+                        <span class="stat-label">Instrumentation Types</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">12+</span>
+                        <span class="stat-label">Years Composing</span>
+                    </div>
+                    <div class="stat-item">
+                        <a href="/music-catalog" class="btn-secondary catalog-browse-btn">
+                            Browse Full Catalog →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education & Notion Tools Section -->
+    <section id="education" class="section-showcase alt-bg" style="scroll-margin-top: 120px;">
+        <div class="container">
+            <h2 class="section-title">📚 Education & Innovation</h2>
+            <div class="education-grid">
+                <div class="education-card">
+                    <div class="card-icon">🎓</div>
+                    <h3>Teaching Excellence</h3>
+                    <p>Dedicated to developing the next generation of musicians through personalized instruction and innovative teaching methods.</p>
+                    <a href="/teaching" class="card-link">Learn More →</a>
+                </div>
+                <div class="education-card">
+                    <div class="card-icon">🗂️</div>
+                    <h3>Notion Integration</h3>
+                    <p>Streamlining music organization and student management with custom Notion databases and automation workflows.</p>
+                    <a href="/notion-tools" class="card-link">Explore Tools →</a>
+                </div>
+                <div class="education-card">
+                    <div class="card-icon">🎼</div>
+                    <h3>Resource Library</h3>
+                    <p>Comprehensive collection of exercises, etudes, and educational materials for brass players at all levels.</p>
+                    <a href="/resources" class="card-link">Browse Library →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">What Others Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Brandon's compositions are both challenging and rewarding. His understanding of brass techniques is exceptional."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <strong>Dr. Sarah Williams</strong>
+                        <span>Principal Trumpet, Metro Symphony</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The Notion organization system Brandon created has revolutionized how we manage our music library and student progress."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <strong>Mark Thompson</strong>
+                        <span>Director of Bands, Central High School</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Brandon's teaching approach helped me develop confidence and technical skills I never thought possible."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <strong>Emily Chen</strong>
+                        <span>Music Student</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Main Content -->
-<section id="catalog" style="scroll-margin-top: 120px;">
+<section id="compositions" style="scroll-margin-top: 120px;">
     <page-title>
         <h3>Featured Compositions</h3>
     </page-title>
@@ -269,8 +917,22 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </main>
 
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Explore More?</h2>
+                <p>Whether you're looking for original compositions, trumpet lessons, or innovative music organization solutions, let's connect.</p>
+                <div class="cta-buttons">
+                    <a href="/music-catalog" class="btn-primary">Browse Full Catalog</a>
+                    <a href="/contact" class="btn-secondary">Get in Touch</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
-    <footer style="text-align: center; padding: 2rem; background: var(--gray-100); margin-top: 4rem;">
+    <footer style="text-align: center; padding: 2rem; background: var(--gray-100); margin-top: 0;">
         <p>&copy; 2025 Your Music. All rights reserved.</p>
     </footer>
 
@@ -595,6 +1257,39 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
+        // Load Featured Composition for Highlights
+        async function loadFeaturedComposition() {
+            try {
+                const response = await fetch('/api/compositions');
+                const data = await response.json();
+                
+                if (data && data.success && data.compositions && data.compositions.length > 0) {
+                    // Find the first featured composition or use the first one
+                    const featured = data.compositions.find(comp => comp.popular || comp.featured) || data.compositions[0];
+                    
+                    // Update the featured composition display
+                    const featuredTitle = document.querySelector('.featured-title');
+                    const featuredInstrumentation = document.querySelector('.featured-instrumentation');
+                    const featuredDescription = document.querySelector('.featured-description');
+                    const featuredLink = document.querySelector('.featured-link');
+                    const featuredImg = document.querySelector('.composition-highlight-img');
+                    const totalCompositions = document.getElementById('total-compositions');
+                    
+                    if (featuredTitle) featuredTitle.textContent = featured.title;
+                    if (featuredInstrumentation) featuredInstrumentation.textContent = featured.instrumentation;
+                    if (featuredDescription) {
+                        featuredDescription.textContent = featured.description || 
+                            `A ${featured.difficulty || 'beautiful'} composition for ${featured.instrumentation}${featured.year ? ` from ${featured.year}` : ''}.`;
+                    }
+                    if (featuredLink) featuredLink.href = `/composition/${featured.slug}`;
+                    if (featuredImg && featured.coverImage) featuredImg.src = featured.coverImage;
+                    if (totalCompositions) totalCompositions.textContent = `${data.compositions.length}+`;
+                }
+            } catch (error) {
+                console.log('Could not load featured composition, using fallback');
+            }
+        }
+
         //Popular Compositions
         async function loadCompositions() {
             showLoading('popular-works');
@@ -850,23 +1545,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Pause hero rotation when user navigates
+            if (heroRotationInterval) {
+                clearInterval(heroRotationInterval);
+            }
+            
             // Wait a bit for any dynamic content to load
             await new Promise(resolve => setTimeout(resolve, 100));
             
-            // Check if the carousel has loaded content
-            const carousel = document.getElementById('popular-works');
-            if (carousel && carousel.innerHTML.includes('Loading compositions...')) {
-                // Wait for compositions to load
-                await new Promise(resolve => {
-                    const checkLoading = () => {
-                        if (!carousel.innerHTML.includes('Loading compositions...')) {
-                            resolve();
-                        } else {
-                            setTimeout(checkLoading, 100);
-                        }
-                    };
-                    checkLoading();
-                });
+            // Check if the carousel has loaded content for compositions section
+            if (targetId === '#compositions') {
+                const carousel = document.getElementById('popular-works');
+                if (carousel && carousel.innerHTML.includes('Loading compositions...')) {
+                    // Wait for compositions to load
+                    await new Promise(resolve => {
+                        const checkLoading = () => {
+                            if (!carousel.innerHTML.includes('Loading compositions...')) {
+                                resolve();
+                            } else {
+                                setTimeout(checkLoading, 100);
+                            }
+                        };
+                        checkLoading();
+                    });
+                }
             }
             
             // Now scroll to the target
@@ -874,6 +1576,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 behavior: 'smooth',
                 block: 'start'
             });
+            
+            // Resume hero rotation after scroll
+            setTimeout(() => {
+                if (!heroRotationInterval) {
+                    startHeroRotation();
+                }
+            }, 1000);
         }
 
         // Hero Image Carousel
@@ -919,11 +1628,47 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // Hero Role Rotation
+        let currentHeroRole = 0;
+        let heroRotationInterval;
+
+        function initHeroRotation() {
+            startHeroRotation();
+        }
+
+        function startHeroRotation() {
+            heroRotationInterval = setInterval(() => {
+                switchHeroRole((currentHeroRole + 1) % 3);
+            }, 5000); // Switch every 5 seconds
+        }
+
+        function switchHeroRole(index) {
+            const roles = document.querySelectorAll('.hero-role');
+            const dots = document.querySelectorAll('.dot');
+            
+            // Remove active class from current role and dot
+            roles[currentHeroRole].classList.remove('active');
+            dots[currentHeroRole].classList.remove('active');
+            
+            // Update current index
+            currentHeroRole = index;
+            
+            // Add active class to new role and dot
+            roles[currentHeroRole].classList.add('active');
+            dots[currentHeroRole].classList.add('active');
+            
+            // Restart the rotation timer
+            clearInterval(heroRotationInterval);
+            startHeroRotation();
+        }
+
         // Load everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadCompositions();
+            loadFeaturedComposition();
             initHeroVideo();
             initHeroCarousel();
+            initHeroRotation();
             // Mobile menu and theme toggle are now handled by main.js
         });
     </script>

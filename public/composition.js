@@ -133,6 +133,36 @@ async function loadCompositionDetail() {
 
 function renderComposition(comp) {
     console.log('🎯 Starting renderComposition with:', comp);
+    console.log('🎯 DEBUG - Media data received from server:', {
+        audioFiles: comp.audioFiles?.length || 0,
+        videoFiles: comp.videoFiles?.length || 0,
+        scoreFiles: comp.scoreFiles?.length || 0,
+        allMedia: comp.allMedia?.length || 0,
+        scoreLink: comp.scoreLink
+    });
+    
+    // Debug: Log all received media with details
+    if (comp.audioFiles && comp.audioFiles.length > 0) {
+        console.log('🎵 DEBUG CLIENT - Audio files received:');
+        comp.audioFiles.forEach((audio, index) => {
+            console.log(`  ${index + 1}. "${audio.title}" - URL: ${audio.url ? 'YES' : 'NO'}`);
+        });
+    }
+    
+    if (comp.videoFiles && comp.videoFiles.length > 0) {
+        console.log('🎥 DEBUG CLIENT - Video files received:');
+        comp.videoFiles.forEach((video, index) => {
+            console.log(`  ${index + 1}. "${video.title}" - Type: ${video.type} - URL: ${video.url ? 'YES' : 'NO'}`);
+        });
+    }
+    
+    if (comp.scoreFiles && comp.scoreFiles.length > 0) {
+        console.log('📄 DEBUG CLIENT - Score files received:');
+        comp.scoreFiles.forEach((score, index) => {
+            console.log(`  ${index + 1}. "${score.title}" - URL: ${score.url ? 'YES' : 'NO'}`);
+        });
+    }
+    
     console.log('🎯 DEBUG - Score-related data in comp:', {
         scoreFiles: comp.scoreFiles,
         scoreLink: comp.scoreLink,
@@ -268,6 +298,11 @@ function renderComposition(comp) {
     // CONTAINER 5: Audio Container (Enhanced Multi-Audio Player)
     // ============================================
     console.log('🎵 Rendering Container 5: Audio Container');
+    console.log('🎵 DEBUG - Audio rendering check:', {
+        audioFiles: comp.audioFiles?.length || 0,
+        audioLink: comp.audioLink ? 'YES' : 'NO',
+        hasLegacyAudio: comp.audioLink && (!comp.audioFiles || comp.audioFiles.length === 0)
+    });
     const audioContainer = document.querySelector('.composition-audio-container');
 if (audioContainer) {
     const audioFiles = comp.audioFiles || [];
@@ -521,10 +556,21 @@ if (notesContainer) {
 
     // Enhanced video display with multiple videos (excluding score videos)
     const videoContainer = document.querySelector('#composition-video-container-main');
+    console.log('🎥 DEBUG - Video rendering check:', {
+        videoContainer: !!videoContainer,
+        totalVideoFiles: comp.videoFiles?.length || 0,
+        videoFilesDetails: comp.videoFiles?.map(v => ({ title: v.title, type: v.type, category: v.category })) || []
+    });
     if (videoContainer) {
         let videoFiles = (comp.videoFiles || []).filter(video => 
             video.type !== 'Score Video' && video.category !== 'score'
         );
+        
+        console.log('🎥 DEBUG - After filtering regular videos:', {
+            originalCount: comp.videoFiles?.length || 0,
+            filteredCount: videoFiles.length,
+            filteredVideos: videoFiles.map(v => ({ title: v.title, type: v.type, url: v.url ? 'YES' : 'NO' }))
+        });
         
         // Sort videos by Roman numerals in title
         videoFiles = videoFiles.sort((a, b) => {
@@ -620,6 +666,12 @@ if (notesContainer) {
         console.log('🎼 DEBUG - Score video container found:', !!scoreVideoContainer);
         console.log('🎼 DEBUG - Server properly separates videos now - videoFiles contains both regular and score videos');
         console.log('🎼 DEBUG - All video files from server:', comp.videoFiles?.length || 0);
+        console.log('🎼 DEBUG - Score video analysis:', {
+            totalVideoFiles: comp.videoFiles?.length || 0,
+            scoreVideosByType: (comp.videoFiles || []).filter(video => video.type === 'Score Video').length,
+            scoreVideosByCategory: (comp.videoFiles || []).filter(video => video.category === 'score').length,
+            allScoreVideosLength: allScoreVideos.length
+        });
         if (comp.videoFiles && comp.videoFiles.length > 0) {
             console.log('🎼 DEBUG - Video files detailed:', comp.videoFiles.map(v => ({ 
                 title: v.title, 
