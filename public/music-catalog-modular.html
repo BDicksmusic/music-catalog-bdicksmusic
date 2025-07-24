@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Catalog - Brandon Dicks</title>
+    <link rel="stylesheet" href="variables.css"> 
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="media-styles.css">
+    
+    <!-- ✨ TEMPLATE LOADER: Load modular navigation and footer -->
+    <script src="/includes/template-loader.js"></script>
+    
+    <!-- ✨ COMPONENT LOADER: For potential media components -->
+    <script src="/includes/component-loader.js"></script>
+    
+    <style>
+        /* Music Catalog Specific Styles - CLEANED UP! */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ✨ REMOVED: 50+ lines of duplicate navigation CSS */
+        /* The navigation is now handled by the modular template! */
+
+        body {
+            padding-top: 100px; /* Account for both navs (60px + 40px) */
+        }
+
+        /* Main Opening Section Styling */
+        .main-opening {
+            background: var(--gray-50);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .main-opening-header {
+            margin-bottom: 1rem;
+        }
+
+        .main-opening-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .main-opening-content p {
+            color: var(--gray-700);
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .catalog-filters {
+            background: white;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 100px;
+            z-index: 50;
+        }
+
+        .filter-section {
+            margin-bottom: 0;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .filter-tag {
+            background: var(--primary-100);
+            color: var(--primary-700);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.7;
+        }
+
+        .filter-tag .remove:hover {
+            opacity: 1;
+        }
+
+        .filter-actions {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 0.25rem;
+        }
+
+        .filter-actions .btn {
+            justify-self: start;
+        }
+
+        .sort-controls-inline {
+            justify-self: end;
+        }
+
+        .sort-controls-inline {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sort-controls-inline .filter-select {
+            min-width: 150px;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+
+        /* Compositions Grid */
+        .compositions-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .compositions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .composition-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .composition-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            border-color: var(--primary-300);
+        }
+
+        .composition-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .composition-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .composition-tag {
+            background: var(--gray-100);
+            color: var(--gray-600);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .composition-description {
+            color: var(--gray-700);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ✨ NEW: Media preview containers for compositions */
+        .composition-preview {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+
+        .composition-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: auto;
+        }
+
+        .composition-actions .btn {
+            flex: 1;
+            justify-content: center;
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-500);
+            color: white;
+            border-color: var(--primary-500);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-600);
+            border-color: var(--primary-600);
+        }
+
+        .loading-state, .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-600);
+        }
+
+        .loading-state {
+            display: none;
+        }
+
+        .empty-state {
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .filter-row,
+            .filter-actions {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .compositions-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .composition-actions {
+                flex-direction: column;
+            }
+
+            body {
+                padding-top: 120px; /* Adjust for mobile nav */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ✨ REMOVED: 65+ lines of navigation HTML -->
+    <!-- Navigation will be automatically injected by template-loader.js -->
+
+    <!-- Main Opening Section -->
+    <section class="main-opening">
+        <div class="main-opening-header">
+            <h1>Music Catalog</h1>
+        </div>
+        <div class="main-opening-content">
+            <p>This part of the website includes the full catalog of compositions created by Brandon Dicks. You can learn more about each composition by clicking the name of the work. There is a specific page for each work that includes a perusal score, example parts [if applicable], audio example, and download links for those compositions that are available. <strong>Every composition is available for purchase.</strong> If a work is not available for download, you can contact Brandon directly to get a quote for the piece and get your own copy of the composition. Compositions are also available in physical form if requested by the ensemble/individual.</p>
+        </div>
+    </section>
+    
+    <!-- Filtering System -->
+    <section class="catalog-filters">
+        <div class="filter-row">
+            <div class="filter-section">
+                <input type="text" id="search" class="search-box" placeholder="Search by title, instrumentation, or keywords...">
+            </div>
+
+            <div class="filter-section">
+                <select id="category" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="compositions">Original Compositions</option>
+                    <option value="arrangements">Arrangements</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <select id="ensemble-type" class="filter-select">
+                    <option value="">All Ensemble Types</option>
+                    <option value="solo">Solo Works</option>
+                    <option value="chamber">Chamber Ensemble</option>
+                    <option value="large-ensemble">Large Ensemble</option>
+                    <option value="brass">Brass Ensemble</option>
+                    <option value="wind">Wind Ensemble</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <select id="instrumentation" class="filter-select">
+                    <option value="">All Instrumentations</option>
+                    <option value="trumpet">Trumpet</option>
+                    <option value="brass-quartet">Brass Quartet</option>
+                    <option value="brass-quintet">Brass Quintet</option>
+                    <option value="brass-trio">Brass Trio</option>
+                    <option value="wind-ensemble">Wind Ensemble</option>
+                    <option value="piano">With Piano</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <select id="difficulty" class="filter-select">
+                    <option value="">Any Difficulty</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                    <option value="professional">Professional</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-tags" id="active-filters"></div>
+
+        <div class="filter-actions">
+            <button class="btn btn-secondary" id="clear-filters">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Clear All
+            </button>
+            <div class="sort-controls-inline">
+                <select id="sort-by-inline" class="filter-select">
+                    <option value="smart" selected>Sort: Smart (Featured → Original → Ensemble)</option>
+                    <option value="title">Sort: Title A-Z</option>
+                    <option value="title-desc">Sort: Title Z-A</option>
+                    <option value="year">Sort: Year (Newest)</option>
+                    <option value="year-desc">Sort: Year (Oldest)</option>
+                    <option value="duration">Sort: Duration (Shortest)</option>
+                    <option value="duration-desc">Sort: Duration (Longest)</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compositions Container -->
+    <div class="compositions-container">
+        <!-- Loading State -->
+        <div class="loading-state" id="loading-state">
+            <div class="spinner"></div>
+            <p>Loading compositions...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 1rem; display: block; opacity: 0.5;">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="M21 21l-4.35-4.35"></path>
+            </svg>
+            <h3>No compositions found</h3>
+            <p>Try adjusting your search criteria or filters.</p>
+        </div>
+
+        <!-- Compositions Grid -->
+        <div class="compositions-grid" id="compositions-grid">
+            <!-- Compositions will be populated by JavaScript -->
+            
+            <!-- ✨ EXAMPLE: How to add media previews to compositions -->
+            <div class="composition-card" data-composition="resolutions-suite">
+                <div class="composition-title">Resolutions Suite for Brass Trio</div>
+                <div class="composition-meta">
+                    <span class="composition-tag">Original Composition</span>
+                    <span class="composition-tag">Brass Trio</span>
+                    <span class="composition-tag">Advanced</span>
+                </div>
+                <div class="composition-description">
+                    A three-movement work exploring harmonic resolutions and brass ensemble techniques. Perfect for advanced college or professional ensembles.
+                </div>
+                
+                <!-- ✨ MEDIA PREVIEW: Audio player component -->
+                <div class="composition-preview" id="audio-preview-resolutions"></div>
+                
+                <div class="composition-actions">
+                    <a href="/composition/resolutions-suite" class="btn btn-primary">View Details</a>
+                    <a href="#" class="btn btn-secondary">Download</a>
+                </div>
+            </div>
+
+            <!-- ✨ EXAMPLE: Composition with video preview -->
+            <div class="composition-card" data-composition="trumpet-concerto">
+                <div class="composition-title">Trumpet Concerto in B♭</div>
+                <div class="composition-meta">
+                    <span class="composition-tag">Solo Work</span>
+                    <span class="composition-tag">Trumpet</span>
+                    <span class="composition-tag">Professional</span>
+                </div>
+                <div class="composition-description">
+                    A virtuosic concerto showcasing the full range and capabilities of the trumpet, with orchestral accompaniment.
+                </div>
+                
+                <!-- ✨ MEDIA PREVIEW: Video player component -->
+                <div class="composition-preview" id="video-preview-concerto"></div>
+                
+                <div class="composition-actions">
+                    <a href="/composition/trumpet-concerto" class="btn btn-primary">View Details</a>
+                    <a href="#" class="btn btn-secondary">Download</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✨ ADDED: Footer will be automatically injected by template-loader.js -->
+
+    <script>
+        // ✨ INITIALIZE MODULAR TEMPLATES
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Loading modular templates...');
+            
+            // Load navigation and footer templates
+            await TemplateLoader.loadAllTemplates();
+            
+            // ✨ LOAD MEDIA PREVIEWS FOR COMPOSITIONS
+            console.log('🎵 Loading composition previews...');
+            
+            // Load audio preview for Resolutions Suite
+            await ComponentLoader.loadAudioPlayer('#audio-preview-resolutions', {
+                audioData: [
+                    {
+                        title: "Movement I Preview",
+                        url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav", // Replace with real URL
+                        metadata: {
+                            performanceInfo: "Brandon Dicks Brass Trio",
+                            additionalInfo: "30-second preview"
+                        }
+                    }
+                ],
+                showNavigation: false // Single preview, no navigation needed
+            });
+            
+            // Load video preview for Trumpet Concerto
+            await ComponentLoader.loadVideoPlayer('#video-preview-concerto', {
+                videoData: [
+                    {
+                        type: "youtube",
+                        videoId: "dQw4w9WgXcQ", // Replace with real video ID
+                        title: "Concerto Performance Preview",
+                        metadata: {
+                            performanceInfo: "Live performance excerpt",
+                            additionalInfo: "2-minute preview"
+                        }
+                    }
+                ]
+            });
+            
+            console.log('✅ All templates and components loaded!');
+        });
+
+        // ✨ SIMPLIFIED: Theme toggle is now handled by template-loader.js
+        // ✨ REMOVED: Manual navigation JavaScript - now handled by templates
+
+        // Your existing composition filtering and loading logic
+        // (Keep all your existing JavaScript for filtering, searching, etc.)
+        const compositionsGrid = document.getElementById('compositions-grid');
+        const loadingState = document.getElementById('loading-state');
+        const emptyState = document.getElementById('empty-state');
+        
+        // Sample data - your existing composition data loading logic goes here
+        const compositions = [
+            // Your existing compositions array
+        ];
+
+        function renderCompositions(compositions) {
+            compositionsGrid.innerHTML = '';
+            
+            compositions.forEach(composition => {
+                const card = createCompositionCard(composition);
+                compositionsGrid.appendChild(card);
+                
+                // ✨ OPTIONAL: Load media components for each composition
+                if (composition.audioPreview) {
+                    ComponentLoader.loadAudioPlayer(`#audio-preview-${composition.id}`, {
+                        audioData: [composition.audioPreview],
+                        showNavigation: false
+                    });
+                }
+                
+                if (composition.videoPreview) {
+                    ComponentLoader.loadVideoPlayer(`#video-preview-${composition.id}`, {
+                        videoData: [composition.videoPreview]
+                    });
+                }
+            });
+        }
+
+        function createCompositionCard(composition) {
+            // Your existing card creation logic
+            const card = document.createElement('div');
+            card.classList.add('composition-card');
+            card.setAttribute('data-composition', composition.id);
+            
+            card.innerHTML = `
+                <div class="composition-title">${composition.title}</div>
+                <div class="composition-meta">
+                    ${composition.tags.map(tag => `<span class="composition-tag">${tag}</span>`).join('')}
+                </div>
+                <div class="composition-description">${composition.description}</div>
+                ${composition.audioPreview ? `<div class="composition-preview" id="audio-preview-${composition.id}"></div>` : ''}
+                ${composition.videoPreview ? `<div class="composition-preview" id="video-preview-${composition.id}"></div>` : ''}
+                <div class="composition-actions">
+                    <a href="/composition/${composition.id}" class="btn btn-primary">View Details</a>
+                    <a href="${composition.downloadUrl}" class="btn btn-secondary">Download</a>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Your existing filtering, searching, and sorting logic remains the same
+        function filterCompositions() {
+            // Keep your existing filter logic
+        }
+
+        function searchCompositions() {
+            // Keep your existing search logic
+        }
+
+        function sortCompositions() {
+            // Keep your existing sort logic  
+        }
+
+        function showLoadingState() {
+            loadingState.style.display = 'block';
+            compositionsGrid.style.display = 'none';
+            emptyState.style.display = 'none';
+        }
+
+        function hideLoadingState() {
+            loadingState.style.display = 'none';
+        }
+
+        function showEmptyState() {
+            emptyState.style.display = 'block';
+            compositionsGrid.style.display = 'none';
+        }
+
+        function hideEmptyState() {
+            emptyState.style.display = 'none';
+        }
+
+        // Debounce helper function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    </script>
+</body>
+</html> 
