@@ -130,12 +130,14 @@
             color: var(--gray-700);
         }
         
-        /* Two-column layout for Program Notes and Videos */
-        .program-video-section {
+        /* Two-column layout for Program Notes and Videos - Separate container */
+        section.program-video-section {
             display: flex;
             gap: 2rem;
-            margin-top: 2rem;
+            padding: 2rem;
             width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         
         .program-notes-column {
@@ -148,12 +150,9 @@
             min-width: 0;
         }
         
-        /* Make program notes section more prominent */
+        /* Make program notes section clean */
         .composition-notes-container {
-            background: var(--gray-50);
             padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--gray-200);
         }
         
         .composition-audio-container {
@@ -656,9 +655,10 @@
         
         /* Mobile responsiveness */
         @media (max-width: 768px) {
-            .program-video-section {
+            section.program-video-section {
                 flex-direction: column;
                 gap: 1.5rem;
+                padding: 1rem;
             }
             
             .single-page-score-viewer {
@@ -832,21 +832,7 @@
                     <div class="composition-audio-container" id="composition-audio-container">
                         <!-- Audio players will be injected here -->
                     </div>
-                    <!-- New two-column layout for Program Notes and Videos -->
-                    <div class="program-video-section">
-                        <div class="program-notes-column">
-                            <h3 style="color: var(--primary-600); margin-bottom: 1rem; font-size: 1.5rem;">Program Notes</h3>
-                            <div class="composition-notes-container">
-                                <!-- Program and Performance Notes will be injected here -->
-                            </div>
-                        </div>
-                        <div class="videos-column">
-                            <h3 style="color: var(--primary-600); margin-bottom: 1rem; font-size: 1.5rem;">Videos</h3>
-                            <div class="composition-video-container" id="composition-video-container-main" style="display: none;">
-                                <!-- Video players will be injected here -->
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -854,6 +840,21 @@
     
         </div>
     </main>
+    
+    <!-- Program Notes and Videos Section -->
+    <section class="program-video-section">
+        <div class="program-notes-column">
+            <div class="composition-notes-container">
+                <!-- Program and Performance Notes will be injected here -->
+            </div>
+        </div>
+        <div class="videos-column">
+            <div class="composition-video-container" id="composition-video-container-main" style="display: none;">
+                <!-- Video players will be injected here -->
+            </div>
+        </div>
+    </section>
+    
         <!-- Dedicated Audio/Video Section - Videos now in two-column layout above -->
     <section>
         <div class="composition-performance-container">
