@@ -1,77 +1,1014 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Portfolio - Brandon Dicks</title>
+    <title>Music Catalog - Brandon Dicks</title>
     <link rel="stylesheet" href="variables.css"> 
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="media-styles.css">
+    <style>
+        /* Music Catalog Specific Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .catalog-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .catalog-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .catalog-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .catalog-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            animation: slideInUp 0.8s ease;
+        }
+
+        .catalog-hero p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0.95;
+            animation: slideInUp 0.8s ease 0.2s both;
+        }
+
+        .catalog-filters {
+            background: white;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin: -2rem 2rem 2rem;
+            border-radius: 12px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .filters-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .filters-header h2 {
+            color: var(--gray-800);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .filters-header p {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+        }
+
+        .filter-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-label {
+            display: block;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .filter-tag {
+            background: var(--primary-100);
+            color: var(--primary-700);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.7;
+        }
+
+        .filter-tag .remove:hover {
+            opacity: 1;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-600);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+
+        .catalog-results {
+            padding: 2rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-count {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+        }
+
+        .sort-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sort-label {
+            color: var(--gray-700);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .compositions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .composition-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--gray-100);
+        }
+
+        .composition-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .composition-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .composition-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .composition-year {
+            background: var(--primary-100);
+            color: var(--primary-700);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            margin-left: auto;
+        }
+
+        .composition-details {
+            margin-bottom: 1rem;
+        }
+
+        .composition-instrumentation {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .composition-duration {
+            color: var(--gray-500);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .composition-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .meta-tag {
+            background: var(--gray-100);
+            color: var(--gray-600);
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+        }
+
+        .composition-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            border-radius: 6px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary-500);
+            color: var(--primary-500);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top: 3px solid var(--primary-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray-600);
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--gray-700);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .catalog-hero h1 {
+                font-size: 2rem;
+            }
+
+            .catalog-hero p {
+                font-size: 1rem;
+            }
+
+            .catalog-filters {
+                margin: -1rem 1rem 1rem;
+                padding: 1.5rem;
+            }
+
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-actions {
+                flex-direction: column;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .compositions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .composition-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-<nav>
-    <div class="nav-container">
-        <a href="index.html" class="logo">BRANDON DICKS</a>
-        <div class="nav-right">
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="media.html" class="nav-link">Media</a></li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">News</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="news.html">Latest News</a></li>
-                        <li><a href="updates.html">Updates</a></li>
-                        <li><a href="events.html">Events</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Teaching Material</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="exercises.html">Exercises</a></li>
-                        <li><a href="tutorials.html">Tutorials</a></li>
-                        <li><a href="resources.html">Resources</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Contact</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="contact.html">Get in Touch</a></li>
-                        <li><a href="booking.html">Book a Lesson</a></li>
-                        <li><a href="inquiries.html">General Inquiries</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-                <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-            </button>
-              <button class="music-catalog-btn"><a href="music-catalog.html">Music Catalog</a></button>
-    
-              <div class="hamburger">
-                <span></span>
-                <span></span>   
-                <span></span>
-              </div>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">BRANDON DICKS</a>
+            <div class="nav-right">
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="media.html" class="nav-link">Media</a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">News</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="news.html">Latest News</a></li>
+                            <li><a href="updates.html">Updates</a></li>
+                            <li><a href="events.html">Events</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">Teaching Material</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="exercises.html">Exercises</a></li>
+                            <li><a href="tutorials.html">Tutorials</a></li>
+                            <li><a href="resources.html">Resources</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">Contact</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="contact.html">Get in Touch</a></li>
+                            <li><a href="booking.html">Book a Lesson</a></li>
+                            <li><a href="inquiries.html">General Inquiries</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+                <button class="music-catalog-btn"><a href="music-catalog.html">Music Catalog</a></button>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>   
+                    <span></span>
+                </div>
+            </div>
         </div>
-    </div>
-</nav>
-    
-    <!-- Secondary Navigation -->
-    <nav class="secondary-nav">
-        <a href="/composer" class="secondary-button">Composer</a>
-        <a href="/trumpeter" class="secondary-button">Trumpeter</a>
-        <a href="/educator" class="secondary-button">Educator</a>
     </nav>
+
+    <!-- Hero Section -->
+    <section class="catalog-hero">
+        <div class="catalog-hero-content">
+            <h1>Music Catalog</h1>
+            <p>This part of the website includes the full catalog of compositions created by Brandon Dicks. You can learn more about each composition by clicking the name of the work. There is a specific page for each work that includes a perusal score, example parts <em>(if applicable)</em>, audio example, and download links for those compositions that are available.</p>
+            <br>
+            <p><strong>Every composition is available for purchase.</strong> If a work is not available for download, you can contact Brandon directly to get a quote for the piece and get your own copy of the composition. Compositions are also available in physical form if requested by the ensemble/individual.</p>
+        </div>
+    </section>
+
+    <!-- Advanced Filtering System -->
+    <section class="catalog-filters">
+        <div class="filters-header">
+            <h2>Find Your Perfect Composition</h2>
+            <p>Use the advanced filters below to discover compositions that match your specific needs</p>
+        </div>
+
+        <div class="filter-section">
+            <label class="filter-label" for="search">Search Compositions</label>
+            <input type="text" id="search" class="search-box" placeholder="Search by title, instrumentation, or keywords...">
+        </div>
+
+        <div class="filter-row">
+            <div class="filter-section">
+                <label class="filter-label" for="category">Category</label>
+                <select id="category" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="compositions">Original Compositions</option>
+                    <option value="arrangements">Arrangements</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <label class="filter-label" for="ensemble-type">Ensemble Type</label>
+                <select id="ensemble-type" class="filter-select">
+                    <option value="">All Ensemble Types</option>
+                    <option value="solo">Solo Works</option>
+                    <option value="chamber">Chamber Ensemble</option>
+                    <option value="large-ensemble">Large Ensemble</option>
+                    <option value="brass">Brass Ensemble</option>
+                    <option value="wind">Wind Ensemble</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <label class="filter-label" for="instrumentation">Instrumentation</label>
+                <select id="instrumentation" class="filter-select">
+                    <option value="">All Instrumentations</option>
+                    <option value="trumpet">Trumpet</option>
+                    <option value="brass-quartet">Brass Quartet</option>
+                    <option value="brass-quintet">Brass Quintet</option>
+                    <option value="brass-trio">Brass Trio</option>
+                    <option value="wind-ensemble">Wind Ensemble</option>
+                    <option value="piano">With Piano</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <label class="filter-label" for="duration">Duration</label>
+                <select id="duration" class="filter-select">
+                    <option value="">Any Duration</option>
+                    <option value="short">Short (0-3 min)</option>
+                    <option value="medium">Medium (4-8 min)</option>
+                    <option value="long">Long (9+ min)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-row">
+            <div class="filter-section">
+                <label class="filter-label" for="difficulty">Difficulty Level</label>
+                <select id="difficulty" class="filter-select">
+                    <option value="">Any Difficulty</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                    <option value="professional">Professional</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <label class="filter-label" for="year">Year Composed</label>
+                <select id="year" class="filter-select">
+                    <option value="">Any Year</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="older">2021 and earlier</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <label class="filter-label" for="availability">Availability</label>
+                <select id="availability" class="filter-select">
+                    <option value="">All Works</option>
+                    <option value="purchase">Available for Purchase</option>
+                    <option value="digital">Digital Download</option>
+                    <option value="physical">Physical Score</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-tags" id="active-filters"></div>
+
+        <div class="filter-actions">
+            <button class="btn btn-primary" id="apply-filters">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+                Apply Filters
+            </button>
+            <button class="btn btn-secondary" id="clear-filters">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Clear All
+            </button>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="catalog-results">
+        <div class="results-header">
+            <div class="results-count" id="results-count">Loading compositions...</div>
+            <div class="sort-controls">
+                <label class="sort-label" for="sort-by">Sort by:</label>
+                <select id="sort-by" class="filter-select">
+                    <option value="title">Title A-Z</option>
+                    <option value="title-desc">Title Z-A</option>
+                    <option value="year">Year (Newest)</option>
+                    <option value="year-desc">Year (Oldest)</option>
+                    <option value="duration">Duration (Shortest)</option>
+                    <option value="duration-desc">Duration (Longest)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" id="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Loading compositions from the catalog...</p>
+        </div>
+
+        <!-- Compositions Grid -->
+        <div class="compositions-grid" id="compositions-grid" style="display: none;">
+            <!-- Compositions will be dynamically loaded here -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+            <h3>No compositions found</h3>
+            <p>Try adjusting your filters to see more results, or <a href="#" id="clear-filters-link">clear all filters</a> to view the complete catalog.</p>
+        </div>
+    </section>
+
+    <script>
+        // Music Catalog JavaScript
+        let allCompositions = [];
+        let filteredCompositions = [];
+        let activeFilters = {};
+
+        // DOM Elements
+        const searchInput = document.getElementById('search');
+        const categorySelect = document.getElementById('category');
+        const ensembleTypeSelect = document.getElementById('ensemble-type');
+        const instrumentationSelect = document.getElementById('instrumentation');
+        const durationSelect = document.getElementById('duration');
+        const difficultySelect = document.getElementById('difficulty');
+        const yearSelect = document.getElementById('year');
+        const availabilitySelect = document.getElementById('availability');
+        const sortSelect = document.getElementById('sort-by');
+        const applyFiltersBtn = document.getElementById('apply-filters');
+        const clearFiltersBtn = document.getElementById('clear-filters');
+        const activeFiltersContainer = document.getElementById('active-filters');
+        const resultsCount = document.getElementById('results-count');
+        const loadingState = document.getElementById('loading-state');
+        const compositionsGrid = document.getElementById('compositions-grid');
+        const emptyState = document.getElementById('empty-state');
+
+        // Initialize the catalog
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCompositions();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Real-time search
+            searchInput.addEventListener('input', debounce(applyFilters, 300));
+            
+            // Filter changes
+            [categorySelect, ensembleTypeSelect, instrumentationSelect, durationSelect, difficultySelect, yearSelect, availabilitySelect].forEach(select => {
+                select.addEventListener('change', applyFilters);
+            });
+
+            // Sort changes
+            sortSelect.addEventListener('change', applySorting);
+
+            // Button clicks
+            applyFiltersBtn.addEventListener('click', applyFilters);
+            clearFiltersBtn.addEventListener('click', clearAllFilters);
+            document.getElementById('clear-filters-link').addEventListener('click', clearAllFilters);
+        }
+
+        async function loadCompositions() {
+            try {
+                showLoadingState();
+                
+                const response = await fetch('/api/compositions');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allCompositions = data.compositions;
+                    filteredCompositions = [...allCompositions];
+                    renderCompositions();
+                    updateResultsCount();
+                    hideLoadingState();
+                } else {
+                    throw new Error('Failed to load compositions');
+                }
+            } catch (error) {
+                console.error('Error loading compositions:', error);
+                showEmptyState();
+                hideLoadingState();
+            }
+        }
+
+        function applyFilters() {
+            // Get current filter values
+            const filters = {
+                search: searchInput.value.toLowerCase().trim(),
+                category: categorySelect.value,
+                ensembleType: ensembleTypeSelect.value,
+                instrumentation: instrumentationSelect.value,
+                duration: durationSelect.value,
+                difficulty: difficultySelect.value,
+                year: yearSelect.value,
+                availability: availabilitySelect.value
+            };
+
+            activeFilters = filters;
+
+            // Filter compositions
+            filteredCompositions = allCompositions.filter(composition => {
+                // Search filter
+                if (filters.search) {
+                    const searchableText = [
+                        composition.title,
+                        composition.instrumentation,
+                        composition.description || '',
+                        composition.tags?.join(' ') || ''
+                    ].join(' ').toLowerCase();
+                    
+                    if (!searchableText.includes(filters.search)) {
+                        return false;
+                    }
+                }
+
+                // Category filter
+                if (filters.category) {
+                    if (filters.category === 'compositions' && composition.type !== 'Original') {
+                        return false;
+                    }
+                    if (filters.category === 'arrangements' && composition.type !== 'Arrangement') {
+                        return false;
+                    }
+                }
+
+                // Ensemble type filter
+                if (filters.ensembleType) {
+                    const instrumentation = composition.instrumentation?.toLowerCase() || '';
+                    switch (filters.ensembleType) {
+                        case 'solo':
+                            if (!instrumentation.includes('solo') && !instrumentation.includes('unaccompanied')) {
+                                return false;
+                            }
+                            break;
+                        case 'chamber':
+                            if (!instrumentation.match(/(quartet|quintet|trio|sextet|septet|octet|nonet|dectet)/i)) {
+                                return false;
+                            }
+                            break;
+                        case 'large-ensemble':
+                            if (!instrumentation.match(/(ensemble|band|orchestra)/i)) {
+                                return false;
+                            }
+                            break;
+                        case 'brass':
+                            if (!instrumentation.toLowerCase().includes('brass')) {
+                                return false;
+                            }
+                            break;
+                        case 'wind':
+                            if (!instrumentation.toLowerCase().includes('wind')) {
+                                return false;
+                            }
+                            break;
+                    }
+                }
+
+                // Instrumentation filter
+                if (filters.instrumentation) {
+                    const instrumentation = composition.instrumentation?.toLowerCase() || '';
+                    if (!instrumentation.includes(filters.instrumentation.replace('-', ' '))) {
+                        return false;
+                    }
+                }
+
+                // Duration filter
+                if (filters.duration && composition.duration) {
+                    const durationMinutes = parseInt(composition.duration);
+                    switch (filters.duration) {
+                        case 'short':
+                            if (durationMinutes > 3) return false;
+                            break;
+                        case 'medium':
+                            if (durationMinutes < 4 || durationMinutes > 8) return false;
+                            break;
+                        case 'long':
+                            if (durationMinutes < 9) return false;
+                            break;
+                    }
+                }
+
+                // Year filter
+                if (filters.year) {
+                    if (filters.year === 'older') {
+                        if (composition.year && parseInt(composition.year) >= 2022) {
+                            return false;
+                        }
+                    } else {
+                        if (composition.year !== filters.year) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            });
+
+            applySorting();
+            renderCompositions();
+            updateResultsCount();
+            updateActiveFilters();
+        }
+
+        function applySorting() {
+            const sortBy = sortSelect.value;
+            
+            filteredCompositions.sort((a, b) => {
+                switch (sortBy) {
+                    case 'title':
+                        return a.title.localeCompare(b.title);
+                    case 'title-desc':
+                        return b.title.localeCompare(a.title);
+                    case 'year':
+                        return (b.year || 0) - (a.year || 0);
+                    case 'year-desc':
+                        return (a.year || 0) - (b.year || 0);
+                    case 'duration':
+                        return (parseInt(a.duration) || 0) - (parseInt(b.duration) || 0);
+                    case 'duration-desc':
+                        return (parseInt(b.duration) || 0) - (parseInt(a.duration) || 0);
+                    default:
+                        return 0;
+                }
+            });
+
+            renderCompositions();
+        }
+
+        function renderCompositions() {
+            if (filteredCompositions.length === 0) {
+                showEmptyState();
+                return;
+            }
+
+            hideEmptyState();
+            
+            const grid = compositionsGrid;
+            grid.innerHTML = '';
+
+            filteredCompositions.forEach(composition => {
+                const card = createCompositionCard(composition);
+                grid.appendChild(card);
+            });
+
+            grid.style.display = 'grid';
+        }
+
+        function createCompositionCard(composition) {
+            const card = document.createElement('div');
+            card.className = 'composition-card';
+            
+            const durationText = composition.duration ? `${composition.duration} min` : 'Duration not specified';
+            const yearText = composition.year || 'Year not specified';
+            
+            card.innerHTML = `
+                <div class="composition-header">
+                    <div>
+                        <h3 class="composition-title">${composition.title}</h3>
+                        <div class="composition-instrumentation">${composition.instrumentation}</div>
+                        <div class="composition-duration">${durationText}</div>
+                    </div>
+                    <div class="composition-year">${yearText}</div>
+                </div>
+                
+                <div class="composition-meta">
+                    ${composition.type ? `<span class="meta-tag">${composition.type}</span>` : ''}
+                    ${composition.difficulty ? `<span class="meta-tag">${composition.difficulty}</span>` : ''}
+                </div>
+                
+                <div class="composition-actions">
+                    <a href="/composition/${composition.slug}" class="btn btn-small btn-primary">View Details</a>
+                    <button class="btn btn-small btn-outline" onclick="window.open('${composition.purchaseUrl || '#'}', '_blank')">Buy Now</button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function updateResultsCount() {
+            const count = filteredCompositions.length;
+            const total = allCompositions.length;
+            resultsCount.textContent = `Showing ${count} of ${total} compositions`;
+        }
+
+        function updateActiveFilters() {
+            activeFiltersContainer.innerHTML = '';
+            
+            Object.entries(activeFilters).forEach(([key, value]) => {
+                if (value && value.trim()) {
+                    const tag = document.createElement('div');
+                    tag.className = 'filter-tag';
+                    
+                    let label = key.charAt(0).toUpperCase() + key.slice(1);
+                    if (key === 'ensembleType') label = 'Ensemble Type';
+                    
+                    tag.innerHTML = `
+                        ${label}: ${value}
+                        <span class="remove" onclick="removeFilter('${key}')">&times;</span>
+                    `;
+                    
+                    activeFiltersContainer.appendChild(tag);
+                }
+            });
+        }
+
+        function removeFilter(filterKey) {
+            // Clear the specific filter
+            switch (filterKey) {
+                case 'search':
+                    searchInput.value = '';
+                    break;
+                case 'category':
+                    categorySelect.value = '';
+                    break;
+                case 'ensembleType':
+                    ensembleTypeSelect.value = '';
+                    break;
+                case 'instrumentation':
+                    instrumentationSelect.value = '';
+                    break;
+                case 'duration':
+                    durationSelect.value = '';
+                    break;
+                case 'difficulty':
+                    difficultySelect.value = '';
+                    break;
+                case 'year':
+                    yearSelect.value = '';
+                    break;
+                case 'availability':
+                    availabilitySelect.value = '';
+                    break;
+            }
+            
+            applyFilters();
+        }
+
+        function clearAllFilters() {
+            // Reset all form elements
+            searchInput.value = '';
+            categorySelect.value = '';
+            ensembleTypeSelect.value = '';
+            instrumentationSelect.value = '';
+            durationSelect.value = '';
+            difficultySelect.value = '';
+            yearSelect.value = '';
+            availabilitySelect.value = '';
+            
+            // Reset active filters
+            activeFilters = {};
+            
+            // Show all compositions
+            filteredCompositions = [...allCompositions];
+            applySorting();
+            renderCompositions();
+            updateResultsCount();
+            updateActiveFilters();
+        }
+
+        function showLoadingState() {
+            loadingState.style.display = 'block';
+            compositionsGrid.style.display = 'none';
+            emptyState.style.display = 'none';
+        }
+
+        function hideLoadingState() {
+            loadingState.style.display = 'none';
+        }
+
+        function showEmptyState() {
+            emptyState.style.display = 'block';
+            compositionsGrid.style.display = 'none';
+        }
+
+        function hideEmptyState() {
+            emptyState.style.display = 'none';
+        }
+
+        // Debounce helper function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Theme toggle functionality (if needed)
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+            });
+        }
+    </script>
+</body>
+</html>

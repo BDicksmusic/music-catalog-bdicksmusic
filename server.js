@@ -1257,6 +1257,48 @@ app.post('/api/create-stripe-product/:compositionId', async (req, res) => {
     }
 });
 
+// GET similar compositions for a given composition
+app.get('/api/compositions/:id/similar', async (req, res) => {
+    try {
+        const compositionId = req.params.id;
+        console.log(`🔗 Fetching similar compositions for: ${compositionId}`);
+        
+        // Get all compositions
+        const allCompositionsResponse = await notion.databases.query({
+            database_id: process.env.NOTION_DATABASE_ID,
+            sorts: [
+                {
+                    property: 'Year',
+                    direction: 'descending'
+                }
+            ]
+        });
+        
+        // Filter out the current composition and return a subset of others
+        const otherCompositions = allCompositionsResponse.results
+            .filter(page => page.id !== compositionId)
+            .slice(0, 4) // Return up to 4 similar compositions
+            .map(transformNotionPage);
+        
+        console.log(`🔗 Found ${otherCompositions.length} similar compositions`);
+        
+        res.json({
+            success: true,
+            compositionId: compositionId,
+            compositions: otherCompositions,
+            count: otherCompositions.length,
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('Error fetching similar compositions:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch similar compositions'
+        });
+    }
+});
+
 // Serve pretty URLs for compositions
 app.get('/composition/:slug', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'composition.html'));

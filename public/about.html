@@ -1,12 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>My Music Catalog</title>
-        <link rel="stylesheet" href="variables.css"> 
-        <link rel="stylesheet" href="styles.css">
-        <!-- Navigation -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Brandon Dicks - Composer, Trumpeter, Educator</title>
+    <link rel="stylesheet" href="variables.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Modern About Page Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .about-hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .hero-image.active {
+            opacity: 0.3;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            color: white;
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: slideInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            animation: slideInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideInUp 1s ease-out 0.9s both;
+        }
+
+        .cta-btn {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+        }
+
+        .cta-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .about-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 6rem;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--primary-600);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .journey-timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--primary-300), var(--secondary-300));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 0 2rem;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-500);
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            right: -2rem;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            left: -2rem;
+        }
+
+        .timeline-year {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-institution {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+        }
+
+        .timeline-description {
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .achievement-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.6s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .achievement-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: transform 0.6s ease;
+        }
+
+        .achievement-card:hover::before {
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+
+        .achievement-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .achievement-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .achievement-description {
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .stats-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 4rem 2rem;
+            margin: 4rem -2rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            padding: 1rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .timeline-line {
+                left: 2rem;
+            }
+
+            .timeline-item {
+                flex-direction: column !important;
+            }
+
+            .timeline-content {
+                margin-left: 4rem;
+                margin-right: 1rem;
+            }
+
+            .timeline-content::before {
+                left: -3rem !important;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .achievements-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
     <nav>
         <div class="nav-container">
             <a href="index.html" class="logo">BRANDON DICKS</a>
@@ -64,275 +501,368 @@
             </div>
         </div>
     </nav>
-        
-        <!-- Secondary Navigation -->
-        <nav class="secondary-nav">
-            <a href="/composer" class="secondary-button">Composer</a>
-            <a href="/trumpeter" class="secondary-button">Trumpeter</a>
-            <a href="/educator" class="secondary-button">Educator</a>
-        </nav>
-    <header>
-    </header>
-    <page-title>
-        <h3>About Me</h3>
-    </page-title>
-    </head>
+    
+    <!-- Secondary Navigation -->
+    <nav class="secondary-nav">
+        <a href="/composer" class="secondary-button">Composer</a>
+        <a href="/trumpeter" class="secondary-button">Trumpeter</a>
+        <a href="/educator" class="secondary-button">Educator</a>
+    </nav>
 
-
-<body>  
-
-    <main>
-        <section>
-            <h2>My Story</h2>
-            <p>I've been composing music for over 10 years...</p>
-        </section>
-        
-        <section>
-            <h2>My Equipment</h2>
-            <p>**Brandon Dicks (b. 1994)** is a Trumpeter, Composer, and Teacher, in the Tempe, Arizona region. Brandon Dicks has many job titles including Adjunct Professor of Trumpet at [Northern Arizona University,](https://nau.edu/music/) the Co-Director of the [Trumpeter’s Multi-Track Competition](https://trumpetmtc.org/) and Seminar, and Program Director of [Rhode Island Recording Ensemble](https://rirecording.org/). Alongside his career as a musician and manager, he also runs his own YouTube channel called [BDicksmusic](https://www.youtube.com/channel/UCrKhLmCV6fTbM7oZMb6_Q1A/) which has over 1K subscribers and over 100K channel views.
-
-                Brandon obtained his Doctorate in Trumpet Performance at Arizona State University while being a former Teaching Assistant to [Joe Burgstaller](https://www.joeburgstaller.com/). Brandon received his Master’s Degree in Trumpet Performance and Music Composition at the University of Hartford where he studied with trumpeter [Phil Snedecor](http://www.philsnedecor.com/Phils_website/Home.html) and composition with [Robert Carl](http://robertcarlcomposer.com/videos.html), David Macbride, and [Gilda Lyons](http://www.gildalyons.com/). He also holds a Bachelor of Arts degree in Music Education from Columbus State University where he studied with [Robert Murray](http://www.pmauriatmusic.com/en/artists/artist/237-robert-murray).</p> 
-        </section>
-    </main>
-
-    <main>
-        <div class="container">
-            <section>
-                <h2>Featured Compositions</h2>
-                <div id="popular-works" class="works-grid">
-                    <div class="loading">Loading compositions...</div>
-                </div>
-            </section>
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="hero-background">
+            <img src="/Index Photos/CJL07828.JPG" alt="Brandon Dicks performing" class="hero-image active">
+            <img src="/Index Photos/Playing Photo.jpg" alt="Brandon Dicks with trumpet" class="hero-image">
+            <img src="/Index Photos/Letters Playing Photo.png" alt="Performance photo" class="hero-image">
+            <img src="/Index Photos/[Master Video] Resolutions MVT 1.00_00_21_06.Still001.jpg" alt="Video still" class="hero-image">
         </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title floating">Brandon Dicks</h1>
+            <p class="hero-subtitle">Composer • Trumpeter • Educator</p>
+            <p class="hero-description">
+                Transforming musical ideas into powerful compositions and inspiring the next generation of musicians through innovative teaching and performance.
+            </p>
+            <div class="cta-buttons">
+                <a href="#journey" class="cta-btn">My Journey</a>
+                <a href="#achievements" class="cta-btn">Achievements</a>
+                <a href="/media.html" class="cta-btn">Listen Now</a>
+                <a href="#contact" class="cta-btn">Get In Touch</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="about-content">
+        
+        <!-- Journey Section -->
+        <section id="journey" class="section">
+            <div class="section-header">
+                <h2 class="section-title">My Musical Journey</h2>
+                <p class="section-subtitle">
+                    From student to educator, my path has been shaped by incredible mentors, diverse experiences, and an unwavering passion for music.
+                </p>
+            </div>
+            
+            <div class="journey-timeline">
+                <div class="timeline-line"></div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">Present</div>
+                        <div class="timeline-institution">Multiple Roles & Positions</div>
+                        <div class="timeline-description">
+                            Currently serving as Adjunct Professor of Trumpet at Northern Arizona University, Co-Director of the Trumpeter's Multi-Track Competition and Seminar, and Program Director of Rhode Island Recording Ensemble. Also managing BDicksmusic YouTube channel with over 1K subscribers and 100K+ views.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">Doctorate</div>
+                        <div class="timeline-institution">Arizona State University</div>
+                        <div class="timeline-description">
+                            Obtained Doctorate in Trumpet Performance while serving as Teaching Assistant to renowned trumpeter Joe Burgstaller. This experience deepened my understanding of advanced performance techniques and pedagogy.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">Master's Degree</div>
+                        <div class="timeline-institution">University of Hartford</div>
+                        <div class="timeline-description">
+                            Earned Master's Degree in Trumpet Performance and Music Composition, studying trumpet with Phil Snedecor and composition with Robert Carl, David Macbride, and Gilda Lyons. This dual focus shaped my unique perspective as both performer and composer.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">Bachelor's Degree</div>
+                        <div class="timeline-institution">Columbus State University</div>
+                        <div class="timeline-description">
+                            Completed Bachelor of Arts degree in Music Education, studying with Robert Murray. This foundation in education has been instrumental in my teaching philosophy and approach.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <h2 class="section-title" style="color: white; margin-bottom: 3rem;">Impact & Reach</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" data-target="1000">0</span>
+                    <span class="stat-label">YouTube Subscribers</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="100000">0</span>
+                    <span class="stat-label">Channel Views</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="10">0</span>
+                    <span class="stat-label">Years Composing</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="3">0</span>
+                    <span class="stat-label">Degrees Earned</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Achievements Section -->
+        <section id="achievements" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Professional Achievements</h2>
+                <p class="section-subtitle">
+                    A diverse career spanning performance, composition, education, and leadership in the music community.
+                </p>
+            </div>
+            
+            <div class="achievements-grid">
+                <div class="achievement-card">
+                    <span class="achievement-icon">🎺</span>
+                    <h3 class="achievement-title">Professional Trumpeter</h3>
+                    <p class="achievement-description">
+                        Extensive performance experience with advanced technique training from world-class instructors.
+                    </p>
+                </div>
+                
+                <div class="achievement-card">
+                    <span class="achievement-icon">🎼</span>
+                    <h3 class="achievement-title">Composer</h3>
+                    <p class="achievement-description">
+                        Creating original compositions for various ensembles with over a decade of compositional experience.
+                    </p>
+                </div>
+                
+                <div class="achievement-card">
+                    <span class="achievement-icon">🎓</span>
+                    <h3 class="achievement-title">Adjunct Professor</h3>
+                    <p class="achievement-description">
+                        Teaching trumpet at Northern Arizona University, sharing knowledge with the next generation.
+                    </p>
+                </div>
+                
+                <div class="achievement-card">
+                    <span class="achievement-icon">🏆</span>
+                    <h3 class="achievement-title">Competition Director</h3>
+                    <p class="achievement-description">
+                        Co-directing the Trumpeter's Multi-Track Competition and Seminar, fostering musical excellence.
+                    </p>
+                </div>
+                
+                <div class="achievement-card">
+                    <span class="achievement-icon">🎥</span>
+                    <h3 class="achievement-title">Content Creator</h3>
+                    <p class="achievement-description">
+                        Running BDicksmusic YouTube channel with educational content reaching thousands of musicians.
+                    </p>
+                </div>
+                
+                <div class="achievement-card">
+                    <span class="achievement-icon">🎪</span>
+                    <h3 class="achievement-title">Program Director</h3>
+                    <p class="achievement-description">
+                        Leading the Rhode Island Recording Ensemble, creating innovative musical experiences.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Photo Gallery Section -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Behind the Music</h2>
+                <p class="section-subtitle">
+                    Glimpses from performances, recordings, and musical moments that define my artistic journey.
+                </p>
+            </div>
+            
+            <div class="photo-gallery">
+                <div class="gallery-item">
+                    <img src="/Index Photos/CJL07828.JPG" alt="Live performance" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <h4>Live Performance</h4>
+                        <p>Connecting with audiences through music</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/Index Photos/Playing Photo.jpg" alt="Studio session" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <h4>Studio Recording</h4>
+                        <p>Capturing the perfect sound</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/Index Photos/Letters Playing Photo.png" alt="Performance photo" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <h4>Concert Performance</h4>
+                        <p>Bringing compositions to life</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/Index Photos/[Master Video] Resolutions MVT 1.00_00_21_06.Still001.jpg" alt="Video production" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <h4>Video Production</h4>
+                        <p>Creating visual music experiences</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
-    <footer style="text-align: center; padding: 2rem; background: var(--gray-100); margin-top: 4rem;">
-        <p>&copy; 2025 Your Music. All rights reserved.</p>
+    <footer style="text-align: center; padding: 4rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-top: 4rem;">
+        <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Let's Create Music Together</h3>
+        <p style="margin-bottom: 2rem; opacity: 0.9;">Ready to collaborate, learn, or just talk music? I'd love to hear from you.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+            <a href="mailto:contact@brandondicks.com" style="color: white; text-decoration: none; padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.3); border-radius: 25px; transition: all 0.3s ease;">Email</a>
+            <a href="https://www.youtube.com/channel/UCrKhLmCV6fTbM7oZMb6_Q1A/" target="_blank" style="color: white; text-decoration: none; padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.3); border-radius: 25px; transition: all 0.3s ease;">YouTube</a>
+            <a href="/media.html" style="color: white; text-decoration: none; padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.3); border-radius: 25px; transition: all 0.3s ease;">Listen to My Music</a>
+        </div>
+        <p style="opacity: 0.7;">&copy; 2025 Brandon Dicks. All rights reserved.</p>
     </footer>
 
     <script>
-        // Load compositions with proper payment integration
-        async function loadCompositions() {
-            try {
-                showLoading('popular-works');
-                
-                const response = await fetch('/api/compositions');
-                const data = await response.json();
-                
-                const container = document.getElementById('popular-works');
-                
-                if (data.success && data.compositions.length > 0) {
-                    container.innerHTML = data.compositions.map(comp => `
-                        <div class="work-card" onclick="viewComposition('${comp.id}')">
-                            ${comp.coverImage ? `
-                                <div class="work-image-container">
-                                    <img src="${comp.coverImage}" alt="${comp.title}" class="work-image" loading="lazy">
-                                </div>
-                            ` : ''}
-                            
-                            <div class="work-header">
-                                <h3 class="work-title">${comp.title}</h3>
-                                <div class="work-instrument">${comp.instrumentation}</div>
-                            </div>
-                            
-                            <div class="work-content">
-                                ${(comp.year || comp.duration) ? `
-                                    <div class="work-meta">
-                                        ${comp.year ? `<div class="work-year">${comp.year}</div>` : ''}
-                                        ${comp.duration && comp.duration !== 'Duration:' ? `<div class="work-duration">${comp.duration}</div>` : ''}
-                                    </div>
-                                ` : ''}
-                                
-                                ${comp.difficulty ? `<div class="difficulty-badge ${comp.difficulty.toLowerCase()}">${comp.difficulty}</div>` : ''}
-                                
-                                ${comp.description ? `<p class="work-description">${comp.description}</p>` : ''}
-                                
-                                ${comp.tags && comp.tags.length > 0 ? `
-                                    <div class="work-tags">
-                                        ${comp.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                                    </div>
-                                ` : ''}
-                                
-                                <div class="work-links">
-                                    ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">🎵 Listen</a>` : ''}
-                                    ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">📄 Score</a>` : ''}
-                                    
-                                    ${comp.paymentLink ? `
-                                        <button class="btn-primary payment-btn" onclick="event.stopPropagation(); purchaseComposition('${comp.paymentLink}', '${comp.title.replace(/'/g, "\\'")}')">
-                                            💳 Buy Now
-                                        </button>
-                                    ` : comp.stripeProductId || comp.stripePriceId ? `
-                                        <button class="btn-primary payment-btn" onclick="event.stopPropagation(); purchaseWithStripe('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 10})">
-                                            💳 Buy Now - ${comp.price || 10}
-                                        </button>
-                                    ` : comp.purchaseLink ? `
-                                        <a href="${comp.purchaseLink}" target="_blank" class="btn-primary" onclick="event.stopPropagation()">💳 Purchase</a>
-                                    ` : `
-                                        <button class="btn-disabled" onclick="event.stopPropagation(); showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
-                                            🚫 Currently Not Available
-                                        </button>
-                                    `}
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
-                    
-                    console.log(`✅ Loaded ${data.count} compositions`);
-                } else {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <h3>No compositions found</h3>
-                            <p>Check back soon for new musical works!</p>
-                        </div>
-                    `;
+        // Hero image rotation
+        let currentImageIndex = 0;
+        const heroImages = document.querySelectorAll('.hero-image');
+        
+        function rotateHeroImages() {
+            heroImages[currentImageIndex].classList.remove('active');
+            currentImageIndex = (currentImageIndex + 1) % heroImages.length;
+            heroImages[currentImageIndex].classList.add('active');
+        }
+        
+        setInterval(rotateHeroImages, 4000);
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
-            } catch (error) {
-                console.error('❌ Error loading compositions:', error);
-                showError('popular-works', 'Error loading compositions');
-            }
-        }
+            });
+        }, observerOptions);
 
-        // Purchase with Stripe integration
-        async function purchaseWithStripe(compositionId, title, price) {
-            try {
-                const confirmed = confirm(`Purchase "${title}" for ${price}?\n\nYou'll be redirected to Stripe checkout.`);
-                
-                if (confirmed) {
-                    const response = await fetch('/api/create-checkout-session', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ compositionId: compositionId })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.checkoutUrl) {
-                        window.location.href = data.checkoutUrl;
-                    } else {
-                        alert('Error creating checkout session. Please try again.');
-                    }
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error processing purchase. Please try again.');
-            }
-        }
-
-        // Show unavailable message
-        function showUnavailableMessage(title) {
-            alert(`"${title}" is currently not available for purchase.\n\nPlease contact us directly for more information about acquiring this composition.`);
-        }
-
-        // Purchase function for Stripe integration
-        function purchaseComposition(paymentLink, title) {
-            try {
-                if (paymentLink && (paymentLink.includes('stripe.com') || paymentLink.includes('buy.stripe.com'))) {
-                    const confirmed = confirm(`Purchase "${title}"?\n\nYou'll be redirected to Stripe to complete your payment.`);
-                    
-                    if (confirmed) {
-                        window.open(paymentLink, '_blank');
-                        console.log(`Redirected to payment for: ${title}`);
-                    }
-                } else {
-                    alert('Invalid payment link. Please contact support.');
-                }
-            } catch (error) {
-                console.error('Error processing purchase:', error);
-                alert('Sorry, there was an issue. Please try again.');
-            }
-        }
-
-        // View composition details
-        async function viewComposition(id) {
-            try {
-                const response = await fetch(`/api/compositions/${id}`);
-                const data = await response.json();
-                
-                if (data.success) {
-                    showCompositionModal(data.composition);
-                } else {
-                    alert('Failed to load composition details');
-                }
-            } catch (error) {
-                console.error('Error loading composition:', error);
-                alert('Error loading composition details');
-            }
-        }
-
-        // Show composition modal
-        function showCompositionModal(comp) {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <button class="modal-close" onclick="closeModal()">&times;</button>
-                    <h2>${comp.title}</h2>
-                    <p><strong>Instrumentation:</strong> ${comp.instrumentation}</p>
-                    ${comp.year ? `<p><strong>Year:</strong> ${comp.year}</p>` : ''}
-                    ${comp.duration ? `<p><strong>Duration:</strong> ${comp.duration}</p>` : ''}
-                    ${comp.difficulty ? `<p><strong>Difficulty:</strong> ${comp.difficulty}</p>` : ''}
-                    ${comp.genre ? `<p><strong>Genre:</strong> ${comp.genre}</p>` : ''}
-                    <p><strong>Description:</strong> ${comp.description}</p>
-                    
-                    <div class="modal-links">
-                        ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
-                        ${comp.scoreLink ? `<a href="${comp.scoreLink}" target="_blank" class="btn-secondary">📄 View Score</a>` : ''}
-                        
-                        ${comp.paymentLink ? `
-                            <button class="btn-primary payment-btn" onclick="purchaseComposition('${comp.paymentLink}', '${comp.title.replace(/'/g, "\\'")}')">
-                                💳 Buy Now
-                            </button>
-                        ` : comp.purchaseLink ? `
-                            <a href="${comp.purchaseLink}" target="_blank" class="btn-primary">💳 Purchase</a>
-                        ` : `
-                            <button class="btn-disabled" onclick="showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
-                                🚫 Currently Not Available
-                            </button>
-                        `}
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-        }
-
-        // Close modal
-        function closeModal() {
-            const modal = document.querySelector('.modal-overlay');
-            if (modal) {
-                modal.remove();
-            }
-        }
-
-        // Utility functions
-        function showLoading(containerId) {
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.innerHTML = '<div class="loading">Loading compositions...</div>';
-            }
-        }
-
-        function showError(containerId, message) {
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.innerHTML = `<div class="error">${message}</div>`;
-            }
-        }
-
-        // Modal close on background click
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal-overlay')) {
-                closeModal();
-            }
+        // Observe all sections and achievement cards
+        document.querySelectorAll('.section, .achievement-card').forEach(el => {
+            observer.observe(el);
         });
 
-        // Load everything when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCompositions();
-            // Mobile menu and theme toggle now handled by main.js
+        // Animated counters
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const increment = target / 100;
+                let current = 0;
+                
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = Math.floor(current).toLocaleString();
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target.toLocaleString();
+                    }
+                };
+                
+                updateCounter();
+            });
+        }
+
+        // Stats section observer
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+
+        // Smooth scrolling for CTA buttons
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Gallery modal functionality
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const img = this.querySelector('.gallery-image');
+                const overlay = this.querySelector('.gallery-overlay');
+                
+                // Create modal
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.9);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                    cursor: pointer;
+                `;
+                
+                const modalImg = document.createElement('img');
+                modalImg.src = img.src;
+                modalImg.style.cssText = `
+                    max-width: 90%;
+                    max-height: 90%;
+                    object-fit: contain;
+                    border-radius: 10px;
+                `;
+                
+                modal.appendChild(modalImg);
+                document.body.appendChild(modal);
+                
+                // Close modal on click
+                modal.addEventListener('click', () => {
+                    document.body.removeChild(modal);
+                });
+            });
+        });
+
+        // Parallax effect for hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero-background');
+            const speed = scrolled * 0.5;
+            
+            if (parallax) {
+                parallax.style.transform = `translateY(${speed}px)`;
+            }
         });
     </script>
     

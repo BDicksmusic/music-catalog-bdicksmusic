@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Brandon Dicks - Lessons & Support</title>
+    <link rel="stylesheet" href="variables.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Modern Contact Page Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .contact-hero {
+            height: 80vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: white;
+            max-width: 800px;
+            padding: 2rem;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: slideInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+
+        .contact-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .contact-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
+        }
+
+        .contact-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+        }
+
+        .card-description {
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .contact-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            padding: 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-500);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            justify-self: start;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .contact-method {
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-method-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-method-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-method-value {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .support-section {
+            margin-top: 4rem;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .support-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .support-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+        }
+
+        .support-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .support-card:hover::before {
+            left: 100%;
+        }
+
+        .support-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .support-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+        }
+
+        .support-description {
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .support-btn {
+            background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .support-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray-600);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .support-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-main {
+                padding: 2rem 1rem;
+            }
+        }
+
+        .required {
+            color: var(--red-500);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">BRANDON DICKS</a>
+            <div class="nav-right">
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="media.html" class="nav-link">Media</a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">News</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="news.html">Latest News</a></li>
+                            <li><a href="updates.html">Updates</a></li>
+                            <li><a href="events.html">Events</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">Teaching Material</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="exercises.html">Exercises</a></li>
+                            <li><a href="tutorials.html">Tutorials</a></li>
+                            <li><a href="resources.html">Resources</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">Contact</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="contact.html">Get in Touch</a></li>
+                            <li><a href="booking.html">Book a Lesson</a></li>
+                            <li><a href="inquiries.html">General Inquiries</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+                <button class="music-catalog-btn"><a href="music-catalog.html">Music Catalog</a></button>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>   
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Secondary Navigation -->
+    <nav class="secondary-nav">
+        <a href="/composer" class="secondary-button">Composer</a>
+        <a href="/trumpeter" class="secondary-button">Trumpeter</a>
+        <a href="/educator" class="secondary-button">Educator</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="contact-hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Let's Connect</h1>
+            <p class="hero-subtitle">
+                Ready to start your musical journey or collaborate on your next project? 
+                I'm here to help you achieve your musical goals.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="contact-main">
+        
+        <!-- Contact Forms Grid -->
+        <div class="contact-grid">
+            
+            <!-- General Contact Form -->
+            <div class="contact-card">
+                <span class="card-icon">📧</span>
+                <h2 class="card-title">General Inquiries</h2>
+                <p class="card-description">
+                    Fill out the form for any requests, bookings, commissions, or inquiries about content related to BDicksmusic. 
+                    I'm happy to hear from the many different communities and engage where necessary.
+                </p>
+                
+                <form class="contact-form" action="#" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">First Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="lastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Subject <span class="required">*</span></label>
+                        <input type="text" class="form-input" name="subject" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Message <span class="required">*</span></label>
+                        <textarea class="form-textarea" name="message" placeholder="Tell me about your project, collaboration ideas, or any questions you have..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+
+            <!-- Private Lessons Form -->
+            <div class="contact-card">
+                <span class="card-icon">🎺</span>
+                <h2 class="card-title">Private Lessons</h2>
+                <p class="card-description">
+                    Take your trumpet playing to the next level with personalized instruction. 
+                    In-person lessons are available in the Tempe, AZ area, with online lessons available worldwide.
+                </p>
+                
+                <form class="contact-form" action="#" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">First Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="lastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Email <span class="required">*</span></label>
+                            <input type="email" class="form-input" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-input" name="phone" placeholder="(###) ###-####">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Are you a Student? <span class="required">*</span></label>
+                        <select class="form-select" name="isStudent" required>
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">School Level / Experience</label>
+                        <select class="form-select" name="level">
+                            <option value="">Select...</option>
+                            <option value="elementary">Elementary School</option>
+                            <option value="middle">Middle School</option>
+                            <option value="high">High School</option>
+                            <option value="college">College</option>
+                            <option value="adult">Adult/Professional</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Lesson Format <span class="required">*</span></label>
+                        <select class="form-select" name="format" required>
+                            <option value="">Select...</option>
+                            <option value="online">Online</option>
+                            <option value="in-person">In-Person (Tempe, AZ area only)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Desired Lesson Duration <span class="required">*</span></label>
+                        <select class="form-select" name="duration" required>
+                            <option value="">Select...</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Basic Availability <span class="required">*</span></label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="availability[]" value="monday" id="monday">
+                                <label for="monday">Mondays</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="availability[]" value="tuesday" id="tuesday">
+                                <label for="tuesday">Tuesdays</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="availability[]" value="wednesday" id="wednesday">
+                                <label for="wednesday">Wednesdays</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="availability[]" value="thursday" id="thursday">
+                                <label for="thursday">Thursdays</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="availability[]" value="friday" id="friday">
+                                <label for="friday">Fridays</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="availability[]" value="saturday" id="saturday">
+                                <label for="saturday">Saturdays</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="availability[]" value="sunday" id="sunday">
+                                <label for="sunday">Sundays</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Preferred Lesson Times</label>
+                        <textarea class="form-textarea" name="lessonTimes" placeholder="Put your desired lesson times from the days selected above. Final lesson times will be determined through email discussion."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Additional Information</label>
+                        <textarea class="form-textarea" name="additionalInfo" placeholder="Tell me about your experience level, goals, or any specific areas you'd like to focus on..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Request Lesson Information</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="contact-info">
+            <h2 style="font-size: 2rem; margin-bottom: 1rem;">Get In Touch Directly</h2>
+            <p style="opacity: 0.9; margin-bottom: 2rem;">
+                Prefer to reach out directly? Use any of these methods to connect with me.
+            </p>
+            
+            <div class="contact-methods">
+                <div class="contact-method">
+                    <div class="contact-method-icon">📧</div>
+                    <div class="contact-method-title">Email</div>
+                    <div class="contact-method-value">BDicksmusic@gmail.com</div>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-method-icon">📱</div>
+                    <div class="contact-method-title">Phone</div>
+                    <div class="contact-method-value">(678) 602-3659</div>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-method-icon">🎥</div>
+                    <div class="contact-method-title">YouTube</div>
+                    <div class="contact-method-value">BDicksmusic Channel</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <section class="support-section">
+            <h2 class="section-title">Support Brandon's Work</h2>
+            <p class="section-subtitle">
+                Thank you to everyone who has supported my efforts towards being the best and most helpful musician I can be. 
+                There are multiple ways you can help me in my endeavors.
+            </p>
+            
+            <div class="support-grid">
+                
+                <!-- YouTube Support -->
+                <div class="support-card">
+                    <span class="support-icon">🎥</span>
+                    <h3 class="support-title">Subscribe & Like on YouTube</h3>
+                    <p class="support-description">
+                        While being a simple method, subscribing and liking my content can be the most helpful way to help me get recognized in the YouTube community and spread my message out to the world.
+                    </p>
+                    <a href="https://www.youtube.com/channel/UCrKhLmCV6fTbM7oZMb6_Q1A/" target="_blank" class="support-btn">Subscribe to BDicksmusic</a>
+                </div>
+                
+                <!-- Music Purchase -->
+                <div class="support-card">
+                    <span class="support-icon">🎼</span>
+                    <h3 class="support-title">Purchase & Perform My Music</h3>
+                    <p class="support-description">
+                        If you are a performer, please consider going to the Music Catalog and finding a new work to perform for your upcoming concert, recital, or just adding to your collection.
+                    </p>
+                    <a href="/music-catalog.html" class="support-btn">Purchase Music Here</a>
+                </div>
+                
+                <!-- Patreon Support -->
+                <div class="support-card">
+                    <span class="support-icon">🎪</span>
+                    <h3 class="support-title">Become a Patron</h3>
+                    <p class="support-description">
+                        Patreon is a great way to receive specialty perks while supporting me directly. There are many different pricing tiers starting at just $1 a month with exclusive perks.
+                    </p>
+                    <a href="#" target="_blank" class="support-btn">Become a Patron</a>
+                </div>
+                
+                <!-- Direct Donation -->
+                <div class="support-card">
+                    <span class="support-icon">💝</span>
+                    <h3 class="support-title">Donate Directly</h3>
+                    <p class="support-description">
+                        You can donate directly to support my work. Donations can be anonymous and include a personal note if you'd like.
+                    </p>
+                    <a href="#" class="support-btn">Donate Now</a>
+                </div>
+                
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer style="text-align: center; padding: 4rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-top: 4rem;">
+        <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Ready to Make Music Together?</h3>
+        <p style="margin-bottom: 2rem; opacity: 0.9;">Whether it's lessons, collaborations, or just sharing your musical journey, I'm excited to connect with you.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+            <a href="mailto:BDicksmusic@gmail.com" style="color: white; text-decoration: none; padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.3); border-radius: 25px; transition: all 0.3s ease;">Email Me</a>
+            <a href="tel:6786023659" style="color: white; text-decoration: none; padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.3); border-radius: 25px; transition: all 0.3s ease;">Call Me</a>
+            <a href="/media.html" style="color: white; text-decoration: none; padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.3); border-radius: 25px; transition: all 0.3s ease;">Hear My Music</a>
+        </div>
+        <p style="opacity: 0.7;">&copy; 2025 Brandon Dicks. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Form submission handling
+        document.querySelectorAll('.contact-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                const formData = new FormData(this);
+                const formObject = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    if (formObject[key]) {
+                        if (Array.isArray(formObject[key])) {
+                            formObject[key].push(value);
+                        } else {
+                            formObject[key] = [formObject[key], value];
+                        }
+                    } else {
+                        formObject[key] = value;
+                    }
+                }
+                
+                // Show success message
+                const submitBtn = this.querySelector('.submit-btn');
+                const originalText = submitBtn.textContent;
+                
+                submitBtn.textContent = 'Sending...';
+                submitBtn.disabled = true;
+                
+                // Simulate form submission
+                setTimeout(() => {
+                    submitBtn.textContent = 'Message Sent! ✓';
+                    submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    
+                    setTimeout(() => {
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                        submitBtn.style.background = 'linear-gradient(135deg, var(--primary-500), var(--secondary-500))';
+                        this.reset();
+                    }, 3000);
+                }, 1500);
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Student/Level form logic
+        document.querySelectorAll('select[name="isStudent"]').forEach(select => {
+            select.addEventListener('change', function() {
+                const levelSelect = this.closest('form').querySelector('select[name="level"]');
+                const levelGroup = levelSelect.closest('.form-group');
+                const levelLabel = levelGroup.querySelector('.form-label');
+                
+                if (this.value === 'yes') {
+                    levelLabel.textContent = 'School Level';
+                    levelSelect.innerHTML = `
+                        <option value="">Select...</option>
+                        <option value="elementary">Elementary School</option>
+                        <option value="middle">Middle School</option>
+                        <option value="high">High School</option>
+                        <option value="college">College</option>
+                    `;
+                } else if (this.value === 'no') {
+                    levelLabel.textContent = 'Experience Level';
+                    levelSelect.innerHTML = `
+                        <option value="">Describe your experience...</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="professional">Professional</option>
+                    `;
+                } else {
+                    levelLabel.textContent = 'School Level / Experience';
+                    levelSelect.innerHTML = `
+                        <option value="">Select...</option>
+                        <option value="elementary">Elementary School</option>
+                        <option value="middle">Middle School</option>
+                        <option value="high">High School</option>
+                        <option value="college">College</option>
+                        <option value="adult">Adult/Professional</option>
+                    `;
+                }
+            });
+        });
+
+        // Add form validation
+        document.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.hasAttribute('required') && !this.value.trim()) {
+                    this.style.borderColor = 'var(--red-500)';
+                } else {
+                    this.style.borderColor = 'var(--gray-200)';
+                }
+            });
+        });
+    </script>
+    
+    <!-- Load external script for additional functionality -->
+    <script src="main.js"></script>
+</body>
+</html>

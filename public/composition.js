@@ -128,6 +128,11 @@ async function loadCompositionDetail() {
 
 function renderComposition(comp) {
     console.log('🎯 Starting renderComposition with:', comp);
+    console.log('🎯 DEBUG - Score-related data in comp:', {
+        scoreFiles: comp.scoreFiles,
+        scoreLink: comp.scoreLink,
+        allMedia: comp.allMedia?.filter(m => m.type === 'Score' || m.type === 'Score Video')
+    });
     
     // Update cover image
     const coverImg = document.getElementById('composition-cover');
@@ -137,14 +142,37 @@ function renderComposition(comp) {
     }
 
     // ============================================
-    // CONTAINER 1: Title and Instrumentation
+    // NEW COMBINED CONTAINER: Title & Meta Information (Left-Right Layout)
     // ============================================
-    console.log('📝 Rendering Container 1: Title and Instrumentation');
+    console.log('📝 Rendering Combined Container: Title Left, Meta Right');
     const titleInstrumentContainer = document.querySelector('.composition-title-container');
     if (titleInstrumentContainer) {
+        // Use Notion short instrument list if available, otherwise extract from full instrumentation
+        const shortInstrumentList = comp.shortInstrumentList || extractShortInstrumentList(comp.instrumentation || '');
+        
+        // Debug log (browser-safe)
+        console.log('📊 Combined Container populated:', {
+            title: comp.title,
+            instrumentation: comp.instrumentation,
+            shortInstrumentList: shortInstrumentList,
+            duration: comp.duration
+        });
+        
         titleInstrumentContainer.innerHTML = `
-            <h1 class="composition-title">${comp.title || 'Untitled'}</h1>
-            <div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>
+            <div class="composition-header-combined">
+                <div class="composition-title-section">
+                    <h1 class="composition-title">${comp.title || 'Untitled'}</h1>
+                    <div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>
+                </div>
+                <div class="composition-meta-section">
+                    <div class="composition-short-instruments">
+                        ${shortInstrumentList}
+                    </div>
+                    <div class="composition-meta">
+                        ${comp.duration ? `<strong>Duration:</strong> ${comp.duration}` : ''}
+                    </div>
+                </div>
+            </div>
         `;
     }
 
@@ -154,33 +182,10 @@ function renderComposition(comp) {
         instrumentContainer.innerHTML = `<div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>`;
     }
 
-    // ============================================
-    // CONTAINER 2: Short Instrument List + Composition Meta Information
-    // ============================================
-    console.log('📊 Rendering Container 2: Meta Information');
+    // Clear the old meta container since it's now part of the combined container
     const metaContainer = document.querySelector('.composition-meta-container');
     if (metaContainer) {
-        // Use Notion short instrument list if available, otherwise extract from full instrumentation
-        const shortInstrumentList = comp.shortInstrumentList || extractShortInstrumentList(comp.instrumentation || '');
-        
-        // Debug log (browser-safe)
-        console.log('📊 Meta Container populated:', {
-            shortInstrumentList: shortInstrumentList,
-            year: comp.year,
-            duration: comp.duration,
-            difficulty: comp.difficulty
-        });
-        
-        metaContainer.innerHTML = `
-            <div class="composition-short-instruments">
-                ${shortInstrumentList}
-            </div>
-            <div class="composition-meta">
-                ${comp.duration ? `<strong>Duration:</strong> ${comp.duration}` : ''}
-            </div>
-        `;
-    } else {
-        console.error('❌ Meta container not found!');
+        metaContainer.innerHTML = '';
     }
 
     // ============================================
@@ -608,43 +613,94 @@ if (perfContainer) {
     }
 
     // Enhanced PDF Score Viewer with multiple scores support
-    const scoreCarouselContainer = document.querySelector('.score-carousel-container');
-    const scoreFiles = comp.scoreFiles || [];
-    const hasLegacyScore = comp.scoreLink && !scoreFiles.length;
+    console.log('📄 DEBUG - Score rendering started');
+    console.log('📄 DEBUG - comp.scoreFiles:', comp.scoreFiles?.length, comp.scoreFiles);
+    console.log('📄 DEBUG - comp.scoreLink:', comp.scoreLink);
     
-    if (scoreCarouselContainer && (scoreFiles.length > 0 || hasLegacyScore)) {
-        // Use first available score (relational or legacy)
-        const scoreUrl = scoreFiles.length > 0 ? scoreFiles[0].url : comp.scoreLink;
-        console.log('Score PDF link:', scoreUrl);
-        scoreCarouselContainer.innerHTML = `
-            <div class="single-page-score-viewer">
-                <div class="score-container">
-                    <div class="score-iframe-container">
-                        <iframe 
-                            id="score-iframe"
-                            src="/pdfjs/web/viewer.html?file=${encodeURIComponent(scoreUrl)}#page=1&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=0&scrollModeOnLoad=1"
-                            width="100%"
-                            height="700px"
-                            style="border: none; border-radius: 8px;">
-                        </iframe>
+    const scoreCarouselContainer = document.querySelector('.score-carousel-container');
+    console.log('📄 DEBUG - Score container found:', !!scoreCarouselContainer);
+    
+    const scoreFiles = comp.scoreFiles || [];
+    const scoreVideoFiles = (comp.videoFiles || []).filter(video => video.type === 'Score Video' || video.category === 'score');
+    
+    // Filter scoreFiles to only include actual PDF scores (not videos)
+    const pdfScoreFiles = scoreFiles.filter(file => 
+        file.type === 'Score' && 
+        file.type !== 'Score Video' && 
+        !file.url?.includes('youtube.com') && 
+        !file.url?.includes('youtu.be')
+    );
+    
+    const hasLegacyScore = comp.scoreLink && !pdfScoreFiles.length;
+    const hasPdfScore = pdfScoreFiles.length > 0 || hasLegacyScore;
+    const hasScoreVideo = scoreVideoFiles.length > 0;
+    
+    console.log('📄 DEBUG - Final score check:', {
+        pdfScoreFilesLength: pdfScoreFiles.length,
+        scoreVideoFilesLength: scoreVideoFiles.length,
+        hasLegacyScore: hasLegacyScore,
+        hasPdfScore: hasPdfScore,
+        hasScoreVideo: hasScoreVideo,
+        willRenderScore: hasPdfScore || hasScoreVideo
+    });
+    
+    if (scoreCarouselContainer && (hasPdfScore || hasScoreVideo)) {
+        if (hasPdfScore) {
+            // Render PDF score
+            const scoreUrl = pdfScoreFiles.length > 0 ? pdfScoreFiles[0].url : comp.scoreLink;
+            console.log('📄 DEBUG - Rendering PDF score:', scoreUrl);
+            scoreCarouselContainer.innerHTML = `
+                <div class="single-page-score-viewer">
+                    <div class="score-container">
+                        <div class="score-iframe-container">
+                            <iframe 
+                                id="score-iframe"
+                                src="/pdfjs/web/viewer.html?file=${encodeURIComponent(scoreUrl)}#page=1&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=0&scrollModeOnLoad=1"
+                                width="100%"
+                                height="700px"
+                                style="border: none; border-radius: 8px;">
+                            </iframe>
+                        </div>
+                        <div class="score-navigation-bottom">
+                            <button class="score-nav-btn prev-btn" id="score-prev">
+                                <span class="nav-icon">←</span>
+                                <span class="nav-text">Previous Page</span>
+                            </button>
+                            <span class="score-page-info" id="score-page-info">Page 1 of ?</span>
+                            <button class="score-nav-btn next-btn" id="score-next">
+                                <span class="nav-text">Next Page</span>
+                                <span class="nav-icon">→</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="score-navigation-bottom">
-                        <button class="score-nav-btn prev-btn" id="score-prev">
-                            <span class="nav-icon">←</span>
-                            <span class="nav-text">Previous Page</span>
-                        </button>
-                        <span class="score-page-info" id="score-page-info">Page 1 of ?</span>
-                        <button class="score-nav-btn next-btn" id="score-next">
-                            <span class="nav-text">Next Page</span>
-                            <span class="nav-icon">→</span>
+                </div>
+            `;
+            
+            // Initialize single-page PDF navigation
+            initSinglePagePDFNavigation(scoreUrl);
+        } else if (hasScoreVideo) {
+            // Show message that score is available as video
+            console.log('📄 DEBUG - No PDF score available, showing score video notice');
+            scoreCarouselContainer.innerHTML = `
+                <div class="score-video-notice">
+                    <div class="score-notice-card">
+                        <h3>📼 Score Available as Video</h3>
+                        <p>The score for this composition is available as a performance video in the video section above.</p>
+                        <button onclick="scrollToVideos()" class="btn-primary">
+                            🎥 View Score Video
                         </button>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
         
-        // Initialize single-page PDF navigation
-        initSinglePagePDFNavigation(scoreUrl);
+        console.log('📄 DEBUG - Score rendering completed successfully');
+    } else {
+        console.log('📄 DEBUG - Score NOT rendered. Reasons:', {
+            containerMissing: !scoreCarouselContainer,
+            noPdfScore: !hasPdfScore,
+            noScoreVideo: !hasScoreVideo
+        });
     }
     
     // Metadata Toggle System
@@ -720,15 +776,16 @@ if (perfContainer) {
     const relatedSection = document.querySelector('.related-compositions-section');
     
     if (comp.similarWorks && comp.similarWorks.length > 0) {
-        console.log('🔗 DEBUG - Rendering related compositions:', comp.similarWorks.length);
+        console.log('🔗 DEBUG - Rendering related compositions from Notion:', comp.similarWorks.length);
         renderRelatedCompositions(comp.similarWorks);
         if (relatedSection) {
             relatedSection.style.display = 'block';
         }
     } else {
-        console.log('🔗 DEBUG - No similar works found or empty array');
+        console.log('🔗 DEBUG - No similar works from Notion, fetching via API...');
+        // Keep the section visible and fetch related compositions via API
         if (relatedSection) {
-            relatedSection.style.display = 'none';
+            relatedSection.style.display = 'block';
         }
         // Try to fetch related compositions if not provided
         fetchRelatedCompositions(comp.id);
@@ -1460,15 +1517,46 @@ function renderRelatedCompositions(compositions) {
 }
 
 async function fetchRelatedCompositions(compositionId) {
+    const carouselContainer = document.querySelector('#related-compositions-carousel');
+    if (!carouselContainer) {
+        console.warn('Related compositions carousel container not found');
+        return;
+    }
+    
     try {
+        console.log('🔗 API - Fetching related compositions for:', compositionId);
+        
+        // Show loading state
+        carouselContainer.innerHTML = `
+            <div class="related-composition-loading">
+                <div class="loading-spinner"></div>
+                <p>Loading related works...</p>
+            </div>
+        `;
+        
         const response = await fetch(`/api/compositions/${compositionId}/similar`);
         const data = await response.json();
         
-        if (data.success && data.compositions) {
+        console.log('🔗 API - Response:', data);
+        
+        if (data.success && data.compositions && data.compositions.length > 0) {
+            console.log('🔗 API - Rendering', data.compositions.length, 'related compositions');
             renderRelatedCompositions(data.compositions);
+        } else {
+            // Show "no related works" message
+            carouselContainer.innerHTML = `
+                <div class="related-composition-empty">
+                    <p>No related works available at this time.</p>
+                </div>
+            `;
         }
     } catch (error) {
         console.error('Error fetching related compositions:', error);
+        carouselContainer.innerHTML = `
+            <div class="related-composition-error">
+                <p>Unable to load related works.</p>
+            </div>
+        `;
     }
 }
 
