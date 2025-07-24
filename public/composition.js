@@ -946,35 +946,14 @@ if (notesContainer) {
     }
     
     // New Structured Composition Details System
-    renderCompositionDetails(comp);
+    // Render simplified instrumentation section
+    renderSimplifiedInstrumentation(comp);
     
-    // Related Compositions Carousel
-    console.log('🔗 DEBUG - Similar works data:', comp.similarWorks?.length, comp.similarWorks);
-    console.log('🔗 DEBUG - Similar works slugs data:', comp.similarWorksSlugs?.length, comp.similarWorksSlugs);
-    
+    // Related Compositions functionality temporarily disabled
+    console.log('🔗 DEBUG - Related compositions functionality disabled');
     const relatedSection = document.querySelector('.related-compositions-section');
-    
-    if (comp.similarWorks && comp.similarWorks.length > 0) {
-        console.log('🔗 DEBUG - Rendering related compositions from slug-based fetch:', comp.similarWorks.length);
-        renderRelatedCompositions(comp.similarWorks);
-        if (relatedSection) {
-            relatedSection.style.display = 'block';
-        }
-    } else if (comp.similarWorksSlugs && comp.similarWorksSlugs.length > 0) {
-        console.log('🔗 DEBUG - Similar works slugs found but no compositions loaded, this indicates a server-side issue');
-        if (relatedSection) {
-            relatedSection.style.display = 'block';
-        }
-        // The server should have already fetched these, but fallback to API if needed
-        fetchRelatedCompositions(comp.id);
-    } else {
-        console.log('🔗 DEBUG - No similar works or slugs found, fetching via API fallback...');
-        // Keep the section visible and fetch related compositions via API
-        if (relatedSection) {
-            relatedSection.style.display = 'block';
-        }
-        // Try to fetch related compositions if not provided
-        fetchRelatedCompositions(comp.id);
+    if (relatedSection) {
+        relatedSection.style.display = 'none';
     }
 }
 
@@ -1491,132 +1470,20 @@ window.previousAudio = previousAudio;
 window.nextAudio = nextAudio;
 window.switchToAudio = switchToAudio;
 
-// New Composition Details Rendering Function
-function renderCompositionDetails(comp) {
-    // Key Details Section
-    const keyDetailsContainer = document.querySelector('#key-details-content');
-    if (keyDetailsContainer) {
-        const keyDetails = [
-            { label: 'Duration', value: comp.duration || 'Not specified' },
-            { label: 'Year Composed', value: comp.year || 'Not specified' },
-            { label: 'Difficulty Level', value: comp.difficulty || 'Not specified' },
-            { label: 'Genre', value: comp.genre || 'Not specified' },
-            { label: 'Composition Type', value: comp.type || 'Original' }
-        ].filter(item => item.value !== 'Not specified');
-
-        keyDetailsContainer.innerHTML = keyDetails.map(item => `
-            <div class="detail-item">
-                <div class="detail-label">${item.label}</div>
-                <div class="detail-value">${item.value}</div>
-            </div>
-        `).join('');
-    }
-
-    // Instrumentation Details Section
-    const instrumentationContainer = document.querySelector('#instrumentation-details-content');
+// Simplified Instrumentation Rendering Function
+function renderSimplifiedInstrumentation(comp) {
+    const instrumentationContainer = document.querySelector('#full-instrumentation-content');
     if (instrumentationContainer) {
-        const instrumentationDetails = [
-            { 
-                label: 'Full Instrumentation', 
-                value: comp.instrumentation || 'Not specified',
-                isFullWidth: comp.instrumentation && comp.instrumentation.length > 50
-            },
-            { 
-                label: 'Short Instrument List', 
-                value: comp.shortInstrumentList || 'For ' + (comp.instrumentation || 'ensemble'),
-                isFullWidth: comp.shortInstrumentList && comp.shortInstrumentList.length > 50
-            }
-        ];
-
-        instrumentationContainer.innerHTML = instrumentationDetails.map(item => `
-            <div class="detail-item ${item.isFullWidth ? 'full-width' : ''}">
-                <div class="detail-label">${item.label}</div>
-                <div class="detail-value ${item.isFullWidth ? 'long-text' : ''}">${item.value}</div>
+        const instrumentation = comp.instrumentation || 'Instrumentation not specified';
+        
+        instrumentationContainer.innerHTML = `
+            <div class="instrumentation-display">
+                <p class="instrumentation-text">${instrumentation}</p>
+                ${comp.duration ? `<div class="composition-meta-detail"><strong>Duration:</strong> ${comp.duration}</div>` : ''}
+                ${comp.year ? `<div class="composition-meta-detail"><strong>Year:</strong> ${comp.year}</div>` : ''}
+                ${comp.difficulty ? `<div class="composition-meta-detail"><strong>Difficulty:</strong> ${comp.difficulty}</div>` : ''}
             </div>
-        `).join('');
-    }
-
-    // Performance & Media Section
-    const performanceMediaContainer = document.querySelector('#performance-media-content');
-    if (performanceMediaContainer) {
-        const audioCount = comp.audioFiles?.length || 0;
-        const videoCount = comp.videoFiles?.length || 0;
-        const hasScore = comp.scoreLink || comp.scoreFiles?.length > 0;
-
-        const performanceMediaDetails = [
-            { 
-                label: 'Audio Recordings', 
-                value: audioCount > 0 ? 
-                    `<span class="media-count">${audioCount} recording${audioCount !== 1 ? 's' : ''} available</span>` : 
-                    'No recordings available'
-            },
-            { 
-                label: 'Video Recordings', 
-                value: videoCount > 0 ? 
-                    `<span class="media-count">${videoCount} video${videoCount !== 1 ? 's' : ''} available</span>` : 
-                    'No videos available'
-            },
-            { 
-                label: 'Score Available', 
-                value: hasScore ? 
-                    '<span class="score-available">✓ Yes</span>' : 
-                    '<span class="score-unavailable">✗ No</span>'
-            },
-            { 
-                label: 'Featured Work', 
-                value: comp.featured ? 
-                    '<span class="score-available">⭐ Featured</span>' : 
-                    'Standard'
-            },
-            { 
-                label: 'Popular', 
-                value: comp.popular ? 
-                    '<span class="media-count">🔥 Popular</span>' : 
-                    'Regular'
-            }
-        ];
-
-        performanceMediaContainer.innerHTML = performanceMediaDetails.map(item => `
-            <div class="detail-item">
-                <div class="detail-label">${item.label}</div>
-                <div class="detail-value">${item.value}</div>
-            </div>
-        `).join('');
-    }
-
-    // Other Information Section
-    const otherInfoContainer = document.querySelector('#other-information-content');
-    if (otherInfoContainer) {
-        const otherInfoDetails = [
-            { 
-                label: 'Price', 
-                value: comp.price ? `$${comp.price}` : 'Contact for pricing'
-            },
-            { 
-                label: 'Tags', 
-                value: comp.tags && comp.tags.length > 0 ? comp.tags.join(', ') : 'None',
-                isFullWidth: comp.tags && comp.tags.join(', ').length > 50
-            },
-            { 
-                label: 'Related Works', 
-                value: `${comp.similarWorks?.length || comp.similarWorksSlugs?.length || 0} related compositions`
-            },
-            { 
-                label: 'Created', 
-                value: formatDate(comp.created) || 'Not specified'
-            },
-            { 
-                label: 'Last Edited', 
-                value: formatDate(comp.lastEdited) || 'Not specified'
-            }
-        ].filter(item => item.value !== 'Not specified');
-
-        otherInfoContainer.innerHTML = otherInfoDetails.map(item => `
-            <div class="detail-item ${item.isFullWidth ? 'full-width' : ''}">
-                <div class="detail-label">${item.label}</div>
-                <div class="detail-value ${item.isFullWidth ? 'long-text' : ''}">${item.value}</div>
-            </div>
-        `).join('');
+        `;
     }
 }
 

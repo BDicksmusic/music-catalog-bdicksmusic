@@ -225,12 +225,108 @@ nav {
     background: var(--gray-200);
     color: var(--gray-300);
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     margin: 0;
     padding: 0 var(--space-4) 0 var(--space-3);
     text-align: left;
     height: 40px; /* Fixed height */
+}
+
+.secondary-nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.secondary-nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.social-media-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-base);
+    color: var(--gray-600);
+    transition: var(--transition-fast);
+    text-decoration: none;
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.social-link:hover {
+    color: var(--primary-500);
+    background: var(--gray-100);
+    transform: translateY(-1px);
+    border-color: var(--gray-300);
+}
+
+.social-link:active {
+    transform: translateY(0);
+    background: var(--gray-300);
+}
+
+.social-icon {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+/* Specific social media colors on hover */
+.social-link[title="YouTube"]:hover {
+    color: #FF0000;
+}
+
+.social-link[title="Instagram"]:hover {
+    color: #E4405F;
+}
+
+.social-link[title="Facebook"]:hover {
+    color: #1877F2;
+}
+
+.social-link[title="Twitter"]:hover {
+    color: #1DA1F2;
+}
+
+.social-link[title="Spotify"]:hover {
+    color: #1DB954;
+}
+
+/* Mobile responsiveness for social links */
+@media (max-width: 768px) {
+    .secondary-nav {
+        padding: 0 var(--space-2);
+    }
+    
+    .social-media-links {
+        gap: var(--space-1);
+    }
+    
+    .social-link {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .social-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .secondary-button {
+        padding: var(--space-1) var(--space-2);
+        margin: 0 var(--space-half);
+        font-size: var(--text-sm);
+    }
 }
 
 .secondary-button {

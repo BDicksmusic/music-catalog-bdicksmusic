@@ -936,7 +936,7 @@
         /* Scores Section Styling */
         .scores-section {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             gap: 3rem;
             max-width: 1400px;
             margin: 3rem auto 0;
@@ -2189,6 +2189,36 @@
                 margin-bottom: 1.5rem;
             }
         }
+        
+        /* Simplified Instrumentation Styles */
+        .simple-instrumentation-content {
+            padding: 1.5rem;
+        }
+        
+        .instrumentation-display {
+            background: var(--gray-50);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-500);
+        }
+        
+        .instrumentation-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--gray-800);
+            line-height: 1.6;
+            margin: 0 0 1rem 0;
+        }
+        
+        .composition-meta-detail {
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+            color: var(--gray-600);
+        }
+        
+        .composition-meta-detail strong {
+            color: var(--gray-800);
+        }
 
     </style>
 </head>
@@ -2331,65 +2361,23 @@
     <section class="metadata-section">
         <div class="metadata-container">
             <div class="metadata-card">
-                <h3 class="metadata-title">Composition Details</h3>
-                
-                <!-- Key Details Section -->
-                <div class="composition-details-section">
-                    <div class="details-header">
-                        <span class="details-icon">🔑</span>
-                        <h4>Key Details</h4>
-                    </div>
-                    <div class="details-content" id="key-details-content">
-                        <!-- Key details will be injected here -->
-                    </div>
+                <h3 class="metadata-title">Full Instrumentation</h3>
+                <div class="simple-instrumentation-content" id="full-instrumentation-content">
+                    <!-- Full instrumentation will be injected here -->
                 </div>
-                
-                <!-- Instrumentation Details Section -->
-                <div class="composition-details-section">
-                    <div class="details-header">
-                        <span class="details-icon">🎼</span>
-                        <h4>Instrumentation Details</h4>
-                    </div>
-                    <div class="details-content" id="instrumentation-details-content">
-                        <!-- Instrumentation details will be injected here -->
-                    </div>
-                </div>
-                
-                <!-- Performance & Media Section -->
-                <div class="composition-details-section">
-                    <div class="details-header">
-                        <span class="details-icon">🎵</span>
-                        <h4>Performance & Media</h4>
-                    </div>
-                    <div class="details-content" id="performance-media-content">
-                        <!-- Performance and media details will be injected here -->
-                    </div>
-                </div>
-                
-                <!-- Other Information Section -->
-                <div class="composition-details-section">
-                    <div class="details-header">
-                        <span class="details-icon">ℹ️</span>
-                        <h4>Other Information and Long Instrument List</h4>
-                    </div>
-                    <div class="details-content" id="other-information-content">
-                        <!-- Other information will be injected here -->
-                    </div>
-                </div>
-                
             </div>
         </div>
     </section>
     
-    <!-- Related Compositions Carousel -->
-    <section class="related-compositions-section">
+    <!-- Related Compositions functionality temporarily disabled -->
+    <!-- <section class="related-compositions-section">
         <div class="related-compositions-container">
             <h3 class="related-compositions-title">Related Works</h3>
             <div class="related-compositions-carousel" id="related-compositions-carousel">
                 <!-- Related compositions will be injected here -->
             </div>
         </div>
-    </section>
+    </section> -->
     <script src="/composition.js"></script>
     <script>
         function showUnavailableMessage(title) {
