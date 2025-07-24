@@ -650,6 +650,449 @@
          margin-bottom: 1.5rem;
      }
 
+     /* Enhanced Featured Compositions Styles */
+     .featured-compositions-container {
+         max-width: 1200px;
+         margin: 0 auto;
+         padding: 2rem;
+     }
+
+     .featured-main-display {
+         margin-bottom: 2rem;
+     }
+
+     .featured-composition-card {
+         background: white;
+         border-radius: 20px;
+         padding: 2.5rem;
+         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+         border: 1px solid var(--gray-200);
+         transition: all 0.4s ease;
+         position: relative;
+         overflow: hidden;
+     }
+
+     .featured-composition-card::before {
+         content: '';
+         position: absolute;
+         top: 0;
+         left: -100%;
+         width: 100%;
+         height: 4px;
+         background: linear-gradient(90deg, var(--primary-400), var(--primary-600));
+         transition: left 0.6s ease;
+     }
+
+     .featured-composition-card.active::before {
+         left: 0;
+     }
+
+     .featured-composition-card:hover {
+         transform: translateY(-5px);
+         box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+     }
+
+     .featured-header {
+         display: flex;
+         gap: 2rem;
+         margin-bottom: 2rem;
+         align-items: flex-start;
+     }
+
+     .featured-image-container {
+         flex: 0 0 200px;
+         border-radius: 12px;
+         overflow: hidden;
+         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+     }
+
+     .featured-image {
+         width: 100%;
+         height: 150px;
+         object-fit: cover;
+         transition: transform 0.3s ease;
+     }
+
+     .featured-composition-card:hover .featured-image {
+         transform: scale(1.05);
+     }
+
+     .featured-info {
+         flex: 1;
+     }
+
+     .featured-title {
+         font-size: 1.8rem;
+         font-weight: 700;
+         color: var(--gray-900);
+         margin-bottom: 0.5rem;
+         line-height: 1.2;
+     }
+
+     .featured-instrumentation {
+         font-size: 1.1rem;
+         color: var(--primary-600);
+         font-weight: 600;
+         margin-bottom: 1rem;
+     }
+
+     .featured-description {
+         color: var(--gray-600);
+         line-height: 1.6;
+         margin-bottom: 1.5rem;
+     }
+
+     .featured-meta {
+         display: flex;
+         gap: 1rem;
+         flex-wrap: wrap;
+         margin-bottom: 1.5rem;
+     }
+
+     .meta-badge {
+         background: var(--gray-100);
+         color: var(--gray-700);
+         padding: 0.4rem 0.8rem;
+         border-radius: 20px;
+         font-size: 0.85rem;
+         font-weight: 600;
+     }
+
+     .meta-badge.featured {
+         background: var(--primary-100);
+         color: var(--primary-700);
+     }
+
+     /* Enhanced Audio Section */
+     .featured-audio-section {
+         background: var(--gray-50);
+         border-radius: 12px;
+         padding: 1.5rem;
+         margin: 1.5rem 0;
+         border: 1px solid var(--gray-200);
+     }
+
+     .audio-header {
+         display: flex;
+         align-items: center;
+         gap: 0.75rem;
+         margin-bottom: 1rem;
+     }
+
+     .audio-icon {
+         font-size: 1.2rem;
+         color: var(--primary-500);
+     }
+
+     .audio-title {
+         font-size: 1rem;
+         font-weight: 600;
+         color: var(--gray-800);
+     }
+
+     .audio-controls {
+         display: flex;
+         align-items: center;
+         gap: 1rem;
+         margin-bottom: 1rem;
+     }
+
+     .audio-nav-btn {
+         background: var(--primary-500);
+         color: white;
+         border: none;
+         border-radius: 50%;
+         width: 40px;
+         height: 40px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         cursor: pointer;
+         transition: all 0.3s ease;
+         font-size: 1.2rem;
+     }
+
+     .audio-nav-btn:hover {
+         background: var(--primary-600);
+         transform: scale(1.1);
+     }
+
+     .audio-nav-btn:disabled {
+         background: var(--gray-300);
+         cursor: not-allowed;
+         transform: none;
+     }
+
+     .audio-info {
+         flex: 1;
+         text-align: center;
+         font-size: 0.9rem;
+         color: var(--gray-600);
+     }
+
+     .featured-audio-player {
+         width: 100%;
+         height: 50px;
+         border-radius: 8px;
+         background: white;
+         border: 1px solid var(--gray-300);
+     }
+
+     /* Score Section */
+     .featured-score-section {
+         background: var(--primary-50);
+         border-radius: 12px;
+         padding: 1.5rem;
+         margin: 1.5rem 0;
+         border: 1px solid var(--primary-200);
+         display: none;
+     }
+
+     .featured-score-section.active {
+         display: block;
+     }
+
+     .score-header {
+         display: flex;
+         align-items: center;
+         gap: 0.75rem;
+         margin-bottom: 1rem;
+     }
+
+     .score-icon {
+         font-size: 1.2rem;
+         color: var(--primary-600);
+     }
+
+     .score-title {
+         font-size: 1rem;
+         font-weight: 600;
+         color: var(--primary-800);
+     }
+
+     .score-viewer {
+         background: white;
+         border-radius: 8px;
+         overflow: hidden;
+         margin-bottom: 1rem;
+         border: 1px solid var(--primary-300);
+     }
+
+     .score-iframe {
+         width: 100%;
+         height: 500px;
+         border: none;
+     }
+
+     .score-audio-section {
+         background: white;
+         border-radius: 8px;
+         padding: 1rem;
+         border: 1px solid var(--primary-200);
+     }
+
+     /* Action Buttons */
+     .featured-actions {
+         display: flex;
+         gap: 1rem;
+         flex-wrap: wrap;
+     }
+
+     .featured-actions .btn-primary {
+         flex: 1;
+         min-width: 140px;
+         padding: 0.875rem 1.5rem;
+         font-weight: 600;
+         border-radius: 10px;
+         transition: all 0.3s ease;
+     }
+
+     .featured-actions .btn-secondary {
+         flex: 1;
+         min-width: 140px;
+         padding: 0.875rem 1.5rem;
+         font-weight: 600;
+         border-radius: 10px;
+         background: var(--gray-100);
+         color: var(--gray-700);
+         border: 2px solid var(--gray-300);
+         transition: all 0.3s ease;
+     }
+
+     .featured-actions .btn-secondary:hover {
+         background: var(--gray-200);
+         border-color: var(--gray-400);
+         transform: translateY(-2px);
+     }
+
+     .featured-actions .btn-score {
+         background: var(--primary-100);
+         color: var(--primary-700);
+         border: 2px solid var(--primary-300);
+     }
+
+     .featured-actions .btn-score:hover {
+         background: var(--primary-200);
+         border-color: var(--primary-400);
+     }
+
+     /* Navigation Controls */
+     .featured-controls {
+         display: flex;
+         align-items: center;
+         justify-content: space-between;
+         margin-bottom: 1.5rem;
+         padding: 0 1rem;
+     }
+
+     .featured-nav-btn {
+         display: flex;
+         align-items: center;
+         gap: 0.5rem;
+         background: white;
+         border: 2px solid var(--gray-200);
+         border-radius: 25px;
+         padding: 0.75rem 1.25rem;
+         cursor: pointer;
+         transition: all 0.3s ease;
+         font-weight: 600;
+         color: var(--gray-700);
+     }
+
+     .featured-nav-btn:hover {
+         border-color: var(--primary-300);
+         background: var(--primary-50);
+         color: var(--primary-700);
+         transform: translateY(-2px);
+     }
+
+     .featured-nav-btn:disabled {
+         opacity: 0.5;
+         cursor: not-allowed;
+         transform: none;
+     }
+
+     .nav-icon {
+         font-size: 1.4rem;
+         font-weight: bold;
+     }
+
+     .featured-indicators {
+         display: flex;
+         gap: 0.5rem;
+         align-items: center;
+     }
+
+     .indicator-dot {
+         width: 12px;
+         height: 12px;
+         border-radius: 50%;
+         background: var(--gray-300);
+         cursor: pointer;
+         transition: all 0.3s ease;
+     }
+
+     .indicator-dot.active {
+         background: var(--primary-500);
+         transform: scale(1.2);
+     }
+
+     .indicator-dot:hover {
+         background: var(--primary-400);
+         transform: scale(1.1);
+     }
+
+     /* Auto-cycle Control */
+     .auto-cycle-control {
+         text-align: center;
+         padding: 1rem;
+     }
+
+     .cycle-toggle {
+         display: inline-flex;
+         align-items: center;
+         gap: 0.75rem;
+         cursor: pointer;
+         font-size: 0.9rem;
+         color: var(--gray-600);
+     }
+
+     .toggle-slider {
+         position: relative;
+         width: 50px;
+         height: 24px;
+         background: var(--gray-300);
+         border-radius: 24px;
+         transition: all 0.3s ease;
+     }
+
+     .toggle-slider::before {
+         content: '';
+         position: absolute;
+         top: 2px;
+         left: 2px;
+         width: 20px;
+         height: 20px;
+         background: white;
+         border-radius: 50%;
+         transition: all 0.3s ease;
+         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+     }
+
+     .cycle-toggle input:checked + .toggle-slider {
+         background: var(--primary-500);
+     }
+
+     .cycle-toggle input:checked + .toggle-slider::before {
+         transform: translateX(26px);
+     }
+
+     .cycle-toggle input {
+         display: none;
+     }
+
+     /* Mobile Responsive */
+     @media (max-width: 768px) {
+         .featured-compositions-container {
+             padding: 1rem;
+         }
+
+         .featured-composition-card {
+             padding: 1.5rem;
+         }
+
+         .featured-header {
+             flex-direction: column;
+             gap: 1rem;
+         }
+
+         .featured-image-container {
+             flex: none;
+             width: 100%;
+             max-width: 300px;
+             margin: 0 auto;
+         }
+
+         .featured-actions {
+             flex-direction: column;
+         }
+
+         .featured-controls {
+             flex-direction: column;
+             gap: 1rem;
+             text-align: center;
+         }
+
+         .featured-nav-btn {
+             width: 100%;
+             justify-content: center;
+         }
+
+                   .score-iframe {
+              height: 400px;
+          }
+      }
+
      .card-link {
          color: var(--primary-500);
          font-weight: 600;
@@ -1382,25 +1825,45 @@
         </div>
     </section>
 
-    <!-- Main Content -->
+    <!-- Enhanced Featured Compositions -->
 <section id="compositions" style="scroll-margin-top: 120px;">
     <page-title>
         <h3>Featured Compositions</h3>
     </page-title>
     <main>
-        <div class="container">
-        </div>
-        <div class="carousel-controls">
-          <button class="carousel-btn left" onclick="scrollWorks(-1)">&#8592;</button>
-          <button class="carousel-btn right" onclick="scrollWorks(1)">&#8594;</button>
-            </div>
-            <div class="carousel-outer">
-                <div id="popular-works" class="works-grid">
-                    <div class="loading">Loading compositions...</div>
+        <div class="featured-compositions-container">
+            <!-- Main Featured Display -->
+            <div class="featured-main-display">
+                <div class="featured-composition-card" id="featured-display">
+                    <div class="loading">Loading featured composition...</div>
                 </div>
-            </section>
+            </div>
+            
+            <!-- Navigation Controls -->
+            <div class="featured-controls">
+                <button class="featured-nav-btn" id="prev-featured" onclick="navigateFeatured(-1)">
+                    <span class="nav-icon">‹</span>
+                    <span class="nav-text">Previous</span>
+                </button>
+                <div class="featured-indicators" id="featured-indicators">
+                    <!-- Dots will be generated dynamically -->
+                </div>
+                <button class="featured-nav-btn" id="next-featured" onclick="navigateFeatured(1)">
+                    <span class="nav-text">Next</span>
+                    <span class="nav-icon">›</span>
+                </button>
+            </div>
+            
+            <!-- Auto-cycle Toggle -->
+            <div class="auto-cycle-control">
+                <label class="cycle-toggle">
+                    <input type="checkbox" id="auto-cycle-toggle" checked>
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-label">Auto-cycle every 8 seconds</span>
+                </label>
+            </div>
         </div>
-    </main>
+    </main></section>
 
     <!-- Call to Action Section -->
     <section class="cta-section">
@@ -1859,64 +2322,380 @@
             }
         }
 
-        // Popular Compositions
-        async function loadCompositions() {
-            showLoading('popular-works');
-            let data;
-            let apiFailed = false;
+        // Enhanced Featured Compositions System
+        let featuredCompositions = [];
+        let currentFeaturedIndex = 0;
+        let currentAudioIndex = 0;
+        let currentVideoIndex = 0;
+        let autoCycleInterval = null;
+        let isScoreViewerOpen = false;
+
+        async function loadFeaturedCompositions() {
             try {
                 const response = await fetch('/api/compositions');
-                data = await response.json();
+                const data = await response.json();
+                
+                if (data && data.success && data.compositions && data.compositions.length > 0) {
+                    // Get featured compositions
+                    featuredCompositions = data.compositions.filter(comp => comp.featured || comp.popular);
+                    
+                    // If no featured compositions, use first 4 compositions
+                    if (featuredCompositions.length === 0) {
+                        featuredCompositions = data.compositions.slice(0, 4);
+                    }
+                    
+                    console.log('Loaded featured compositions:', featuredCompositions.length);
+                    
+                    initializeFeaturedDisplay();
+                    setupAutoCycle();
+                } else {
+                    // Fallback to example data
+                    featuredCompositions = exampleCompositions.slice(0, 4);
+                    initializeFeaturedDisplay();
+                    setupAutoCycle();
+                }
             } catch (error) {
-                apiFailed = true;
+                console.error('Error loading featured compositions:', error);
+                featuredCompositions = exampleCompositions.slice(0, 4);
+                initializeFeaturedDisplay();
+                setupAutoCycle();
             }
-            const container = document.getElementById('popular-works');
-            if (!apiFailed && data && data.success && data.compositions && data.compositions.length > 0) {
-                    const popularComps = data.compositions.filter(comp => comp.popular);
+        }
 
-                    container.innerHTML = popularComps.map(comp => `
-                    <div class="work-card" data-slug="${comp.slug}">
-                        ${comp.coverImage ? `
-                            <div class="work-image-container">
-                                <img src="${comp.coverImage}" alt="${comp.title}" class="work-image" loading="lazy">
-                            </div>
-                        ` : ''}
-                        <div class="work-header">
-                            <h3 class="work-title">${comp.title}</h3>
-                            <div class="work-instrument">${comp.instrumentation}</div>
+        function initializeFeaturedDisplay() {
+            renderFeaturedComposition();
+            createIndicators();
+            updateNavigationButtons();
+        }
+
+        function renderFeaturedComposition() {
+            const container = document.getElementById('featured-display');
+            const comp = featuredCompositions[currentFeaturedIndex];
+            
+            if (!comp) return;
+            
+            // Reset audio and video indices for new composition
+            currentAudioIndex = 0;
+            currentVideoIndex = 0;
+            isScoreViewerOpen = false;
+            
+            container.innerHTML = `
+                <div class="featured-composition-card">
+                <div class="featured-header">
+                    ${comp.coverImage ? `
+                        <div class="featured-image-container">
+                            <img src="${comp.coverImage}" alt="${comp.title}" class="featured-image">
                         </div>
-                        <div class="work-content">
-                            <div class="work-links">
-                                <button class="btn-disabled" onclick="event.stopPropagation(); showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
-                                    🚫 Currently Not Available
-                                </button>
-                            </div>
+                    ` : ''}
+                    <div class="featured-info">
+                        <h2 class="featured-title">${comp.title}</h2>
+                        <div class="featured-instrumentation">${comp.instrumentation}</div>
+                        <div class="featured-description">
+                            ${comp.description || `A ${comp.difficulty || 'beautiful'} composition for ${comp.instrumentation}${comp.year ? ` from ${comp.year}` : ''}.`}
+                        </div>
+                        <div class="featured-meta">
+                            ${comp.year ? `<span class="meta-badge">${comp.year}</span>` : ''}
+                            ${comp.difficulty ? `<span class="meta-badge">${comp.difficulty}</span>` : ''}
+                            ${comp.duration ? `<span class="meta-badge">${comp.duration}</span>` : ''}
+                            ${comp.featured || comp.popular ? `<span class="meta-badge featured">Featured</span>` : ''}
                         </div>
                     </div>
-                `).join('');
-                enableCardClicks();
+                </div>
+                
+                ${renderAudioSection(comp)}
+                
+                <div class="featured-score-section" id="score-section">
+                    <div class="score-header">
+                        <span class="score-icon">📄</span>
+                        <span class="score-title">Full Score Preview</span>
+                    </div>
+                    <div class="score-viewer">
+                        <iframe class="score-iframe" id="score-iframe" src=""></iframe>
+                    </div>
+                    <div class="score-audio-section">
+                        <div class="audio-header">
+                            <span class="audio-icon">🎵</span>
+                            <span class="audio-title">Listen while viewing score</span>
+                        </div>
+                        ${renderAudioPlayer(comp)}
+                    </div>
+                </div>
+                
+                <div class="featured-actions">
+                    <button class="btn-secondary" onclick="learnMore('${comp.slug}')">
+                        📖 Learn More
+                    </button>
+                    <button class="btn-secondary btn-score" onclick="toggleScoreViewer('${comp.scoreLink || ''}')">
+                        📄 View Full Score
+                    </button>
+                                         <button class="btn-primary" onclick="buyNow('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 25})">
+                         💳 Buy Now - $${comp.price || 25}
+                     </button>
+                 </div>
+                </div>
+             `;
+            
+            // Add active class for animation
+            container.querySelector('.featured-composition-card').classList.add('active');
+            
+            // Setup audio/video controls
+            setupMediaControls(comp);
+        }
+
+        function renderAudioSection(comp) {
+            const audioFiles = comp.audioFiles || [];
+            const hasLegacyAudio = comp.audioLink && audioFiles.length === 0;
+            const totalAudio = audioFiles.length || (hasLegacyAudio ? 1 : 0);
+            
+            if (totalAudio === 0) return '';
+            
+            return `
+                <div class="featured-audio-section">
+                    <div class="audio-header">
+                        <span class="audio-icon">🎵</span>
+                        <span class="audio-title">Audio Preview</span>
+                    </div>
+                    ${totalAudio > 1 ? `
+                        <div class="audio-controls">
+                            <button class="audio-nav-btn" onclick="previousAudio()" id="prev-audio">‹</button>
+                            <div class="audio-info" id="audio-info">Track 1 of ${totalAudio}</div>
+                            <button class="audio-nav-btn" onclick="nextAudio()" id="next-audio">›</button>
+                        </div>
+                    ` : ''}
+                    ${renderAudioPlayer(comp)}
+                </div>
+            `;
+        }
+
+        function renderAudioPlayer(comp) {
+            const audioFiles = comp.audioFiles || [];
+            const hasLegacyAudio = comp.audioLink && audioFiles.length === 0;
+            
+            if (audioFiles.length > 0) {
+                const currentAudio = audioFiles[currentAudioIndex] || audioFiles[0];
+                return `
+                    <audio class="featured-audio-player" controls preload="metadata">
+                        <source src="${currentAudio.url}" type="audio/mpeg">
+                        <source src="${currentAudio.url}" type="audio/wav">
+                        <source src="${currentAudio.url}" type="audio/mp4">
+                        Your browser does not support the audio element.
+                    </audio>
+                `;
+            } else if (hasLegacyAudio) {
+                return `
+                    <audio class="featured-audio-player" controls preload="metadata">
+                        <source src="${comp.audioLink}" type="audio/mpeg">
+                        <source src="${comp.audioLink}" type="audio/wav">
+                        <source src="${comp.audioLink}" type="audio/mp4">
+                        Your browser does not support the audio element.
+                    </audio>
+                `;
+            }
+            
+            return '<p style="text-align: center; color: var(--gray-500);">No audio preview available</p>';
+        }
+
+        function setupMediaControls(comp) {
+            const audioFiles = comp.audioFiles || [];
+            const hasLegacyAudio = comp.audioLink && audioFiles.length === 0;
+            const totalAudio = audioFiles.length || (hasLegacyAudio ? 1 : 0);
+            
+            // Update audio navigation buttons
+            const prevBtn = document.getElementById('prev-audio');
+            const nextBtn = document.getElementById('next-audio');
+            
+            if (prevBtn && nextBtn && totalAudio > 1) {
+                prevBtn.disabled = currentAudioIndex === 0;
+                nextBtn.disabled = currentAudioIndex >= totalAudio - 1;
+            }
+        }
+
+        function createIndicators() {
+            const container = document.getElementById('featured-indicators');
+            container.innerHTML = featuredCompositions.map((_, index) => `
+                <span class="indicator-dot ${index === currentFeaturedIndex ? 'active' : ''}" 
+                      onclick="goToFeatured(${index})"></span>
+            `).join('');
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prev-featured');
+            const nextBtn = document.getElementById('next-featured');
+            
+            if (prevBtn && nextBtn) {
+                prevBtn.disabled = currentFeaturedIndex === 0;
+                nextBtn.disabled = currentFeaturedIndex >= featuredCompositions.length - 1;
+            }
+        }
+
+        // Navigation Functions
+        function navigateFeatured(direction) {
+            const newIndex = currentFeaturedIndex + direction;
+            if (newIndex >= 0 && newIndex < featuredCompositions.length) {
+                currentFeaturedIndex = newIndex;
+                renderFeaturedComposition();
+                createIndicators();
+                updateNavigationButtons();
+                
+                // Reset auto-cycle timer
+                if (autoCycleInterval) {
+                    clearInterval(autoCycleInterval);
+                    setupAutoCycle();
+                }
+            }
+        }
+
+        function goToFeatured(index) {
+            if (index >= 0 && index < featuredCompositions.length) {
+                currentFeaturedIndex = index;
+                renderFeaturedComposition();
+                createIndicators();
+                updateNavigationButtons();
+                
+                // Reset auto-cycle timer
+                if (autoCycleInterval) {
+                    clearInterval(autoCycleInterval);
+                    setupAutoCycle();
+                }
+            }
+        }
+
+        function previousAudio() {
+            const comp = featuredCompositions[currentFeaturedIndex];
+            const audioFiles = comp.audioFiles || [];
+            const totalAudio = audioFiles.length;
+            
+            if (totalAudio > 1 && currentAudioIndex > 0) {
+                currentAudioIndex--;
+                updateAudioPlayer(comp);
+                setupMediaControls(comp);
+                updateAudioInfo();
+            }
+        }
+
+        function nextAudio() {
+            const comp = featuredCompositions[currentFeaturedIndex];
+            const audioFiles = comp.audioFiles || [];
+            const totalAudio = audioFiles.length;
+            
+            if (totalAudio > 1 && currentAudioIndex < totalAudio - 1) {
+                currentAudioIndex++;
+                updateAudioPlayer(comp);
+                setupMediaControls(comp);
+                updateAudioInfo();
+            }
+        }
+
+        function updateAudioPlayer(comp) {
+            const audioPlayer = document.querySelector('.featured-audio-player');
+            const audioFiles = comp.audioFiles || [];
+            
+            if (audioPlayer && audioFiles.length > 0) {
+                const currentAudio = audioFiles[currentAudioIndex];
+                audioPlayer.src = '';
+                audioPlayer.innerHTML = `
+                    <source src="${currentAudio.url}" type="audio/mpeg">
+                    <source src="${currentAudio.url}" type="audio/wav">
+                    <source src="${currentAudio.url}" type="audio/mp4">
+                    Your browser does not support the audio element.
+                `;
+                audioPlayer.load();
+            }
+        }
+
+        function updateAudioInfo() {
+            const comp = featuredCompositions[currentFeaturedIndex];
+            const audioFiles = comp.audioFiles || [];
+            const audioInfo = document.getElementById('audio-info');
+            
+            if (audioInfo && audioFiles.length > 1) {
+                audioInfo.textContent = `Track ${currentAudioIndex + 1} of ${audioFiles.length}`;
+            }
+        }
+
+        // Auto-cycle Setup
+        function setupAutoCycle() {
+            const toggle = document.getElementById('auto-cycle-toggle');
+            
+            if (toggle && toggle.checked && featuredCompositions.length > 1) {
+                autoCycleInterval = setInterval(() => {
+                    const nextIndex = (currentFeaturedIndex + 1) % featuredCompositions.length;
+                    goToFeatured(nextIndex);
+                }, 8000); // 8 seconds
+            }
+            
+            // Handle toggle changes
+            if (toggle) {
+                toggle.addEventListener('change', function() {
+                    if (this.checked) {
+                        setupAutoCycle();
+                    } else {
+                        if (autoCycleInterval) {
+                            clearInterval(autoCycleInterval);
+                            autoCycleInterval = null;
+                        }
+                    }
+                });
+            }
+        }
+
+        // Action Functions
+        function learnMore(slug) {
+            window.location.href = `/composition/${slug}`;
+        }
+
+        function toggleScoreViewer(scoreLink) {
+            const scoreSection = document.getElementById('score-section');
+            const scoreIframe = document.getElementById('score-iframe');
+            
+            if (!scoreLink || scoreLink.trim() === '') {
+                alert('Score preview is not available for this composition.');
+                return;
+            }
+            
+            if (isScoreViewerOpen) {
+                scoreSection.classList.remove('active');
+                isScoreViewerOpen = false;
             } else {
-                // Use example data for local testing
-                container.innerHTML = exampleCompositions.map(comp => `
-                    <div class="work-card" data-slug="${comp.slug}">
-                        ${comp.coverImage ? `
-                            <div class="work-image-container">
-                                <img src="${comp.coverImage}" alt="${comp.title}" class="work-image" loading="lazy">
-                            </div>
-                        ` : ''}
-                        <div class="work-header">
-                            <h3 class="work-title">${comp.title}</h3>
-                            <div class="work-instrument">${comp.instrumentation}</div>
-                        </div>
-                        <div class="work-content">
-                                <button class="btn-disabled" onclick="event.stopPropagation(); showUnavailableMessage('${comp.title.replace(/'/g, "\\'")}')">
-                                    🚫 Currently Not Available
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-                enableCardClicks();
+                // Load score in iframe
+                scoreIframe.src = `/pdfjs/web/viewer.html?file=${encodeURIComponent(scoreLink)}#page=1&zoom=page-fit&toolbar=1&navpanes=0`;
+                scoreSection.classList.add('active');
+                isScoreViewerOpen = true;
+                
+                // Smooth scroll to score section
+                setTimeout(() => {
+                    scoreSection.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 300);
+            }
+        }
+
+        async function buyNow(compositionId, title, price) {
+            try {
+                const confirmed = confirm(`Purchase "${title}" for $${price}?\n\nYou'll be redirected to checkout.`);
+                
+                if (confirmed) {
+                    const response = await fetch('/api/create-checkout-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ compositionId: compositionId })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.checkoutUrl) {
+                        window.location.href = data.checkoutUrl;
+                    } else {
+                        alert('Error creating checkout session. Please try again.');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error processing purchase. Please try again.');
             }
         }
 
@@ -2317,7 +3096,7 @@
 
         // Load everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            loadCompositions();
+            loadFeaturedCompositions(); // Load the enhanced featured compositions system
             loadFeaturedComposition();
             initHeroVideo(); // This will handle fallback to carousel internally
             initHeroRotation();

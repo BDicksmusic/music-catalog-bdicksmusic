@@ -1255,10 +1255,10 @@
             border-bottom: 1px solid var(--purple-200);
         }
         
-        /* Metadata Section Styling - Blueprint Design */
+        /* Metadata Section Styling - Enhanced Design */
         .metadata-section {
             width: 100%;
-            max-width: 1400px;
+            max-width: 1000px;
             margin: 4rem auto 0;
             padding: 0 2rem;
             box-sizing: border-box;
@@ -1269,13 +1269,11 @@
         }
         
         .metadata-card {
-            background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+            background: white;
             border-radius: 16px;
-            border: 2px solid #2d4a6b;
+            border: 1px solid var(--gray-200);
             padding: 0;
-            box-shadow: 
-                0 0 30px rgba(59, 130, 246, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -1310,39 +1308,13 @@
         }
         
         .metadata-title {
-            color: #60a5fa;
-            font-size: 1.4rem;
+            color: var(--gray-900);
+            font-size: 1.5rem;
             font-weight: 700;
             margin: 0;
             padding: 2rem 2rem 1rem;
             text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .metadata-title::after {
-            content: 'SPEC SHEET';
-            position: absolute;
-            top: 0.5rem;
-            right: 2rem;
-            font-size: 0.7rem;
-            color: #6b7280;
-            font-weight: 400;
-        }
-        
-        .metadata-title::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 2rem;
-            right: 2rem;
-            height: 1px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                #3b82f6 50%, 
-                transparent 100%);
+            border-bottom: 2px solid var(--primary-100);
         }
         
         /* Blueprint Grid Layout */
@@ -1541,121 +1513,194 @@
             border-top-color: #374151;
         }
         
-        /* Metadata Table Styling */
-        .metadata-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(15, 20, 25, 0.8);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        /* Enhanced Essential Details Section */
+        .composition-essential-details {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-200);
         }
         
-        .metadata-table thead {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        .composition-essential-details h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin: 0 0 1.5rem 0;
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-100);
         }
         
-        .metadata-table th {
-            padding: 1rem 1.5rem;
-            text-align: left;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
+        .essential-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .essential-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+        
+        .essential-detail-item:hover {
+            background: white;
+            border-color: var(--primary-200);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .detail-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .detail-content {
+            flex: 1;
+        }
+        
+        .detail-label {
+            font-size: 0.8rem;
             font-weight: 600;
-            color: #f1f5f9;
+            color: var(--gray-600);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 2px solid #374151;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
         }
         
-        .metadata-table th:first-child {
-            width: 30%;
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--gray-900);
         }
         
-        .metadata-table th:last-child {
-            width: 70%;
+        /* Collapsible Sections Container */
+        .collapsible-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
         
-        .metadata-table tbody tr {
-            border-bottom: 1px solid #374151;
-            transition: all 0.2s ease;
+        /* Enhanced Metadata Toggle Items */
+        .metadata-toggle-item {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
         
-        .metadata-table tbody tr:hover {
-            background: rgba(59, 130, 246, 0.1);
-            transform: translateX(3px);
+        .metadata-toggle-item:hover {
+            border-color: var(--primary-200);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
-        .metadata-table tbody tr:last-child {
-            border-bottom: none;
+        .metadata-toggle-item.active {
+            border-color: var(--primary-300);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
         }
         
-        .metadata-table td {
-            padding: 1rem 1.5rem;
-            vertical-align: top;
+        .metadata-toggle-header {
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--gray-50);
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        
+        .metadata-toggle-header:hover {
+            background: var(--primary-50);
+        }
+        
+        .metadata-toggle-item.active .metadata-toggle-header {
+            background: var(--primary-100);
+        }
+        
+        .toggle-header-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .toggle-icon {
+            font-size: 1.2rem;
+        }
+        
+        .toggle-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+        
+        .metadata-toggle-arrow {
+            font-size: 1.2rem;
+            color: var(--gray-500);
+            transition: transform 0.3s ease;
+        }
+        
+        .metadata-toggle-item.active .metadata-toggle-arrow {
+            transform: rotate(180deg);
+            color: var(--primary-600);
+        }
+        
+        .metadata-toggle-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .metadata-toggle-item.active .metadata-toggle-content {
+            max-height: 500px;
+        }
+        
+        .metadata-items-grid {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            background: white;
+        }
+        
+        .metadata-item-card {
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+        
+        .metadata-item-card:hover {
+            background: white;
+            border-color: var(--primary-200);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .metadata-label {
+            font-size: 0.8rem;
             font-weight: 600;
-            font-size: 0.9rem;
-            color: #60a5fa;
-            font-family: 'Courier New', monospace;
+            color: var(--gray-600);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            position: relative;
-        }
-        
-        .metadata-label::before {
-            content: '▶';
-            color: #3b82f6;
-            margin-right: 0.5rem;
-            font-size: 0.7rem;
+            margin-bottom: 0.5rem;
         }
         
         .metadata-value {
-            color: #f3f4f6;
             font-size: 0.95rem;
-            line-height: 1.5;
-            font-weight: 400;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
-        
-        .metadata-value.number {
-            font-family: 'Courier New', monospace;
-            color: #34d399;
             font-weight: 500;
-        }
-        
-        .metadata-value.boolean {
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-        }
-        
-        .metadata-value.boolean.true {
-            color: #34d399;
-        }
-        
-        .metadata-value.boolean.false {
-            color: #fbbf24;
-        }
-        
-        .metadata-section-divider {
-            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
-        }
-        
-        .metadata-section-divider td {
-            padding: 0.75rem 1.5rem;
-            font-weight: 700;
-            color: #d1d5db;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .metadata-item {
-            display: table-row;
+            color: var(--gray-900);
+            line-height: 1.4;
         }
         
         /* Removed duplicate mobile styles - handled in consolidated mobile section above */
@@ -1908,36 +1953,62 @@
                 flex: 0 0 250px;
             }
             
-            /* Mobile Metadata Table Styling */
-            .metadata-table {
-                font-size: 0.85rem;
+            /* Mobile Metadata Styling */
+            .composition-essential-details {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
             }
             
-            .metadata-table th,
-            .metadata-table td {
-                padding: 0.75rem 1rem;
+            .composition-essential-details h4 {
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
             }
             
-            .metadata-table th {
-                font-size: 0.8rem;
+            .essential-details-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .essential-detail-item {
+                padding: 0.75rem;
+            }
+            
+            .detail-icon {
+                font-size: 1.3rem;
+            }
+            
+            .detail-label {
+                font-size: 0.75rem;
+            }
+            
+            .detail-value {
+                font-size: 0.9rem;
+            }
+            
+            .metadata-toggle-header {
+                padding: 1rem 1.25rem;
+            }
+            
+            .toggle-title {
+                font-size: 0.9rem;
+            }
+            
+            .metadata-items-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+            
+            .metadata-item-card {
+                padding: 0.75rem;
             }
             
             .metadata-label {
-                font-size: 0.8rem;
-            }
-            
-            .metadata-label::before {
-                font-size: 0.6rem;
-                margin-right: 0.3rem;
+                font-size: 0.75rem;
             }
             
             .metadata-value {
                 font-size: 0.85rem;
-            }
-            
-            .metadata-section-divider td {
-                padding: 0.5rem 1rem;
-                font-size: 0.75rem;
             }
             
             /* Mobile scores section */

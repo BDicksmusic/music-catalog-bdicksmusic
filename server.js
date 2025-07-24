@@ -354,16 +354,32 @@ const fetchSimilarWorks = async (similarWorksIds) => {
     }
 
     try {
-        const similarWorksPromises = similarWorksIds.map(id => 
-            notion.pages.retrieve({ page_id: id })
-        );
+        console.log('🔗 DEBUG - Attempting to fetch', similarWorksIds.length, 'similar works individually...');
+        
+        const similarWorksPromises = similarWorksIds.map(async (id, index) => {
+            try {
+                console.log(`🔗 DEBUG - Fetching similar work ${index + 1}/${similarWorksIds.length}: ${id}`);
+                const page = await notion.pages.retrieve({ page_id: id });
+                const transformed = transformNotionPage(page);
+                console.log(`🔗 DEBUG - Successfully fetched: "${transformed.title}" (${transformed.id})`);
+                return transformed;
+            } catch (error) {
+                console.error(`🔗 ERROR - Failed to fetch similar work ${index + 1} (${id}):`, error.message);
+                return null; // Return null for failed fetches
+            }
+        });
         
         const similarWorksPages = await Promise.all(similarWorksPromises);
-        const transformedWorks = similarWorksPages.map(transformNotionPage);
-        console.log('🔗 DEBUG - Successfully fetched and transformed similar works:', transformedWorks.length);
-        return transformedWorks;
+        
+        // Filter out null results (failed fetches)
+        const validWorks = similarWorksPages.filter(work => work !== null);
+        
+        console.log(`🔗 DEBUG - Fetch results: ${validWorks.length}/${similarWorksIds.length} successful`);
+        console.log('🔗 DEBUG - Valid similar works:', validWorks.map(w => `"${w.title}" (${w.id})`));
+        
+        return validWorks;
     } catch (error) {
-        console.error('Error fetching similar works:', error);
+        console.error('🔗 ERROR - Critical error in fetchSimilarWorks:', error);
         return [];
     }
 };
@@ -582,7 +598,29 @@ const transformNotionPage = (page) => {
         popular: properties.Popular?.checkbox || false,
         slug: properties.Slug?.rich_text[0]?.plain_text || '',
         shortInstrumentList: notionRichTextToHtml(properties['Short Instrument List']?.rich_text) || '',
-        similarWorksIds: properties['similar works']?.relation?.map(rel => rel.id) || [],
+        similarWorksIds: (() => {
+            // Debug: Check all possible similar works property names
+            const possibleProps = ['similar works', 'Similar Works', 'Similar works', 'SimilarWorks', 'Related Works', 'related works'];
+            let foundProp = null;
+            let foundIds = [];
+            
+            for (const prop of possibleProps) {
+                if (properties[prop]?.relation?.length > 0) {
+                    foundProp = prop;
+                    foundIds = properties[prop].relation.map(rel => rel.id);
+                    console.log(`🔗 DEBUG - Found similar works under property "${prop}": ${foundIds.length} items`);
+                    console.log(`🔗 DEBUG - Similar works IDs:`, foundIds);
+                    break;
+                }
+            }
+            
+            if (!foundProp) {
+                console.log(`🔗 DEBUG - No similar works found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
+                console.log(`🔗 DEBUG - Available relation properties:`, Object.keys(properties).filter(key => properties[key].type === 'relation'));
+            }
+            
+            return foundIds;
+        })(),
     };
 };
 
@@ -779,6 +817,50 @@ app.get('/api/debug/test-media-loading', async (req, res) => {
             success: false,
             error: error.message,
             stack: error.stack
+        });
+    }
+});
+
+// DEBUG: Test similar works for a specific composition
+app.get('/api/debug/similar-works/:id', async (req, res) => {
+    try {
+        const compositionId = req.params.id;
+        console.log('🔗 DEBUG - Testing similar works for composition:', compositionId);
+        
+        // Get the composition page
+        const compositionPage = await notion.pages.retrieve({ page_id: compositionId });
+        const compositionData = transformNotionPage(compositionPage);
+        
+        console.log('🔗 DEBUG - Composition data:', {
+            title: compositionData.title,
+            similarWorksIds: compositionData.similarWorksIds,
+            similarWorksCount: compositionData.similarWorksIds?.length || 0
+        });
+        
+        // Test fetching similar works
+        const similarWorks = await fetchSimilarWorks(compositionData.similarWorksIds);
+        
+        res.json({
+            success: true,
+            compositionId,
+            compositionTitle: compositionData.title,
+            debug: {
+                similarWorksIds: compositionData.similarWorksIds,
+                expectedCount: compositionData.similarWorksIds?.length || 0,
+                actualCount: similarWorks?.length || 0,
+                similarWorks: similarWorks?.map(w => ({
+                    id: w.id,
+                    title: w.title,
+                    slug: w.slug
+                })) || []
+            }
+        });
+    } catch (error) {
+        console.error('❌ Debug similar works error:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message,
+            stack: error.stack 
         });
     }
 });

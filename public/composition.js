@@ -935,93 +935,100 @@ if (notesContainer) {
         });
     }
     
-    // Enhanced Metadata Table
+    // Enhanced Dropdown Metadata System
     const metadataContainer = document.querySelector('#metadata-toggle-system');
     if (metadataContainer) {
-        // Comprehensive metadata items with proper categorization
-        const metadataItems = [
-            // Basic Information Section
-            { section: 'Basic Information', label: 'Title', value: comp.title || 'Untitled', type: 'text' },
-            { section: 'Basic Information', label: 'Year Composed', value: comp.year || 'Not specified', type: 'number' },
-            { section: 'Basic Information', label: 'Duration', value: comp.duration || 'Not specified', type: 'text' },
-            { section: 'Basic Information', label: 'Difficulty Level', value: comp.difficulty || 'Not specified', type: 'text' },
-            { section: 'Basic Information', label: 'Genre', value: comp.genre || 'Not specified', type: 'text' },
-            
-            // Instrumentation Section
-            { section: 'Instrumentation', label: 'Full Instrumentation', value: comp.instrumentation || 'Not specified', type: 'text' },
-            { section: 'Instrumentation', label: 'Short Instrument List', value: comp.shortInstrumentList || 'Not specified', type: 'text' },
-            { section: 'Instrumentation', label: 'Type', value: comp.type || 'Original', type: 'text' },
-            
-            // Media & Availability Section
-            { section: 'Media & Availability', label: 'Audio Recordings', value: comp.audioFiles?.length || 0, type: 'number' },
-            { section: 'Media & Availability', label: 'Video Recordings', value: comp.videoFiles?.length || 0, type: 'number' },
-            { section: 'Media & Availability', label: 'Score Available', value: comp.scoreLink || comp.scoreFiles?.length > 0 ? 'Yes' : 'No', type: 'boolean' },
-            { section: 'Media & Availability', label: 'Featured Work', value: comp.featured ? 'Yes' : 'No', type: 'boolean' },
-            { section: 'Media & Availability', label: 'Popular', value: comp.popular ? 'Yes' : 'No', type: 'boolean' },
-            { section: 'Media & Availability', label: 'Price', value: comp.price ? `$${comp.price}` : 'Not for sale', type: 'text' },
-            
-            // Additional Information Section
-            { section: 'Additional Information', label: 'Tags', value: comp.tags && comp.tags.length > 0 ? comp.tags.join(', ') : 'None', type: 'text' },
-            { section: 'Additional Information', label: 'Related Works', value: comp.similarWorks?.length || 0, type: 'number' },
-            { section: 'Additional Information', label: 'Created', value: formatDate(comp.created) || 'Not specified', type: 'text' },
-            { section: 'Additional Information', label: 'Last Edited', value: formatDate(comp.lastEdited) || 'Not specified', type: 'text' }
-        ].filter(item => item.value !== 'Not specified' && item.value !== null && item.value !== undefined);
+        // Always-visible essential details section
+        const essentialDetails = [
+            { label: 'Year Composed', value: comp.year, icon: '📅' },
+            { label: 'Duration', value: comp.duration, icon: '⏱️' },
+            { label: 'Difficulty Level', value: comp.difficulty, icon: '🎯' },
+            { label: 'Genre', value: comp.genre, icon: '🎵' }
+        ].filter(item => item.value && item.value !== 'Not specified');
 
-        // Group items by section
-        const groupedMetadata = {};
-        metadataItems.forEach(item => {
-            if (!groupedMetadata[item.section]) {
-                groupedMetadata[item.section] = [];
-            }
-            groupedMetadata[item.section].push(item);
-        });
-
-        // Generate table HTML
-        let tableRows = '';
-        Object.entries(groupedMetadata).forEach(([sectionName, items]) => {
-            // Add section divider
-            tableRows += `
-                <tr class="metadata-section-divider">
-                    <td colspan="2">${sectionName}</td>
-                </tr>
+        let essentialHtml = '';
+        if (essentialDetails.length > 0) {
+            essentialHtml = `
+                <div class="composition-essential-details">
+                    <h4>📊 Key Details</h4>
+                    <div class="essential-details-grid">
+                        ${essentialDetails.map(detail => `
+                            <div class="essential-detail-item">
+                                <span class="detail-icon">${detail.icon}</span>
+                                <div class="detail-content">
+                                    <div class="detail-label">${detail.label}</div>
+                                    <div class="detail-value">${detail.value}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
             `;
-            
-            // Add items for this section
-            items.forEach(item => {
-                let valueClass = '';
-                let displayValue = item.value;
-                
-                if (item.type === 'number') {
-                    valueClass = 'number';
-                } else if (item.type === 'boolean') {
-                    valueClass = `boolean ${item.value.toLowerCase() === 'yes' ? 'true' : 'false'}`;
-                    displayValue = item.value.toLowerCase() === 'yes' ? '✅ Yes' : '❌ No';
-                }
-                
-                tableRows += `
-                    <tr class="metadata-item">
-                        <td class="metadata-label">${item.label}</td>
-                        <td class="metadata-value ${valueClass}">${displayValue}</td>
-                    </tr>
-                `;
-            });
-        });
+        }
 
-        const metadataTableHtml = `
-            <table class="metadata-table">
-                <thead>
-                    <tr>
-                        <th>Property</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${tableRows}
-                </tbody>
-            </table>
-        `;
+        // Collapsible sections
+        const metadataToggles = [
+            {
+                title: '🎼 Instrumentation Details',
+                icon: '🎼',
+                items: [
+                    { label: 'Full Instrumentation', value: comp.instrumentation || 'Not specified' },
+                    { label: 'Short Instrument List', value: comp.shortInstrumentList || 'Not specified' },
+                    { label: 'Composition Type', value: comp.type || 'Original' }
+                ].filter(item => item.value !== 'Not specified')
+            },
+            {
+                title: '📊 Performance & Media',
+                icon: '📊',
+                items: [
+                    { label: 'Audio Recordings', value: `${comp.audioFiles?.length || 0} recordings available` },
+                    { label: 'Video Recordings', value: `${comp.videoFiles?.length || 0} videos available` },
+                    { label: 'Score Available', value: comp.scoreLink || comp.scoreFiles?.length > 0 ? '✅ Yes' : '❌ No' },
+                    { label: 'Featured Work', value: comp.featured ? '⭐ Featured' : '📝 Standard' },
+                    { label: 'Popular', value: comp.popular ? '🔥 Popular' : '📄 Regular' },
+                    { label: 'Price', value: comp.price ? `💰 $${comp.price}` : '🆓 Contact for pricing' }
+                ]
+            },
+            {
+                title: '🏷️ Additional Information',
+                icon: '🏷️',
+                items: [
+                    { label: 'Tags', value: comp.tags && comp.tags.length > 0 ? comp.tags.join(', ') : 'None' },
+                    { label: 'Related Works', value: `${comp.similarWorks?.length || 0} related compositions` },
+                    { label: 'Created', value: formatDate(comp.created) || 'Not specified' },
+                    { label: 'Last Edited', value: formatDate(comp.lastEdited) || 'Not specified' }
+                ].filter((item, index) => {
+                    // Keep tags and related works even if empty, filter others
+                    if (item.label === 'Tags' || item.label === 'Related Works') return true;
+                    return item.value !== 'Not specified';
+                })
+            }
+        ].filter(section => section.items.length > 0);
 
-        metadataContainer.innerHTML = metadataTableHtml;
+        const metadataHtml = metadataToggles.map((section, index) => `
+            <div class="metadata-toggle-item" data-toggle="${index}">
+                <div class="metadata-toggle-header" onclick="toggleMetadataSection(${index})">
+                    <div class="toggle-header-content">
+                        <span class="toggle-icon">${section.icon}</span>
+                        <span class="toggle-title">${section.title}</span>
+                    </div>
+                    <span class="metadata-toggle-arrow">⌄</span>
+                </div>
+                <div class="metadata-toggle-content">
+                    <div class="metadata-items-grid">
+                        ${section.items.map(item => `
+                            <div class="metadata-item-card">
+                                <div class="metadata-label">${item.label}</div>
+                                <div class="metadata-value">${item.value}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        // Combine essential details with collapsible metadata
+        metadataContainer.innerHTML = essentialHtml + (metadataHtml ? `<div class="collapsible-sections">${metadataHtml}</div>` : '');
     }
     
     // Related Compositions Carousel
@@ -1773,7 +1780,38 @@ function stopAllVideos() {
     });
 }
 
-// Metadata is now displayed as a table - no toggle functions needed
+// Enhanced Metadata Toggle System Functions
+function toggleMetadataSection(index) {
+    const toggleItem = document.querySelector(`[data-toggle="${index}"]`);
+    if (!toggleItem) return;
+    
+    // Get all toggle items for accordion behavior
+    const allToggles = document.querySelectorAll('.metadata-toggle-item');
+    const isCurrentlyActive = toggleItem.classList.contains('active');
+    
+    // Close all other sections (accordion style)
+    allToggles.forEach((item, i) => {
+        if (i !== index) {
+            item.classList.remove('active');
+        }
+    });
+    
+    // Toggle the clicked section
+    if (isCurrentlyActive) {
+        toggleItem.classList.remove('active');
+    } else {
+        toggleItem.classList.add('active');
+        
+        // Smooth scroll to the section if it's being opened
+        setTimeout(() => {
+            toggleItem.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'nearest',
+                inline: 'center'
+            });
+        }, 200);
+    }
+}
 
 // Related Compositions Functions
 function renderRelatedCompositions(compositions) {
