@@ -436,9 +436,11 @@ if (shortInstrContainer && comp.shortInstrumentList) {
 }
 
 
-// Program Notes
+// Program Notes and Performance Notes (Combined)
 const notesContainer = document.querySelector('.composition-notes-container');
 let notesHtml = '';
+
+// Add Program Notes if they exist
 if (comp.programNotes) {
     notesHtml += `
         <section class="composition-program-notes">
@@ -447,13 +449,8 @@ if (comp.programNotes) {
         </section>
     `;
 }
-if (notesContainer) {
-    notesContainer.innerHTML = notesHtml;
-}
 
-// Performance Notes
-const perfContainer = document.querySelector('.composition-performance-container');
-let perfHtml = '';
+// Add Performance Notes if they exist (directly under Program Notes)
 if (comp.performanceNotes) {
     // Convert markdown-style dashes to HTML list
     const formattedNotes = comp.performanceNotes
@@ -462,8 +459,8 @@ if (comp.performanceNotes) {
         .map(item => `<li>${item.trim()}</li>`)
         .join('');
     
-    perfHtml += `
-        <section class="composition-performance-notes">
+    notesHtml += `
+        <section class="composition-performance-notes" style="margin-top: 1.5rem;">
             <h3>Performance Notes</h3>
             <div class="performance-notes-content">
                 <ul class="performance-notes-list">
@@ -473,8 +470,16 @@ if (comp.performanceNotes) {
         </section>
     `;
 }
-if (perfContainer) {
-    perfContainer.innerHTML = perfHtml;
+
+// Only show the notes container if there are program notes or performance notes
+if (notesContainer) {
+    if (notesHtml.trim()) {
+        notesContainer.innerHTML = notesHtml;
+        notesContainer.parentElement.style.display = 'block';
+    } else {
+        notesContainer.innerHTML = '';
+        notesContainer.parentElement.style.display = 'none';
+    }
 }
 
     // Enhanced video display with multiple videos (excluding score videos)

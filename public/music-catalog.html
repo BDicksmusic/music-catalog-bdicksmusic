@@ -86,14 +86,6 @@
             margin-bottom: 0;
         }
 
-        .filter-label {
-            display: block;
-            font-weight: 600;
-            color: var(--gray-700);
-            margin-bottom: 0.4rem;
-            font-size: 0.85rem;
-        }
-
         .filter-row {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
@@ -166,6 +158,14 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 1rem;
+        }
+
+        .filter-actions button {
+            flex-shrink: 0;
+        }
+
+        .sort-controls-inline {
+            margin-left: auto;
         }
 
         .sort-controls-inline {
@@ -417,17 +417,44 @@
             }
 
             .filter-row {
+                display: grid;
                 grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto auto;
                 gap: 0.75rem;
             }
 
+            /* Search goes first on mobile */
+            .filter-section:nth-child(1) {
+                order: 1;
+            }
+            
+            /* Other filters follow */
+            .filter-section:nth-child(2) {
+                order: 2;
+            }
+            
+            .filter-section:nth-child(3) {
+                order: 3;
+            }
+            
+            .filter-section:nth-child(4) {
+                order: 4;
+            }
+            
+            .filter-section:nth-child(5) {
+                order: 5;
+            }
+
             .filter-actions {
-                flex-direction: column;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
                 gap: 0.75rem;
             }
 
             .sort-controls-inline {
-                justify-content: center;
+                flex-shrink: 0;
             }
 
             .results-header {
@@ -546,12 +573,10 @@
 
         <div class="filter-row">
             <div class="filter-section">
-                <label class="filter-label" for="search">Search Compositions</label>
                 <input type="text" id="search" class="search-box" placeholder="Search by title, instrumentation, or keywords...">
             </div>
 
             <div class="filter-section">
-                <label class="filter-label" for="category">Category</label>
                 <select id="category" class="filter-select">
                     <option value="">All Categories</option>
                     <option value="compositions">Original Compositions</option>
@@ -560,7 +585,6 @@
             </div>
 
             <div class="filter-section">
-                <label class="filter-label" for="ensemble-type">Ensemble Type</label>
                 <select id="ensemble-type" class="filter-select">
                     <option value="">All Ensemble Types</option>
                     <option value="solo">Solo Works</option>
@@ -572,7 +596,6 @@
             </div>
 
             <div class="filter-section">
-                <label class="filter-label" for="instrumentation">Instrumentation</label>
                 <select id="instrumentation" class="filter-select">
                     <option value="">All Instrumentations</option>
                     <option value="trumpet">Trumpet</option>
@@ -585,7 +608,6 @@
             </div>
 
             <div class="filter-section">
-                <label class="filter-label" for="difficulty">Difficulty Level</label>
                 <select id="difficulty" class="filter-select">
                     <option value="">Any Difficulty</option>
                     <option value="beginner">Beginner</option>
@@ -607,14 +629,13 @@
                 Clear All
             </button>
             <div class="sort-controls-inline">
-                <label class="sort-label" for="sort-by-inline">Sort by:</label>
                 <select id="sort-by-inline" class="filter-select">
-                    <option value="title">Title A-Z</option>
-                    <option value="title-desc">Title Z-A</option>
-                    <option value="year">Year (Newest)</option>
-                    <option value="year-desc">Year (Oldest)</option>
-                    <option value="duration">Duration (Shortest)</option>
-                    <option value="duration-desc">Duration (Longest)</option>
+                    <option value="title">Sort: Title A-Z</option>
+                    <option value="title-desc">Sort: Title Z-A</option>
+                    <option value="year">Sort: Year (Newest)</option>
+                    <option value="year-desc">Sort: Year (Oldest)</option>
+                    <option value="duration">Sort: Duration (Shortest)</option>
+                    <option value="duration-desc">Sort: Duration (Longest)</option>
                 </select>
             </div>
         </div>
