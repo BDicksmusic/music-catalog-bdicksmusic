@@ -38,48 +38,29 @@
         .catalog-hero-content {
             position: relative;
             z-index: 2;
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
+            text-align: left;
         }
 
         .catalog-hero h1 {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
             animation: slideInUp 0.8s ease;
         }
 
         .catalog-hero p {
-            font-size: 1.2rem;
-            line-height: 1.6;
+            font-size: 1rem;
+            line-height: 1.5;
             opacity: 0.95;
             animation: slideInUp 0.8s ease 0.2s both;
         }
 
         .catalog-filters {
-            background: white;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin: -1.5rem 2rem 1.5rem;
-            border-radius: 12px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .filters-header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .filters-header h2 {
-            color: var(--gray-800);
-            font-size: 1.3rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .filters-header p {
-            color: var(--gray-600);
-            font-size: 0.9rem;
+            background: transparent;
+            padding: 1.5rem 2rem;
+            margin: 0;
         }
 
         .filter-section {
@@ -549,13 +530,8 @@
         </div>
     </section>
 
-    <!-- Advanced Filtering System -->
+    <!-- Filtering System -->
     <section class="catalog-filters">
-        <div class="filters-header">
-            <h2>Find Your Perfect Composition</h2>
-            <p>Use the advanced filters below to discover compositions that match your specific needs</p>
-        </div>
-
         <div class="filter-row">
             <div class="filter-section">
                 <input type="text" id="search" class="search-box" placeholder="Search by title, instrumentation, or keywords...">
