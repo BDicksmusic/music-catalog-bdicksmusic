@@ -382,32 +382,28 @@
         /* Combined Header Container (Title Left, Meta Right) */
         .composition-header-combined {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: flex-start;
             width: 100%;
-            align-content: space-between;
-            justify-items: stretch;
-            flex-wrap: wrap;
             gap: 2rem;
         }
         
         .composition-title-section {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            min-width: 0;
-            align-content: space-between;
-            flex-wrap: wrap;
             align-items: flex-start;
-            justify-content: space-evenly;
+            justify-content: flex-start;
+            min-width: 0;
         }
         
         .composition-meta-section {
-            flex: 1;
+            flex: 0 0 auto;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             text-align: right;
-            flex-shrink: 0; /* Prevent shrinking */
+            min-width: fit-content;
         }
         .composition-meta {
             font-size: 0.98rem;
