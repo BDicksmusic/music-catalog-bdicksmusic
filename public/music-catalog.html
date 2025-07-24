@@ -59,8 +59,8 @@
         .catalog-filters {
             background: white;
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin: -2rem 2rem 2rem;
+            padding: 1.5rem;
+            margin: -1.5rem 2rem 1.5rem;
             border-radius: 12px;
             position: relative;
             z-index: 10;
@@ -68,35 +68,35 @@
 
         .filters-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .filters-header h2 {
             color: var(--gray-800);
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            margin-bottom: 0.25rem;
         }
 
         .filters-header p {
             color: var(--gray-600);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .filter-section {
-            margin-bottom: 1.5rem;
+            margin-bottom: 0;
         }
 
         .filter-label {
             display: block;
             font-weight: 600;
             color: var(--gray-700);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
         }
 
         .filter-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
             gap: 1rem;
             margin-bottom: 1rem;
         }
@@ -163,8 +163,26 @@
         .filter-actions {
             display: flex;
             gap: 1rem;
-            justify-content: center;
-            margin-top: 1.5rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .sort-controls-inline {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sort-controls-inline .sort-label {
+            color: var(--gray-700);
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .sort-controls-inline .filter-select {
+            min-width: 150px;
         }
 
         .btn {
@@ -395,15 +413,21 @@
 
             .catalog-filters {
                 margin: -1rem 1rem 1rem;
-                padding: 1.5rem;
+                padding: 1rem;
             }
 
             .filter-row {
                 grid-template-columns: 1fr;
+                gap: 0.75rem;
             }
 
             .filter-actions {
                 flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .sort-controls-inline {
+                justify-content: center;
             }
 
             .results-header {
@@ -520,12 +544,12 @@
             <p>Use the advanced filters below to discover compositions that match your specific needs</p>
         </div>
 
-        <div class="filter-section">
-            <label class="filter-label" for="search">Search Compositions</label>
-            <input type="text" id="search" class="search-box" placeholder="Search by title, instrumentation, or keywords...">
-        </div>
-
         <div class="filter-row">
+            <div class="filter-section">
+                <label class="filter-label" for="search">Search Compositions</label>
+                <input type="text" id="search" class="search-box" placeholder="Search by title, instrumentation, or keywords...">
+            </div>
+
             <div class="filter-section">
                 <label class="filter-label" for="category">Category</label>
                 <select id="category" class="filter-select">
@@ -561,18 +585,6 @@
             </div>
 
             <div class="filter-section">
-                <label class="filter-label" for="duration">Duration</label>
-                <select id="duration" class="filter-select">
-                    <option value="">Any Duration</option>
-                    <option value="short">Short (0-3 min)</option>
-                    <option value="medium">Medium (4-8 min)</option>
-                    <option value="long">Long (9+ min)</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="filter-row">
-            <div class="filter-section">
                 <label class="filter-label" for="difficulty">Difficulty Level</label>
                 <select id="difficulty" class="filter-select">
                     <option value="">Any Difficulty</option>
@@ -582,39 +594,11 @@
                     <option value="professional">Professional</option>
                 </select>
             </div>
-
-            <div class="filter-section">
-                <label class="filter-label" for="year">Year Composed</label>
-                <select id="year" class="filter-select">
-                    <option value="">Any Year</option>
-                    <option value="2025">2025</option>
-                    <option value="2024">2024</option>
-                    <option value="2023">2023</option>
-                    <option value="2022">2022</option>
-                    <option value="older">2021 and earlier</option>
-                </select>
-            </div>
-
-            <div class="filter-section">
-                <label class="filter-label" for="availability">Availability</label>
-                <select id="availability" class="filter-select">
-                    <option value="">All Works</option>
-                    <option value="purchase">Available for Purchase</option>
-                    <option value="digital">Digital Download</option>
-                    <option value="physical">Physical Score</option>
-                </select>
-            </div>
         </div>
 
         <div class="filter-tags" id="active-filters"></div>
 
         <div class="filter-actions">
-            <button class="btn btn-primary" id="apply-filters">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                </svg>
-                Apply Filters
-            </button>
             <button class="btn btn-secondary" id="clear-filters">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -622,16 +606,9 @@
                 </svg>
                 Clear All
             </button>
-        </div>
-    </section>
-
-    <!-- Results Section -->
-    <section class="catalog-results">
-        <div class="results-header">
-            <div class="results-count" id="results-count">Loading compositions...</div>
-            <div class="sort-controls">
-                <label class="sort-label" for="sort-by">Sort by:</label>
-                <select id="sort-by" class="filter-select">
+            <div class="sort-controls-inline">
+                <label class="sort-label" for="sort-by-inline">Sort by:</label>
+                <select id="sort-by-inline" class="filter-select">
                     <option value="title">Title A-Z</option>
                     <option value="title-desc">Title Z-A</option>
                     <option value="year">Year (Newest)</option>
@@ -640,6 +617,13 @@
                     <option value="duration-desc">Duration (Longest)</option>
                 </select>
             </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="catalog-results">
+        <div class="results-header">
+            <div class="results-count" id="results-count">Loading compositions...</div>
         </div>
 
         <!-- Loading State -->
@@ -671,12 +655,8 @@
         const categorySelect = document.getElementById('category');
         const ensembleTypeSelect = document.getElementById('ensemble-type');
         const instrumentationSelect = document.getElementById('instrumentation');
-        const durationSelect = document.getElementById('duration');
         const difficultySelect = document.getElementById('difficulty');
-        const yearSelect = document.getElementById('year');
-        const availabilitySelect = document.getElementById('availability');
-        const sortSelect = document.getElementById('sort-by');
-        const applyFiltersBtn = document.getElementById('apply-filters');
+        const sortSelect = document.getElementById('sort-by-inline');
         const clearFiltersBtn = document.getElementById('clear-filters');
         const activeFiltersContainer = document.getElementById('active-filters');
         const resultsCount = document.getElementById('results-count');
@@ -695,7 +675,7 @@
             searchInput.addEventListener('input', debounce(applyFilters, 300));
             
             // Filter changes
-            [categorySelect, ensembleTypeSelect, instrumentationSelect, durationSelect, difficultySelect, yearSelect, availabilitySelect].forEach(select => {
+            [categorySelect, ensembleTypeSelect, instrumentationSelect, difficultySelect].forEach(select => {
                 select.addEventListener('change', applyFilters);
             });
 
@@ -703,7 +683,6 @@
             sortSelect.addEventListener('change', applySorting);
 
             // Button clicks
-            applyFiltersBtn.addEventListener('click', applyFilters);
             clearFiltersBtn.addEventListener('click', clearAllFilters);
             document.getElementById('clear-filters-link').addEventListener('click', clearAllFilters);
         }
@@ -738,10 +717,7 @@
                 category: categorySelect.value,
                 ensembleType: ensembleTypeSelect.value,
                 instrumentation: instrumentationSelect.value,
-                duration: durationSelect.value,
-                difficulty: difficultySelect.value,
-                year: yearSelect.value,
-                availability: availabilitySelect.value
+                difficulty: difficultySelect.value
             };
 
             activeFilters = filters;
@@ -812,32 +788,10 @@
                     }
                 }
 
-                // Duration filter
-                if (filters.duration && composition.duration) {
-                    const durationMinutes = parseInt(composition.duration);
-                    switch (filters.duration) {
-                        case 'short':
-                            if (durationMinutes > 3) return false;
-                            break;
-                        case 'medium':
-                            if (durationMinutes < 4 || durationMinutes > 8) return false;
-                            break;
-                        case 'long':
-                            if (durationMinutes < 9) return false;
-                            break;
-                    }
-                }
-
-                // Year filter
-                if (filters.year) {
-                    if (filters.year === 'older') {
-                        if (composition.year && parseInt(composition.year) >= 2022) {
-                            return false;
-                        }
-                    } else {
-                        if (composition.year !== filters.year) {
-                            return false;
-                        }
+                // Difficulty filter
+                if (filters.difficulty) {
+                    if (composition.difficulty?.toLowerCase() !== filters.difficulty.toLowerCase()) {
+                        return false;
                     }
                 }
 
@@ -969,17 +923,8 @@
                 case 'instrumentation':
                     instrumentationSelect.value = '';
                     break;
-                case 'duration':
-                    durationSelect.value = '';
-                    break;
                 case 'difficulty':
                     difficultySelect.value = '';
-                    break;
-                case 'year':
-                    yearSelect.value = '';
-                    break;
-                case 'availability':
-                    availabilitySelect.value = '';
                     break;
             }
             
@@ -992,10 +937,7 @@
             categorySelect.value = '';
             ensembleTypeSelect.value = '';
             instrumentationSelect.value = '';
-            durationSelect.value = '';
             difficultySelect.value = '';
-            yearSelect.value = '';
-            availabilitySelect.value = '';
             
             // Reset active filters
             activeFilters = {};
