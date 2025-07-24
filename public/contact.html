@@ -29,7 +29,7 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
-            margin-top: 95px; /* ✨ FIXED: Account for compact modular navigation */
+            /* ✨ REMOVED: margin-top - navigation overlays naturally */
         }
 
         .hero-content {
@@ -37,6 +37,7 @@
             color: white;
             max-width: 800px;
             padding: 2rem;
+            padding-top: 7rem; /* ✨ OPTIMAL: Account for fixed nav (95px) + breathing room */
             z-index: 2;
         }
 
