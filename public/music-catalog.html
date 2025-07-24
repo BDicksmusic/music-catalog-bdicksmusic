@@ -262,7 +262,8 @@
         }
 
         .catalog-results {
-            padding: 2rem;
+            padding: 2rem 2rem 2rem 2rem;
+            overflow: hidden;
         }
 
         .results-header {
@@ -283,17 +284,19 @@
             display: flex;
             flex-direction: column;
             gap: 0;
+            margin: 0 -0.1rem;
         }
 
         .composition-card {
             background: white;
-            border-bottom: 1px solid var(--gray-200);
-            padding: 1rem 0;
+            border-bottom: 1px solid var(--gray-150);
+            padding: 0.75rem 0;
+            margin: 0 -2rem;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            width: 100%;
+            width: calc(100% + 4rem);
             cursor: pointer;
             text-decoration: none;
             color: inherit;
@@ -301,10 +304,13 @@
 
         .composition-card:hover {
             background-color: var(--gray-50);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            z-index: 1;
+            position: relative;
         }
 
         .composition-card:first-child {
-            border-top: 1px solid var(--gray-200);
+            border-top: 1px solid var(--gray-150);
         }
 
         .composition-main-info {
@@ -312,6 +318,7 @@
             align-items: center;
             flex: 1;
             gap: 2rem;
+            padding-left: 2rem;
         }
 
         .composition-title-section {
@@ -374,6 +381,7 @@
         .composition-actions {
             min-width: 120px;
             margin-left: 2rem;
+            padding-right: 2rem;
         }
 
         .btn-small {
@@ -504,6 +512,10 @@
                 justify-self: end;
             }
 
+            .catalog-results {
+                padding: 2rem 1rem;
+            }
+
             .results-header {
                 flex-direction: column;
                 align-items: flex-start;
@@ -513,7 +525,9 @@
             .composition-card {
                 flex-direction: column;
                 align-items: flex-start;
-                padding: 1rem 0;
+                padding: 0.75rem 0;
+                margin: 0 -1rem;
+                width: calc(100% + 2rem);
             }
 
             .composition-main-info {
@@ -521,6 +535,7 @@
                 gap: 1rem;
                 width: 100%;
                 margin-bottom: 1rem;
+                padding-left: 1rem;
             }
 
             .composition-details-section {
@@ -533,6 +548,7 @@
                 margin-left: 0;
                 width: 100%;
                 min-width: unset;
+                padding-right: 1rem;
             }
         }
     </style>
