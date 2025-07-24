@@ -725,7 +725,9 @@ if (notesContainer) {
 
     // Score Video Display (separate from regular videos)
     const scoreVideoContainer = document.querySelector('#composition-score-video-container');
-    if (scoreVideoContainer) {
+    const scoreVideoContent = document.querySelector('#score-video-content');
+    
+    if (scoreVideoContainer && scoreVideoContent) {
         console.log('🎼 DEBUG - Score video container found:', !!scoreVideoContainer);
         console.log('🎼 DEBUG - Server properly separates videos now - videoFiles contains both regular and score videos');
         console.log('🎼 DEBUG - All video files from server:', comp.videoFiles?.length || 0);
@@ -769,7 +771,7 @@ if (notesContainer) {
                     if (!scoreVideo.url) {
                         console.error(`🎼 ERROR - Score video ${index + 1} has no URL:`, scoreVideo);
                         return `
-                            <div class="composition-score-video-player" data-video-index="${index}" style="${index === 0 ? 'display: flex;' : 'display: none;'}">
+                            <div class="composition-score-video-player">
                                 <div class="score-video-content">
                                     <div class="video-error">Score video URL not available</div>
                                 </div>
@@ -784,7 +786,7 @@ if (notesContainer) {
                     if (!videoPlayerHtml || videoPlayerHtml.trim() === '') {
                         console.error(`🎼 ERROR - Failed to generate video player HTML for:`, scoreVideo);
                         return `
-                            <div class="composition-score-video-player" data-video-index="${index}" style="${index === 0 ? 'display: flex;' : 'display: none;'}">
+                            <div class="composition-score-video-player">
                                 <div class="score-video-content">
                                     <div class="video-error">Failed to create video player</div>
                                 </div>
@@ -799,26 +801,24 @@ if (notesContainer) {
                     ` : '';
 
                     return `
-                        <div class="composition-score-video-player" data-video-index="${index}" style="${index === 0 ? 'display: flex;' : 'display: none;'}">
+                        <div class="composition-score-video-player">
                             <div class="score-video-content">
                                 ${videoPlayerHtml}
                             </div>
-                            <div class="score-video-metadata-section">
-                                ${metadataHtml}
-                            </div>
+                            ${metadataHtml ? `<div class="score-video-metadata-section">${metadataHtml}</div>` : ''}
                         </div>
                     `;
                 }).join('');
                 
                 console.log('🎼 DEBUG - Final score videos HTML length:', scoreVideosHtml.length);
-                scoreVideoContainer.innerHTML = scoreVideosHtml;
+                scoreVideoContent.innerHTML = scoreVideosHtml;
                 scoreVideoContainer.style.display = 'block';
                 console.log('🎼 DEBUG - Score video container display set to block');
                 console.log('🎼 SUCCESS - Score videos rendered successfully');
                 
             } catch (error) {
                 console.error('🎼 ERROR - Failed to render score videos:', error);
-                scoreVideoContainer.innerHTML = `
+                scoreVideoContent.innerHTML = `
                     <div style="padding: 20px; background: #ffe6e6; border: 2px solid #ff9999; text-align: center; color: #cc0000;">
                         <strong>Error Rendering Score Videos</strong><br>
                         ${error.message}<br>
@@ -829,15 +829,7 @@ if (notesContainer) {
             }
         } else {
             console.log('🎼 DEBUG - No score videos found, hiding container');
-            // Add a temporary message to show that the container exists but has no videos
-            scoreVideoContainer.innerHTML = `
-                <div style="padding: 20px; background: #f0f0f0; border: 2px dashed #ccc; text-align: center;">
-                    <strong>Score Video Container Active</strong><br>
-                    No score videos found with current filtering.<br>
-                    Check console for debugging info.
-                </div>
-            `;
-            scoreVideoContainer.style.display = 'block';
+            scoreVideoContainer.style.display = 'none';
         }
     }
 
