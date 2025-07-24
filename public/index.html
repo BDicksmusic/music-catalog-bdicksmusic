@@ -2004,7 +2004,7 @@
           .hero-content-dynamic {
               padding: 0 1.5rem;
           }
-      }
+    }
     </style>
 </head>
 
@@ -2064,17 +2064,17 @@
                 <span></span>
                 <span></span>   
                 <span></span>
-              </div>
         </div>
+    </div>
     </div>
 </nav>
     
     <!-- Secondary Navigation -->
     <nav class="secondary-nav">
         <div class="secondary-nav-left">
-            <a href="/composer" class="secondary-button">Composer</a>
-            <a href="/trumpeter" class="secondary-button">Trumpeter</a>
-            <a href="/educator" class="secondary-button">Educator</a>
+        <a href="/composer" class="secondary-button">Composer</a>
+        <a href="/trumpeter" class="secondary-button">Trumpeter</a>
+        <a href="/educator" class="secondary-button">Educator</a>
         </div>
         <div class="secondary-nav-right">
             <div class="social-media-links">
@@ -2137,14 +2137,14 @@
         <div class="hero-video-container" id="hero-video-container">
             <iframe 
                 class="hero-video hero-video-youtube" 
-                id="hero-video"
+            id="hero-video"
                 src="https://www.youtube.com/embed/7LUkFcoO0ME?autoplay=1&mute=1&loop=1&playlist=7LUkFcoO0ME&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1"
                 frameborder="0" 
                 allow="autoplay; encrypted-media; fullscreen" 
                 loading="lazy">
             </iframe>
-        </div>
-        
+    </div>
+
         <!-- Content Overlay for Better Readability -->
         <div class="hero-content-overlay"></div>
         
@@ -2158,8 +2158,8 @@
                         <p class="hero-role-description">Creating original compositions that inspire and challenge musicians</p>
                         <a href="#compositions" class="explore-btn" onclick="smoothScrollTo('#compositions'); return false;">
                             🎼 Explore Compositions
-                        </a>
-                    </div>
+    </a>
+</div>
                     <div class="hero-role" data-role="trumpeter">
                         <h2 class="hero-role-title">Trumpeter</h2>
                         <p class="hero-role-description">Bringing brass music to life through performance and artistry</p>
@@ -2193,9 +2193,9 @@
 
     <!-- Main Content Container -->
     <div class="main-content-container">
-        <script>
+<script>
         // This function is no longer needed since we have the main DOMContentLoaded handler below
-        </script>
+</script>
 
     <!-- Music Catalog Highlights Section -->
     <section id="performances" class="section-showcase" style="scroll-margin-top: 120px;">
@@ -2203,7 +2203,7 @@
             <div class="section-header">
                 <h2 class="section-title">🎼 Music Catalog</h2>
                 <p class="section-subtitle">Original compositions for professional musicians and ensembles</p>
-            </div>
+        </div>
             <div class="catalog-highlights-grid">
                 <div class="highlight-featured">
                     <div class="featured-composition" id="featured-highlight">
@@ -2214,7 +2214,7 @@
                                     <span class="play-icon">▶</span>
                                     <span class="play-text">Preview</span>
                                 </button>
-                            </div>
+            </div>
                         </div>
                         <div class="featured-composition-content">
                             <div class="composition-header">
@@ -2271,8 +2271,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+                </div>
+            </section>
 
     <!-- Education & Notion Tools Section -->
     <section id="education" class="section-showcase alt-bg" style="scroll-margin-top: 120px;">
@@ -2284,7 +2284,7 @@
                     <h3>Teaching Excellence</h3>
                     <p>Dedicated to developing the next generation of musicians through personalized instruction and innovative teaching methods.</p>
                     <a href="/teaching" class="card-link">Learn More →</a>
-                </div>
+        </div>
                 <div class="education-card">
                     <div class="card-icon">🗂️</div>
                     <h3>Notion Integration</h3>
@@ -2962,13 +2962,13 @@
                 <div class="featured-composition-item">
                     <div class="composition-card-layout">
                         <div class="composition-image-section">
-                            ${comp.coverImage ? `
+                        ${comp.coverImage ? `
                                 <img src="${comp.coverImage}" alt="${comp.title}" class="composition-featured-image">
                             ` : `
                                 <div class="composition-placeholder-image">
                                     <span>🎼</span>
                                     <p>No Image Available</p>
-                                </div>
+                            </div>
                             `}
                         </div>
                         
@@ -2980,14 +2980,14 @@
                             
                             <div class="composition-featured-description">
                                 ${comp.description || `A ${comp.difficulty || 'beautiful'} composition for ${comp.instrumentation}${comp.year ? ` from ${comp.year}` : ''}.`}
-                            </div>
+                        </div>
                             
                             <div class="composition-meta-badges">
                                 ${comp.year ? `<span class="composition-meta-badge">${comp.year}</span>` : ''}
                                 ${comp.difficulty ? `<span class="composition-meta-badge">${comp.difficulty}</span>` : ''}
                                 ${comp.duration ? `<span class="composition-meta-badge">${comp.duration}</span>` : ''}
                                 ${comp.featured || comp.popular ? `<span class="composition-meta-badge featured">Featured</span>` : ''}
-                            </div>
+                    </div>
                             
                             <div class="composition-actions">
                                 <button class="btn-secondary" onclick="learnMore('${comp.slug}')">
@@ -3001,8 +3001,8 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
-                </div>
+                            </div>
+                        </div>
             `).join('');
             
             // Set initial position
@@ -3082,7 +3082,7 @@
             container.innerHTML = featuredCompositions.map((_, index) => `
                 <span class="indicator-dot ${index === currentFeaturedIndex ? 'active' : ''}" 
                       onclick="goToFeatured(${index})"></span>
-            `).join('');
+                `).join('');
         }
 
         // Helper functions for composition actions
@@ -3581,19 +3581,19 @@
             
             // Check if the carousel has loaded content for compositions section
             if (targetId === '#compositions') {
-                const carousel = document.getElementById('popular-works');
-                if (carousel && carousel.innerHTML.includes('Loading compositions...')) {
-                    // Wait for compositions to load
-                    await new Promise(resolve => {
-                        const checkLoading = () => {
-                            if (!carousel.innerHTML.includes('Loading compositions...')) {
-                                resolve();
-                            } else {
-                                setTimeout(checkLoading, 100);
-                            }
-                        };
-                        checkLoading();
-                    });
+            const carousel = document.getElementById('popular-works');
+            if (carousel && carousel.innerHTML.includes('Loading compositions...')) {
+                // Wait for compositions to load
+                await new Promise(resolve => {
+                    const checkLoading = () => {
+                        if (!carousel.innerHTML.includes('Loading compositions...')) {
+                            resolve();
+                        } else {
+                            setTimeout(checkLoading, 100);
+                        }
+                    };
+                    checkLoading();
+                });
                 }
             }
             
