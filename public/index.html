@@ -2353,6 +2353,13 @@
             initHeroRotation();
             // Mobile menu and theme toggle are now handled by main.js
         });
+        
+        // Clean up any existing timeouts on page unload
+        window.addEventListener('beforeunload', function() {
+            if (videoRetryTimeout) {
+                clearTimeout(videoRetryTimeout);
+            }
+        });
     </script>
     
     <!-- Load external script for additional functionality -->
