@@ -173,14 +173,10 @@ function renderComposition(comp) {
         
         metaContainer.innerHTML = `
             <div class="composition-short-instruments">
-                <div class="short-instrument-list">
-                    ${shortInstrumentList}
-                </div>
+                ${shortInstrumentList}
             </div>
             <div class="composition-meta">
-                ${comp.year ? `<span>Year: ${comp.year}</span>` : ''}
-                ${comp.duration ? `<span>Duration: ${comp.duration}</span>` : ''}
-                ${comp.difficulty ? `<span>Difficulty: ${comp.difficulty}</span>` : ''}
+                ${comp.duration ? `<strong>Duration:</strong> ${comp.duration}` : ''}
             </div>
         `;
     } else {
@@ -575,9 +571,13 @@ if (perfContainer) {
     // Score Video Display (separate from regular videos)
     const scoreVideoContainer = document.querySelector('#composition-score-video-container');
     if (scoreVideoContainer) {
+        console.log('🎼 DEBUG - All video files for score filtering:', comp.videoFiles?.map(v => ({ title: v.title, type: v.type, category: v.category })));
+        
         let scoreVideoFiles = (comp.videoFiles || []).filter(video => 
             video.type === 'Score Video' || video.category === 'score'
         );
+        
+        console.log('🎼 DEBUG - Filtered score videos:', scoreVideoFiles.length, scoreVideoFiles.map(v => ({ title: v.title, type: v.type, category: v.category })));
 
         if (scoreVideoFiles.length > 0) {
             const scoreVideosHtml = scoreVideoFiles.map((scoreVideo, index) => {
@@ -652,38 +652,53 @@ if (perfContainer) {
     if (metadataContainer) {
         const metadataToggles = [
             {
-                title: 'Basic Information',
+                title: '📝 Basic Information',
                 items: [
-                    { label: 'Title', value: comp.title || 'Unknown' },
-                    { label: 'Year Composed', value: comp.year || 'Unknown' },
-                    { label: 'Duration', value: comp.duration || 'Unknown' },
-                    { label: 'Difficulty', value: comp.difficulty || 'Unknown' },
-                    { label: 'Genre', value: comp.genre || 'Unknown' }
-                ]
+                    { label: 'Title', value: comp.title || 'Not specified' },
+                    { label: 'Year Composed', value: comp.year || 'Not specified' },
+                    { label: 'Duration', value: comp.duration || 'Not specified' },
+                    { label: 'Difficulty Level', value: comp.difficulty || 'Not specified' },
+                    { label: 'Genre', value: comp.genre || 'Not specified' }
+                ].filter(item => item.value !== 'Not specified')
             },
             {
-                title: 'Instrumentation',
+                title: '🎼 Instrumentation Details',
                 items: [
-                    { label: 'Full Instrumentation', value: comp.instrumentation || 'Unknown' },
-                    { label: 'Short Instrument List', value: comp.shortInstrumentList || 'Not provided' }
-                ]
+                    { label: 'Full Instrumentation', value: comp.instrumentation || 'Not specified' },
+                    { label: 'Short Instrument List', value: comp.shortInstrumentList || 'Not specified' },
+                    { label: 'Number of Parts', value: comp.numberOfParts || 'Not specified' }
+                ].filter(item => item.value !== 'Not specified')
             },
             {
-                title: 'Additional Details',
+                title: '📊 Performance & Media',
                 items: [
-                    { label: 'Created', value: formatDate(comp.created) || 'Unknown' },
-                    { label: 'Last Edited', value: formatDate(comp.lastEdited) || 'Unknown' },
-                    { label: 'Tags', value: comp.tags && comp.tags.length > 0 ? comp.tags.join(', ') : 'None' },
+                    { label: 'Audio Recordings', value: comp.audioFiles?.length || 0 },
+                    { label: 'Video Recordings', value: comp.videoFiles?.length || 0 },
+                    { label: 'Score Available', value: comp.scoreLink || comp.scoreFiles?.length > 0 ? 'Yes' : 'No' },
+                    { label: 'Featured Work', value: comp.featured ? 'Yes' : 'No' },
                     { label: 'Popular', value: comp.popular ? 'Yes' : 'No' }
                 ]
+            },
+            {
+                title: '🏷️ Additional Information',
+                items: [
+                    { label: 'Tags', value: comp.tags && comp.tags.length > 0 ? comp.tags.join(', ') : 'None' },
+                    { label: 'Created', value: formatDate(comp.created) || 'Not specified' },
+                    { label: 'Last Edited', value: formatDate(comp.lastEdited) || 'Not specified' },
+                    { label: 'Related Works', value: comp.similarWorks?.length || 0 }
+                ].filter((item, index) => {
+                    // Keep tags and related works even if empty, filter others
+                    if (item.label === 'Tags' || item.label === 'Related Works') return true;
+                    return item.value !== 'Not specified';
+                })
             }
-        ];
+        ].filter(section => section.items.length > 0); // Only show sections with items
 
         const metadataHtml = metadataToggles.map((section, index) => `
             <div class="metadata-toggle-item" data-toggle="${index}">
                 <div class="metadata-toggle-header" onclick="toggleMetadataSection(${index})">
                     <span>${section.title}</span>
-                    <span class="metadata-toggle-icon">▼</span>
+                    <span class="metadata-toggle-icon">⌄</span>
                 </div>
                 <div class="metadata-toggle-content">
                     ${section.items.map(item => `
@@ -700,9 +715,21 @@ if (perfContainer) {
     }
     
     // Related Compositions Carousel
+    console.log('🔗 DEBUG - Similar works data:', comp.similarWorks?.length, comp.similarWorks);
+    
+    const relatedSection = document.querySelector('.related-compositions-section');
+    
     if (comp.similarWorks && comp.similarWorks.length > 0) {
+        console.log('🔗 DEBUG - Rendering related compositions:', comp.similarWorks.length);
         renderRelatedCompositions(comp.similarWorks);
+        if (relatedSection) {
+            relatedSection.style.display = 'block';
+        }
     } else {
+        console.log('🔗 DEBUG - No similar works found or empty array');
+        if (relatedSection) {
+            relatedSection.style.display = 'none';
+        }
         // Try to fetch related compositions if not provided
         fetchRelatedCompositions(comp.id);
     }
@@ -1380,14 +1407,37 @@ function stopAllVideos() {
 function toggleMetadataSection(index) {
     const toggleItem = document.querySelector(`[data-toggle="${index}"]`);
     if (toggleItem) {
+        // Close other open sections for accordion-style behavior
+        const allToggles = document.querySelectorAll('.metadata-toggle-item');
+        allToggles.forEach((item, i) => {
+            if (i !== index && item.classList.contains('active')) {
+                item.classList.remove('active');
+            }
+        });
+        
+        // Toggle the clicked section
         toggleItem.classList.toggle('active');
+        
+        // Add smooth scroll to the section if it's being opened
+        if (toggleItem.classList.contains('active')) {
+            setTimeout(() => {
+                toggleItem.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 200);
+        }
     }
 }
 
 // Related Compositions Functions
 function renderRelatedCompositions(compositions) {
+    console.log('🎠 DEBUG - renderRelatedCompositions called with:', compositions?.length, 'compositions');
     const carouselContainer = document.querySelector('#related-compositions-carousel');
+    console.log('🎠 DEBUG - Carousel container found:', !!carouselContainer);
+    
     if (!carouselContainer || !compositions || compositions.length === 0) {
+        console.log('🎠 DEBUG - Early return:', { carouselContainer: !!carouselContainer, compositions: compositions?.length });
         return;
     }
 
@@ -1404,7 +1454,9 @@ function renderRelatedCompositions(compositions) {
         </div>
     `).join('');
 
+    console.log('🎠 DEBUG - Generated carousel HTML length:', carouselHtml.length);
     carouselContainer.innerHTML = carouselHtml;
+    console.log('🎠 DEBUG - Carousel populated with:', carouselContainer.children.length, 'cards');
 }
 
 async function fetchRelatedCompositions(compositionId) {

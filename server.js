@@ -274,7 +274,10 @@ function transformMediaPage(page) {
 
 // Helper function to fetch similar works
 const fetchSimilarWorks = async (similarWorksIds) => {
+    console.log('🔗 DEBUG - fetchSimilarWorks called with IDs:', similarWorksIds?.length, similarWorksIds);
+    
     if (!similarWorksIds || similarWorksIds.length === 0) {
+        console.log('🔗 DEBUG - No similar works IDs found, returning empty array');
         return [];
     }
 
@@ -284,7 +287,9 @@ const fetchSimilarWorks = async (similarWorksIds) => {
         );
         
         const similarWorksPages = await Promise.all(similarWorksPromises);
-        return similarWorksPages.map(transformNotionPage);
+        const transformedWorks = similarWorksPages.map(transformNotionPage);
+        console.log('🔗 DEBUG - Successfully fetched and transformed similar works:', transformedWorks.length);
+        return transformedWorks;
     } catch (error) {
         console.error('Error fetching similar works:', error);
         return [];
@@ -338,8 +343,8 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
         
         // Separate by type
         const audioMedia = allMedia.filter(media => media.type === 'Audio');
-        const videoMedia = allMedia.filter(media => media.type === 'Video');
-        const scoreMedia = allMedia.filter(media => media.type === 'Score');
+        const videoMedia = allMedia.filter(media => media.type === 'Video' || media.type === 'Score Video'); // Include score videos in videoFiles for client filtering
+        const scoreMedia = allMedia.filter(media => media.type === 'Score' || media.type === 'Score Video');
         
         // Debug: Log the filtering results
         if (process.env.NODE_ENV !== 'production') {
@@ -351,7 +356,9 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
         }
         
         // Fetch similar works
+        console.log('🔗 DEBUG - Base composition similarWorksIds:', baseComposition.similarWorksIds?.length, baseComposition.similarWorksIds);
         const similarWorks = await fetchSimilarWorks(baseComposition.similarWorksIds);
+        console.log('🔗 DEBUG - Final similarWorks result:', similarWorks?.length, similarWorks?.map(w => w.title));
         
         // Roll up media data
         return {
