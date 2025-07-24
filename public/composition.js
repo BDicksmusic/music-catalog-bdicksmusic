@@ -452,6 +452,14 @@ if (audioContainer) {
                         shouldShowTitle = true;
                         // Don't add Roman numeral prefix since API titles already contain them
                     }
+                    
+                    // Debug: Log what we're creating
+                    console.log(`🎵 HTML DEBUG - Creating audio player ${index}:`, {
+                        originalTitle: audioFile.title,
+                        extractedTitle: extractedTitle,
+                        displayTitle: displayTitle,
+                        shouldShowTitle: shouldShowTitle
+                    });
                 } catch (error) {
                     console.error('Error processing movement title:', error);
                     shouldShowTitle = false;
@@ -548,11 +556,17 @@ if (audioContainer) {
         // For multiple audio files, show only the first one initially
         if (audioFiles.length > 1) {
             const audioPlayers = audioContainer.querySelectorAll('.composition-audio-player');
+            console.log('🎵 INITIAL SETUP - Setting up display states for', audioPlayers.length, 'players');
             audioPlayers.forEach((player, index) => {
+                const title = player.querySelector('.composition-audio-title')?.textContent || 
+                             player.querySelector('.audio-title')?.textContent || 
+                             player.querySelector('h4')?.textContent || 'No title';
                 if (index === 0) {
                     player.style.display = 'block';
+                    console.log(`🎵 INITIAL SETUP - Player ${index} VISIBLE: "${title}"`);
                 } else {
                     player.style.display = 'none';
+                    console.log(`🎵 INITIAL SETUP - Player ${index} HIDDEN: "${title}"`);
                 }
             });
             
@@ -1481,8 +1495,11 @@ function switchToAudio(index) {
     
     console.log('🎵 Found', audioPlayers.length, 'audio players in container');
     console.log('🎵 Available audio players:', Array.from(audioPlayers).map((player, i) => {
-        const title = player.querySelector('.audio-title')?.textContent || 'No title';
-        return `${i}: ${title}`;
+        const title = player.querySelector('.composition-audio-title')?.textContent || 
+                     player.querySelector('.audio-title')?.textContent || 
+                     player.querySelector('h4')?.textContent || 'No title found';
+        const isVisible = player.style.display !== 'none';
+        return `${i}: "${title}" (${isVisible ? 'VISIBLE' : 'HIDDEN'})`;
     }));
     
     // Validate index
@@ -1493,20 +1510,26 @@ function switchToAudio(index) {
     
     // Hide current audio player
     if (currentAudioIndex >= 0 && currentAudioIndex < audioPlayers.length && audioPlayers[currentAudioIndex]) {
+        const currentTitle = audioPlayers[currentAudioIndex].querySelector('.composition-audio-title')?.textContent || 
+                           audioPlayers[currentAudioIndex].querySelector('.audio-title')?.textContent || 
+                           audioPlayers[currentAudioIndex].querySelector('h4')?.textContent || 'No title';
         audioPlayers[currentAudioIndex].style.display = 'none';
         // Pause current audio if playing
         const currentAudio = audioPlayers[currentAudioIndex].querySelector('audio');
         if (currentAudio && !currentAudio.paused) {
             currentAudio.pause();
         }
-        console.log('🎵 Hid audio player at index:', currentAudioIndex);
+        console.log('🎵 HIDING audio player at index:', currentAudioIndex, 'Title:', currentTitle);
     }
     
     // Show new audio player
     currentAudioIndex = index;
     if (audioPlayers[currentAudioIndex]) {
+        const newTitle = audioPlayers[currentAudioIndex].querySelector('.composition-audio-title')?.textContent || 
+                        audioPlayers[currentAudioIndex].querySelector('.audio-title')?.textContent || 
+                        audioPlayers[currentAudioIndex].querySelector('h4')?.textContent || 'No title';
         audioPlayers[currentAudioIndex].style.display = 'block';
-        console.log('🎵 Showed audio player at index:', currentAudioIndex);
+        console.log('🎵 SHOWING audio player at index:', currentAudioIndex, 'Title:', newTitle);
         
         // Scroll the new audio player into view if needed
         audioPlayers[currentAudioIndex].scrollIntoView({ 
