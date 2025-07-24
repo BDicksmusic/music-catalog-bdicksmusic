@@ -204,7 +204,6 @@ function renderComposition(comp) {
         
         linksContainer.innerHTML = `
             <div class="layout-builder-nav">
-                ${hasAudio ? `<button onclick="scrollToAudio()" class="btn-secondary layout-nav-btn">🎵 Listen</button>` : ''}
                 ${hasVideos ? `<button onclick="scrollToVideos()" class="btn-secondary layout-nav-btn">📺 Watch</button>` : ''}
                 ${hasScore ? `<button onclick="scrollToScore()" class="btn-secondary layout-nav-btn">📄 View Score</button>` : ''}
                 <button onclick="scrollToMetadata()" class="btn-secondary layout-nav-btn">📊 Learn More</button>
