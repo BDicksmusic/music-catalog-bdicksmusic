@@ -694,15 +694,7 @@ if (notesContainer) {
         }
     }
 
-    // Enhanced PDF Score Viewer with multiple scores support
-    console.log('📄 DEBUG - Score rendering started');
-    console.log('📄 DEBUG - comp.scoreFiles:', comp.scoreFiles?.length, comp.scoreFiles);
-    console.log('📄 DEBUG - comp.scoreLink:', comp.scoreLink);
-    
-    const scoreCarouselContainer = document.querySelector('#score-carousel-container');
-    console.log('📄 DEBUG - Score container found:', !!scoreCarouselContainer);
-    
-    // Helper function to check if URL is a PDF
+    // Helper function to check if URL is a PDF (moved to top for global access)
     const isPdfUrl = (url) => {
         if (!url) return false;
         const urlLower = url.toLowerCase();
@@ -733,6 +725,14 @@ if (notesContainer) {
     // Combine score videos from media database and potential score video from scoreLink
     const allScoreVideos = scoreVideoFiles.concat(scoreVideoFromLink ? [scoreVideoFromLink] : []);
     const hasScoreVideo = allScoreVideos.length > 0;
+
+    // Enhanced PDF Score Viewer with multiple scores support
+    console.log('📄 DEBUG - Score rendering started');
+    console.log('📄 DEBUG - comp.scoreFiles:', comp.scoreFiles?.length, comp.scoreFiles);
+    console.log('📄 DEBUG - comp.scoreLink:', comp.scoreLink);
+    
+    const scoreCarouselContainer = document.querySelector('#score-carousel-container');
+    console.log('📄 DEBUG - Score container found:', !!scoreCarouselContainer);
     
     console.log('📄 DEBUG - Final score check:', {
         hasDirectPdfScore: hasDirectPdfScore,
