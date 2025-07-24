@@ -96,6 +96,8 @@
             background: var(--gray-50);
             border-radius: 12px;
             border: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
         }
         
         .composition-video-title {
@@ -117,13 +119,41 @@
         .composition-video-metadata {
             font-size: 0.85rem;
             color: var(--gray-600);
-            margin-bottom: 1rem;
+            margin-top: 1rem; /* Changed from margin-bottom to margin-top */
             line-height: 1.4;
+            align-self: flex-end; /* Align to the end (right side) */
+            text-align: right; /* Right-align the text */
         }
         
         .composition-video-metadata .performance-info {
             font-weight: 500;
             color: var(--gray-700);
+        }
+        
+        /* Two-column layout for Program Notes and Videos */
+        .program-video-section {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            width: 100%;
+        }
+        
+        .program-notes-column {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .videos-column {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        /* Make program notes section more prominent */
+        .composition-notes-container {
+            background: var(--gray-50);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
         }
         
         .composition-audio-container {
@@ -626,6 +656,11 @@
         
         /* Mobile responsiveness */
         @media (max-width: 768px) {
+            .program-video-section {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
             .single-page-score-viewer {
                 margin: 2rem auto;
                 width: 100%;
@@ -797,8 +832,20 @@
                     <div class="composition-audio-container" id="composition-audio-container">
                         <!-- Audio players will be injected here -->
                     </div>
-                    <div class="composition-notes-container">
-                        <!-- Program and Performance Notes will be injected here -->
+                    <!-- New two-column layout for Program Notes and Videos -->
+                    <div class="program-video-section">
+                        <div class="program-notes-column">
+                            <h3 style="color: var(--primary-600); margin-bottom: 1rem; font-size: 1.5rem;">Program Notes</h3>
+                            <div class="composition-notes-container">
+                                <!-- Program and Performance Notes will be injected here -->
+                            </div>
+                        </div>
+                        <div class="videos-column">
+                            <h3 style="color: var(--primary-600); margin-bottom: 1rem; font-size: 1.5rem;">Videos</h3>
+                            <div class="composition-video-container" id="composition-video-container-main" style="display: none;">
+                                <!-- Video players will be injected here -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -807,11 +854,7 @@
     
         </div>
     </main>
-        <!-- Dedicated Audio/Video Section -->
-        <div class="composition-media-section">
-            <div class="composition-video-container" id="composition-video-container" style="display: none;">
-                <!-- Video players will be injected here -->
-            </div>
+        <!-- Dedicated Audio/Video Section - Videos now in two-column layout above -->
     <section>
         <div class="composition-performance-container">
             <!-- Program and Performance Notes will be injected here -->

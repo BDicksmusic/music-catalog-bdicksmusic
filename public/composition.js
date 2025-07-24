@@ -423,7 +423,7 @@ if (perfContainer) {
 }
 
     // Enhanced video display with multiple videos
-    const videoContainer = document.querySelector('.composition-video-container');
+    const videoContainer = document.querySelector('#composition-video-container-main');
     if (videoContainer) {
         const videoFiles = comp.videoFiles || [];
         
@@ -469,7 +469,6 @@ if (perfContainer) {
                         <div class="composition-video-title">
                             🎬 ${displayName}
                         </div>
-                        ${metadataHtml}
                         ${videoPlayerHtml}
                         ${videoFile.duration ? `<div class="video-duration">Duration: ${videoFile.duration}</div>` : ''}
                         ${videoFiles.length > 1 ? `
@@ -480,6 +479,7 @@ if (perfContainer) {
                             <button class="audio-nav-btn" onclick="nextVideo()" data-nav-type="next">Next ⏭</button>
                         </div>
                         ` : ''}
+                        ${metadataHtml}
                     </div>
                 `;
             }).join('');
@@ -908,7 +908,7 @@ function nextAudio() {
 
 // Switch to specific video player
 function switchToVideo(index) {
-    const videoContainer = document.querySelector('.composition-video-container');
+    const videoContainer = document.querySelector('#composition-video-container-main');
     const videoPlayers = videoContainer.querySelectorAll('.composition-video-player');
     
     // Hide current video player
