@@ -856,6 +856,7 @@
           justify-content: center;
           margin-left: calc(50% - 50vw);
           margin-right: calc(50% - 50vw);
+          margin-top: 110px; /* Account for primary nav (70px) + secondary nav (40px) */
       }
       
       .hero-carousel {
@@ -944,10 +945,15 @@
               height: 80vh;
               min-height: 500px;
               max-height: 700px;
+              margin-top: 100px; /* Reduced for mobile - nav elements are smaller */
           }
           
           .hero-content-wrapper {
               bottom: 20%;
+          }
+          
+          .secondary-nav {
+              top: 60px; /* Adjust for smaller mobile nav */
           }
       }
       
@@ -975,11 +981,15 @@
       
       /* Fix secondary navigation positioning */
       .secondary-nav {
-          position: relative;
-          z-index: 5;
+          position: fixed;
+          top: 70px; /* Adjusted to account for primary nav height */
+          left: 0;
+          z-index: 950; /* Higher than the 900 from styles.css */
           width: 100%;
           max-width: 100%;
-          margin-bottom: 0;
+          margin: 0;
+          padding: 0;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       }
       
       /* Ensure hero content doesn't overflow */
@@ -1192,13 +1202,7 @@
     <!-- Main Content Container -->
     <div class="main-content-container">
         <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCompositions();
-            loadFeaturedComposition();
-            enableCardClicks();
-            initHeroRotation();
-            // Mobile menu is now handled by main.js
-        });
+        // This function is no longer needed since we have the main DOMContentLoaded handler below
         </script>
 
     <!-- Music Catalog Highlights Section -->
@@ -2018,6 +2022,8 @@
         }
 
         // Enhanced Video Loading and Fallback Logic
+        let heroCarouselInitialized = false;
+        
         function initHeroVideo() {
             const video = document.getElementById('hero-video');
             const carousel = document.getElementById('hero-carousel');
@@ -2025,42 +2031,60 @@
             
             if (!video || !carousel) {
                 console.log('Hero video or carousel not found');
+                initHeroCarousel(); // Fallback to carousel
                 return;
             }
             
             console.log('Initializing hero video...');
             
+            // Start with carousel active as fallback
+            if (!heroCarouselInitialized) {
+                initHeroCarousel();
+            }
+            
             // Force video load attempt
             video.load();
             
-            // Set a timeout to show fallback if video doesn't load
+            // Set a timeout to ensure fallback stays active if video doesn't load
             const videoTimeout = setTimeout(() => {
-                console.log('Video loading timeout - keeping carousel active');
+                console.log('Video loading timeout - using carousel fallback');
                 video.style.display = 'none';
-            }, 4000); // 4 second timeout
+                video.classList.remove('loaded');
+                
+                // Ensure all fallback images are visible
+                fallbackImages.forEach(img => {
+                    img.classList.remove('hidden');
+                });
+                
+                // Make sure carousel is running
+                if (!heroCarouselInitialized) {
+                    initHeroCarousel();
+                }
+            }, 3000); // Reduced timeout to 3 seconds
             
             // Video loading events
             video.addEventListener('loadeddata', function() {
                 console.log('✅ Video loaded successfully');
                 clearTimeout(videoTimeout);
                 
-                // Hide all fallback images
-                fallbackImages.forEach(img => {
-                    img.classList.add('hidden');
-                });
-                
-                // Show and animate the video
-                setTimeout(() => {
-                    video.classList.add('loaded');
-                }, 500);
-            });
-            
-            video.addEventListener('canplaythrough', function() {
-                console.log('✅ Video can play through');
-                video.play().catch(e => {
+                // Try to play the video
+                video.play().then(() => {
+                    console.log('✅ Video playing - hiding carousel');
+                    // Only hide fallback images if video actually starts playing
+                    fallbackImages.forEach(img => {
+                        img.classList.add('hidden');
+                    });
+                    
+                    // Show and animate the video
+                    setTimeout(() => {
+                        video.classList.add('loaded');
+                    }, 300);
+                }).catch(e => {
                     console.log('⚠️ Video autoplay blocked:', e);
-                    // Fallback to carousel if autoplay fails
-                    initHeroCarousel();
+                    // Keep carousel active if video can't play
+                    fallbackImages.forEach(img => {
+                        img.classList.remove('hidden');
+                    });
                 });
             });
             
@@ -2069,25 +2093,19 @@
                 clearTimeout(videoTimeout);
                 video.style.display = 'none';
                 
-                // Ensure carousel is active
-                initHeroCarousel();
-            });
-            
-            video.addEventListener('loadstart', function() {
-                console.log('🔄 Video loading started');
-            });
-            
-            // Retry mechanism for video loading
-            setTimeout(() => {
-                if (video.readyState < 2) { // HAVE_CURRENT_DATA
-                    console.log('🔄 Retrying video load...');
-                    video.load();
+                // Ensure carousel is visible and active
+                fallbackImages.forEach(img => {
+                    img.classList.remove('hidden');
+                });
+                
+                if (!heroCarouselInitialized) {
+                    initHeroCarousel();
                 }
-            }, 2000);
+            });
             
             // Handle visibility change (tab switching)
             document.addEventListener('visibilitychange', function() {
-                if (!document.hidden && video.paused) {
+                if (!document.hidden && video.style.display !== 'none' && video.paused) {
                     video.play().catch(e => console.log('Video play failed on visibility change:', e));
                 }
             });
@@ -2142,13 +2160,35 @@
         }
 
         // Hero Image Carousel
+        let carouselInterval;
+        
         function initHeroCarousel() {
+            // Prevent multiple initializations
+            if (heroCarouselInitialized) {
+                console.log('Hero carousel already initialized');
+                return;
+            }
+            
             const images = document.querySelectorAll('.hero-fallback-image');
             const video = document.getElementById('hero-video');
             let currentIndex = 0;
-            let carouselInterval;
             
-            if (images.length <= 1) return; // No carousel needed for single image
+            console.log('Initializing hero carousel with', images.length, 'images');
+            
+            if (images.length <= 1) {
+                heroCarouselInitialized = true;
+                return; // No carousel needed for single image
+            }
+            
+            // Ensure first image is active
+            images.forEach((img, index) => {
+                if (index === 0) {
+                    img.classList.add('active');
+                    img.classList.remove('hidden');
+                } else {
+                    img.classList.remove('active');
+                }
+            });
             
             function showNextImage() {
                 // Hide current image
@@ -2159,27 +2199,49 @@
                 
                 // Show next image
                 images[currentIndex].classList.add('active');
+                
+                console.log('Carousel showing image', currentIndex + 1, 'of', images.length);
             }
             
             function startCarousel() {
-                // Start carousel with 3-second intervals for more dynamic experience
-                carouselInterval = setInterval(showNextImage, 3000);
+                // Clear any existing interval
+                if (carouselInterval) {
+                    clearInterval(carouselInterval);
+                }
+                // Start carousel with 4-second intervals
+                carouselInterval = setInterval(showNextImage, 4000);
+                console.log('Carousel started');
             }
             
             function stopCarousel() {
                 if (carouselInterval) {
                     clearInterval(carouselInterval);
+                    carouselInterval = null;
+                    console.log('Carousel stopped');
                 }
             }
             
             // Start carousel immediately
             startCarousel();
             
-            // Stop carousel when video loads and plays
+            // Mark as initialized
+            heroCarouselInitialized = true;
+            
+            // Stop carousel when video actually starts playing (not just loading)
             if (video) {
-                video.addEventListener('loadeddata', function() {
-                    // Small delay to ensure smooth transition to video
-                    setTimeout(stopCarousel, 1000);
+                video.addEventListener('play', function() {
+                    console.log('Video started playing - stopping carousel');
+                    stopCarousel();
+                });
+                
+                video.addEventListener('pause', function() {
+                    console.log('Video paused - restarting carousel');
+                    startCarousel();
+                });
+                
+                video.addEventListener('ended', function() {
+                    console.log('Video ended - restarting carousel');
+                    startCarousel();
                 });
             }
         }
@@ -2222,8 +2284,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadCompositions();
             loadFeaturedComposition();
-            initHeroVideo();
-            initHeroCarousel();
+            initHeroVideo(); // This will handle fallback to carousel internally
             initHeroRotation();
             // Mobile menu and theme toggle are now handled by main.js
         });
