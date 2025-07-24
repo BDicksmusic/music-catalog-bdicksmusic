@@ -392,8 +392,13 @@
         }
         
         .composition-title-section {
-            flex: 3;
-            min-width: 0; /* Allow text to wrap if needed */
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            align-content: space-between;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: space-evenly;
         }
         
         .composition-meta-section {
@@ -698,7 +703,7 @@
     .composition-title {
         word-break: break-word;
         font-size: 1.3rem; /* Optionally reduce font size on mobile */
-        margin: 0 0 0.25rem 0; /* Consistent with desktop, remove top margin */
+        margin: 0;
     }
     
     /* Mobile styles for combined header container */
