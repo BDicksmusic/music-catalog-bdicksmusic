@@ -127,6 +127,8 @@ async function loadCompositionDetail() {
 }
 
 function renderComposition(comp) {
+    console.log('🎯 Starting renderComposition with:', comp);
+    
     // Update cover image
     const coverImg = document.getElementById('composition-cover');
     if (coverImg && comp.coverImage) {
@@ -137,6 +139,7 @@ function renderComposition(comp) {
     // ============================================
     // CONTAINER 1: Title and Instrumentation
     // ============================================
+    console.log('📝 Rendering Container 1: Title and Instrumentation');
     const titleInstrumentContainer = document.querySelector('.composition-title-container');
     if (titleInstrumentContainer) {
         titleInstrumentContainer.innerHTML = `
@@ -154,20 +157,19 @@ function renderComposition(comp) {
     // ============================================
     // CONTAINER 2: Short Instrument List + Composition Meta Information
     // ============================================
+    console.log('📊 Rendering Container 2: Meta Information');
     const metaContainer = document.querySelector('.composition-meta-container');
     if (metaContainer) {
         // Use Notion short instrument list if available, otherwise extract from full instrumentation
         const shortInstrumentList = comp.shortInstrumentList || extractShortInstrumentList(comp.instrumentation || '');
         
-        // Debug log (can be removed in production)
-        if (process.env.NODE_ENV !== 'production') {
-            console.log('📊 Meta Container populated:', {
-                shortInstrumentList: shortInstrumentList,
-                year: comp.year,
-                duration: comp.duration,
-                difficulty: comp.difficulty
-            });
-        }
+        // Debug log (browser-safe)
+        console.log('📊 Meta Container populated:', {
+            shortInstrumentList: shortInstrumentList,
+            year: comp.year,
+            duration: comp.duration,
+            difficulty: comp.difficulty
+        });
         
         metaContainer.innerHTML = `
             <div class="composition-short-instruments">
@@ -188,6 +190,7 @@ function renderComposition(comp) {
     // ============================================
     // CONTAINER 3: Layout Builder Navigation
     // ============================================
+    console.log('🔗 Rendering Container 3: Layout Builder Navigation');
     const linksContainer = document.querySelector('.composition-links-container');
     if (linksContainer) {
         // Check availability of different sections
@@ -212,6 +215,7 @@ function renderComposition(comp) {
     // ============================================
     // CONTAINER 4: Buy/Purchase Container (Standalone)
     // ============================================
+    console.log('💳 Rendering Container 4: Buy/Purchase Container');
     const buyContainer = document.querySelector('.composition-buy-container');
     if (buyContainer) {
         buyContainer.innerHTML = comp.paymentLink || comp.stripePriceId ? 
@@ -226,6 +230,7 @@ function renderComposition(comp) {
     // ============================================
     // CONTAINER 5: Audio Container (Enhanced Multi-Audio Player)
     // ============================================
+    console.log('🎵 Rendering Container 5: Audio Container');
     const audioContainer = document.querySelector('.composition-audio-container');
 if (audioContainer) {
     const audioFiles = comp.audioFiles || [];
