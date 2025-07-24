@@ -489,7 +489,7 @@ nav {
     justify-content: center;
     transition: all 0.3s ease;
     position: relative;
-    font-size: clamp(15px, 1vw, 22px);
+    font-size: clamp(15px, 1vw, 18px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
