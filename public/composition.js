@@ -1239,12 +1239,10 @@ function switchToAudio(index) {
 
 // Update navigation button states
 function updateAudioNavButtons() {
-    const currentPlayer = document.querySelector('.composition-audio-player[style*="block"], .composition-audio-player:not([style*="none"])');
-    if (!currentPlayer) return;
-    
-    const prevBtn = currentPlayer.querySelector('[data-nav-type="prev"]');
-    const nextBtn = currentPlayer.querySelector('[data-nav-type="next"]');
-    const navInfo = currentPlayer.querySelector('.audio-nav-info');
+    // Use global button selectors since the navigation is outside the audio players
+    const prevBtn = document.getElementById('prevAudioBtn');
+    const nextBtn = document.getElementById('nextAudioBtn');
+    const navInfo = document.getElementById('audioNavInfo');
     
     if (prevBtn) prevBtn.disabled = currentAudioIndex === 0;
     if (nextBtn) nextBtn.disabled = currentAudioIndex === totalAudioCount - 1;
