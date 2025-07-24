@@ -501,6 +501,13 @@ if (perfContainer) {
                             ${videoPlayerHtml}
                             ${videoFile.duration ? `<div class="video-duration">Duration: ${videoFile.duration}</div>` : ''}
                             ${videoFiles.length > 1 ? `
+                                 <div class="video-metadata-section">
+                            <div class="composition-video-title">
+                                ${displayName}
+                            </div>
+                            ${metadataHtml}
+                        </div>
+                    </div>
                             <div class="audio-nav-divider"></div>
                             <div class="audio-nav-container">
                                 <button class="audio-nav-btn" onclick="previousVideo()" data-nav-type="prev">⏮ Previous</button>
@@ -509,13 +516,6 @@ if (perfContainer) {
                             </div>
                             ` : ''}
                         </div>
-                        <div class="video-metadata-section">
-                            <div class="composition-video-title">
-                                ${displayName}
-                            </div>
-                            ${metadataHtml}
-                        </div>
-                    </div>
                 `;
             }).join('');
             
