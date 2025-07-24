@@ -463,15 +463,7 @@ if (perfContainer) {
             const videosHtml = videoFiles.map((videoFile, index) => {
                 const displayName = videoFile.title || extractDisplayName(videoFile.url);
                 
-                let metadataHtml = '';
-                if (videoFile.performanceBy || videoFile.recordingDate) {
-                    metadataHtml = `
-                        <div class="composition-video-metadata">
-                            ${videoFile.performanceBy ? `<div class="performance-info">Performed by: ${videoFile.performanceBy}</div>` : ''}
-                            ${videoFile.recordingDate ? `<div>Recorded: ${formatDate(videoFile.recordingDate)}</div>` : ''}
-                        </div>
-                    `;
-                }
+                
                 
                 // Check if this is a YouTube video or regular video file
                 const isYouTube = isYouTubeUrl(videoFile.url);
@@ -491,6 +483,17 @@ if (perfContainer) {
                         </video>
                     `;
                 }
+
+                let metadataHtml = '';
+                if (videoFile.performanceBy || videoFile.recordingDate) {
+                    metadataHtml = `
+                        <div class="composition-video-metadata">
+                            ${videoFile.performanceBy ? `<div class="performance-info">Performed by: ${videoFile.performanceBy}</div>` : ''}
+                            ${videoFile.recordingDate ? `<div>Recorded: ${formatDate(videoFile.recordingDate)}</div>` : ''}
+                        </div>
+                    `;
+                }
+                
                 
                 return `
                     <div class="composition-video-player" data-video-index="${index}" style="${index === 0 ? 'display: flex;' : 'display: none;'}">
