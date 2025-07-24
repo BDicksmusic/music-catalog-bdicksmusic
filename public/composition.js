@@ -156,8 +156,18 @@ function renderComposition(comp) {
     // ============================================
     const metaContainer = document.querySelector('.composition-meta-container');
     if (metaContainer) {
-        // Extract short instrument list from full instrumentation
-        const shortInstrumentList = extractShortInstrumentList(comp.instrumentation || '');
+        // Use Notion short instrument list if available, otherwise extract from full instrumentation
+        const shortInstrumentList = comp.shortInstrumentList || extractShortInstrumentList(comp.instrumentation || '');
+        
+        // Debug log (can be removed in production)
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('📊 Meta Container populated:', {
+                shortInstrumentList: shortInstrumentList,
+                year: comp.year,
+                duration: comp.duration,
+                difficulty: comp.difficulty
+            });
+        }
         
         metaContainer.innerHTML = `
             <div class="composition-short-instruments">
@@ -171,6 +181,8 @@ function renderComposition(comp) {
                 ${comp.difficulty ? `<span>Difficulty: ${comp.difficulty}</span>` : ''}
             </div>
         `;
+    } else {
+        console.error('❌ Meta container not found!');
     }
 
     // ============================================
