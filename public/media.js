@@ -22,9 +22,13 @@ document.addEventListener('DOMContentLoaded', function() {
 // Enhanced filter functionality with immediate content display
 function initMediaFilters() {
     const filterBtns = document.querySelectorAll('.filter-btn');
-    const mediaItems = document.querySelectorAll('.media-item');
+    const compositionCards = document.querySelectorAll('.composition-card');
     const audioShowcase = document.querySelector('.audio-showcase');
+    const clearAllBtn = document.getElementById('clear-all-btn');
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.querySelector('.search-btn');
 
+    // Filter button functionality
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             const filter = this.getAttribute('data-filter');
@@ -33,8 +37,11 @@ function initMediaFilters() {
             filterBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             
+            // Clear search input when filtering
+            searchInput.value = '';
+            
             // First, hide all items immediately
-            mediaItems.forEach(item => {
+            compositionCards.forEach(item => {
                 item.classList.add('hidden');
                 item.classList.remove('visible');
             });
@@ -43,7 +50,7 @@ function initMediaFilters() {
             setTimeout(() => {
                 let visibleItems = [];
                 
-                mediaItems.forEach(item => {
+                compositionCards.forEach(item => {
                     const category = item.getAttribute('data-category');
                     
                     if (filter === 'all' || category === filter) {
@@ -64,19 +71,133 @@ function initMediaFilters() {
             // Special handling for audio filter - auto-scroll to audio section
             if (filter === 'audio') {
                 setTimeout(() => {
-                    audioShowcase.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
-                    // Highlight the audio section briefly
-                    audioShowcase.style.background = 'var(--primary-50)';
-                    setTimeout(() => {
-                        audioShowcase.style.background = '';
-                    }, 2000);
+                    if (audioShowcase) {
+                        audioShowcase.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'start' 
+                        });
+                        // Highlight the audio section briefly
+                        audioShowcase.style.background = 'var(--primary-50)';
+                        setTimeout(() => {
+                            audioShowcase.style.background = '';
+                        }, 2000);
+                    }
                 }, 600); // Wait for items to appear first
             }
         });
     });
+
+    // Clear All button functionality
+    if (clearAllBtn) {
+        clearAllBtn.addEventListener('click', function() {
+            // Reset all filters to "All Media"
+            filterBtns.forEach(b => b.classList.remove('active'));
+            const allBtn = document.querySelector('[data-filter="all"]');
+            if (allBtn) {
+                allBtn.classList.add('active');
+            }
+            
+            // Clear search
+            searchInput.value = '';
+            
+            // Show all items
+            compositionCards.forEach(item => {
+                item.classList.remove('hidden');
+                item.classList.add('visible');
+            });
+            
+            // Visual feedback
+            this.style.background = 'var(--green-500)';
+            this.textContent = 'Cleared!';
+            setTimeout(() => {
+                this.style.background = 'var(--red-500)';
+                this.textContent = 'Clear All';
+            }, 1000);
+        });
+    }
+
+    // Search functionality
+    function performSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        
+        if (query === '') {
+            // If search is empty, show all items based on current filter
+            const activeFilter = document.querySelector('.filter-btn.active');
+            if (activeFilter) {
+                activeFilter.click();
+            }
+            return;
+        }
+        
+        // Clear active filter
+        filterBtns.forEach(b => b.classList.remove('active'));
+        
+        // Hide all items first
+        compositionCards.forEach(item => {
+            item.classList.add('hidden');
+            item.classList.remove('visible');
+        });
+        
+        // Show matching items
+        setTimeout(() => {
+            let visibleItems = [];
+            
+            compositionCards.forEach(item => {
+                const title = item.querySelector('.composition-title')?.textContent.toLowerCase() || '';
+                const instrumentation = item.querySelector('.composition-instrumentation')?.textContent.toLowerCase() || '';
+                
+                if (title.includes(query) || instrumentation.includes(query)) {
+                    visibleItems.push(item);
+                }
+            });
+            
+            // Show visible items with staggered animation
+            visibleItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.remove('hidden');
+                    item.classList.add('visible');
+                }, index * 100);
+            });
+            
+            // Update search button feedback
+            if (visibleItems.length > 0) {
+                searchBtn.style.background = 'var(--green-500)';
+                setTimeout(() => {
+                    searchBtn.style.background = 'var(--primary-500)';
+                }, 1000);
+            } else {
+                searchBtn.style.background = 'var(--red-500)';
+                setTimeout(() => {
+                    searchBtn.style.background = 'var(--primary-500)';
+                }, 1000);
+            }
+        }, 150);
+    }
+
+    // Search button click
+    if (searchBtn) {
+        searchBtn.addEventListener('click', performSearch);
+    }
+
+    // Search on Enter key
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // Real-time search (optional - debounced)
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                if (this.value.length > 2 || this.value.length === 0) {
+                    performSearch();
+                }
+            }, 300);
+        });
+    }
 }
 
 // New function to integrate secondary navigation
@@ -120,7 +241,7 @@ function initSecondaryNavigation() {
 // Enhanced audio player functionality with auto-scroll
 function initAudioPlayers() {
     const audioPlayers = document.querySelectorAll('.audio-player');
-    const audioItems = document.querySelectorAll('.media-item.audio');
+    const audioItems = document.querySelectorAll('.composition-card.audio');
     
     // Handle clicks on audio media items - auto-scroll to audio section
     audioItems.forEach(item => {
@@ -266,9 +387,9 @@ function initAudioPlayers() {
 
 // Video player functionality
 function initVideoPlayers() {
-    const mediaItems = document.querySelectorAll('.media-item');
+    const compositionCards = document.querySelectorAll('.composition-card');
     
-    mediaItems.forEach(item => {
+    compositionCards.forEach(item => {
         const playOverlay = item.querySelector('.play-overlay');
         
         if (playOverlay) {
@@ -276,8 +397,8 @@ function initVideoPlayers() {
                 e.preventDefault();
                 
                 // Get video info
-                const title = item.querySelector('h3').textContent;
-                const description = item.querySelector('p').textContent;
+                const title = item.querySelector('.composition-title')?.textContent || 'Unknown Title';
+                const description = item.querySelector('.composition-instrumentation')?.textContent || 'No description';
                 
                 // Create modal for video playback
                 showVideoModal(title, description);
@@ -328,7 +449,12 @@ function showVideoModal(title, description) {
 
 // Load dynamic content from YouTube and/or Notion
 async function loadDynamicContent() {
-    const mediaGrid = document.getElementById('media-grid');
+    const compositionsList = document.getElementById('compositions-list');
+    
+    if (!compositionsList) {
+        console.log('Compositions list container not found');
+        return;
+    }
     
     // Show loading state
     const loadingElement = document.createElement('div');
@@ -337,7 +463,7 @@ async function loadDynamicContent() {
         <div class="loading-spinner"></div>
         <p>Loading latest content...</p>
     `;
-    mediaGrid.appendChild(loadingElement);
+    compositionsList.appendChild(loadingElement);
     
     try {
         // Try to load from both sources
@@ -353,8 +479,8 @@ async function loadDynamicContent() {
         if (youtubeVideos.status === 'fulfilled' && youtubeVideos.value.length > 0) {
             console.log(`✅ Loaded ${youtubeVideos.value.length} YouTube videos`);
             youtubeVideos.value.forEach(video => {
-                const videoElement = createVideoElement(video, 'youtube');
-                mediaGrid.appendChild(videoElement);
+                const videoElement = createCompositionCard(video, 'youtube');
+                compositionsList.appendChild(videoElement);
             });
         }
         
@@ -363,8 +489,8 @@ async function loadDynamicContent() {
             console.log(`✅ Loaded ${notionContent.value.length} Notion media items`);
             notionContent.value.forEach(item => {
                 console.log(`📹 Processing: ${item.title} - Video URL: ${item.videoUrl}`);
-                const contentElement = createContentElement(item, 'notion');
-                mediaGrid.appendChild(contentElement);
+                const contentElement = createCompositionCard(item, 'notion');
+                compositionsList.appendChild(contentElement);
             });
         } else {
             console.log('⚠️ No Notion media content loaded');
@@ -483,155 +609,120 @@ async function loadNotionContent() {
     }
 }
 
-// Create video element from YouTube data
-function createVideoElement(video, source) {
-    const videoElement = document.createElement('div');
-    videoElement.className = `media-item performance dynamic-content ${source}`;
-    videoElement.setAttribute('data-category', 'performance');
-    videoElement.setAttribute('data-video-id', video.id);
+// Create composition card from data (unified function for YouTube and Notion)
+function createCompositionCard(item, source) {
+    const cardElement = document.createElement('div');
     
-    // Truncate description for display
-    const shortDescription = video.description.length > 150 
-        ? video.description.substring(0, 150) + '...' 
-        : video.description;
+    // Determine category and data attributes
+    let category = 'performance';
+    let title = item.title || 'Untitled';
+    let instrumentation = 'Unknown Instrumentation';
+    let duration = 'Unknown';
+    let year = new Date().getFullYear();
+    let thumbnail = '/imgs/placeholder.png';
+    let hasVideo = false;
     
-    videoElement.innerHTML = `
-        <div class="media-thumbnail">
-            <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
-            <div class="play-overlay">
-                <span class="play-icon">▶</span>
-            </div>
-            <div class="media-type">YouTube</div>
-            <div class="media-source">${source === 'youtube' ? 'Live' : 'Curated'}</div>
+    if (source === 'youtube') {
+        category = 'performance';
+        instrumentation = 'YouTube Performance';
+        duration = 'Video';
+        year = formatDate(item.publishedAt).split(',')[1]?.trim() || year;
+        thumbnail = item.thumbnail;
+        hasVideo = true;
+    } else if (source === 'notion') {
+        category = item.category || 'performance';
+        instrumentation = item.instrument || item.description || 'Mixed Media';
+        duration = item.duration || 'Unknown';
+        year = item.year || year;
+        thumbnail = item.thumbnail || '/imgs/placeholder.png';
+        hasVideo = !!item.videoUrl;
+    }
+    
+    cardElement.className = `composition-card ${category} dynamic-content ${source} visible`;
+    cardElement.setAttribute('data-category', category);
+    cardElement.setAttribute('data-content-id', item.id || item.videoId || Date.now());
+    
+    // Create cover element based on media type
+    const isAudio = category === 'audio' || (!hasVideo && item.audioUrl);
+    const coverContent = isAudio ? `
+        <div class="waveform">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
         </div>
-        <div class="media-info">
-            <h3>${video.title}</h3>
-            <p>${shortDescription}</p>
-            <div class="media-meta">
-                <span>${formatDate(video.publishedAt)}</span>
-                <span>YouTube</span>
+    ` : `
+        <img src="${thumbnail}" alt="${title}" loading="lazy">
+    `;
+    
+    cardElement.innerHTML = `
+        <div class="composition-content">
+            <div class="composition-cover ${isAudio ? 'audio-cover' : ''}">
+                ${coverContent}
+                <div class="play-overlay">
+                    <span class="play-icon">▶</span>
+                </div>
+            </div>
+            <div class="composition-main">
+                <div class="composition-title-section">
+                    <h3 class="composition-title">${title}</h3>
+                    <p class="composition-instrumentation">${instrumentation}</p>
+                </div>
+            </div>
+            <div class="composition-actions">
+                <button class="buy-btn">Buy Now</button>
+                <div class="composition-meta">
+                    <span class="duration">${duration}</span>
+                    <span class="year">${year}</span>
+                </div>
             </div>
         </div>
     `;
     
-    // Add click handler for YouTube videos
-    videoElement.addEventListener('click', () => {
-        showYouTubeModal(video);
-    });
-    
-    return videoElement;
-}
-
-// Create content element from Notion data
-function createContentElement(item, source) {
-    const contentElement = document.createElement('div');
-    contentElement.className = `media-item ${item.category} dynamic-content ${source}`;
-    contentElement.setAttribute('data-category', item.category);
-    contentElement.setAttribute('data-content-id', item.id);
-    
-    const mediaType = item.videoUrl ? 'Video' : item.audioUrl ? 'Audio' : 'Content';
-    const thumbnail = item.thumbnail || '/imgs/placeholder.png';
-    
-    contentElement.innerHTML = `
-        <div class="media-thumbnail ${item.audioUrl ? 'audio-thumbnail' : ''}">
-            ${item.audioUrl ? `
-                <div class="waveform">
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                </div>
-            ` : `
-                <img src="${thumbnail}" alt="${item.title}" loading="lazy">
-            `}
-            <div class="play-overlay">
-                <span class="play-icon">▶</span>
-            </div>
-            <div class="media-type">${mediaType}</div>
-            <div class="media-source">Notion</div>
-        </div>
-        <div class="media-info">
-            <h3>${item.title}</h3>
-            <p>${item.description}</p>
-            
-            <!-- Enhanced metadata with performance info -->
-            <div class="media-meta">
-                ${item.duration ? `<span>⏱ ${item.duration}</span>` : ''}
-                <span>📂 ${item.category}</span>
-                ${item.quality && item.quality !== 'Standard' ? `<span>🔹 ${item.quality}</span>` : ''}
-                ${item.featured ? '<span class="featured-badge">⭐ Featured</span>' : ''}
-            </div>
-            
-            <!-- Performance information -->
-            ${item.performanceBy || item.recordingDate ? `
-                <div class="performance-info">
-                    ${item.performanceBy ? `<div class="performer">🎭 ${item.performanceBy}</div>` : ''}
-                    ${item.recordingDate ? `<div class="date">📅 ${formatMediaDate(item.recordingDate)}</div>` : ''}
-                </div>
-            ` : ''}
-            
-            <!-- Related compositions display -->
-            ${item.relatedCompositions && item.relatedCompositions.length > 0 ? `
-                <div class="related-compositions">
-                    <div class="compositions-header">
-                        <span class="compositions-label">🎼 Related Compositions:</span>
-                    </div>
-                    <div class="compositions-list">
-                        ${item.relatedCompositions.map(comp => `
-                            <div class="composition-chip" onclick="openComposition('${comp.slug || comp.id}')">
-                                <span class="comp-title">${comp.title}</span>
-                                ${comp.instrumentation ? `<span class="comp-instrument">${comp.instrumentation}</span>` : ''}
-                                ${comp.year ? `<span class="comp-year">(${comp.year})</span>` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            ` : ''}
-            
-            <!-- Tags -->
-            ${item.tags.length > 0 ? `
-                <div class="content-tags">
-                    ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                </div>
-            ` : ''}
-        </div>
-    `;
-    
-    // Add click handler with better visual feedback
-    contentElement.addEventListener('click', (e) => {
+    // Add click handler based on source
+    cardElement.addEventListener('click', (e) => {
         e.preventDefault();
         
-        if (item.audioUrl && item.category === 'audio') {
-            // Handle audio content - scroll to audio section
-            const audioShowcase = document.querySelector('.audio-showcase');
-            audioShowcase.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else if (item.videoUrl) {
-            console.log(`🎬 Opening video modal for: ${item.title}`);
-            console.log(`🔗 Video URL: ${item.videoUrl}`);
-            showNotionVideoModal(item);
-        } else {
-            console.log(`⚠️ No video URL found for: ${item.title}`);
+        if (source === 'youtube') {
+            showYouTubeModal(item);
+        } else if (source === 'notion') {
+            if (item.audioUrl && category === 'audio') {
+                // Handle audio content - scroll to audio section
+                const audioShowcase = document.querySelector('.audio-showcase');
+                if (audioShowcase) {
+                    audioShowcase.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            } else if (item.videoUrl) {
+                console.log(`🎬 Opening video modal for: ${item.title}`);
+                showNotionVideoModal(item);
+            } else {
+                console.log(`⚠️ No video URL found for: ${item.title}`);
+            }
         }
     });
     
-    // Add hover effect for items with video URLs
-    if (item.videoUrl) {
-        contentElement.style.cursor = 'pointer';
-        contentElement.addEventListener('mouseenter', () => {
-            contentElement.style.transform = 'translateY(-2px)';
-            contentElement.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
-        });
-        contentElement.addEventListener('mouseleave', () => {
-            contentElement.style.transform = 'translateY(0)';
-            contentElement.style.boxShadow = '';
-        });
-    }
+    // Add buy button handler
+    const buyBtn = cardElement.querySelector('.buy-btn');
+    buyBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent card click
+        
+        // Visual feedback
+        buyBtn.style.background = 'var(--green-500)';
+        buyBtn.textContent = 'Added!';
+        setTimeout(() => {
+            buyBtn.style.background = 'var(--primary-500)';
+            buyBtn.textContent = 'Buy Now';
+        }, 1500);
+        
+        console.log(`🛒 Buy button clicked for: ${title}`);
+        // Add actual purchase logic here
+    });
     
-    return contentElement;
+    return cardElement;
 }
 
 // YouTube video modal
@@ -755,16 +846,16 @@ function getYouTubeEmbedUrl(url) {
 // Update filter button counts based on loaded content
 function updateFilterCounts() {
     const filterBtns = document.querySelectorAll('.filter-btn');
-    const mediaItems = document.querySelectorAll('.media-item');
+    const compositionCards = document.querySelectorAll('.composition-card');
     
     filterBtns.forEach(btn => {
         const filter = btn.getAttribute('data-filter');
         let count = 0;
         
         if (filter === 'all') {
-            count = mediaItems.length;
+            count = compositionCards.length;
         } else {
-            mediaItems.forEach(item => {
+            compositionCards.forEach(item => {
                 const category = item.getAttribute('data-category');
                 if (category === filter) count++;
             });

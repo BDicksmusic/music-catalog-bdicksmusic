@@ -71,9 +71,11 @@
     
     <!-- Secondary Navigation -->
     <nav class="secondary-nav">
-        <a href="/composer" class="secondary-button">Composer</a>
-        <a href="/trumpeter" class="secondary-button">Trumpeter</a>
-        <a href="/educator" class="secondary-button">Educator</a>
+        <div class="secondary-nav-container">
+            <a href="/composer" class="secondary-button">🎼 Composer</a>
+            <a href="/trumpeter" class="secondary-button">🎺 Trumpeter</a>
+            <a href="/educator" class="secondary-button">📚 Educator</a>
+        </div>
     </nav>
     <!-- Hero Section -->
     <header class="media-hero">
@@ -84,136 +86,154 @@
     </header>
 
     <!-- Filter Navigation -->
-    <div class="media-filters">
-        <button class="filter-btn active" data-filter="all">All Media</button>
-        <button class="filter-btn" data-filter="performance">Performances</button>
-        <button class="filter-btn" data-filter="editing">Video Editing</button>
-        <button class="filter-btn" data-filter="composition">Compositions</button>
-        <button class="filter-btn" data-filter="audio">Audio Samples</button>
+    <div class="media-filters-container">
+        <div class="media-filters">
+            <button class="filter-btn active" data-filter="all">All Media</button>
+            <button class="filter-btn" data-filter="performance">Performances</button>
+            <button class="filter-btn" data-filter="editing">Video Editing</button>
+            <button class="filter-btn" data-filter="composition">Compositions</button>
+            <button class="filter-btn" data-filter="audio">Audio Samples</button>
+        </div>
+        <div class="filter-actions">
+            <button class="clear-all-btn" id="clear-all-btn">Clear All</button>
+            <div class="search-compositions">
+                <input type="text" placeholder="Search compositions..." class="search-input" id="search-input">
+                <button class="search-btn">🔍</button>
+            </div>
+        </div>
     </div>
 
 
-    <!-- Media Grid -->
-    <section class="media-grid-section">
+    <!-- Compositions List -->
+    <section class="compositions-list-section">
         <div class="container">
-            <div class="media-grid" id="media-grid">
-                <!-- Performance Videos -->
-                <div class="media-item performance" data-category="performance">
-                    <div class="media-thumbnail">
-                        <img src="/imgs/performance-1.jpg" alt="Jazz Performance">
-                        <div class="play-overlay">
-                            <span class="play-icon">▶</span>
+            <div class="compositions-list" id="compositions-list">
+                <!-- Single Column Composition Cards -->
+                <div class="composition-card performance" data-category="performance">
+                    <div class="composition-content">
+                        <div class="composition-cover">
+                            <img src="/imgs/performance-1.jpg" alt="Jazz Performance">
+                            <div class="play-overlay">
+                                <span class="play-icon">▶</span>
+                            </div>
                         </div>
-                        <div class="media-type">Video</div>
-                    </div>
-                    <div class="media-info">
-                        <h3>Jazz Improvisation</h3>
-                        <p>Live jazz performance demonstrating improvisational skills and musical creativity.</p>
-                        <div class="media-meta">
-                            <span>5:32</span>
-                            <span>Live Performance</span>
+                        <div class="composition-main">
+                            <div class="composition-title-section">
+                                <h3 class="composition-title">Jazz Improvisation</h3>
+                                <p class="composition-instrumentation">Solo Trumpet with Jazz Ensemble</p>
+                            </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Video Editing -->
-                <div class="media-item editing" data-category="editing">
-                    <div class="media-thumbnail">
-                        <img src="/imgs/editing-1.jpg" alt="Video Editing Project">
-                        <div class="play-overlay">
-                            <span class="play-icon">▶</span>
-                        </div>
-                        <div class="media-type">Video</div>
-                    </div>
-                    <div class="media-info">
-                        <h3>Concert Promo Video</h3>
-                        <p>Professional concert promotion video with dynamic editing, color grading, and sound design.</p>
-                        <div class="media-meta">
-                            <span>2:15</span>
-                            <span>Video Editing</span>
+                        <div class="composition-actions">
+                            <button class="buy-btn">Buy Now</button>
+                            <div class="composition-meta">
+                                <span class="duration">5:32</span>
+                                <span class="year">2024</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Audio Samples -->
-                <div class="media-item audio" data-category="audio">
-                    <div class="media-thumbnail audio-thumbnail">
-                        <div class="waveform">
-                            <div class="wave-bar"></div>
-                            <div class="wave-bar"></div>
-                            <div class="wave-bar"></div>
-                            <div class="wave-bar"></div>
-                            <div class="wave-bar"></div>
-                            <div class="wave-bar"></div>
-                            <div class="wave-bar"></div>
-                            <div class="wave-bar"></div>
+                <div class="composition-card editing" data-category="editing">
+                    <div class="composition-content">
+                        <div class="composition-cover">
+                            <img src="/imgs/editing-1.jpg" alt="Video Editing Project">
+                            <div class="play-overlay">
+                                <span class="play-icon">▶</span>
+                            </div>
                         </div>
-                        <div class="play-overlay">
-                            <span class="play-icon">▶</span>
+                        <div class="composition-main">
+                            <div class="composition-title-section">
+                                <h3 class="composition-title">Concert Promo Video</h3>
+                                <p class="composition-instrumentation">Video Production & Sound Design</p>
+                            </div>
                         </div>
-                        <div class="media-type">Audio</div>
-                    </div>
-                    <div class="media-info">
-                        <h3>Original Composition</h3>
-                        <p>Original trumpet composition with orchestral backing, showcasing compositional skills.</p>
-                        <div class="media-meta">
-                            <span>4:18</span>
-                            <span>Original Music</span>
+                        <div class="composition-actions">
+                            <button class="buy-btn">Buy Now</button>
+                            <div class="composition-meta">
+                                <span class="duration">2:15</span>
+                                <span class="year">2024</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- More items... -->
-                <div class="media-item performance" data-category="performance">
-                    <div class="media-thumbnail">
-                        <img src="/imgs/performance-2.jpg" alt="Classical Performance">
-                        <div class="play-overlay">
-                            <span class="play-icon">▶</span>
+                <div class="composition-card audio" data-category="audio">
+                    <div class="composition-content">
+                        <div class="composition-cover audio-cover">
+                            <div class="waveform">
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                            </div>
+                            <div class="play-overlay">
+                                <span class="play-icon">▶</span>
+                            </div>
                         </div>
-                        <div class="media-type">Video</div>
-                    </div>
-                    <div class="media-info">
-                        <h3>Classical Repertoire</h3>
-                        <p>Haydn Trumpet Concerto performance with full orchestra accompaniment.</p>
-                        <div class="media-meta">
-                            <span>12:45</span>
-                            <span>Classical</span>
+                        <div class="composition-main">
+                            <div class="composition-title-section">
+                                <h3 class="composition-title">Original Composition</h3>
+                                <p class="composition-instrumentation">Trumpet & Orchestra</p>
+                            </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="media-item editing" data-category="editing">
-                    <div class="media-thumbnail">
-                        <img src="/imgs/editing-2.jpg" alt="Music Video">
-                        <div class="play-overlay">
-                            <span class="play-icon">▶</span>
-                        </div>
-                        <div class="media-type">Video</div>
-                    </div>
-                    <div class="media-info">
-                        <h3>Music Video Production</h3>
-                        <p>Complete music video production including filming, editing, and post-production effects.</p>
-                        <div class="media-meta">
-                            <span>3:42</span>
-                            <span>Music Video</span>
+                        <div class="composition-actions">
+                            <button class="buy-btn">Buy Now</button>
+                            <div class="composition-meta">
+                                <span class="duration">4:18</span>
+                                <span class="year">2023</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="media-item composition" data-category="composition">
-                    <div class="media-thumbnail">
-                        <img src="/imgs/composition-1.jpg" alt="Score Preview">
-                        <div class="play-overlay">
-                            <span class="play-icon">▶</span>
+                <div class="composition-card performance" data-category="performance">
+                    <div class="composition-content">
+                        <div class="composition-cover">
+                            <img src="/imgs/performance-2.jpg" alt="Classical Performance">
+                            <div class="play-overlay">
+                                <span class="play-icon">▶</span>
+                            </div>
                         </div>
-                        <div class="media-type">Video</div>
+                        <div class="composition-main">
+                            <div class="composition-title-section">
+                                <h3 class="composition-title">Classical Repertoire</h3>
+                                <p class="composition-instrumentation">Trumpet Concerto in E-flat Major</p>
+                            </div>
+                        </div>
+                        <div class="composition-actions">
+                            <button class="buy-btn">Buy Now</button>
+                            <div class="composition-meta">
+                                <span class="duration">12:45</span>
+                                <span class="year">2023</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="media-info">
-                        <h3>Composition Process</h3>
-                        <p>Behind-the-scenes look at the composition process, from concept to final recording.</p>
-                        <div class="media-meta">
-                            <span>6:28</span>
-                            <span>Process Video</span>
+                </div>
+
+                <div class="composition-card composition" data-category="composition">
+                    <div class="composition-content">
+                        <div class="composition-cover">
+                            <img src="/imgs/composition-1.jpg" alt="Score Preview">
+                            <div class="play-overlay">
+                                <span class="play-icon">▶</span>
+                            </div>
+                        </div>
+                        <div class="composition-main">
+                            <div class="composition-title-section">
+                                <h3 class="composition-title">Composition Process</h3>
+                                <p class="composition-instrumentation">Mixed Media Documentation</p>
+                            </div>
+                        </div>
+                        <div class="composition-actions">
+                            <button class="buy-btn">Buy Now</button>
+                            <div class="composition-meta">
+                                <span class="duration">6:28</span>
+                                <span class="year">2024</span>
+                            </div>
                         </div>
                     </div>
                 </div>
