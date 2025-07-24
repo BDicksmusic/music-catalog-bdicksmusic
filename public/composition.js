@@ -213,12 +213,12 @@ function renderComposition(comp) {
     }
 
     // ============================================
-    // CONTAINER 4: Buy/Purchase Container (Standalone)
+    // CONTAINER 4: Buy/Purchase Button (No Container)
     // ============================================
-    console.log('💳 Rendering Container 4: Buy/Purchase Container');
-    const buyContainer = document.querySelector('.composition-buy-container');
-    if (buyContainer) {
-        buyContainer.innerHTML = comp.paymentLink || comp.stripePriceId ? 
+    console.log('💳 Rendering Container 4: Buy/Purchase Button');
+    const buyWrapper = document.querySelector('.composition-buy-button-wrapper');
+    if (buyWrapper) {
+        buyWrapper.innerHTML = comp.paymentLink || comp.stripePriceId ? 
             `<button class="composition-buy-btn" onclick="purchaseComposition('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 10})">
                 💳 Buy Now - $${comp.price || 10}
             </button>` : 

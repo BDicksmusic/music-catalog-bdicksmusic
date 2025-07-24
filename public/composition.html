@@ -452,14 +452,11 @@
             text-decoration: none;
         }
         
-        /* Buy container styling */
-        .composition-buy-container {
+        /* Buy button wrapper styling */
+        .composition-buy-button-wrapper {
             margin-bottom: 0.25rem;
-            background: linear-gradient(135deg, var(--blue-50), var(--primary-50));
-            border: 1px solid var(--blue-100);
-            border-radius: 10px;
-            padding: 1rem 1.5rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
         }
         
         .layout-nav-btn:hover {
@@ -1465,10 +1462,8 @@
                     <div class="composition-meta-container">
                         <!-- Metadata (year, duration, difficulty, etc.) will be injected here -->
                     </div>
-                    <div class="composition-buy-container">
-                        <!-- Buy button will be injected here -->
-                         
-                    </div>
+                    <!-- Buy button will be injected here -->
+                    <div class="composition-buy-button-wrapper"></div>
                     <div class="composition-links-container">
                         <!-- Audio and score links will be injected here -->
                     </div>
