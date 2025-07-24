@@ -302,9 +302,9 @@ if (audioContainer) {
                         ${audioFiles.length > 1 ? `
                         <div class="audio-nav-divider"></div>
                         <div class="audio-nav-container">
-                            <button class="audio-nav-btn" onclick="previousAudio()" id="prevAudioBtn">⏮ Previous</button>
-                            <span class="audio-nav-info" id="audioNavInfo">Movement ${index + 1} of ${audioFiles.length}</span>
-                            <button class="audio-nav-btn" onclick="nextAudio()" id="nextAudioBtn">Next ⏭</button>
+                            <button class="audio-nav-btn" onclick="previousAudio()" data-nav-type="prev">⏮ Previous</button>
+                            <span class="audio-nav-info">Movement ${index + 1} of ${audioFiles.length}</span>
+                            <button class="audio-nav-btn" onclick="nextAudio()" data-nav-type="next">Next ⏭</button>
                         </div>
                         ` : ''}
                     </div>
@@ -428,6 +428,10 @@ if (perfContainer) {
         const videoFiles = comp.videoFiles || [];
         
         if (videoFiles.length > 0) {
+            // Initialize video navigation
+            currentVideoIndex = 0;
+            totalVideoCount = videoFiles.length;
+            
             const videosHtml = videoFiles.map((videoFile, index) => {
                 const displayName = videoFile.title || extractDisplayName(videoFile.url);
                 
@@ -461,14 +465,21 @@ if (perfContainer) {
                 }
                 
                 return `
-                    <div class="composition-video-player" data-video-index="${index}">
+                    <div class="composition-video-player" data-video-index="${index}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
                         <div class="composition-video-title">
                             🎬 ${displayName}
-                            ${videoFiles.length > 1 ? `<span class="video-counter">(${index + 1}/${videoFiles.length})</span>` : ''}
                         </div>
                         ${metadataHtml}
                         ${videoPlayerHtml}
                         ${videoFile.duration ? `<div class="video-duration">Duration: ${videoFile.duration}</div>` : ''}
+                        ${videoFiles.length > 1 ? `
+                        <div class="audio-nav-divider"></div>
+                        <div class="audio-nav-container">
+                            <button class="audio-nav-btn" onclick="previousVideo()" data-nav-type="prev">⏮ Previous</button>
+                            <span class="audio-nav-info">Video ${index + 1} of ${videoFiles.length}</span>
+                            <button class="audio-nav-btn" onclick="nextVideo()" data-nav-type="next">Next ⏭</button>
+                        </div>
+                        ` : ''}
                     </div>
                 `;
             }).join('');
@@ -803,9 +814,13 @@ function formatDate(dateString) {
     });
 }
 
-// Global variable to track current audio player
+// Global variables to track current audio player
 let currentAudioIndex = 0;
 let totalAudioCount = 0;
+
+// Global variables to track current video player  
+let currentVideoIndex = 0;
+let totalVideoCount = 0;
 
 // Add controls for multiple audio files
 function addMultiAudioControls(audioContainer, audioCount) {
@@ -866,9 +881,12 @@ function switchToAudio(index) {
 
 // Update navigation button states
 function updateAudioNavButtons() {
-    const prevBtn = document.getElementById('prevAudioBtn');
-    const nextBtn = document.getElementById('nextAudioBtn');
-    const navInfo = document.getElementById('audioNavInfo');
+    const currentPlayer = document.querySelector('.composition-audio-player[style*="block"], .composition-audio-player:not([style*="none"])');
+    if (!currentPlayer) return;
+    
+    const prevBtn = currentPlayer.querySelector('[data-nav-type="prev"]');
+    const nextBtn = currentPlayer.querySelector('[data-nav-type="next"]');
+    const navInfo = currentPlayer.querySelector('.audio-nav-info');
     
     if (prevBtn) prevBtn.disabled = currentAudioIndex === 0;
     if (nextBtn) nextBtn.disabled = currentAudioIndex === totalAudioCount - 1;
@@ -885,6 +903,58 @@ function previousAudio() {
 function nextAudio() {
     if (currentAudioIndex < totalAudioCount - 1) {
         switchToAudio(currentAudioIndex + 1);
+    }
+}
+
+// Switch to specific video player
+function switchToVideo(index) {
+    const videoContainer = document.querySelector('.composition-video-container');
+    const videoPlayers = videoContainer.querySelectorAll('.composition-video-player');
+    
+    // Hide current video player
+    if (videoPlayers[currentVideoIndex]) {
+        videoPlayers[currentVideoIndex].style.display = 'none';
+        // Pause current video if playing (YouTube videos can't be controlled this way, but regular videos can)
+        const currentVideo = videoPlayers[currentVideoIndex].querySelector('video');
+        if (currentVideo && !currentVideo.paused) {
+            currentVideo.pause();
+        }
+    }
+    
+    // Show new video player
+    currentVideoIndex = index;
+    if (videoPlayers[currentVideoIndex]) {
+        videoPlayers[currentVideoIndex].style.display = 'block';
+    }
+    
+    // Update navigation
+    updateVideoNavButtons();
+}
+
+// Update video navigation button states
+function updateVideoNavButtons() {
+    const currentPlayer = document.querySelector(`.composition-video-player[data-video-index="${currentVideoIndex}"]`);
+    if (!currentPlayer) return;
+    
+    const prevBtn = currentPlayer.querySelector('[data-nav-type="prev"]');
+    const nextBtn = currentPlayer.querySelector('[data-nav-type="next"]');
+    const navInfo = currentPlayer.querySelector('.audio-nav-info');
+    
+    if (prevBtn) prevBtn.disabled = currentVideoIndex === 0;
+    if (nextBtn) nextBtn.disabled = currentVideoIndex === totalVideoCount - 1;
+    if (navInfo) navInfo.textContent = `Video ${currentVideoIndex + 1} of ${totalVideoCount}`;
+}
+
+// Navigation functions for multiple video files
+function previousVideo() {
+    if (currentVideoIndex > 0) {
+        switchToVideo(currentVideoIndex - 1);
+    }
+}
+
+function nextVideo() {
+    if (currentVideoIndex < totalVideoCount - 1) {
+        switchToVideo(currentVideoIndex + 1);
     }
 }
 
