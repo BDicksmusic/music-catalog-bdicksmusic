@@ -347,25 +347,34 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
             console.log(`  ${index + 1}. "${media.title}" - Type: "${media.type}" - Category: "${media.category}" - URL: ${media.url ? 'YES' : 'NO'}`);
         });
 
-        // Separate by type
+        // Separate by type - FIXED: Properly separate score PDFs from score videos
         const audioMedia = allMedia.filter(media => media.type === 'Audio');
-        const videoMedia = allMedia.filter(media => media.type === 'Video' || media.type === 'Score Video'); // Include score videos in videoFiles for client filtering
-        const scoreMedia = allMedia.filter(media => media.type === 'Score' || media.type === 'Score Video');
+        const videoMedia = allMedia.filter(media => media.type === 'Video'); // Regular videos only
+        const scorePdfMedia = allMedia.filter(media => media.type === 'Score'); // PDF scores only
+        const scoreVideoMedia = allMedia.filter(media => media.type === 'Score Video'); // Score videos only
+        
+        // Combine all videos (regular + score videos) for client-side filtering
+        const allVideoMedia = videoMedia.concat(scoreVideoMedia);
         
         // Debug: Show filtered results
-        console.log('🎼 DEBUG SERVER - Video media (includes Score Video):', videoMedia.length);
+        console.log('🎼 DEBUG SERVER - Regular video media:', videoMedia.length);
         videoMedia.forEach((video, index) => {
-            console.log(`  Video ${index + 1}. "${video.title}" - Type: "${video.type}" - Category: "${video.category}"`);
+            console.log(`  Regular Video ${index + 1}. "${video.title}" - Type: "${video.type}" - Category: "${video.category}"`);
         });
         
-        console.log('🎼 DEBUG SERVER - Score media (PDF + Score Video):', scoreMedia.length);
-        scoreMedia.forEach((score, index) => {
-            console.log(`  Score ${index + 1}. "${score.title}" - Type: "${score.type}" - Category: "${score.category}"`);
+        console.log('🎼 DEBUG SERVER - Score PDF media (PDFs only):', scorePdfMedia.length);
+        scorePdfMedia.forEach((score, index) => {
+            console.log(`  Score PDF ${index + 1}. "${score.title}" - Type: "${score.type}" - Category: "${score.category}"`);
+        });
+        
+        console.log('🎼 DEBUG SERVER - Score Video media (Videos only):', scoreVideoMedia.length);
+        scoreVideoMedia.forEach((scoreVideo, index) => {
+            console.log(`  Score Video ${index + 1}. "${scoreVideo.title}" - Type: "${scoreVideo.type}" - Category: "${scoreVideo.category}"`);
         });
         
         // Debug: Log the filtering results
         if (process.env.NODE_ENV !== 'production') {
-            console.log(`🔍 DEBUG - After filtering: ${audioMedia.length} audio, ${videoMedia.length} video, ${scoreMedia.length} score`);
+            console.log(`🔍 DEBUG - After filtering: ${audioMedia.length} audio, ${allVideoMedia.length} total video, ${scorePdfMedia.length} score PDF, ${scoreVideoMedia.length} score video`);
             console.log(`🔍 DEBUG - Audio files:`);
             audioMedia.forEach((audio, index) => {
                 console.log(`  ${index + 1}. "${audio.title}" - URL: ${audio.url ? 'YES' : 'NO'}`);
@@ -377,21 +386,21 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
         const similarWorks = await fetchSimilarWorks(baseComposition.similarWorksIds);
         console.log('🔗 DEBUG - Final similarWorks result:', similarWorks?.length, similarWorks?.map(w => w.title));
         
-        // Roll up media data
+        // Roll up media data - FIXED: Use properly separated arrays
         return {
             ...baseComposition,
-            // Enhanced media arrays
+            // Enhanced media arrays with proper separation
             audioFiles: audioMedia,
-            videoFiles: videoMedia,
-            scoreFiles: scoreMedia,
+            videoFiles: allVideoMedia, // Includes both regular videos and score videos for client filtering
+            scoreFiles: scorePdfMedia, // PDF scores only
             allMedia: allMedia,
             
             // Similar works
             similarWorks: similarWorks,
             
-            // Keep original single links for backward compatibility
+            // Keep original single links for backward compatibility - FIXED: Only use PDF scores for scoreLink
             audioLink: audioMedia.length > 0 ? audioMedia[0].url : baseComposition.audioLink,
-            scoreLink: scoreMedia.length > 0 ? scoreMedia[0].url : baseComposition.scoreLink,
+            scoreLink: scorePdfMedia.length > 0 ? scorePdfMedia[0].url : baseComposition.scoreLink, // PDF scores only
             
             // Enhanced metadata from first audio file (for backward compatibility)
             performanceBy: audioMedia.length > 0 ? audioMedia[0].performanceBy : '',

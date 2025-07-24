@@ -586,8 +586,8 @@ if (notesContainer) {
     const scoreVideoContainer = document.querySelector('#composition-score-video-container');
     if (scoreVideoContainer) {
         console.log('🎼 DEBUG - Score video container found:', !!scoreVideoContainer);
-        console.log('🎼 DEBUG - Full composition object:', comp);
-        console.log('🎼 DEBUG - All video files for score filtering:', comp.videoFiles);
+        console.log('🎼 DEBUG - Server properly separates videos now - videoFiles contains both regular and score videos');
+        console.log('🎼 DEBUG - All video files from server:', comp.videoFiles?.length || 0);
         if (comp.videoFiles && comp.videoFiles.length > 0) {
             console.log('🎼 DEBUG - Video files detailed:', comp.videoFiles.map(v => ({ 
                 title: v.title, 
@@ -597,44 +597,25 @@ if (notesContainer) {
             })));
         }
         
-        // Try multiple ways to find score videos
-        console.log('🎼 DEBUG - Trying different filtering approaches:');
+        // FIXED: Server now properly includes score videos in videoFiles, so filtering should work correctly
+        console.log('🎼 DEBUG - Filtering score videos from properly structured server data:');
         
-        // Method 1: Exact type match
-        const method1 = (comp.videoFiles || []).filter(video => video.type === 'Score Video');
-        console.log('🎼 DEBUG - Method 1 (type === "Score Video"):', method1.length, method1);
+        // Primary method: Exact type match (should work now that server properly includes score videos)
+        const scoreVideosFromServer = (comp.videoFiles || []).filter(video => video.type === 'Score Video');
+        console.log('🎼 DEBUG - Score videos from server (type === "Score Video"):', scoreVideosFromServer.length, scoreVideosFromServer);
         
-        // Method 2: Category match
-        const method2 = (comp.videoFiles || []).filter(video => video.category === 'score');
-        console.log('🎼 DEBUG - Method 2 (category === "score"):', method2.length, method2);
+        // Backup method: Category match
+        const scoreVideosByCategory = (comp.videoFiles || []).filter(video => video.category === 'score');
+        console.log('🎼 DEBUG - Score videos by category (category === "score"):', scoreVideosByCategory.length, scoreVideosByCategory);
         
-        // Method 3: Case-insensitive type match
-        const method3 = (comp.videoFiles || []).filter(video => 
-            video.type && video.type.toLowerCase().includes('score')
-        );
-        console.log('🎼 DEBUG - Method 3 (type includes "score"):', method3.length, method3);
-        
-        // Method 4: Title-based detection
-        const method4 = (comp.videoFiles || []).filter(video => 
-            video.title && video.title.toLowerCase().includes('score')
-        );
-        console.log('🎼 DEBUG - Method 4 (title includes "score"):', method4.length, method4);
-        
-        // Use more permissive filtering temporarily to catch more potential score videos
-        let scoreVideoFiles = (comp.videoFiles || []).filter(video => 
-            video.type === 'Score Video' || 
-            video.category === 'score' ||
-            (video.type && video.type.toLowerCase().includes('score')) ||
-            (video.title && video.title.toLowerCase().includes('score'))
-        );
-        
-        console.log('🎼 DEBUG - Final filtered score videos:', scoreVideoFiles.length, scoreVideoFiles);
+        // Use the combined score videos (from media database + potential scoreLink video)
+        console.log('🎼 DEBUG - All combined score videos:', allScoreVideos.length, allScoreVideos);
 
-        if (scoreVideoFiles.length > 0) {
-            console.log('🎼 DEBUG - Rendering', scoreVideoFiles.length, 'score videos');
+        if (allScoreVideos.length > 0) {
+            console.log('🎼 DEBUG - Rendering', allScoreVideos.length, 'score videos');
             
             try {
-                const scoreVideosHtml = scoreVideoFiles.map((scoreVideo, index) => {
+                const scoreVideosHtml = allScoreVideos.map((scoreVideo, index) => {
                     console.log(`🎼 DEBUG - Processing score video ${index + 1}:`, scoreVideo);
                     
                     // Validate video data
@@ -721,28 +702,47 @@ if (notesContainer) {
     const scoreCarouselContainer = document.querySelector('#score-carousel-container');
     console.log('📄 DEBUG - Score container found:', !!scoreCarouselContainer);
     
-    const scoreFiles = comp.scoreFiles || [];
+    // Helper function to check if URL is a PDF
+    const isPdfUrl = (url) => {
+        if (!url) return false;
+        const urlLower = url.toLowerCase();
+        return urlLower.includes('.pdf') || urlLower.includes('pdf') || 
+               (!urlLower.includes('youtube.com') && !urlLower.includes('youtu.be'));
+    };
+
+    // FIXED: Server now properly separates PDF scores from score videos
+    const scoreFiles = comp.scoreFiles || []; // Now contains PDF scores only from server
     const scoreVideoFiles = (comp.videoFiles || []).filter(video => video.type === 'Score Video' || video.category === 'score');
     
-    // Filter scoreFiles to only include actual PDF scores (not videos)
-    const pdfScoreFiles = scoreFiles.filter(file => 
-        file.type === 'Score' && 
-        file.type !== 'Score Video' && 
-        !file.url?.includes('youtube.com') && 
-        !file.url?.includes('youtu.be')
-    );
-    
-    // Priority: Direct scoreLink from Notion database, then scoreFiles from media database
-    const hasDirectScore = comp.scoreLink && comp.scoreLink.trim() !== '';
+    // No need to filter scoreFiles anymore - server already provides PDF scores only
+    const pdfScoreFiles = scoreFiles;
+
+    // Priority: Direct scoreLink from Notion database, but only if it's a PDF
+    const hasDirectPdfScore = comp.scoreLink && comp.scoreLink.trim() !== '' && isPdfUrl(comp.scoreLink);
     const hasMediaScore = pdfScoreFiles.length > 0;
-    const hasPdfScore = hasDirectScore || hasMediaScore;
-    const hasScoreVideo = scoreVideoFiles.length > 0;
+    const hasPdfScore = hasDirectPdfScore || hasMediaScore;
+    
+    // Check if scoreLink is actually a video (should go to score video section)
+    const scoreVideoFromLink = comp.scoreLink && !isPdfUrl(comp.scoreLink) ? {
+        url: comp.scoreLink,
+        title: `${comp.title} - Score Video`,
+        type: 'Score Video',
+        category: 'score'
+    } : null;
+    
+    // Combine score videos from media database and potential score video from scoreLink
+    const allScoreVideos = scoreVideoFiles.concat(scoreVideoFromLink ? [scoreVideoFromLink] : []);
+    const hasScoreVideo = allScoreVideos.length > 0;
     
     console.log('📄 DEBUG - Final score check:', {
-        hasDirectScore: hasDirectScore,
+        hasDirectPdfScore: hasDirectPdfScore,
         directScoreUrl: comp.scoreLink,
-        pdfScoreFilesLength: pdfScoreFiles.length,
+        isPdfUrl: isPdfUrl(comp.scoreLink),
+        serverScoreFilesLength: scoreFiles.length, // PDF scores from server
+        pdfScoreFilesLength: pdfScoreFiles.length, // Should be same as above now
         scoreVideoFilesLength: scoreVideoFiles.length,
+        allScoreVideosLength: allScoreVideos.length,
+        scoreVideoFromLink: scoreVideoFromLink,
         hasPdfScore: hasPdfScore,
         hasScoreVideo: hasScoreVideo,
         willRenderScore: hasPdfScore || hasScoreVideo
@@ -751,9 +751,9 @@ if (notesContainer) {
     if (scoreCarouselContainer && (hasPdfScore || hasScoreVideo)) {
         if (hasPdfScore) {
             // Priority: Use direct scoreLink from Notion database first, then media database
-            const scoreUrl = hasDirectScore ? comp.scoreLink : pdfScoreFiles[0].url;
+            const scoreUrl = hasDirectPdfScore ? comp.scoreLink : pdfScoreFiles[0].url;
             console.log('📄 DEBUG - Rendering PDF score with URL:', scoreUrl);
-            console.log('📄 DEBUG - Using direct score link:', hasDirectScore);
+            console.log('📄 DEBUG - Using direct PDF score link:', hasDirectPdfScore);
             
             if (!scoreUrl || scoreUrl.trim() === '') {
                 console.error('📄 ERROR - No valid score URL found');
@@ -818,9 +818,10 @@ if (notesContainer) {
         console.log('📄 DEBUG - Score NOT rendered. Reasons:', {
             containerMissing: !scoreCarouselContainer,
             noPdfScore: !hasPdfScore,
-            hasDirectScore: hasDirectScore,
+            hasDirectPdfScore: hasDirectPdfScore,
             hasMediaScore: hasMediaScore,
             directScoreUrl: comp.scoreLink,
+            isPdfUrl: isPdfUrl(comp.scoreLink),
             noScoreVideo: !hasScoreVideo
         });
     }
