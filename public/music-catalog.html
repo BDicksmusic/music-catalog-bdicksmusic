@@ -229,71 +229,83 @@
         }
 
         .compositions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
         }
 
         .composition-card {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.5rem 0;
             transition: all 0.3s ease;
-            border: 1px solid var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
         }
 
         .composition-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            background-color: var(--gray-50);
         }
 
-        .composition-header {
+        .composition-card:first-child {
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .composition-main-info {
             display: flex;
-            justify-content: between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
+            align-items: center;
+            flex: 1;
+            gap: 2rem;
+        }
+
+        .composition-title-section {
+            flex: 2;
+            min-width: 200px;
         }
 
         .composition-title {
             font-size: 1.1rem;
             font-weight: 700;
             color: var(--gray-800);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             line-height: 1.3;
+        }
+
+        .composition-instrumentation {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        .composition-details-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         .composition-year {
             background: var(--primary-100);
             color: var(--primary-700);
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            padding: 0.25rem 0.5rem;
+            padding: 0.25rem 0.75rem;
             border-radius: 12px;
-            margin-left: auto;
-        }
-
-        .composition-details {
-            margin-bottom: 1rem;
-        }
-
-        .composition-instrumentation {
-            color: var(--gray-600);
-            font-size: 0.95rem;
-            margin-bottom: 0.5rem;
+            white-space: nowrap;
         }
 
         .composition-duration {
             color: var(--gray-500);
             font-size: 0.85rem;
             font-weight: 500;
+            white-space: nowrap;
         }
 
         .composition-meta {
             display: flex;
-            flex-wrap: wrap;
             gap: 0.5rem;
-            margin-bottom: 1rem;
+            flex-wrap: wrap;
         }
 
         .meta-tag {
@@ -302,11 +314,13 @@
             font-size: 0.75rem;
             padding: 0.25rem 0.5rem;
             border-radius: 6px;
+            white-space: nowrap;
         }
 
         .composition-actions {
             display: flex;
             gap: 0.75rem;
+            margin-left: 2rem;
         }
 
         .btn-small {
@@ -398,12 +412,34 @@
                 gap: 1rem;
             }
 
-            .compositions-grid {
-                grid-template-columns: 1fr;
+            .composition-card {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem 0;
+            }
+
+            .composition-main-info {
+                flex-direction: column;
+                gap: 1rem;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .composition-details-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
             }
 
             .composition-actions {
                 flex-direction: column;
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .composition-actions .btn {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -866,18 +902,20 @@
             const yearText = composition.year || 'Year not specified';
             
             card.innerHTML = `
-                <div class="composition-header">
-                    <div>
+                <div class="composition-main-info">
+                    <div class="composition-title-section">
                         <h3 class="composition-title">${composition.title}</h3>
                         <div class="composition-instrumentation">${composition.instrumentation}</div>
-                        <div class="composition-duration">${durationText}</div>
                     </div>
-                    <div class="composition-year">${yearText}</div>
-                </div>
-                
-                <div class="composition-meta">
-                    ${composition.type ? `<span class="meta-tag">${composition.type}</span>` : ''}
-                    ${composition.difficulty ? `<span class="meta-tag">${composition.difficulty}</span>` : ''}
+                    
+                    <div class="composition-details-section">
+                        <div class="composition-year">${yearText}</div>
+                        <div class="composition-duration">${durationText}</div>
+                        <div class="composition-meta">
+                            ${composition.type ? `<span class="meta-tag">${composition.type}</span>` : ''}
+                            ${composition.difficulty ? `<span class="meta-tag">${composition.difficulty}</span>` : ''}
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="composition-actions">
