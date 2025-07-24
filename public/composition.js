@@ -632,33 +632,73 @@ if (notesContainer) {
 
         if (scoreVideoFiles.length > 0) {
             console.log('🎼 DEBUG - Rendering', scoreVideoFiles.length, 'score videos');
-            const scoreVideosHtml = scoreVideoFiles.map((scoreVideo, index) => {
-                console.log(`🎼 DEBUG - Processing score video ${index + 1}:`, scoreVideo);
-                const videoPlayerHtml = createVideoPlayer(scoreVideo.url, scoreVideo.title);
-                console.log(`🎼 DEBUG - Generated video player HTML:`, videoPlayerHtml);
-                const metadataHtml = scoreVideo.performanceBy ? `
-                    <div class="score-video-metadata">
-                        <div class="performance-info">Performed by: ${scoreVideo.performanceBy}</div>
-                    </div>
-                ` : '';
+            
+            try {
+                const scoreVideosHtml = scoreVideoFiles.map((scoreVideo, index) => {
+                    console.log(`🎼 DEBUG - Processing score video ${index + 1}:`, scoreVideo);
+                    
+                    // Validate video data
+                    if (!scoreVideo.url) {
+                        console.error(`🎼 ERROR - Score video ${index + 1} has no URL:`, scoreVideo);
+                        return `
+                            <div class="composition-score-video-player" data-video-index="${index}" style="${index === 0 ? 'display: flex;' : 'display: none;'}">
+                                <div class="score-video-content">
+                                    <div class="video-error">Score video URL not available</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    const videoPlayerHtml = createVideoPlayer(scoreVideo.url, scoreVideo.title);
+                    console.log(`🎼 DEBUG - Generated video player HTML length:`, videoPlayerHtml?.length || 0);
+                    
+                    // Validate generated HTML
+                    if (!videoPlayerHtml || videoPlayerHtml.trim() === '') {
+                        console.error(`🎼 ERROR - Failed to generate video player HTML for:`, scoreVideo);
+                        return `
+                            <div class="composition-score-video-player" data-video-index="${index}" style="${index === 0 ? 'display: flex;' : 'display: none;'}">
+                                <div class="score-video-content">
+                                    <div class="video-error">Failed to create video player</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    const metadataHtml = scoreVideo.performanceBy ? `
+                        <div class="score-video-metadata">
+                            <div class="performance-info">Performed by: ${scoreVideo.performanceBy}</div>
+                        </div>
+                    ` : '';
 
-                return `
-                    <div class="composition-score-video-player" data-video-index="${index}" style="${index === 0 ? 'display: flex;' : 'display: none;'}">
-                        <div class="score-video-content">
-                            ${videoPlayerHtml}
+                    return `
+                        <div class="composition-score-video-player" data-video-index="${index}" style="${index === 0 ? 'display: flex;' : 'display: none;'}">
+                            <div class="score-video-content">
+                                ${videoPlayerHtml}
+                            </div>
+                            <div class="score-video-metadata-section">
+                                ${metadataHtml}
+                            </div>
                         </div>
-                        <div class="score-video-metadata-section">
-                            ${metadataHtml}
-                        </div>
+                    `;
+                }).join('');
+                
+                console.log('🎼 DEBUG - Final score videos HTML length:', scoreVideosHtml.length);
+                scoreVideoContainer.innerHTML = scoreVideosHtml;
+                scoreVideoContainer.style.display = 'block';
+                console.log('🎼 DEBUG - Score video container display set to block');
+                console.log('🎼 SUCCESS - Score videos rendered successfully');
+                
+            } catch (error) {
+                console.error('🎼 ERROR - Failed to render score videos:', error);
+                scoreVideoContainer.innerHTML = `
+                    <div style="padding: 20px; background: #ffe6e6; border: 2px solid #ff9999; text-align: center; color: #cc0000;">
+                        <strong>Error Rendering Score Videos</strong><br>
+                        ${error.message}<br>
+                        Check console for details.
                     </div>
                 `;
-            }).join('');
-            
-            console.log('🎼 DEBUG - Final score videos HTML:', scoreVideosHtml);
-            scoreVideoContainer.innerHTML = scoreVideosHtml;
-            scoreVideoContainer.style.display = 'block';
-            console.log('🎼 DEBUG - Score video container display set to block');
-            console.log('🎼 DEBUG - Score video container final HTML:', scoreVideoContainer.innerHTML);
+                scoreVideoContainer.style.display = 'block';
+            }
         } else {
             console.log('🎼 DEBUG - No score videos found, hiding container');
             // Add a temporary message to show that the container exists but has no videos
@@ -1039,16 +1079,31 @@ function isYouTubeUrl(url) {
 }
 
 function getYouTubeVideoId(url) {
-    if (!url) return null;
+    if (!url) {
+        console.log('🎬 DEBUG - No URL provided to getYouTubeVideoId');
+        return null;
+    }
+    
+    console.log('🎬 DEBUG - Attempting to extract video ID from:', url);
     const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-    return match ? match[1] : null;
+    const videoId = match ? match[1] : null;
+    console.log('🎬 DEBUG - RegEx match result:', match);
+    console.log('🎬 DEBUG - Extracted video ID:', videoId);
+    
+    return videoId;
 }
 
 function createYouTubeEmbed(url, title = 'Video') {
+    console.log('🎬 DEBUG - Creating YouTube embed for:', url);
     const videoId = getYouTubeVideoId(url);
-    if (!videoId) return null;
+    console.log('🎬 DEBUG - Extracted video ID:', videoId);
     
-    return `
+    if (!videoId) {
+        console.warn('🎬 DEBUG - Could not extract YouTube video ID from URL:', url);
+        return null;
+    }
+    
+    const embedHtml = `
         <div class="youtube-embed-container">
             <iframe 
                 width="100%" 
@@ -1061,6 +1116,9 @@ function createYouTubeEmbed(url, title = 'Video') {
             </iframe>
         </div>
     `;
+    
+    console.log('🎬 DEBUG - YouTube embed HTML created successfully');
+    return embedHtml;
 }
 
 // Extract movement order from filename (Roman numerals or Arabic numbers)
@@ -1350,14 +1408,31 @@ function createVideoPlayer(url, title = 'Video') {
         return '<div class="video-error">Video URL not available</div>';
     }
     
+    console.log('🎥 DEBUG - Creating video player for URL:', url);
+    
     // Check if this is a YouTube video
     const isYouTube = isYouTubeUrl(url);
+    console.log('🎥 DEBUG - Is YouTube URL:', isYouTube);
     
     if (isYouTube) {
         // Use YouTube embed for YouTube URLs
-        return createYouTubeEmbed(url, title);
+        const youtubeEmbed = createYouTubeEmbed(url, title);
+        if (youtubeEmbed) {
+            console.log('🎥 DEBUG - YouTube embed created successfully');
+            return youtubeEmbed;
+        } else {
+            console.warn('🎥 DEBUG - Failed to create YouTube embed, falling back to direct video');
+            // Fall back to direct video if YouTube embed fails
+            return `
+                <video controls preload="metadata" style="width: 100%; height: auto;">
+                    <source src="${url}" type="video/mp4">
+                    Your browser does not support the video element.
+                </video>
+            `;
+        }
     } else {
         // Use standard video element for direct video files
+        console.log('🎥 DEBUG - Creating standard video element');
         return `
             <video controls preload="metadata" style="width: 100%; height: auto;">
                 <source src="${url}" type="video/mp4">
