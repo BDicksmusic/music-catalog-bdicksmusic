@@ -775,6 +775,7 @@ if (notesContainer) {
     }
 
     // Score Video Display (separate from regular videos)
+    // NOTE: Scores section is now inside main element for proper layout
     const scoreVideoContainer = document.querySelector('#composition-score-video-container');
     const scoreVideoContent = document.querySelector('#score-video-content');
     

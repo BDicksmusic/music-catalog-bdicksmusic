@@ -980,18 +980,20 @@
             text-align: center;
         }
         
-        /* Scores Section Styling - Horizontal Row Layout */
+        /* Scores Section Styling - Horizontal Row Layout (Now inside main) */
         .scores-section {
             display: flex;
             flex-direction: row;
             gap: 3rem;
-            max-width: 1400px;
-            margin: 2rem auto 0;
-            padding: 0 2rem;
+            width: 100%;
+            max-width: 100%;
+            margin: 3rem 0 2rem 0;
+            padding: 0;
             flex-wrap: nowrap;
             align-items: flex-start;
             position: relative;
             z-index: 1;
+            grid-column: 1 / -1; /* Span full width of the main grid */
         }
         
         .score-pdf-column {
@@ -1016,10 +1018,10 @@
         .score-pdf-column::after {
             content: '';
             position: absolute;
-            top: 0;
+            top: 2rem;
             right: -1.5rem;
             width: 1px;
-            height: 100%;
+            height: calc(100% - 4rem);
             background: linear-gradient(to bottom, transparent, var(--gray-200), transparent);
             opacity: 0.5;
         }
@@ -1029,8 +1031,8 @@
             .scores-section {
                 flex-direction: column;
                 gap: 2rem;
-                padding: 0 1rem;
-                margin: 1.5rem auto 0;
+                padding: 0;
+                margin: 2rem 0;
                 flex-wrap: nowrap;
             }
             
@@ -1040,7 +1042,7 @@
                 min-width: 0;
                 max-width: 100%;
                 width: 100%;
-                padding: 1rem;
+                padding: 1.5rem;
                 margin-bottom: 1rem;
             }
             
@@ -1065,7 +1067,12 @@
         @media (max-width: 600px) {
             .scores-section {
                 gap: 1.5rem;
-                padding: 0 0.5rem;
+                margin: 1.5rem 0;
+            }
+            
+            .score-pdf-column,
+            .score-video-column {
+                padding: 1rem;
             }
         }
         
@@ -1077,11 +1084,11 @@
         /* Add subtle column styling for better visual separation */
         .score-pdf-column,
         .score-video-column {
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            border: 1px solid var(--gray-100);
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--gray-150);
         }
         
         /* Column header styling */
@@ -2528,8 +2535,23 @@
             </div>
         </div>
         
-    
-        </div>
+        <!-- Scores Section (PDF + Score Video) - MOVED INSIDE MAIN -->
+        <section class="scores-section" id="scores-section">
+            <div class="score-pdf-column">
+                <h3 class="column-header">📄 Score PDF</h3>
+                <div class="score-carousel-container" id="score-carousel-container">
+                    <!-- Score PDF will be injected here -->
+                </div>
+            </div>
+            <div class="score-video-column">
+                <h3 class="column-header">🎬 Score Videos</h3>
+                <div class="composition-score-video-container" id="composition-score-video-container">
+                    <div id="score-video-content">
+                        <!-- Score videos will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
     
     <!-- Program Notes and Videos Section -->
@@ -2545,26 +2567,6 @@
             </div>
         </div>
     </section>
-    
-    <!-- Scores Section (PDF + Score Video) -->
-     
-    <section class="scores-section" id="scores-section">
-        <div class="score-pdf-column">
-            <h3 class="column-header">📄 Score PDF</h3>
-            <div class="score-carousel-container" id="score-carousel-container">
-                <!-- Score PDF will be injected here -->
-            </div>
-        </div>
-        <div class="score-video-column">
-            <h3 class="column-header">🎬 Score Videos</h3>
-            <div class="composition-score-video-container" id="composition-score-video-container">
-                <div id="score-video-content">
-                    <!-- Score videos will be injected here -->
-                </div>
-            </div>
-        </div>
-    </section>
-
     
     <!-- Related Compositions Section -->
     <section class="related-compositions-section">
