@@ -376,7 +376,25 @@ if (audioContainer) {
     console.log('- audioFiles.length:', audioFiles.length);
     console.log('- legacy audioLink:', comp.audioLink);
     console.log('- hasLegacyAudio:', hasLegacyAudio);
-    console.log('- full composition object:', comp);
+    
+    // 🚨 CRITICAL FIX: Clean up any existing audio players to prevent duplicates
+    console.log('🧹 CLEANUP - Removing any existing audio players to prevent duplicates');
+    const existingPlayers = audioContainer.querySelectorAll('.composition-audio-player');
+    existingPlayers.forEach((player, index) => {
+        console.log(`🧹 CLEANUP - Removing existing player ${index}`);
+        player.remove();
+    });
+    
+    // Also clean up existing navigation controls
+    const existingNavControls = document.querySelectorAll('.audio-nav-container');
+    existingNavControls.forEach(control => {
+        console.log('🧹 CLEANUP - Removing existing navigation controls');
+        control.remove();
+    });
+    
+    // Reset globals
+    currentAudioIndex = 0;
+    totalAudioCount = 0;
     
     // Movement-specific debug info
     if (audioFiles.length > 0) {
@@ -407,8 +425,10 @@ if (audioContainer) {
         
         let audioPlayersHtml = '';
         
-        // Handle new relational audio files
+        // Handle new relational audio files ONLY (ignore legacy if we have new files)
         if (audioFiles.length > 0) {
+            console.log('🎵 PROCESSING - Using new audio files system (ignoring any legacy audio)');
+            
             // Sort files by movement order (Roman numerals or numbers) with error handling
             try {
                 audioFiles.sort((a, b) => {
@@ -500,9 +520,14 @@ if (audioContainer) {
                     </div>
                 `;
             }).join('');
+            
+            // Set the correct total count for navigation
+            totalAudioCount = audioFiles.length;
+            console.log('🎵 FINAL COUNT - Set totalAudioCount to:', totalAudioCount);
         }
-        // Handle legacy single audio link
+        // Handle legacy single audio link ONLY if no new audio files exist
         else if (hasLegacyAudio) {
+            console.log('🎵 PROCESSING - Using legacy audio system');
             // Legacy audio - no movement data available, so hide title by default
             let metadataHtml = '';
             if (comp.performanceBy || comp.recordingDate) {
@@ -527,17 +552,29 @@ if (audioContainer) {
                     </audio>
                 </div>
             `;
+            
+            // Single legacy audio file
+            totalAudioCount = 1;
+            console.log('🎵 FINAL COUNT - Set totalAudioCount to 1 (legacy)');
         }
         
+        // Insert the HTML into the container
         audioContainer.innerHTML = audioPlayersHtml;
         
-        // Clean up any existing navigation controls
-        const existingNavControls = document.querySelectorAll('.audio-nav-container');
-        existingNavControls.forEach(control => control.remove());
+        // VERIFY: Check what was actually created
+        const actualPlayers = audioContainer.querySelectorAll('.composition-audio-player');
+        console.log('🔍 VERIFICATION - Created', actualPlayers.length, 'audio players in DOM');
+        console.log('🔍 VERIFICATION - Expected totalAudioCount:', totalAudioCount);
         
-        // Reset audio index and total count for new composition
+        if (actualPlayers.length !== totalAudioCount) {
+            console.error('🚨 MISMATCH - DOM players (' + actualPlayers.length + ') != totalAudioCount (' + totalAudioCount + ')');
+            // Fix the mismatch
+            totalAudioCount = actualPlayers.length;
+            console.log('🔧 FIXED - Updated totalAudioCount to match DOM:', totalAudioCount);
+        }
+        
+        // Reset audio index for new composition
         currentAudioIndex = 0;
-        totalAudioCount = audioFiles.length;
         
         // Check if this should be treated as a multi-movement composition
         const compositionTitle = document.querySelector('.composition-title h1')?.textContent || '';
@@ -554,7 +591,7 @@ if (audioContainer) {
         }
         
         // For multiple audio files, show only the first one initially
-        if (audioFiles.length > 1) {
+        if (totalAudioCount > 1) {
             const audioPlayers = audioContainer.querySelectorAll('.composition-audio-player');
             console.log('🎵 INITIAL SETUP - Setting up display states for', audioPlayers.length, 'players');
             audioPlayers.forEach((player, index) => {
@@ -571,8 +608,8 @@ if (audioContainer) {
             });
             
             // Add multi-audio navigation controls
-            console.log('🎵 Adding multi-audio controls for', audioFiles.length, 'audio files');
-            addMultiAudioControls(audioContainer, audioFiles.length);
+            console.log('🎵 Adding multi-audio controls for', totalAudioCount, 'audio files');
+            addMultiAudioControls(audioContainer, totalAudioCount);
         }
     } else {
         audioContainer.style.display = 'none';
