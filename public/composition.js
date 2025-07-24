@@ -732,14 +732,17 @@ if (notesContainer) {
         !file.url?.includes('youtu.be')
     );
     
-    const hasLegacyScore = comp.scoreLink && !pdfScoreFiles.length;
-    const hasPdfScore = pdfScoreFiles.length > 0 || hasLegacyScore;
+    // Priority: Direct scoreLink from Notion database, then scoreFiles from media database
+    const hasDirectScore = comp.scoreLink && comp.scoreLink.trim() !== '';
+    const hasMediaScore = pdfScoreFiles.length > 0;
+    const hasPdfScore = hasDirectScore || hasMediaScore;
     const hasScoreVideo = scoreVideoFiles.length > 0;
     
     console.log('📄 DEBUG - Final score check:', {
+        hasDirectScore: hasDirectScore,
+        directScoreUrl: comp.scoreLink,
         pdfScoreFilesLength: pdfScoreFiles.length,
         scoreVideoFilesLength: scoreVideoFiles.length,
-        hasLegacyScore: hasLegacyScore,
         hasPdfScore: hasPdfScore,
         hasScoreVideo: hasScoreVideo,
         willRenderScore: hasPdfScore || hasScoreVideo

@@ -317,7 +317,7 @@
             display: flex;
             align-items: center;
             flex: 1;
-            gap: 2rem;
+            gap: 2.5rem;
             padding-left: 2rem;
         }
 
@@ -330,20 +330,21 @@
             font-size: 1.1rem;
             font-weight: 700;
             color: var(--gray-800);
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.3rem;
             line-height: 1.3;
         }
 
         .composition-instrumentation {
             color: var(--gray-600);
             font-size: 0.9rem;
+            line-height: 1.4;
         }
 
         .composition-details-section {
             flex: 1;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.25rem;
         }
 
         .composition-year {
@@ -351,9 +352,11 @@
             color: var(--primary-700);
             font-size: 0.8rem;
             font-weight: 600;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
+            padding: 0.3rem 0.8rem;
+            border-radius: 14px;
             white-space: nowrap;
+            flex-shrink: 0;
+            border: 1px solid var(--primary-200);
         }
 
         .composition-duration {
@@ -361,12 +364,15 @@
             font-size: 0.85rem;
             font-weight: 500;
             white-space: nowrap;
+            flex-shrink: 0;
+            padding: 0.1rem 0;
         }
 
         .composition-meta {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .meta-tag {
@@ -380,8 +386,9 @@
 
         .composition-actions {
             min-width: 120px;
-            margin-left: 2rem;
+            margin-left: 2.5rem;
             padding-right: 2rem;
+            flex-shrink: 0;
         }
 
         .btn-small {
@@ -532,16 +539,17 @@
 
             .composition-main-info {
                 flex-direction: column;
-                gap: 1rem;
+                gap: 1.25rem;
                 width: 100%;
-                margin-bottom: 1rem;
+                margin-bottom: 1.25rem;
                 padding-left: 1rem;
             }
 
             .composition-details-section {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 0.5rem;
+                gap: 0.75rem;
+                width: 100%;
             }
 
             .composition-actions {
@@ -549,6 +557,11 @@
                 width: 100%;
                 min-width: unset;
                 padding-right: 1rem;
+                margin-top: 0.5rem;
+            }
+
+            .composition-meta {
+                margin-top: 0.5rem;
             }
         }
     </style>
@@ -614,9 +627,9 @@
 
     <!-- Secondary Navigation -->
     <nav class="secondary-nav">
-        <a href="/composer" class="secondary-button">🎼 Composer</a>
-        <a href="/trumpeter" class="secondary-button">🎺 Trumpeter</a>
-        <a href="/educator" class="secondary-button">📚 Educator</a>
+        <a href="/composer" class="secondary-button">Composer</a>
+        <a href="/trumpeter" class="secondary-button">Trumpeter</a>
+        <a href="/educator" class="secondary-button">Educator</a>
     </nav>
 
     <!-- Hero Section -->
@@ -934,7 +947,12 @@
             card.className = 'composition-card';
             card.href = `/composition/${composition.slug}`;
             
-            const durationText = composition.duration ? `${composition.duration} min` : 'Duration not specified';
+            // Handle duration - don't add "min" if it's already there
+            let durationText = 'Duration not specified';
+            if (composition.duration) {
+                const duration = composition.duration.toString();
+                durationText = duration.includes('min') ? duration : `${duration} min`;
+            }
             
             // Only show year if it exists
             const yearElement = composition.year ? `<div class="composition-year">${composition.year}</div>` : '';
