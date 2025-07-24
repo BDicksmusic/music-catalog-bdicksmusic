@@ -750,9 +750,24 @@ if (notesContainer) {
     
     if (scoreCarouselContainer && (hasPdfScore || hasScoreVideo)) {
         if (hasPdfScore) {
-            // Render PDF score
-            const scoreUrl = pdfScoreFiles.length > 0 ? pdfScoreFiles[0].url : comp.scoreLink;
-            console.log('📄 DEBUG - Rendering PDF score:', scoreUrl);
+            // Priority: Use direct scoreLink from Notion database first, then media database
+            const scoreUrl = hasDirectScore ? comp.scoreLink : pdfScoreFiles[0].url;
+            console.log('📄 DEBUG - Rendering PDF score with URL:', scoreUrl);
+            console.log('📄 DEBUG - Using direct score link:', hasDirectScore);
+            
+            if (!scoreUrl || scoreUrl.trim() === '') {
+                console.error('📄 ERROR - No valid score URL found');
+                scoreCarouselContainer.innerHTML = `
+                    <div class="score-error-notice">
+                        <div class="score-notice-card">
+                            <h3>⚠️ Score Not Available</h3>
+                            <p>The score URL is not properly configured for this composition.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
             scoreCarouselContainer.innerHTML = `
                 <div class="single-page-score-viewer">
                     <div class="score-container">
@@ -803,6 +818,9 @@ if (notesContainer) {
         console.log('📄 DEBUG - Score NOT rendered. Reasons:', {
             containerMissing: !scoreCarouselContainer,
             noPdfScore: !hasPdfScore,
+            hasDirectScore: hasDirectScore,
+            hasMediaScore: hasMediaScore,
+            directScoreUrl: comp.scoreLink,
             noScoreVideo: !hasScoreVideo
         });
     }

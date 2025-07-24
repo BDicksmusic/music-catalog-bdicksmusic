@@ -401,13 +401,7 @@
             width: 100%;
             text-align: left;
         }
-        .composition-title {
-            font-size: 2.2rem;
-            font-weight: 300;
-            letter-spacing: 0.02em;
-            color: var(--gray-600);
-            margin: 0;
-        }
+        /* Original title styles - overridden by enhanced styles above */
                     .composition-title-container {
             margin-bottom: 0.25rem;
             padding: 0;
@@ -685,7 +679,47 @@
                 grid-template-columns: 1fr;   /* Single column */
                 grid-template-rows: auto auto; /* Two rows: cover, then content */
                 gap: 1.2rem;                  /* Adjust gap for mobile */
-                padding: 0 0.25rem;           /* Reduce padding on mobile */
+                padding: 1rem;               /* Better padding on mobile */
+                margin: 1rem auto 0;        /* Adjusted margin */
+            }
+            
+            .composition-detail-card {
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            
+            .composition-content-container {
+                padding: 1.5rem;
+            }
+            
+            .composition-title {
+                font-size: 1.8rem;
+                -webkit-text-fill-color: var(--primary-700);
+                color: var(--primary-700);
+            }
+            
+            .composition-instrument {
+                font-size: 1.1rem;
+            }
+            
+            .composition-buy-button-wrapper {
+                margin: 1.5rem 0;
+                padding: 1rem;
+            }
+            
+            .composition-buy-btn {
+                padding: 0.875rem 2rem;
+                font-size: 1.1rem;
+            }
+            
+            .composition-links-container {
+                margin: 1.5rem 0;
+                padding: 1rem;
+            }
+            
+            .composition-audio-container {
+                margin: 1.5rem 0;
+                padding: 1.5rem;
             }
             .composition-cover-container,
             .composition-content-container {
@@ -963,6 +997,189 @@
             color: #cc0000;
             text-align: center;
             font-weight: 500;
+        }
+        
+        /* Score Error Notice Styling */
+        .score-error-notice {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            width: 100%;
+        }
+        
+        .score-error-notice .score-notice-card {
+            background: linear-gradient(135deg, var(--red-50), var(--red-100));
+            border: 2px solid var(--red-200);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .score-error-notice .score-notice-card h3 {
+            color: var(--red-700);
+            margin: 0 0 1rem 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .score-error-notice .score-notice-card p {
+            color: var(--red-600);
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        /* Enhanced Layout and Typography */
+        .composition-main {
+            background: var(--gray-50);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-200);
+        }
+        
+        .composition-detail-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--gray-150);
+        }
+        
+        .composition-content-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--gray-150);
+        }
+        
+        /* Enhanced Typography for Composition Details */
+        .composition-header-combined {
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--gray-100);
+            margin-bottom: 2rem;
+        }
+        
+        .composition-title {
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+        
+        .composition-instrument {
+            font-size: 1.4rem;
+            color: var(--gray-600);
+            font-weight: 500;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        
+        .composition-meta {
+            background: var(--primary-50);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--primary-100);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--primary-700);
+        }
+        
+        .composition-short-instruments {
+            background: var(--gray-100);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            border: 1px solid var(--gray-200);
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-top: 0.75rem;
+        }
+        
+        /* Enhanced Button Styling */
+        .composition-buy-button-wrapper {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
+            border-radius: 16px;
+            border: 2px solid var(--primary-200);
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.1);
+        }
+        
+        .composition-buy-btn {
+            padding: 1rem 3rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border-radius: 12px;
+            min-width: 200px;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Enhanced Links Container */
+        .composition-links-container {
+            background: linear-gradient(135deg, var(--green-50), var(--green-100));
+            border: 2px solid var(--green-200);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.1);
+        }
+        
+        .layout-nav-btn {
+            background: white;
+            color: var(--gray-700);
+            border: 2px solid var(--gray-200);
+            padding: 0.75rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .layout-nav-btn:hover {
+            background: var(--primary-500);
+            color: white;
+            border-color: var(--primary-500);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Enhanced Audio Container */
+        .composition-audio-container {
+            background: linear-gradient(135deg, var(--purple-50), var(--purple-100));
+            border: 2px solid var(--purple-200);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 16px rgba(147, 51, 234, 0.1);
+        }
+        
+        .composition-audio-player {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--purple-200);
+            box-shadow: 0 2px 8px rgba(147, 51, 234, 0.08);
+        }
+        
+        .composition-audio-title {
+            background: var(--purple-100);
+            color: var(--purple-800);
+            padding: 0.75rem 1rem;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 1rem;
+            border-bottom: 1px solid var(--purple-200);
         }
         
         /* Metadata Section Styling */
