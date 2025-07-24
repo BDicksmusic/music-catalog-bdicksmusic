@@ -621,7 +621,7 @@ if (notesContainer) {
     console.log('📄 DEBUG - comp.scoreFiles:', comp.scoreFiles?.length, comp.scoreFiles);
     console.log('📄 DEBUG - comp.scoreLink:', comp.scoreLink);
     
-    const scoreCarouselContainer = document.querySelector('.score-carousel-container');
+    const scoreCarouselContainer = document.querySelector('#score-carousel-container');
     console.log('📄 DEBUG - Score container found:', !!scoreCarouselContainer);
     
     const scoreFiles = comp.scoreFiles || [];
@@ -1399,7 +1399,7 @@ function scrollToVideos() {
 }
 
 function scrollToScore() {
-    const scoreContainer = document.querySelector('.score-carousel-container') ||
+            const scoreContainer = document.querySelector('#score-carousel-container') ||
                           document.querySelector('.scores-section');
     if (scoreContainer) {
         scoreContainer.scrollIntoView({ 
