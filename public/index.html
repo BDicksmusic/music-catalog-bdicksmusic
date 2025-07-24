@@ -842,7 +842,199 @@
               width: 200px;
           }
       }
+      
+      /* Hero Container Styles */
+      .hero-container {
+          position: relative;
+          width: 100vw;
+          height: 100vh;
+          min-height: 700px;
+          max-height: 900px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-left: calc(50% - 50vw);
+          margin-right: calc(50% - 50vw);
+      }
+      
+      .hero-carousel {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 1;
+      }
+      
+      /* Enhanced Hero Video Styles - Make it "Pop Out" */
+      .hero-video {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: 2;
+          opacity: 0;
+          transition: all 1.2s ease;
+          filter: brightness(0.8) contrast(1.1);
+      }
+
+      .hero-video.loaded {
+          opacity: 1;
+          filter: brightness(0.9) contrast(1.2) saturate(1.1);
+          transform: scale(1.02);
+      }
+
+      .hero-fallback-image {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: 2;
+          opacity: 1;
+          transition: opacity 1s ease, transform 0.5s ease;
+          filter: brightness(0.8);
+      }
+
+      .hero-fallback-image.hidden {
+          opacity: 0;
+          z-index: 0;
+          transform: scale(0.98);
+      }
+
+      .hero-fallback-image.active {
+          opacity: 1;
+          z-index: 2;
+          transform: scale(1);
+      }
+      
+      /* Hero Content Overlay */
+      .hero-content-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+              45deg,
+              rgba(0, 0, 0, 0.4) 0%,
+              rgba(0, 0, 0, 0.2) 50%,
+              rgba(0, 0, 0, 0.3) 100%
+          );
+          z-index: 3;
+          pointer-events: none;
+      }
+      
+      .hero-content-wrapper {
+          position: absolute;
+          bottom: 25%;
+          left: 0;
+          right: 0;
+          z-index: 10;
+          text-align: center;
+          pointer-events: auto;
+      }
+      
+      @media (max-width: 768px) {
+          .hero-container {
+              height: 80vh;
+              min-height: 500px;
+              max-height: 700px;
+          }
+          
+          .hero-content-wrapper {
+              bottom: 20%;
+          }
+      }
+      
+      /* Main Content Container */
+      .main-content-container {
+          width: 100%;
+          max-width: 100vw;
+          overflow-x: hidden;
+      }
+      
+      /* Ensure all sections respect container width */
+      .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 1rem;
+          width: 100%;
+      }
+      
+      .section-showcase {
+          width: 100%;
+          max-width: 100vw;
+          overflow-x: hidden;
+          padding: 4rem 0;
+      }
+      
+      /* Fix secondary navigation positioning */
+      .secondary-nav {
+          position: relative;
+          z-index: 5;
+          width: 100%;
+          max-width: 100%;
+          margin-bottom: 0;
+      }
+      
+      /* Ensure hero content doesn't overflow */
+      .hero-content-dynamic {
+          width: 100%;
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 0 1rem;
+      }
+      
+      .hero-main-title {
+          font-size: clamp(2.5rem, 8vw, 4rem);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+      }
+      
+      .hero-role-title {
+          font-size: clamp(1.5rem, 5vw, 2.5rem);
+      }
+      
+      .hero-role-description {
+          font-size: clamp(1rem, 3vw, 1.2rem);
+          max-width: 600px;
+          margin: 0 auto 1.5rem;
+      }
+      
+      @media (max-width: 1200px) {
+          .container {
+              max-width: 95%;
+          }
+      }
+      
+      @media (max-width: 768px) {
+          .hero-main-title {
+              font-size: 2.5rem;
+              white-space: normal;
+          }
+          
+          .hero-role-title {
+              font-size: 1.8rem;
+          }
+          
+          .hero-role-description {
+              font-size: 1rem;
+          }
+          
+          .hero-content-dynamic {
+              padding: 0 1.5rem;
+          }
+      }
     </style>
+</head>
+
+<body>
     <!-- Navigation -->
 <nav>
     <div class="nav-container">
@@ -901,7 +1093,6 @@
               </div>
         </div>
     </div>
-    </div>
 </nav>
     
     <!-- Secondary Navigation -->
@@ -911,10 +1102,9 @@
         <a href="/educator" class="secondary-button">Educator</a>
     </nav>
 
-
     <!-- Hero Section -->
     <div class="hero-container">
-        <!-- Image Carousel -->
+        <!-- Image Carousel Fallback -->
         <div class="hero-carousel" id="hero-carousel">
             <img 
                 src="/Index Photos/CJL07828.JPG" 
@@ -938,11 +1128,12 @@
             >
         </div>
         
-        <!-- Video -->
+        <!-- Hero Video -->
         <video 
             autoplay 
             loop 
             muted 
+            playsinline
             preload="metadata"
             disablePictureInPicture
             class="hero-video"
@@ -951,70 +1142,64 @@
             <source src="https://file.notion.so/f/f/fa29efda-948c-4378-9da5-ea0d4058a01f/707daaf2-3013-4c03-9806-aa94085783dc/v1.0_Website_Promo_8.12.mp4?table=block&id=2348cc9f-36f1-8048-838d-ea53f873224d&spaceId=fa29efda-948c-4378-9da5-ea0d4058a01f&expirationTimestamp=1753156800000&signature=wE1KQdxOcKqfpwMjdpZU9wz04wqLa__hYjbR-CcmzKc&downloadName=v1.0+Website+Promo+%5B8.12%5D.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-    </div>
-
-    <div style="
-    position: relative;
-    margin-top: -320px;
-    margin-bottom: 2.5rem;
-    text-align: center;
-    z-index: 10;
-    pointer-events: auto;
-">
-    <div class="hero-content-dynamic">
-        <h1 class="hero-main-title">BRANDON DICKS</h1>
-        <div class="hero-rotating-content" id="hero-rotating">
-            <div class="hero-role active" data-role="composer">
-                <h2 class="hero-role-title">Composer</h2>
-                <p class="hero-role-description">Creating original compositions that inspire and challenge musicians</p>
-                <a href="#compositions" class="explore-btn" onclick="smoothScrollTo('#compositions'); return false;">
-                    🎼 Explore Compositions
-                </a>
-            </div>
-            <div class="hero-role" data-role="trumpeter">
-                <h2 class="hero-role-title">Trumpeter</h2>
-                <p class="hero-role-description">Bringing brass music to life through performance and artistry</p>
-                <a href="#performances" class="explore-btn" onclick="smoothScrollTo('#performances'); return false;">
-                    🎺 View Performances
-                </a>
-            </div>
-            <div class="hero-role" data-role="educator">
-                <h2 class="hero-role-title">Educator</h2>
-                <p class="hero-role-description">Empowering students and organizing musical experiences with innovative tools</p>
-                <a href="#education" class="explore-btn" onclick="smoothScrollTo('#education'); return false;">
-                    📚 Discover Resources
-                </a>
-            </div>
-        </div>
-        <div class="hero-nav-dots">
-            <button class="dot active" onclick="switchHeroRole(0)"></button>
-            <button class="dot" onclick="switchHeroRole(1)"></button>
-            <button class="dot" onclick="switchHeroRole(2)"></button>
-        </div>
         
-        <!-- Explore Button -->
-        <div class="hero-explore-section">
-            <a href="#compositions" class="explore-btn secondary" onclick="smoothScrollTo('#compositions'); return false;">
-                Click to Explore All Work
-            </a>
+        <!-- Content Overlay for Better Readability -->
+        <div class="hero-content-overlay"></div>
+        
+        <!-- Hero Content -->
+        <div class="hero-content-wrapper">
+            <div class="hero-content-dynamic">
+                <h1 class="hero-main-title">BRANDON DICKS</h1>
+                <div class="hero-rotating-content" id="hero-rotating">
+                    <div class="hero-role active" data-role="composer">
+                        <h2 class="hero-role-title">Composer</h2>
+                        <p class="hero-role-description">Creating original compositions that inspire and challenge musicians</p>
+                        <a href="#compositions" class="explore-btn" onclick="smoothScrollTo('#compositions'); return false;">
+                            🎼 Explore Compositions
+                        </a>
+                    </div>
+                    <div class="hero-role" data-role="trumpeter">
+                        <h2 class="hero-role-title">Trumpeter</h2>
+                        <p class="hero-role-description">Bringing brass music to life through performance and artistry</p>
+                        <a href="#performances" class="explore-btn" onclick="smoothScrollTo('#performances'); return false;">
+                            🎺 View Performances
+                        </a>
+                    </div>
+                    <div class="hero-role" data-role="educator">
+                        <h2 class="hero-role-title">Educator</h2>
+                        <p class="hero-role-description">Empowering students and organizing musical experiences with innovative tools</p>
+                        <a href="#education" class="explore-btn" onclick="smoothScrollTo('#education'); return false;">
+                            📚 Discover Resources
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-nav-dots">
+                    <button class="dot active" onclick="switchHeroRole(0)"></button>
+                    <button class="dot" onclick="switchHeroRole(1)"></button>
+                    <button class="dot" onclick="switchHeroRole(2)"></button>
+                </div>
+                
+                <!-- Explore Button -->
+                <div class="hero-explore-section">
+                    <a href="#compositions" class="explore-btn secondary" onclick="smoothScrollTo('#compositions'); return false;">
+                        Click to Explore All Work
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</head>
-<br><br><br><br><br><br><br>
 
-
-
-<body>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    loadCompositions();
-    loadFeaturedComposition();
-    enableCardClicks();
-    initHeroRotation();
-    // Mobile menu is now handled by main.js
-});
-</script>
+    <!-- Main Content Container -->
+    <div class="main-content-container">
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCompositions();
+            loadFeaturedComposition();
+            enableCardClicks();
+            initHeroRotation();
+            // Mobile menu is now handled by main.js
+        });
+        </script>
 
     <!-- Music Catalog Highlights Section -->
     <section id="performances" class="section-showcase" style="scroll-margin-top: 120px;">
@@ -1832,51 +2017,79 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Video fallback and loading logic
+        // Enhanced Video Loading and Fallback Logic
         function initHeroVideo() {
             const video = document.getElementById('hero-video');
-            const fallback = document.getElementById('hero-fallback');
+            const carousel = document.getElementById('hero-carousel');
+            const fallbackImages = document.querySelectorAll('.hero-fallback-image');
             
-            if (!video || !fallback) return;
+            if (!video || !carousel) {
+                console.log('Hero video or carousel not found');
+                return;
+            }
+            
+            console.log('Initializing hero video...');
+            
+            // Force video load attempt
+            video.load();
             
             // Set a timeout to show fallback if video doesn't load
             const videoTimeout = setTimeout(() => {
-                console.log('Video loading timeout - keeping fallback visible');
-            }, 3000); // 3 second timeout
+                console.log('Video loading timeout - keeping carousel active');
+                video.style.display = 'none';
+            }, 4000); // 4 second timeout
             
             // Video loading events
             video.addEventListener('loadeddata', function() {
-                console.log('Video loaded successfully');
+                console.log('✅ Video loaded successfully');
                 clearTimeout(videoTimeout);
                 
-                // Smooth transition from fallback to video
+                // Hide all fallback images
+                fallbackImages.forEach(img => {
+                    img.classList.add('hidden');
+                });
+                
+                // Show and animate the video
                 setTimeout(() => {
                     video.classList.add('loaded');
-                    fallback.classList.add('hidden');
-                }, 100);
+                }, 500);
             });
             
-            video.addEventListener('canplay', function() {
-                console.log('Video can start playing');
+            video.addEventListener('canplaythrough', function() {
+                console.log('✅ Video can play through');
+                video.play().catch(e => {
+                    console.log('⚠️ Video autoplay blocked:', e);
+                    // Fallback to carousel if autoplay fails
+                    initHeroCarousel();
+                });
             });
             
             video.addEventListener('error', function(e) {
-                console.log('Video failed to load:', e);
+                console.log('❌ Video failed to load:', e);
                 clearTimeout(videoTimeout);
-                // Keep fallback visible, video will remain hidden
+                video.style.display = 'none';
+                
+                // Ensure carousel is active
+                initHeroCarousel();
             });
             
             video.addEventListener('loadstart', function() {
-                console.log('Video loading started');
+                console.log('🔄 Video loading started');
             });
             
-            // Handle autoplay policy issues
-            video.addEventListener('play', function() {
-                console.log('Video started playing');
-            });
+            // Retry mechanism for video loading
+            setTimeout(() => {
+                if (video.readyState < 2) { // HAVE_CURRENT_DATA
+                    console.log('🔄 Retrying video load...');
+                    video.load();
+                }
+            }, 2000);
             
-            video.addEventListener('pause', function() {
-                console.log('Video paused');
+            // Handle visibility change (tab switching)
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden && video.paused) {
+                    video.play().catch(e => console.log('Video play failed on visibility change:', e));
+                }
             });
         }
 
@@ -2019,6 +2232,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <!-- Load external script for additional functionality -->
     <script src="composition.js"></script>
     <script src="main.js"></script>
-    </section> 
+    
+    </div> <!-- Close main-content-container -->
 </body>
 </html>

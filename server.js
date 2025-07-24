@@ -42,9 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Helper function to query related media for a composition
 async function queryRelatedMedia(compositionId, mediaType = null) {
     try {
-        if (process.env.NODE_ENV !== 'production') {
-            console.log(`🔍 Querying related media for composition: ${compositionId}`);
-        }
+        console.log(`🔍 QUERY MEDIA - Starting query for composition: ${compositionId}${mediaType ? ` (type: ${mediaType})` : ''}`);
         
         // Query the media database for items related to this composition
         // Check both audio and video relations
@@ -83,7 +81,7 @@ async function queryRelatedMedia(compositionId, mediaType = null) {
         const response = await notion.databases.query({
             database_id: process.env.NOTION_MEDIA_DATABASE_ID,
             filter: filter,
-            page_size: 50, // Increased to ensure we get all files
+            page_size: 100, // Increased to ensure we get all files
             sorts: [
                 {
                     property: 'Type',
@@ -92,34 +90,64 @@ async function queryRelatedMedia(compositionId, mediaType = null) {
             ]
         });
         
-        // Debug: Log the raw query results
-        console.log(`🔍 DEBUG - Raw query returned ${response.results.length} items from Media database for composition ${compositionId}`);
+        console.log(`🔍 QUERY RESULT - Found ${response.results.length} media items for composition ${compositionId}`);
+        
+        // Enhanced debugging for each media item found
         response.results.forEach((item, index) => {
-            const name = item.properties.Name?.title?.[0]?.text?.content || 'Unnamed';
+            const name = getTextContent(item.properties.Name) || 
+                        getTextContent(item.properties.Title) || 
+                        'Unnamed';
             const type = item.properties.Type?.select?.name || 'No Type';
             const audioRel = item.properties['Audio to Comp']?.relation?.length || 0;
             const videoRel = item.properties['Video to Comp']?.relation?.length || 0;
-            console.log(`  ${index + 1}. "${name}" (${type}) - Audio Rel: ${audioRel}, Video Rel: ${videoRel}`);
+            
+            // Check if this item is actually related to our composition
+            const isRelated = item.properties['Audio to Comp']?.relation?.some(rel => rel.id === compositionId) ||
+                             item.properties['Video to Comp']?.relation?.some(rel => rel.id === compositionId);
+            
+            console.log(`  ${index + 1}. "${name}" (${type}) - Audio Rel: ${audioRel}, Video Rel: ${videoRel}, Related: ${isRelated ? 'YES' : 'NO'}`);
             
             // Debug URL extraction
-            let mediaUrl = '';
-            if (item.properties.URL?.url) {
-                mediaUrl = item.properties.URL.url;
-                console.log(`    Found URL property: ${mediaUrl.substring(0, 50)}...`);
-            } else if (item.properties.VideoURL?.url) {
-                mediaUrl = item.properties.VideoURL.url;
-                console.log(`    Found VideoURL property: ${mediaUrl.substring(0, 50)}...`);
-            } else if (item.properties.AudioURL?.url) {
-                mediaUrl = item.properties.AudioURL.url;
-                console.log(`    Found AudioURL property: ${mediaUrl.substring(0, 50)}...`);
+            let hasUrl = false;
+            if (item.properties.URL?.url || 
+                item.properties.VideoURL?.url || 
+                item.properties.AudioURL?.url ||
+                item.properties.Link?.url ||
+                item.properties['Audio File']?.files?.[0] ||
+                item.properties['Video File']?.files?.[0] ||
+                item.properties['Score File']?.files?.[0]) {
+                hasUrl = true;
+            }
+            
+            if (!hasUrl) {
+                console.log(`    ⚠️ NO URL found for "${name}" - Properties:`, Object.keys(item.properties).filter(key => 
+                    key.toLowerCase().includes('url') || 
+                    key.toLowerCase().includes('file') || 
+                    key.toLowerCase().includes('link')
+                ));
             } else {
-                console.log(`    No URL properties found for: ${name}`);
+                console.log(`    ✅ URL found for "${name}"`);
             }
         });
         
-        return response.results.map(transformMediaPage);
+        const transformedMedia = response.results.map(transformMediaPage);
+        
+        // Filter out media items without URLs (they're useless to the client)
+        const validMedia = transformedMedia.filter(media => {
+            if (!media.url) {
+                console.log(`⚠️ FILTERED OUT - "${media.title}" has no URL`);
+                return false;
+            }
+            return true;
+        });
+        
+        console.log(`🔍 FINAL RESULT - Returning ${validMedia.length} valid media items (filtered out ${transformedMedia.length - validMedia.length} items without URLs)`);
+        
+        return validMedia;
     } catch (error) {
-        console.error('Error querying related media:', error);
+        console.error('❌ ERROR in queryRelatedMedia:', error);
+        console.error('❌ Composition ID:', compositionId);
+        console.error('❌ Media Database ID:', process.env.NOTION_MEDIA_DATABASE_ID);
         return [];
     }
 }
@@ -221,61 +249,82 @@ function transformMediaPage(page) {
     // Get URL - handle both uploaded files and URL properties
     let mediaUrl = '';
     
-    // Try URL properties first
+    // Try URL properties first (most common)
     if (properties.URL?.url) {
         mediaUrl = properties.URL.url;
     } else if (properties.VideoURL?.url) {
         mediaUrl = properties.VideoURL.url;
     } else if (properties.AudioURL?.url) {
         mediaUrl = properties.AudioURL.url;
+    } else if (properties.Link?.url) {
+        mediaUrl = properties.Link.url;
     }
-    // Try uploaded files (for direct audio file uploads)
+    // Try uploaded files (for direct file uploads)
     else if (properties['Audio File']?.files?.[0]) {
         mediaUrl = properties['Audio File'].files[0].file?.url || properties['Audio File'].files[0].external?.url || '';
     } else if (properties['Video File']?.files?.[0]) {
         mediaUrl = properties['Video File'].files[0].file?.url || properties['Video File'].files[0].external?.url || '';
+    } else if (properties['Score File']?.files?.[0]) {
+        mediaUrl = properties['Score File'].files[0].file?.url || properties['Score File'].files[0].external?.url || '';
     }
-    // Fallback to any file property
+    // Fallback to any file property or URL-like property
     else {
-        const fileProps = ['Media File', 'File', 'Upload'];
+        const fileProps = ['Media File', 'File', 'Upload', 'Attachment'];
         for (const prop of fileProps) {
             if (properties[prop]?.files?.[0]) {
                 mediaUrl = properties[prop].files[0].file?.url || properties[prop].files[0].external?.url || '';
                 break;
             }
         }
-    }
-    
-    // Debug URL extraction for media items
-    const mediaName = getTextContent(properties.Name) || 'Unnamed';
-    console.log(`🔍 Media: "${mediaName}" -> URL: ${mediaUrl ? 'FOUND' : 'MISSING'}`);
-    if (!mediaUrl) {
-        console.log(`  🔍 Available properties for "${mediaName}":`, Object.keys(properties));
-        // Try to find any URL-like properties
-        for (const [key, value] of Object.entries(properties)) {
-            if (key.toLowerCase().includes('url') || key.toLowerCase().includes('link')) {
-                console.log(`    - ${key}:`, value?.url || 'no url property');
-            }
-            if (value?.files && value.files.length > 0) {
-                console.log(`    - ${key} (files):`, value.files[0]?.file?.url || value.files[0]?.external?.url || 'no file url');
+        
+        // Last resort: check for any URL-like properties
+        if (!mediaUrl) {
+            for (const [key, value] of Object.entries(properties)) {
+                if ((key.toLowerCase().includes('url') || key.toLowerCase().includes('link')) && value?.url) {
+                    mediaUrl = value.url;
+                    break;
+                }
             }
         }
     }
     
+    // Enhanced debug logging for media items
+    const mediaName = getTextContent(properties.Name) || 
+                     getTextContent(properties.Title) || 
+                     getTextContent(properties['File Name']) ||
+                     'Unnamed';
+    
+    // Check composition relations
+    const audioRelations = properties['Audio to Comp']?.relation || [];
+    const videoRelations = properties['Video to Comp']?.relation || [];
+    const compositionRelations = [...audioRelations, ...videoRelations];
+    
+    console.log(`🔍 MEDIA DEBUG - "${mediaName}":`, {
+        url: mediaUrl ? 'FOUND' : 'MISSING',
+        type: properties.Type?.select?.name || 'No Type',
+        audioRelations: audioRelations.length,
+        videoRelations: videoRelations.length,
+        totalRelations: compositionRelations.length,
+        availableProps: Object.keys(properties).filter(key => key.toLowerCase().includes('url') || key.toLowerCase().includes('file') || key.toLowerCase().includes('link'))
+    });
+    
+    if (!mediaUrl) {
+        console.log(`  ⚠️ NO URL FOUND for "${mediaName}" - Available properties:`, Object.keys(properties));
+    }
+    
     return {
         id: page.id,
-        title: getTextContent(properties.Name) || 
-               getTextContent(properties.Title) || 
-               getTextContent(properties['File Name']) ||
-               getTextContent(properties.Filename) ||
-               'Untitled Media',
+        title: mediaName,
         type: properties.Type?.select?.name || 'Unknown',
         category: properties.Category?.select?.name || 'performance',
         url: mediaUrl,
         thumbnail: getFileUrl(properties.Thumbnail),
         duration: getTextContent(properties.Duration) || '',
-        performanceBy: getTextContent(properties['Performance By']) || '',
-        recordingDate: properties['Recording Date']?.date?.start || '',
+        performanceBy: getTextContent(properties['Performance By']) || 
+                      getTextContent(properties['Performed By']) || 
+                      getTextContent(properties.Performer) || '',
+        recordingDate: getTextContent(properties['Recording Date']) || 
+                      getTextContent(properties.Date) || '',
         venue: getTextContent(properties.Venue) || '',
         year: properties.Year?.number || null,
         description: notionRichTextToHtml(properties.Description?.rich_text) || '',
@@ -289,10 +338,7 @@ function transformMediaPage(page) {
         // Movement-related properties
         movementTitle: getTextContent(properties['Movement Title']) || '',
         numberOfMovements: properties['Number of Movements']?.number || null,
-        compositionRelations: [
-            ...(properties['Audio to Comp']?.relation?.map(rel => rel.id) || []),
-            ...(properties['Video to Comp']?.relation?.map(rel => rel.id) || [])
-        ],
+        compositionRelations: compositionRelations.map(rel => rel.id),
         created: page.created_time,
         lastEdited: page.last_edited_time
     };
@@ -632,6 +678,106 @@ app.get('/api/debug/all-media', async (req, res) => {
     } catch (error) {
         console.error('❌ Debug endpoint error:', error);
         res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// DEBUG: Test media loading for first composition
+app.get('/api/debug/test-media-loading', async (req, res) => {
+    try {
+        console.log('🧪 DEBUG TEST - Starting comprehensive media loading test...');
+        
+        // 1. Get the first composition from the database
+        const compositionsResponse = await notion.databases.query({
+            database_id: process.env.NOTION_DATABASE_ID,
+            page_size: 1
+        });
+        
+        if (compositionsResponse.results.length === 0) {
+            return res.json({
+                success: false,
+                error: 'No compositions found in database'
+            });
+        }
+        
+        const testComposition = compositionsResponse.results[0];
+        const compTitle = getTextContent(testComposition.properties.Name) || 'Unnamed';
+        const compId = testComposition.id;
+        
+        console.log(`🧪 TEST - Using composition: "${compTitle}" (${compId})`);
+        
+        // 2. Test basic transformNotionPage (no media)
+        const basicComposition = transformNotionPage(testComposition);
+        
+        // 3. Test transformNotionPageWithMedia (with media)
+        const compositionWithMedia = await transformNotionPageWithMedia(testComposition, true);
+        
+        // 4. Directly test queryRelatedMedia
+        const directMediaQuery = await queryRelatedMedia(compId);
+        
+        // 5. Get all media items for reference
+        const allMediaResponse = await notion.databases.query({
+            database_id: process.env.NOTION_MEDIA_DATABASE_ID,
+            page_size: 10
+        });
+        
+        const allMediaItems = allMediaResponse.results.map(item => ({
+            id: item.id,
+            name: getTextContent(item.properties.Name) || getTextContent(item.properties.Title) || 'Unnamed',
+            type: item.properties.Type?.select?.name || 'No Type',
+            audioRelations: item.properties['Audio to Comp']?.relation?.length || 0,
+            videoRelations: item.properties['Video to Comp']?.relation?.length || 0,
+            hasUrl: !!(item.properties.URL?.url || item.properties.VideoURL?.url || item.properties.AudioURL?.url || item.properties.Link?.url)
+        }));
+        
+        // 6. Return comprehensive test results
+        res.json({
+            success: true,
+            testResults: {
+                composition: {
+                    id: compId,
+                    title: compTitle,
+                    slug: basicComposition.slug
+                },
+                basicTransform: {
+                    audioLink: basicComposition.audioLink || 'None',
+                    scoreLink: basicComposition.scoreLink || 'None'
+                },
+                mediaTransform: {
+                    audioFiles: compositionWithMedia.audioFiles?.length || 0,
+                    videoFiles: compositionWithMedia.videoFiles?.length || 0,
+                    scoreFiles: compositionWithMedia.scoreFiles?.length || 0,
+                    allMedia: compositionWithMedia.allMedia?.length || 0,
+                    audioLink: compositionWithMedia.audioLink || 'None',
+                    scoreLink: compositionWithMedia.scoreLink || 'None',
+                    mediaCount: compositionWithMedia.mediaCount
+                },
+                directMediaQuery: {
+                    count: directMediaQuery.length,
+                    items: directMediaQuery.map(media => ({
+                        title: media.title,
+                        type: media.type,
+                        hasUrl: !!media.url,
+                        url: media.url ? media.url.substring(0, 60) + '...' : 'No URL'
+                    }))
+                },
+                allMediaSample: {
+                    total: allMediaResponse.results.length,
+                    items: allMediaItems,
+                    mediaWithRelations: allMediaItems.filter(item => 
+                        item.audioRelations > 0 || item.videoRelations > 0
+                    ).length
+                }
+            },
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('❌ DEBUG TEST ERROR:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message,
+            stack: error.stack
+        });
     }
 });
 
