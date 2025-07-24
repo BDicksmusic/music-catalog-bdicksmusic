@@ -70,4 +70,4 @@ function renderComposition(comp) {
             `;
         }
     }
-} 
+}
