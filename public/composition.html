@@ -97,22 +97,22 @@
             border-radius: 12px;
             border: 1px solid var(--gray-200);
             display: flex;
-            flex-direction: row; /* Changed to row layout */
-            gap: 1rem;
-            align-items: flex-start;
+            flex-direction: column; /* Changed back to column layout */
+            gap: 0.75rem;
+            align-items: stretch;
         }
         
         .video-content {
-            flex: 2;
+            width: 100%;
             min-width: 0;
         }
         
         .video-metadata-section {
-            flex: 1;
+            width: 100%;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            padding-top: 0.25rem;
+            padding-top: 0;
         }
         
         .composition-video-title {
@@ -149,20 +149,19 @@
         section.program-video-section {
             display: flex;
             gap: 2rem;
-            width: 100%;
-            max-width: 100%;
+            width: 80vw;
             margin: 2rem auto 0;
-            padding: 0 1rem;
+            padding: 1rem 1rem;
             box-sizing: border-box;
         }
         
         .program-notes-column {
-            flex: 1;
+            flex: 0.6;
             min-width: 0;
         }
         
         .videos-column {
-            flex: 1;
+            flex: 1.4;
             min-width: 0;
         }
         
@@ -376,6 +375,47 @@
         }
         .composition-links-container {
             margin-bottom: 1.5rem;
+        }
+        
+        /* Layout Builder Navigation Styling */
+        .layout-builder-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        
+        .layout-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+        
+        .layout-nav-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Mobile responsiveness for layout builder */
+        @media (max-width: 768px) {
+            .layout-builder-nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+            
+            .layout-nav-btn {
+                justify-content: center;
+                width: 100%;
+            }
         }
         .composition-description {
             font-size: 1.08rem;
@@ -921,12 +961,7 @@
             }
             
             .composition-video-player {
-                flex-direction: column !important;
-                gap: 0.75rem;
-            }
-            
-            .video-metadata-section {
-                padding-top: 0;
+                gap: 0.5rem;
             }
             
             .scores-section {

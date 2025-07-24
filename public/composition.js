@@ -162,16 +162,25 @@ function renderComposition(comp) {
             </button>`;
     }
 
+// Layout Builder Navigation Buttons
 const linksContainer = document.querySelector('.composition-links-container');
 if (linksContainer) {
-    // Check if score is available (same logic as score carousel)
+    // Check availability of different sections
+    const hasAudio = (comp.audioFiles && comp.audioFiles.length > 0) || comp.audioLink;
+    const hasVideos = (comp.videoFiles && comp.videoFiles.filter(v => v.type !== 'Score Video').length > 0);
     const scoreFiles = comp.scoreFiles || [];
     const hasLegacyScore = comp.scoreLink && !scoreFiles.length;
     const hasScore = scoreFiles.length > 0 || hasLegacyScore;
+    const hasSimilarWorks = comp.similarWorks && comp.similarWorks.length > 0;
     
     linksContainer.innerHTML = `
-        ${comp.audioLink ? `<a href="${comp.audioLink}" target="_blank" class="btn-secondary">🎵 Listen</a>` : ''}
-        ${hasScore ? `<button onclick="scrollToScore()" class="btn-secondary">📄 View Score</button>` : ''}
+        <div class="layout-builder-nav">
+            ${hasAudio ? `<button onclick="scrollToAudio()" class="btn-secondary layout-nav-btn">🎵 Listen</button>` : ''}
+            ${hasVideos ? `<button onclick="scrollToVideos()" class="btn-secondary layout-nav-btn">📺 Watch</button>` : ''}
+            ${hasScore ? `<button onclick="scrollToScore()" class="btn-secondary layout-nav-btn">📄 View Score</button>` : ''}
+            <button onclick="scrollToMetadata()" class="btn-secondary layout-nav-btn">📊 Learn More</button>
+            ${hasSimilarWorks ? `<button onclick="scrollToSimilarWorks()" class="btn-secondary layout-nav-btn">🔗 Similar Works</button>` : ''}
+        </div>
     `;
 }
 
@@ -1094,9 +1103,51 @@ function nextVideo() {
     }
 }
 
-// Function to scroll to the score section
+// Layout Builder Navigation Functions
+function scrollToAudio() {
+    const audioContainer = document.querySelector('.composition-audio-container');
+    if (audioContainer) {
+        audioContainer.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+        });
+        
+        // Optional: Add a subtle highlight effect
+        audioContainer.style.transition = 'all 0.3s ease';
+        audioContainer.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+            audioContainer.style.transform = 'scale(1)';
+        }, 300);
+    } else {
+        console.warn('Audio container not found');
+    }
+}
+
+function scrollToVideos() {
+    const videosSection = document.querySelector('.program-video-section') || 
+                         document.querySelector('#composition-video-container-main');
+    if (videosSection) {
+        videosSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+        });
+        
+        // Optional: Add a subtle highlight effect
+        videosSection.style.transition = 'all 0.3s ease';
+        videosSection.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+            videosSection.style.transform = 'scale(1)';
+        }, 300);
+    } else {
+        console.warn('Videos section not found');
+    }
+}
+
 function scrollToScore() {
-    const scoreContainer = document.querySelector('.score-carousel-container');
+    const scoreContainer = document.querySelector('.score-carousel-container') ||
+                          document.querySelector('.scores-section');
     if (scoreContainer) {
         scoreContainer.scrollIntoView({ 
             behavior: 'smooth', 
@@ -1112,6 +1163,48 @@ function scrollToScore() {
         }, 300);
     } else {
         console.warn('Score container not found - make sure the PDF is loaded');
+    }
+}
+
+function scrollToMetadata() {
+    const metadataSection = document.querySelector('.metadata-section') ||
+                           document.querySelector('#metadata-toggle-system');
+    if (metadataSection) {
+        metadataSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+        });
+        
+        // Optional: Add a subtle highlight effect
+        metadataSection.style.transition = 'all 0.3s ease';
+        metadataSection.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+            metadataSection.style.transform = 'scale(1)';
+        }, 300);
+    } else {
+        console.warn('Metadata section not found');
+    }
+}
+
+function scrollToSimilarWorks() {
+    const similarWorksSection = document.querySelector('.related-compositions-section') ||
+                               document.querySelector('#related-compositions-carousel');
+    if (similarWorksSection) {
+        similarWorksSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+        });
+        
+        // Optional: Add a subtle highlight effect
+        similarWorksSection.style.transition = 'all 0.3s ease';
+        similarWorksSection.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+            similarWorksSection.style.transform = 'scale(1)';
+        }, 300);
+    } else {
+        console.warn('Similar works section not found');
     }
 }
 
