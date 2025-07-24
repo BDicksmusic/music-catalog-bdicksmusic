@@ -1460,7 +1460,7 @@ function addMultiAudioControls(audioContainer, audioCount) {
             margin-top: 1rem;
             border: 1px solid var(--gray-200);
         ">
-            <button class="audio-nav-btn" onclick="previousAudio()" id="prevAudioBtn" style="
+            <button class="audio-nav-btn" id="prevAudioBtn" style="
                 padding: 0.5rem 1rem; 
                 background: var(--primary-600); 
                 color: white; 
@@ -1475,7 +1475,7 @@ function addMultiAudioControls(audioContainer, audioCount) {
                 color: var(--gray-700);
                 font-size: 0.95rem;
             ">Movement 1 of ${audioCount}</span>
-            <button class="audio-nav-btn" onclick="nextAudio()" id="nextAudioBtn" style="
+            <button class="audio-nav-btn" id="nextAudioBtn" style="
                 padding: 0.5rem 1rem; 
                 background: var(--primary-600); 
                 color: white; 
@@ -1496,26 +1496,77 @@ function addMultiAudioControls(audioContainer, audioCount) {
         const prevBtn = document.getElementById('prevAudioBtn');
         const nextBtn = document.getElementById('nextAudioBtn');
         
+        console.log('🎵 BUTTON SETUP - Setting up event listeners:', {
+            prevBtn: !!prevBtn,
+            nextBtn: !!nextBtn,
+            currentAudioIndex: currentAudioIndex,
+            totalAudioCount: totalAudioCount
+        });
+        
         if (prevBtn) {
-            prevBtn.addEventListener('click', previousAudio);
+            // Clear any existing onclick to prevent double calls
+            prevBtn.onclick = null;
+            
+            // Clone the button to remove all existing event listeners
+            const newPrevBtn = prevBtn.cloneNode(true);
+            prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+            
+            console.log('🎵 BUTTON SETUP - Previous button cloned and replaced');
+            
+            // Add single event listener with debugging
+            newPrevBtn.addEventListener('click', (e) => {
+                console.log('🎵 PREV BUTTON CLICKED - event triggered, preventing default and propagation');
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation(); // Prevent other listeners on same element
+                previousAudio();
+            }, { once: false, passive: false });
+            
             // Add hover effects
-            prevBtn.addEventListener('mouseenter', () => {
-                prevBtn.style.backgroundColor = 'var(--primary-700)';
+            newPrevBtn.addEventListener('mouseenter', () => {
+                newPrevBtn.style.backgroundColor = 'var(--primary-700)';
             });
-            prevBtn.addEventListener('mouseleave', () => {
-                prevBtn.style.backgroundColor = prevBtn.disabled ? 'var(--gray-400)' : 'var(--primary-600)';
+            newPrevBtn.addEventListener('mouseleave', () => {
+                newPrevBtn.style.backgroundColor = newPrevBtn.disabled ? 'var(--gray-400)' : 'var(--primary-600)';
             });
+            
+            console.log('🎵 BUTTON SETUP - Previous button event listener attached');
         }
+        
         if (nextBtn) {
-            nextBtn.addEventListener('click', nextAudio);
+            // Clear any existing onclick to prevent double calls
+            nextBtn.onclick = null;
+            
+            // Clone the button to remove all existing event listeners
+            const newNextBtn = nextBtn.cloneNode(true);
+            nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+            
+            console.log('🎵 BUTTON SETUP - Next button cloned and replaced');
+            
+            // Add single event listener with debugging
+            newNextBtn.addEventListener('click', (e) => {
+                console.log('🎵 NEXT BUTTON CLICKED - event triggered, preventing default and propagation');
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation(); // Prevent other listeners on same element
+                nextAudio();
+            }, { once: false, passive: false });
+            
             // Add hover effects
-            nextBtn.addEventListener('mouseenter', () => {
-                nextBtn.style.backgroundColor = 'var(--primary-700)';
+            newNextBtn.addEventListener('mouseenter', () => {
+                newNextBtn.style.backgroundColor = 'var(--primary-700)';
             });
-            nextBtn.addEventListener('mouseleave', () => {
-                nextBtn.style.backgroundColor = nextBtn.disabled ? 'var(--gray-400)' : 'var(--primary-600)';
+            newNextBtn.addEventListener('mouseleave', () => {
+                newNextBtn.style.backgroundColor = newNextBtn.disabled ? 'var(--gray-400)' : 'var(--primary-600)';
             });
+            
+            console.log('🎵 BUTTON SETUP - Next button event listener attached');
         }
+        
+        // Initial button state update
+        updateAudioNavButtons();
+        
+        console.log('🎵 BUTTON SETUP - Initial setup complete');
     }, 100);
     
     // Update button states
@@ -1527,44 +1578,74 @@ function addMultiAudioControls(audioContainer, audioCount) {
 // Switch to specific audio player
 function switchToAudio(index) {
     console.log('🎵 switchToAudio called - switching to index:', index, 'from currentIndex:', currentAudioIndex);
-    const audioContainer = document.querySelector('.composition-audio-container');
-    const audioPlayers = audioContainer.querySelectorAll('.composition-audio-player');
     
-    console.log('🎵 Found', audioPlayers.length, 'audio players in container');
-    console.log('🎵 Available audio players:', Array.from(audioPlayers).map((player, i) => {
-        const title = player.querySelector('.composition-audio-title')?.textContent || 
-                     player.querySelector('.audio-title')?.textContent || 
-                     player.querySelector('h4')?.textContent || 'No title found';
+    // COMPREHENSIVE DOM INSPECTION
+    const audioContainer = document.querySelector('.composition-audio-container');
+    if (!audioContainer) {
+        console.error('🚨 switchToAudio - audio container not found!');
+        return;
+    }
+    
+    const audioPlayers = audioContainer.querySelectorAll('.composition-audio-player');
+    console.log('🔍 FULL DOM INSPECTION:');
+    console.log('🔍 - Audio container found:', !!audioContainer);
+    console.log('🔍 - Total players in DOM:', audioPlayers.length);
+    console.log('🔍 - Expected totalAudioCount:', totalAudioCount);
+    console.log('🔍 - Current index:', currentAudioIndex);
+    console.log('🔍 - Target index:', index);
+    
+    // Log every single audio player with full details
+    console.log('🔍 DETAILED PLAYER ANALYSIS:');
+    Array.from(audioPlayers).forEach((player, i) => {
+        const title = player.querySelector('.composition-audio-title')?.textContent?.trim() || 
+                     player.querySelector('.audio-title')?.textContent?.trim() || 
+                     player.querySelector('h4')?.textContent?.trim() || 'No title found';
         const isVisible = player.style.display !== 'none';
-        return `${i}: "${title}" (${isVisible ? 'VISIBLE' : 'HIDDEN'})`;
-    }));
+        const hasAudio = !!player.querySelector('audio');
+        const dataIndex = player.getAttribute('data-audio-index');
+        
+        console.log(`🔍   Player ${i}:`, {
+            title: title,
+            visible: isVisible,
+            hasAudio: hasAudio,
+            dataIndex: dataIndex,
+            element: player
+        });
+    });
     
     // Validate index
     if (index < 0 || index >= audioPlayers.length) {
-        console.error('🎵 Invalid audio index:', index, 'valid range: 0 to', audioPlayers.length - 1);
+        console.error('🚨 switchToAudio - Invalid audio index:', index, 'valid range: 0 to', audioPlayers.length - 1);
+        console.error('🚨 Available players:', audioPlayers.length, 'Expected count:', totalAudioCount);
         return;
     }
     
     // Hide current audio player
     if (currentAudioIndex >= 0 && currentAudioIndex < audioPlayers.length && audioPlayers[currentAudioIndex]) {
-        const currentTitle = audioPlayers[currentAudioIndex].querySelector('.composition-audio-title')?.textContent || 
-                           audioPlayers[currentAudioIndex].querySelector('.audio-title')?.textContent || 
-                           audioPlayers[currentAudioIndex].querySelector('h4')?.textContent || 'No title';
+        const currentTitle = audioPlayers[currentAudioIndex].querySelector('.composition-audio-title')?.textContent?.trim() || 
+                           audioPlayers[currentAudioIndex].querySelector('.audio-title')?.textContent?.trim() || 
+                           audioPlayers[currentAudioIndex].querySelector('h4')?.textContent?.trim() || 'No title';
+        
         audioPlayers[currentAudioIndex].style.display = 'none';
+        
         // Pause current audio if playing
         const currentAudio = audioPlayers[currentAudioIndex].querySelector('audio');
         if (currentAudio && !currentAudio.paused) {
             currentAudio.pause();
+            console.log('🎵 PAUSED audio at index:', currentAudioIndex);
         }
         console.log('🎵 HIDING audio player at index:', currentAudioIndex, 'Title:', currentTitle);
     }
     
     // Show new audio player
+    const previousIndex = currentAudioIndex;
     currentAudioIndex = index;
+    
     if (audioPlayers[currentAudioIndex]) {
-        const newTitle = audioPlayers[currentAudioIndex].querySelector('.composition-audio-title')?.textContent || 
-                        audioPlayers[currentAudioIndex].querySelector('.audio-title')?.textContent || 
-                        audioPlayers[currentAudioIndex].querySelector('h4')?.textContent || 'No title';
+        const newTitle = audioPlayers[currentAudioIndex].querySelector('.composition-audio-title')?.textContent?.trim() || 
+                        audioPlayers[currentAudioIndex].querySelector('.audio-title')?.textContent?.trim() || 
+                        audioPlayers[currentAudioIndex].querySelector('h4')?.textContent?.trim() || 'No title';
+        
         audioPlayers[currentAudioIndex].style.display = 'block';
         console.log('🎵 SHOWING audio player at index:', currentAudioIndex, 'Title:', newTitle);
         
@@ -1573,8 +1654,15 @@ function switchToAudio(index) {
             behavior: 'smooth', 
             block: 'nearest' 
         });
+        
+        console.log('🎵 NAVIGATION SUMMARY:', {
+            from: previousIndex,
+            to: currentAudioIndex,
+            fromTitle: previousIndex >= 0 ? (audioPlayers[previousIndex]?.querySelector('.composition-audio-title')?.textContent?.trim() || 'N/A') : 'N/A',
+            toTitle: newTitle
+        });
     } else {
-        console.error('🎵 Audio player not found at index:', currentAudioIndex);
+        console.error('🚨 switchToAudio - Audio player not found at index:', currentAudioIndex);
     }
     
     // Update navigation
@@ -1603,17 +1691,53 @@ function updateAudioNavButtons() {
 
 // Navigation functions for multiple audio files
 function previousAudio() {
-    console.log('🎵 previousAudio called - currentIndex:', currentAudioIndex, 'totalCount:', totalAudioCount);
+    // Add call counter to detect double calls
+    if (!window.prevAudioCallCount) window.prevAudioCallCount = 0;
+    window.prevAudioCallCount++;
+    
+    console.log('🎵 previousAudio called - CALL #' + window.prevAudioCallCount + ' - currentIndex:', currentAudioIndex, 'totalCount:', totalAudioCount);
+    console.log('🎵 previousAudio - DOM CHECK:', {
+        audioContainer: !!document.querySelector('.composition-audio-container'),
+        playersFound: document.querySelectorAll('.composition-audio-player').length,
+        currentIndexValid: currentAudioIndex >= 0,
+        canGoPrevious: currentAudioIndex > 0
+    });
+    
     if (currentAudioIndex > 0) {
-        switchToAudio(currentAudioIndex - 1);
+        const newIndex = currentAudioIndex - 1;
+        console.log('🎵 previousAudio - calling switchToAudio with index:', newIndex);
+        switchToAudio(newIndex);
+    } else {
+        console.log('🎵 previousAudio - cannot go previous, already at index 0');
     }
+    
+    // Reset counter after a delay to detect rapid consecutive calls
+    setTimeout(() => { window.prevAudioCallCount = 0; }, 1000);
 }
 
 function nextAudio() {
-    console.log('🎵 nextAudio called - currentIndex:', currentAudioIndex, 'totalCount:', totalAudioCount);
+    // Add call counter to detect double calls
+    if (!window.nextAudioCallCount) window.nextAudioCallCount = 0;
+    window.nextAudioCallCount++;
+    
+    console.log('🎵 nextAudio called - CALL #' + window.nextAudioCallCount + ' - currentIndex:', currentAudioIndex, 'totalCount:', totalAudioCount);
+    console.log('🎵 nextAudio - DOM CHECK:', {
+        audioContainer: !!document.querySelector('.composition-audio-container'),
+        playersFound: document.querySelectorAll('.composition-audio-player').length,
+        currentIndexValid: currentAudioIndex >= 0,
+        canGoNext: currentAudioIndex < totalAudioCount - 1
+    });
+    
     if (currentAudioIndex < totalAudioCount - 1) {
-        switchToAudio(currentAudioIndex + 1);
+        const newIndex = currentAudioIndex + 1;
+        console.log('🎵 nextAudio - calling switchToAudio with index:', newIndex);
+        switchToAudio(newIndex);
+    } else {
+        console.log('🎵 nextAudio - cannot go next, already at index', currentAudioIndex, 'of', totalAudioCount - 1);
     }
+    
+    // Reset counter after a delay to detect rapid consecutive calls
+    setTimeout(() => { window.nextAudioCallCount = 0; }, 1000);
 }
 
 // Make functions globally accessible for onclick handlers
@@ -1621,7 +1745,48 @@ window.previousAudio = previousAudio;
 window.nextAudio = nextAudio;
 window.switchToAudio = switchToAudio;
 
-
+// Global debug function for inspecting audio player state
+window.debugAudioPlayers = function() {
+    console.log('🔍 DEBUG AUDIO PLAYERS - COMPLETE STATE INSPECTION');
+    console.log('🔍 Global variables:', {
+        currentAudioIndex: currentAudioIndex,
+        totalAudioCount: totalAudioCount
+    });
+    
+    const audioContainer = document.querySelector('.composition-audio-container');
+    console.log('🔍 Container found:', !!audioContainer);
+    
+    if (audioContainer) {
+        const audioPlayers = audioContainer.querySelectorAll('.composition-audio-player');
+        console.log('🔍 Total players in DOM:', audioPlayers.length);
+        
+        Array.from(audioPlayers).forEach((player, i) => {
+            const title = player.querySelector('.composition-audio-title')?.textContent?.trim() || 'No title';
+            const isVisible = player.style.display !== 'none';
+            const hasAudio = !!player.querySelector('audio');
+            const dataIndex = player.getAttribute('data-audio-index');
+            
+            console.log(`🔍 Player ${i}:`, {
+                title: title,
+                visible: isVisible,
+                hasAudio: hasAudio,
+                dataIndex: dataIndex,
+                currentlyActive: i === currentAudioIndex
+            });
+        });
+    }
+    
+    const prevBtn = document.getElementById('prevAudioBtn');
+    const nextBtn = document.getElementById('nextAudioBtn');
+    console.log('🔍 Navigation buttons:', {
+        prevBtn: !!prevBtn,
+        nextBtn: !!nextBtn,
+        prevDisabled: prevBtn?.disabled,
+        nextDisabled: nextBtn?.disabled
+    });
+    
+    console.log('🔍 ===== END DEBUG =====');
+};
 
 // Create video player HTML (works for both YouTube and direct video files)
 function createVideoPlayer(url, title = 'Video') {
