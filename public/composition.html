@@ -366,6 +366,7 @@
             letter-spacing: 0.02em;
             color: var(--gray-600);
             text-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            margin: 0;
         }
                     .composition-title-container {
             margin-bottom: 0.25rem;
@@ -382,9 +383,12 @@
         /* Combined Header Container (Title Left, Meta Right) */
         .composition-header-combined {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             align-items: flex-start;
             width: 100%;
+            align-content: space-between;
+            justify-items: stretch;
+            flex-wrap: wrap;
             gap: 2rem;
         }
         
@@ -411,10 +415,6 @@
             margin-bottom: 0.25rem; /* Reduced from 2rem */
         }
         
-        /* Fix alignment - match title margin for consistent positioning */
-        .composition-meta-section {
-            margin-top: -9px; /* Match the negative margin from composition-instrument */
-        }
         
         /* Short Instrument List Styling */
         .composition-short-instruments {
