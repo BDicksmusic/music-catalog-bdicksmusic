@@ -272,10 +272,29 @@ function transformMediaPage(page) {
     };
 }
 
+// Helper function to fetch similar works
+const fetchSimilarWorks = async (similarWorksIds) => {
+    if (!similarWorksIds || similarWorksIds.length === 0) {
+        return [];
+    }
+
+    try {
+        const similarWorksPromises = similarWorksIds.map(id => 
+            notion.pages.retrieve({ page_id: id })
+        );
+        
+        const similarWorksPages = await Promise.all(similarWorksPromises);
+        return similarWorksPages.map(transformNotionPage);
+    } catch (error) {
+        console.error('Error fetching similar works:', error);
+        return [];
+    }
+};
+
 // Enhanced transform function for compositions with media rollup
 const transformNotionPageWithMedia = async (page, includeMedia = true) => {
     const baseComposition = transformNotionPage(page);
-    
+   
     if (!includeMedia) {
         return baseComposition;
     }
@@ -331,6 +350,9 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
             });
         }
         
+        // Fetch similar works
+        const similarWorks = await fetchSimilarWorks(baseComposition.similarWorksIds);
+        
         // Roll up media data
         return {
             ...baseComposition,
@@ -339,6 +361,9 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
             videoFiles: videoMedia,
             scoreFiles: scoreMedia,
             allMedia: allMedia,
+            
+            // Similar works
+            similarWorks: similarWorks,
             
             // Keep original single links for backward compatibility
             audioLink: audioMedia.length > 0 ? audioMedia[0].url : baseComposition.audioLink,
@@ -444,6 +469,7 @@ const transformNotionPage = (page) => {
         popular: properties.Popular?.checkbox || false,
         slug: properties.Slug?.rich_text[0]?.plain_text || '',
         shortInstrumentList: notionRichTextToHtml(properties['Short Instrument List']?.rich_text) || '',
+        similarWorksIds: properties['SimilarWorks']?.relation?.map(rel => rel.id) || [],
     };
 };
 
