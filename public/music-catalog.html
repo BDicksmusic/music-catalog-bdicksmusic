@@ -82,6 +82,37 @@
             padding-top: 100px; /* Account for both navs (60px + 40px) */
         }
 
+        /* Main Opening Section Styling */
+        .main-opening {
+            background: var(--gray-50);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .main-opening-header {
+            margin-bottom: 1rem;
+        }
+
+        .main-opening-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0;
+        }
+
+        .main-opening-content {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .main-opening-content p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: var(--gray-600);
+            margin: 0;
+        }
+
         .catalog-hero {
             background: var(--gray-100);
             color: var(--gray-800);
@@ -500,6 +531,18 @@
 
         /* Mobile Responsive - 768px breakpoint */
         @media (max-width: 768px) {
+            .main-opening {
+                padding: 1.5rem 0.75rem;
+            }
+            
+            .main-opening-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .main-opening-content p {
+                font-size: 0.85rem;
+            }
+            
             .catalog-hero {
                 padding: 1.5rem 0.75rem;
             }
@@ -677,17 +720,17 @@
     </nav>
 
 
-    <!-- Filtering System -->
-     <section class="Main Opening">
-        <div class="Main Opening Header">
-        <h1>Music Catalog</h1>
+    <!-- Main Opening Section -->
+    <section class="main-opening">
+        <div class="main-opening-header">
+            <h1>Music Catalog</h1>
         </div>
-        <div class="Main Opening Content">
-        <p>This part of the website includes the full catalog of compositions created by Brandon Dicks. You can learn more about each composition by clicking the name of the work. There is a specific page for each work that includes a perusal score, example parts <em>(if applicable)</em>, audio example, and download links for those compositions that are available.</p>
-        <br>
-        <p><strong>Every composition is available for purchase.</strong> If a work is not available for download, you can contact Brandon directly to get a quote for the piece and get your own copy of the composition. Compositions are also available in physical form if requested by the ensemble/individual.</p>
-    </section>  
+        <div class="main-opening-content">
+            <p>Browse and search through original compositions by Brandon Dicks. Each work includes scores, audio examples, and purchase options.</p>
+        </div>
+    </section>
     
+    <!-- Filtering System -->
     <section class="catalog-filters">
         <div class="filter-row">
             <div class="filter-section">
