@@ -1000,7 +1000,8 @@
 
 /* ===== NEW LAYOUT STYLES ===== */
 
-/* Secondary Navigation Container */
+/* ✨ DISABLED: Secondary Navigation Container - now handled by modular template system in styles.css */
+/* 
 .secondary-nav {
     background: var(--gray-50);
     border-bottom: 1px solid var(--gray-200);
@@ -1038,6 +1039,7 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }
+*/
 
 /* Media Filters Container */
 .media-filters-container {
@@ -1305,6 +1307,8 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+    /* ✨ DISABLED: Secondary nav styles - now handled by modular template */
+    /*
     .secondary-nav-container {
         flex-direction: column;
         align-items: center;
@@ -1317,6 +1321,7 @@
         max-width: 200px;
         justify-content: center;
     }
+    */
     
     .filter-actions {
         flex-direction: column;

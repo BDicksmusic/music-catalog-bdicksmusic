@@ -8,75 +8,27 @@
     <link rel="stylesheet" href="variables.css"> 
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="media-styles.css">
+    
+    <!-- ✨ TEMPLATE LOADER: Load modular navigation and footer -->
+    <script src="/includes/template-loader.js"></script>
+    
+    <!-- ✨ COMPONENT LOADER: For potential media components -->
+    <script src="/includes/component-loader.js"></script>
+    
+    <style>
+        /* ✨ COMPACT NAVIGATION SUPPORT */
+        body {
+            padding-top: 0; /* ✨ REMOVED: Let hero section handle spacing */
+        }
+        
+        /* ✨ FIXED: Hero section accounts for modular navigation */
+        .media-hero {
+            margin-top: 95px; /* ✨ Account for compact modular navigation */
+        }
+    </style>
 </head>
 <body>
-<nav>
-    <div class="nav-container">
-        <a href="index.html" class="logo">BRANDON DICKS</a>
-        <div class="nav-right">
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="media.html" class="nav-link">Media</a></li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">News</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="news.html">Latest News</a></li>
-                        <li><a href="updates.html">Updates</a></li>
-                        <li><a href="events.html">Events</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Teaching Material</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="exercises.html">Exercises</a></li>
-                        <li><a href="tutorials.html">Tutorials</a></li>
-                        <li><a href="resources.html">Resources</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Contact</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="contact.html">Get in Touch</a></li>
-                        <li><a href="booking.html">Book a Lesson</a></li>
-                        <li><a href="inquiries.html">General Inquiries</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-                <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-            </button>
-              <button class="music-catalog-btn"><a href="music-catalog.html">Music Catalog</a></button>
-    
-              <div class="hamburger">
-                <span></span>
-                <span></span>   
-                <span></span>
-              </div>
-        </div>
-    </div>
-</nav>
-    
-    <!-- Secondary Navigation -->
-    <nav class="secondary-nav">
-        <div class="secondary-nav-container">
-            <a href="/composer" class="secondary-button">🎼 Composer</a>
-            <a href="/trumpeter" class="secondary-button">🎺 Trumpeter</a>
-            <a href="/educator" class="secondary-button">📚 Educator</a>
-        </div>
-    </nav>
+    <!-- ✨ NAVIGATION: Will be automatically injected by template-loader.js -->
     <!-- Hero Section -->
     <header class="media-hero">
         <div class="hero-content">
@@ -277,10 +229,53 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer style="text-align: center; padding: 2rem; background: var(--gray-100); margin-top: 4rem;">
-        <p>&copy; 2025 Brandon Dicks. All rights reserved.</p>
-    </footer>
+    <!-- ✨ FOOTER: Will be automatically injected by template-loader.js -->
+
+    <script>
+        // ✨ WAIT FOR CSS TO LOAD COMPLETELY
+        function waitForCSS() {
+            return new Promise((resolve) => {
+                // Check if the main-footer class exists (meaning CSS is loaded)
+                const testElement = document.createElement('div');
+                testElement.className = 'main-footer';
+                testElement.style.visibility = 'hidden';
+                testElement.style.position = 'absolute';
+                document.body.appendChild(testElement);
+                
+                const checkCSS = () => {
+                    const styles = window.getComputedStyle(testElement);
+                    if (styles.background !== 'rgba(0, 0, 0, 0)' && styles.background !== 'transparent') {
+                        console.log('✅ CSS loaded successfully');
+                        document.body.removeChild(testElement);
+                        resolve();
+                    } else {
+                        console.log('⏳ Waiting for CSS...');
+                        setTimeout(checkCSS, 50);
+                    }
+                };
+                
+                setTimeout(checkCSS, 100);
+            });
+        }
+
+        // ✨ INITIALIZE MODULAR TEMPLATES WITH SMOOTH LOADING
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Loading modular templates for Media page with smooth loading...');
+            
+            try {
+                // ✨ WAIT FOR CSS TO LOAD FIRST
+                await waitForCSS();
+                
+                // ✨ Load templates with smooth loading system
+                await TemplateLoader.loadAllTemplates();
+                
+                console.log('✅ Media page templates loaded smoothly!');
+                
+            } catch (error) {
+                console.error('❌ Media page template loading failed:', error);
+            }
+        });
+    </script>
 
     <script src="main.js"></script>
     <script src="media.js"></script>

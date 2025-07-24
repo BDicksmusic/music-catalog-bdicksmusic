@@ -1,3 +1,61 @@
+/* ✨ SMOOTH LOADING SYSTEM - Eliminates navigation pop-in */
+.template-loading {
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.template-loaded {
+    opacity: 1;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gray-50);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.3s ease-out;
+    backdrop-filter: blur(2px);
+}
+
+.loading-overlay .loading-text {
+    margin-top: 1rem;
+    color: var(--gray-600);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.loading-overlay.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--gray-200);
+    border-top: 3px solid var(--primary-500);
+    border-radius: 50%;
+    animation: template-spin 1s linear infinite;
+}
+
+@keyframes template-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Prevent content shift during loading */
+body.loading {
+    overflow: hidden;
+}
+
 /* ===== BASE STYLES ===== */
 body {
     font-family: var(--font-primary);
@@ -215,54 +273,107 @@ nav {
     height: 60px; /* Fixed height */
 }
 
+/* ========================================
+   SECONDARY NAVIGATION - CONSOLIDATED STYLES
+   ======================================== */
+
 .secondary-nav {
-    position: fixed; /* Changed from sticky to fixed */
-    top: 55px; /* ✨ IMPROVED: Better positioning from index.html */
-    left: 0;
-    width: 100vw;
-    max-width: 100%; /* ✨ ADDED: From index.html for better consistency */
-    z-index: 950; /* ✨ IMPROVED: Higher z-index from index.html */
-    font-size: var(--text-sm);
-    background: var(--gray-200);
-    color: var(--gray-300);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0;
-    padding: 0 var(--space-4) 0 var(--space-3);
-    text-align: left;
-    height: 40px; /* Fixed height */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* ✨ ADDED: Professional shadow from index.html */
+    position: fixed !important; /* ✨ FORCE: Ensure fixed positioning */
+    top: 60px !important; /* ✨ FIXED: Proper positioning to match index.html */
+    left: 0 !important;
+    width: 100vw !important;
+    max-width: 100% !important; /* ✨ ADDED: From index.html for better consistency */
+    z-index: 950 !important; /* ✨ IMPROVED: Higher z-index from index.html */
+    font-size: var(--text-sm) !important;
+    background: var(--gray-200) !important;
+    color: var(--gray-300) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 var(--space-4) 0 var(--space-3) !important;
+    text-align: left !important;
+    height: 35px !important; /* ✨ REDUCED: More compact height */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08) !important; /* ✨ REDUCED: Lighter shadow for compactness */
 }
 
 .secondary-nav-left {
-    display: flex;
-    align-items: center;
+    display: flex !important;
+    align-items: center !important;
 }
 
 .secondary-nav-right {
-    display: flex;
-    align-items: center;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* ✨ ENHANCED: Secondary navigation buttons with hover effects */
+.secondary-button {
+    text-decoration: none !important;
+    font-weight: var(--font-semibold) !important;
+    color: var(--gray-600) !important;
+    padding: 6px var(--space-3) !important; /* ✨ REDUCED: More compact padding */
+    border-radius: var(--radius-base) !important;
+    font-size: 0.95rem !important; /* ✨ INCREASED: Better readability */
+    border: 1px solid transparent !important;
+    background: transparent !important;
+    transition: var(--transition-fast) !important;
+    cursor: pointer !important;
+    display: inline-flex !important; /* ✨ CHANGED: Better alignment */
+    align-items: center !important; /* ✨ ADDED: Center alignment */
+    text-align: center !important;
+    position: relative !important;
+    margin: 0 var(--space-1) !important;
+    height: 28px !important; /* ✨ ADDED: Fixed height for consistency */
+}
+
+.secondary-button:hover {
+    color: var(--primary-500) !important;
+    background: var(--gray-100) !important;
+    transform: translateY(-1px) !important;
+    border-color: var(--gray-300) !important;
+}
+
+.secondary-button::after {
+    content: '' !important;
+    position: absolute !important;
+    width: 0 !important;
+    height: 2px !important;
+    bottom: 0 !important;
+    left: 50% !important;
+    background: var(--primary-500) !important;
+    transition: var(--transition-fast) !important;
+}
+
+.secondary-button:hover::after {
+    width: 100% !important;
+    left: 0 !important;
+}
+
+.secondary-button:active {
+    transform: translateY(0) !important;
+    background: var(--gray-300) !important;
 }
 
 .social-media-links {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--space-2) !important;
+    height: 100% !important; /* ✨ ADDED: Full height of container */
 }
 
 .social-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-base);
-    color: var(--gray-600);
-    transition: var(--transition-fast);
-    text-decoration: none;
-    background: transparent;
-    border: 1px solid transparent;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 28px !important; /* ✨ REDUCED: Smaller for compactness */
+    height: 28px !important; /* ✨ REDUCED: Match secondary buttons */
+    border-radius: var(--radius-base) !important;
+    color: var(--gray-600) !important;
+    transition: var(--transition-fast) !important;
+    text-decoration: none !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
 }
 
 .social-link:hover {
@@ -278,9 +389,9 @@ nav {
 }
 
 .social-icon {
-    width: 18px;
-    height: 18px;
-    fill: currentColor;
+    width: 18px !important; /* ✨ INCREASED: Slightly larger for better visibility */
+    height: 18px !important;
+    fill: currentColor !important;
 }
 
 /* Specific social media colors on hover */
@@ -304,32 +415,50 @@ nav {
     color: #1DB954;
 }
 
-/* Mobile responsiveness for social links */
+/* ✨ ENHANCED: Mobile responsiveness for secondary navigation */
 @media (max-width: 768px) {
     .secondary-nav {
-        top: 60px; /* ✨ ADDED: Mobile adjustment from index.html */
-        padding: 0 var(--space-2);
+        top: 60px !important; /* ✨ ADDED: Mobile adjustment from index.html */
+        padding: 0 var(--space-2) !important;
+        justify-content: space-between !important;
+        height: 32px !important; /* ✨ EVEN SMALLER: For mobile */
     }
     
-    .social-media-links {
-        gap: var(--space-1);
+    .secondary-nav-left {
+        flex: 1 !important;
+        justify-content: flex-start !important;
     }
     
-    .social-link {
-        width: 28px;
-        height: 28px;
-    }
-    
-    .social-icon {
-        width: 16px;
-        height: 16px;
+    .secondary-nav-right {
+        flex-shrink: 0 !important;
     }
     
     .secondary-button {
-        padding: var(--space-1) var(--space-2);
-        margin: 0 var(--space-half);
-        font-size: var(--text-sm);
+        padding: 4px var(--space-2) !important; /* ✨ REDUCED: Compact mobile padding */
+        margin: 0 2px !important;
+        font-size: 0.85rem !important; /* ✨ INCREASED: Better mobile readability */
+        height: 24px !important; /* ✨ REDUCED: Mobile height */
     }
+    
+    .social-media-links {
+        gap: 4px !important; /* ✨ REDUCED: Tighter mobile spacing */
+    }
+    
+    .social-link {
+        width: 24px !important; /* ✨ REDUCED: Smaller mobile icons */
+        height: 24px !important;
+    }
+    
+    .social-icon {
+        width: 16px !important; /* ✨ INCREASED: Better mobile visibility */
+        height: 16px !important;
+    }
+}
+
+.social-icon {
+    width: 16px !important; /* ✨ REDUCED: Smaller icons for compact nav */
+    height: 16px !important;
+    fill: currentColor !important;
 }
 
 .secondary-button {
@@ -492,7 +621,7 @@ nav {
     justify-content: center;
     transition: all 0.3s ease;
     position: relative;
-    font-size: clamp(15px, 1vw, 18px);
+    font-size: clamp(14px, 0.9vw, 17px); /* ✨ REDUCED: Smaller main nav font */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1694,8 +1823,6 @@ input:focus, textarea:focus, select:focus {
     border-top: 1px solid var(--gray-200);
     margin-top: 4rem;
     padding: 3rem 0 0;
-    /* 🔍 DEBUG: Bright border to test if CSS is loading */
-    border: 5px solid red !important;
 }
 
 .footer-container {

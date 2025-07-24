@@ -6,6 +6,13 @@
     <title>Composition Details</title>
     <link rel="stylesheet" href="/variables.css">
     <link rel="stylesheet" href="/styles.css">
+    
+    <!-- ✨ TEMPLATE LOADER: Load modular navigation and footer -->
+    <script src="/includes/template-loader.js"></script>
+    
+    <!-- ✨ COMPONENT LOADER: For potential media components -->
+    <script src="/includes/component-loader.js"></script>
+    
     <style>
         
         body {
@@ -14,6 +21,7 @@
             overflow-x: hidden;
             width: 100%;
             box-sizing: border-box;
+            padding-top: 95px; /* ✨ ADDED: Account for compact modular navigation */
         }
         
         * {
@@ -2314,102 +2322,15 @@
         
 
         
-        /* Secondary Navigation Styles */
-        .secondary-nav-left {
-            display: flex;
-            align-items: center;
-        }
-        
-        .secondary-nav-right {
-            display: flex;
-            align-items: center;
-        }
-        
-        .social-media-links {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
-        
-        .social-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: var(--radius-base);
-            color: var(--gray-600);
-            transition: var(--transition-fast);
-            text-decoration: none;
-            background: transparent;
-            border: 1px solid transparent;
-        }
-        
-        .social-link:hover {
-            color: var(--primary-500);
-            background: var(--gray-100);
-            transform: translateY(-1px);
-            border-color: var(--gray-300);
-        }
-        
-        .social-link:active {
-            transform: translateY(0);
-            background: var(--gray-300);
-        }
-        
-        .social-icon {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-        
-        /* Specific social media colors on hover */
-        .social-link[title="YouTube"]:hover {
-            color: #FF0000;
-        }
-        
-        .social-link[title="Instagram"]:hover {
-            color: #E4405F;
-        }
-        
-        .social-link[title="Facebook"]:hover {
-            color: #1877F2;
-        }
-        
-        .social-link[title="Twitter"]:hover {
-            color: #1DA1F2;
-        }
-        
-        .social-link[title="Spotify"]:hover {
-            color: #1DB954;
-        }
-        
-        /* Mobile responsiveness for social links */
-        @media (max-width: 768px) {
-            .social-media-links {
-                gap: var(--space-1);
-            }
-            
-            .social-link {
-                width: 28px;
-                height: 28px;
-            }
-            
-            .social-icon {
-                width: 16px;
-                height: 16px;
-            }
-        }
+        /* ✨ REMOVED: Secondary Navigation Styles - now in styles.css for modular consistency */
 
     </style>
 </head>
 <body>
     <header><br></header>
     <br>
-    <nav>
-        <div class="nav-container">
-            <a href="/index.html" class="logo">BRANDON DICKS</a>
-            <div class="nav-right">
+
+    <!-- ✨ NAVIGATION: Will be automatically injected by template-loader.js -->
                 <ul class="nav-menu">
                     <li class="nav-item"><a href="/media.html" class="nav-link">Media</a></li>
                     <li class="nav-item dropdown">
@@ -2499,10 +2420,6 @@
                             <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.48.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
                         </svg>
                     </a>
-                </div>
-            </div>
-        </nav>
-    
     <main>
         <div class="composition-main">
             <div class="composition-detail-card">
@@ -2577,12 +2494,64 @@
             </div>
         </div>
     </section>
-    <script src="/composition.js"></script>
     <script>
+        // ✨ WAIT FOR CSS TO LOAD COMPLETELY
+        function waitForCSS() {
+            return new Promise((resolve) => {
+                // Check if the main-footer class exists (meaning CSS is loaded)
+                const testElement = document.createElement('div');
+                testElement.className = 'main-footer';
+                testElement.style.visibility = 'hidden';
+                testElement.style.position = 'absolute';
+                document.body.appendChild(testElement);
+                
+                const checkCSS = () => {
+                    const styles = window.getComputedStyle(testElement);
+                    if (styles.background !== 'rgba(0, 0, 0, 0)' && styles.background !== 'transparent') {
+                        console.log('✅ CSS loaded successfully');
+                        document.body.removeChild(testElement);
+                        resolve();
+                    } else {
+                        console.log('⏳ Waiting for CSS...');
+                        setTimeout(checkCSS, 50);
+                    }
+                };
+                
+                setTimeout(checkCSS, 100);
+            });
+        }
+
+        // ✨ INITIALIZE MODULAR TEMPLATES WITH SMOOTH LOADING
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Loading modular templates for Composition page with smooth loading...');
+            
+            try {
+                // ✨ WAIT FOR CSS TO LOAD FIRST
+                await waitForCSS();
+                
+                // ✨ Load navigation with smooth loading (no footer on this page)
+                TemplateLoader.preparePageForLoading();
+                await TemplateLoader.loadNavigation();
+                
+                // Small delay then mark as loaded
+                setTimeout(() => {
+                    TemplateLoader.markPageAsLoaded();
+                }, 100);
+                
+                console.log('✅ Composition page templates loaded smoothly!');
+                
+            } catch (error) {
+                console.error('❌ Composition page template loading failed:', error);
+                TemplateLoader.markPageAsLoaded();
+            }
+        });
+
         function showUnavailableMessage(title) {
             alert(`"${title}" is currently not available for purchase.\n\nPlease contact us directly for more information about acquiring this composition.`);
         }
     </script>
+
+    <script src="/composition.js"></script>
     <script src="/main.js"></script>
     <script src="/script.js"></script>  
 </body>

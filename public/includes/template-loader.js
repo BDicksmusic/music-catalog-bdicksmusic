@@ -7,19 +7,79 @@
 const TEMPLATE_BASE_PATH = '/includes/';
 
 /**
+ * ✨ SMOOTH LOADING SYSTEM - Eliminates pop-in effects
+ */
+
+/**
+ * Show loading overlay to prevent content pop-in
+ */
+function showLoadingOverlay() {
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay';
+    overlay.id = 'template-loading-overlay';
+    overlay.innerHTML = `
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+    `;
+    document.body.appendChild(overlay);
+    document.body.classList.add('loading');
+}
+
+/**
+ * Hide loading overlay with smooth transition
+ */
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('template-loading-overlay');
+    if (overlay) {
+        overlay.classList.add('fade-out');
+        document.body.classList.remove('loading');
+        
+        // Remove overlay after transition
+        setTimeout(() => {
+            if (overlay.parentNode) {
+                overlay.parentNode.removeChild(overlay);
+            }
+        }, 300);
+    }
+}
+
+/**
+ * Apply smooth loading classes to body
+ */
+function preparePageForLoading() {
+    document.body.classList.add('template-loading');
+}
+
+/**
+ * Mark page as loaded with smooth transition
+ */
+function markPageAsLoaded() {
+    document.body.classList.remove('template-loading');
+    document.body.classList.add('template-loaded');
+}
+
+/**
  * Fetch and load a template file
  * @param {string} templateName - Name of the template file (without .html)
  * @returns {Promise<string>} - Template HTML content
  */
 async function fetchTemplate(templateName) {
     try {
-        const response = await fetch(`${TEMPLATE_BASE_PATH}${templateName}.html`);
+        const templateUrl = `${TEMPLATE_BASE_PATH}${templateName}.html`;
+        console.log('🔄 Fetching template:', templateUrl);
+        
+        const response = await fetch(templateUrl);
+        console.log('📡 Template response status:', response.status);
+        
         if (!response.ok) {
             throw new Error(`Template ${templateName} not found: ${response.status}`);
         }
-        return await response.text();
+        
+        const html = await response.text();
+        console.log('📄 Template HTML received, length:', html.length);
+        return html;
     } catch (error) {
-        console.error(`Failed to load template ${templateName}:`, error);
+        console.error(`❌ Failed to load template ${templateName}:`, error);
         return '';
     }
 }
@@ -30,22 +90,33 @@ async function fetchTemplate(templateName) {
  * @param {string} position - Where to inject ('afterbegin', 'beforeend', etc.)
  */
 async function loadNavigation(targetSelector = 'body', position = 'afterbegin') {
-    console.log('Loading navigation template...');
+    console.log('🧭 Loading navigation template...');
+    console.log('🎯 Navigation target selector:', targetSelector);
+    console.log('📍 Navigation position:', position);
     
     const navigationHtml = await fetchTemplate('navigation');
+    console.log('📄 Navigation HTML length:', navigationHtml ? navigationHtml.length : 'null');
     if (!navigationHtml) {
-        console.warn('Navigation template could not be loaded');
+        console.error('❌ Navigation template could not be loaded');
         return;
     }
     
     const targetElement = document.querySelector(targetSelector);
+    console.log('🎯 Target element found:', !!targetElement);
     if (!targetElement) {
-        console.error(`Target element "${targetSelector}" not found for navigation injection`);
+        console.error(`❌ Target element "${targetSelector}" not found for navigation injection`);
         return;
     }
     
+    console.log('💉 Injecting navigation HTML...');
     targetElement.insertAdjacentHTML(position, navigationHtml);
-    console.log('Navigation template loaded successfully');
+    console.log('✅ Navigation template injected successfully');
+    
+    // Check if navigation was actually injected
+    const injectedNav = document.querySelector('.secondary-nav');
+    const injectedButtons = document.querySelectorAll('.secondary-button');
+    console.log('🔍 Secondary nav found in DOM after injection:', !!injectedNav);
+    console.log('🔍 Secondary buttons found:', injectedButtons.length);
     
     // Initialize navigation functionality after injection
     initializeNavigation();
@@ -57,22 +128,31 @@ async function loadNavigation(targetSelector = 'body', position = 'afterbegin') 
  * @param {string} position - Where to inject ('beforeend' by default)
  */
 async function loadFooter(targetSelector = 'body', position = 'beforeend') {
-    console.log('Loading footer template...');
+    console.log('🦶 Loading footer template...');
+    console.log('🎯 Footer target selector:', targetSelector);
+    console.log('📍 Footer position:', position);
     
     const footerHtml = await fetchTemplate('footer');
+    console.log('📄 Footer HTML length:', footerHtml ? footerHtml.length : 'null');
     if (!footerHtml) {
-        console.warn('Footer template could not be loaded');
+        console.error('❌ Footer template could not be loaded');
         return;
     }
     
     const targetElement = document.querySelector(targetSelector);
+    console.log('🎯 Target element found:', !!targetElement);
     if (!targetElement) {
-        console.error(`Target element "${targetSelector}" not found for footer injection`);
+        console.error(`❌ Target element "${targetSelector}" not found for footer injection`);
         return;
     }
     
+    console.log('💉 Injecting footer HTML...');
     targetElement.insertAdjacentHTML(position, footerHtml);
-    console.log('Footer template loaded successfully');
+    console.log('✅ Footer template loaded successfully');
+    
+    // Check if footer was actually injected
+    const injectedFooter = document.querySelector('.main-footer');
+    console.log('🔍 Footer found in DOM after injection:', !!injectedFooter);
     
     // Initialize footer functionality after injection
     initializeFooter();
@@ -168,7 +248,7 @@ function initializeFooter() {
 }
 
 /**
- * Load both navigation and footer templates
+ * Load both navigation and footer templates with smooth loading
  * @param {Object} options - Configuration options
  */
 async function loadAllTemplates(options = {}) {
@@ -176,16 +256,70 @@ async function loadAllTemplates(options = {}) {
         navTarget = 'body',
         navPosition = 'afterbegin',
         footerTarget = 'body',
-        footerPosition = 'beforeend'
+        footerPosition = 'beforeend',
+        showOverlay = true
     } = options;
     
-    await Promise.all([
-        loadNavigation(navTarget, navPosition),
-        loadFooter(footerTarget, footerPosition)
-    ]);
-    
-    console.log('All templates loaded successfully');
+    try {
+        // ✨ Start smooth loading
+        if (showOverlay) {
+            showLoadingOverlay();
+        }
+        preparePageForLoading();
+        
+        // Load templates in parallel for faster loading
+        await Promise.all([
+            loadNavigation(navTarget, navPosition),
+            loadFooter(footerTarget, footerPosition)
+        ]);
+        
+        // ✨ Small delay to ensure DOM is fully updated
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        // ✨ Mark as loaded with smooth transition
+        markPageAsLoaded();
+        
+        if (showOverlay) {
+            // Small delay before hiding overlay for smoother experience
+            setTimeout(() => {
+                hideLoadingOverlay();
+            }, 100);
+        }
+        
+        console.log('✅ All templates loaded smoothly');
+        
+    } catch (error) {
+        console.error('❌ Template loading failed:', error);
+        
+        // Clean up on error
+        markPageAsLoaded();
+        if (showOverlay) {
+            hideLoadingOverlay();
+        }
+    }
 }
+
+/**
+ * Load templates with ultra-fast loading (no overlay)
+ */
+async function loadAllTemplatesFast(options = {}) {
+    return loadAllTemplates({ ...options, showOverlay: false });
+}
+
+/**
+ * ✨ IMMEDIATE LOADING STATE - Set loading state as soon as possible
+ */
+(function() {
+    // Apply loading state immediately when script loads
+    if (document.body) {
+        document.body.classList.add('template-loading');
+    } else {
+        // If body doesn't exist yet, wait for it
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('template-loading');
+        });
+    }
+})();
 
 /**
  * Auto-load templates when DOM is ready (if auto-load attributes are present)
@@ -212,5 +346,10 @@ window.TemplateLoader = {
     loadNavigation,
     loadFooter,
     loadAllTemplates,
-    fetchTemplate
+    loadAllTemplatesFast,
+    fetchTemplate,
+    showLoadingOverlay,
+    hideLoadingOverlay,
+    preparePageForLoading,
+    markPageAsLoaded
 }; 
