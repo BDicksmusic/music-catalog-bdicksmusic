@@ -283,6 +283,50 @@
             margin-bottom: 0;
         }
         
+        /* Audio navigation controls styling */
+        .audio-nav-container {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 0.75rem 1rem !important;
+            background: var(--gray-50) !important;
+            border-radius: 8px !important;
+            margin-top: 1rem !important;
+            border: 1px solid var(--gray-200) !important;
+        }
+        
+        .audio-nav-btn {
+            padding: 0.5rem 1rem !important;
+            background: var(--primary-600) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            font-size: 0.9rem !important;
+            transition: background-color 0.2s !important;
+        }
+        
+        .audio-nav-btn:hover:not(:disabled) {
+            background: var(--primary-700) !important;
+        }
+        
+        .audio-nav-btn:disabled {
+            background: var(--gray-400) !important;
+            cursor: not-allowed !important;
+        }
+        
+        .audio-nav-info {
+            font-weight: 600 !important;
+            color: var(--gray-700) !important;
+            font-size: 0.95rem !important;
+        }
+        
+        .audio-nav-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #e2e8f0, transparent);
+            margin: 1.5rem 0 1rem 0;
+        }
+        
         .composition-audio-title {
             font-size: 0.9rem;
             font-weight: 600;

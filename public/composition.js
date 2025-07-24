@@ -1392,15 +1392,53 @@ function addMultiAudioControls(audioContainer, audioCount) {
         });
     });
     
-    // Add navigation controls
-            const controlsHtml = `
-            <div class="audio-nav-container">
-                <button class="audio-nav-btn" onclick="previousAudio()" id="prevAudioBtn">⏮ Previous</button>
-                <span class="audio-nav-info" id="audioNavInfo">Movement 1 of ${audioCount}</span>
-                <button class="audio-nav-btn" onclick="nextAudio()" id="nextAudioBtn">Next ⏭</button>
-            </div>
-        `;
-    audioContainer.insertAdjacentHTML('afterend', controlsHtml);
+    // Add navigation controls INSIDE the audio container with a divider
+    const controlsHtml = `
+        <div class="audio-nav-divider" style="
+            height: 1px; 
+            background: linear-gradient(to right, transparent, #e2e8f0, transparent); 
+            margin: 1.5rem 0 1rem 0;
+        "></div>
+        <div class="audio-nav-container" style="
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 0.75rem 1rem; 
+            background: var(--gray-50); 
+            border-radius: 8px; 
+            margin-top: 1rem;
+            border: 1px solid var(--gray-200);
+        ">
+            <button class="audio-nav-btn" onclick="previousAudio()" id="prevAudioBtn" style="
+                padding: 0.5rem 1rem; 
+                background: var(--primary-600); 
+                color: white; 
+                border: none; 
+                border-radius: 6px; 
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: background-color 0.2s;
+            ">⏮ Previous</button>
+            <span class="audio-nav-info" id="audioNavInfo" style="
+                font-weight: 600; 
+                color: var(--gray-700);
+                font-size: 0.95rem;
+            ">Movement 1 of ${audioCount}</span>
+            <button class="audio-nav-btn" onclick="nextAudio()" id="nextAudioBtn" style="
+                padding: 0.5rem 1rem; 
+                background: var(--primary-600); 
+                color: white; 
+                border: none; 
+                border-radius: 6px; 
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: background-color 0.2s;
+            ">Next ⏭</button>
+        </div>
+    `;
+    
+    // Insert navigation INSIDE the audio container (at the end)
+    audioContainer.insertAdjacentHTML('beforeend', controlsHtml);
     
     // Also add event listeners as backup (in case onclick doesn't work)
     setTimeout(() => {
@@ -1409,9 +1447,23 @@ function addMultiAudioControls(audioContainer, audioCount) {
         
         if (prevBtn) {
             prevBtn.addEventListener('click', previousAudio);
+            // Add hover effects
+            prevBtn.addEventListener('mouseenter', () => {
+                prevBtn.style.backgroundColor = 'var(--primary-700)';
+            });
+            prevBtn.addEventListener('mouseleave', () => {
+                prevBtn.style.backgroundColor = prevBtn.disabled ? 'var(--gray-400)' : 'var(--primary-600)';
+            });
         }
         if (nextBtn) {
             nextBtn.addEventListener('click', nextAudio);
+            // Add hover effects
+            nextBtn.addEventListener('mouseenter', () => {
+                nextBtn.style.backgroundColor = 'var(--primary-700)';
+            });
+            nextBtn.addEventListener('mouseleave', () => {
+                nextBtn.style.backgroundColor = nextBtn.disabled ? 'var(--gray-400)' : 'var(--primary-600)';
+            });
         }
     }, 100);
     
@@ -1428,9 +1480,19 @@ function switchToAudio(index) {
     const audioPlayers = audioContainer.querySelectorAll('.composition-audio-player');
     
     console.log('🎵 Found', audioPlayers.length, 'audio players in container');
+    console.log('🎵 Available audio players:', Array.from(audioPlayers).map((player, i) => {
+        const title = player.querySelector('.audio-title')?.textContent || 'No title';
+        return `${i}: ${title}`;
+    }));
+    
+    // Validate index
+    if (index < 0 || index >= audioPlayers.length) {
+        console.error('🎵 Invalid audio index:', index, 'valid range: 0 to', audioPlayers.length - 1);
+        return;
+    }
     
     // Hide current audio player
-    if (audioPlayers[currentAudioIndex]) {
+    if (currentAudioIndex >= 0 && currentAudioIndex < audioPlayers.length && audioPlayers[currentAudioIndex]) {
         audioPlayers[currentAudioIndex].style.display = 'none';
         // Pause current audio if playing
         const currentAudio = audioPlayers[currentAudioIndex].querySelector('audio');
@@ -1445,6 +1507,14 @@ function switchToAudio(index) {
     if (audioPlayers[currentAudioIndex]) {
         audioPlayers[currentAudioIndex].style.display = 'block';
         console.log('🎵 Showed audio player at index:', currentAudioIndex);
+        
+        // Scroll the new audio player into view if needed
+        audioPlayers[currentAudioIndex].scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'nearest' 
+        });
+    } else {
+        console.error('🎵 Audio player not found at index:', currentAudioIndex);
     }
     
     // Update navigation
@@ -1453,13 +1523,21 @@ function switchToAudio(index) {
 
 // Update navigation button states
 function updateAudioNavButtons() {
-    // Use global button selectors since the navigation is outside the audio players
+    // Use global button selectors since the navigation is now inside the audio container
     const prevBtn = document.getElementById('prevAudioBtn');
     const nextBtn = document.getElementById('nextAudioBtn');
     const navInfo = document.getElementById('audioNavInfo');
     
-    if (prevBtn) prevBtn.disabled = currentAudioIndex === 0;
-    if (nextBtn) nextBtn.disabled = currentAudioIndex === totalAudioCount - 1;
+    if (prevBtn) {
+        prevBtn.disabled = currentAudioIndex === 0;
+        prevBtn.style.backgroundColor = prevBtn.disabled ? 'var(--gray-400)' : 'var(--primary-600)';
+        prevBtn.style.cursor = prevBtn.disabled ? 'not-allowed' : 'pointer';
+    }
+    if (nextBtn) {
+        nextBtn.disabled = currentAudioIndex === totalAudioCount - 1;
+        nextBtn.style.backgroundColor = nextBtn.disabled ? 'var(--gray-400)' : 'var(--primary-600)';
+        nextBtn.style.cursor = nextBtn.disabled ? 'not-allowed' : 'pointer';
+    }
     if (navInfo) navInfo.textContent = `Movement ${currentAudioIndex + 1} of ${totalAudioCount}`;
 }
 
