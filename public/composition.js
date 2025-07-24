@@ -531,8 +531,15 @@ if (audioContainer) {
         
         audioContainer.innerHTML = audioPlayersHtml;
         
-        // Reset audio index for new composition
+        // Clean up any existing navigation controls
+        const existingNavControls = document.querySelector('.audio-nav-container');
+        if (existingNavControls) {
+            existingNavControls.remove();
+        }
+        
+        // Reset audio index and total count for new composition
         currentAudioIndex = 0;
+        totalAudioCount = audioFiles.length;
         
         // Check if this should be treated as a multi-movement composition
         const compositionTitle = document.querySelector('.composition-title h1')?.textContent || '';
@@ -558,7 +565,10 @@ if (audioContainer) {
                     player.style.display = 'none';
                 }
             });
-            // Navigation controls are now embedded within each audio player card
+            
+            // Add multi-audio navigation controls
+            console.log('🎵 Adding multi-audio controls for', audioFiles.length, 'audio files');
+            addMultiAudioControls(audioContainer, audioFiles.length);
         }
     } else {
         audioContainer.style.display = 'none';
@@ -935,101 +945,8 @@ if (notesContainer) {
         });
     }
     
-    // Enhanced Dropdown Metadata System
-    const metadataContainer = document.querySelector('#metadata-toggle-system');
-    if (metadataContainer) {
-        // Always-visible essential details section
-        const essentialDetails = [
-            { label: 'Year Composed', value: comp.year, icon: '📅' },
-            { label: 'Duration', value: comp.duration, icon: '⏱️' },
-            { label: 'Difficulty Level', value: comp.difficulty, icon: '🎯' },
-            { label: 'Genre', value: comp.genre, icon: '🎵' }
-        ].filter(item => item.value && item.value !== 'Not specified');
-
-        let essentialHtml = '';
-        if (essentialDetails.length > 0) {
-            essentialHtml = `
-                <div class="composition-essential-details">
-                    <h4>📊 Key Details</h4>
-                    <div class="essential-details-grid">
-                        ${essentialDetails.map(detail => `
-                            <div class="essential-detail-item">
-                                <span class="detail-icon">${detail.icon}</span>
-                                <div class="detail-content">
-                                    <div class="detail-label">${detail.label}</div>
-                                    <div class="detail-value">${detail.value}</div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        // Collapsible sections
-        const metadataToggles = [
-            {
-                title: '🎼 Instrumentation Details',
-                icon: '🎼',
-                items: [
-                    { label: 'Full Instrumentation', value: comp.instrumentation || 'Not specified' },
-                    { label: 'Short Instrument List', value: comp.shortInstrumentList || 'Not specified' },
-                    { label: 'Composition Type', value: comp.type || 'Original' }
-                ].filter(item => item.value !== 'Not specified')
-            },
-            {
-                title: '📊 Performance & Media',
-                icon: '📊',
-                items: [
-                    { label: 'Audio Recordings', value: `${comp.audioFiles?.length || 0} recordings available` },
-                    { label: 'Video Recordings', value: `${comp.videoFiles?.length || 0} videos available` },
-                    { label: 'Score Available', value: comp.scoreLink || comp.scoreFiles?.length > 0 ? '✅ Yes' : '❌ No' },
-                    { label: 'Featured Work', value: comp.featured ? '⭐ Featured' : '📝 Standard' },
-                    { label: 'Popular', value: comp.popular ? '🔥 Popular' : '📄 Regular' },
-                    { label: 'Price', value: comp.price ? `💰 $${comp.price}` : '🆓 Contact for pricing' }
-                ]
-            },
-            {
-                title: '🏷️ Additional Information',
-                icon: '🏷️',
-                items: [
-                    { label: 'Tags', value: comp.tags && comp.tags.length > 0 ? comp.tags.join(', ') : 'None' },
-                    { label: 'Related Works', value: `${comp.similarWorks?.length || comp.similarWorksSlugs?.length || 0} related compositions` },
-                    { label: 'Created', value: formatDate(comp.created) || 'Not specified' },
-                    { label: 'Last Edited', value: formatDate(comp.lastEdited) || 'Not specified' }
-                ].filter((item, index) => {
-                    // Keep tags and related works even if empty, filter others
-                    if (item.label === 'Tags' || item.label === 'Related Works') return true;
-                    return item.value !== 'Not specified';
-                })
-            }
-        ].filter(section => section.items.length > 0);
-
-        const metadataHtml = metadataToggles.map((section, index) => `
-            <div class="metadata-toggle-item" data-toggle="${index}">
-                <div class="metadata-toggle-header" onclick="toggleMetadataSection(${index})">
-                    <div class="toggle-header-content">
-                        <span class="toggle-icon">${section.icon}</span>
-                        <span class="toggle-title">${section.title}</span>
-                    </div>
-                    <span class="metadata-toggle-arrow">⌄</span>
-                </div>
-                <div class="metadata-toggle-content">
-                    <div class="metadata-items-grid">
-                        ${section.items.map(item => `
-                            <div class="metadata-item-card">
-                                <div class="metadata-label">${item.label}</div>
-                                <div class="metadata-value">${item.value}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `).join('');
-
-        // Combine essential details with collapsible metadata
-        metadataContainer.innerHTML = essentialHtml + (metadataHtml ? `<div class="collapsible-sections">${metadataHtml}</div>` : '');
-    }
+    // New Structured Composition Details System
+    renderCompositionDetails(comp);
     
     // Related Compositions Carousel
     console.log('🔗 DEBUG - Similar works data:', comp.similarWorks?.length, comp.similarWorks);
@@ -1493,6 +1410,19 @@ function addMultiAudioControls(audioContainer, audioCount) {
         `;
     audioContainer.insertAdjacentHTML('afterend', controlsHtml);
     
+    // Also add event listeners as backup (in case onclick doesn't work)
+    setTimeout(() => {
+        const prevBtn = document.getElementById('prevAudioBtn');
+        const nextBtn = document.getElementById('nextAudioBtn');
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', previousAudio);
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', nextAudio);
+        }
+    }, 100);
+    
     // Update button states
     updateAudioNavButtons();
 }
@@ -1501,8 +1431,11 @@ function addMultiAudioControls(audioContainer, audioCount) {
 
 // Switch to specific audio player
 function switchToAudio(index) {
+    console.log('🎵 switchToAudio called - switching to index:', index, 'from currentIndex:', currentAudioIndex);
     const audioContainer = document.querySelector('.composition-audio-container');
     const audioPlayers = audioContainer.querySelectorAll('.composition-audio-player');
+    
+    console.log('🎵 Found', audioPlayers.length, 'audio players in container');
     
     // Hide current audio player
     if (audioPlayers[currentAudioIndex]) {
@@ -1512,12 +1445,14 @@ function switchToAudio(index) {
         if (currentAudio && !currentAudio.paused) {
             currentAudio.pause();
         }
+        console.log('🎵 Hid audio player at index:', currentAudioIndex);
     }
     
     // Show new audio player
     currentAudioIndex = index;
     if (audioPlayers[currentAudioIndex]) {
         audioPlayers[currentAudioIndex].style.display = 'block';
+        console.log('🎵 Showed audio player at index:', currentAudioIndex);
     }
     
     // Update navigation
@@ -1538,14 +1473,150 @@ function updateAudioNavButtons() {
 
 // Navigation functions for multiple audio files
 function previousAudio() {
+    console.log('🎵 previousAudio called - currentIndex:', currentAudioIndex, 'totalCount:', totalAudioCount);
     if (currentAudioIndex > 0) {
         switchToAudio(currentAudioIndex - 1);
     }
 }
 
 function nextAudio() {
+    console.log('🎵 nextAudio called - currentIndex:', currentAudioIndex, 'totalCount:', totalAudioCount);
     if (currentAudioIndex < totalAudioCount - 1) {
         switchToAudio(currentAudioIndex + 1);
+    }
+}
+
+// Make functions globally accessible for onclick handlers
+window.previousAudio = previousAudio;
+window.nextAudio = nextAudio;
+window.switchToAudio = switchToAudio;
+
+// New Composition Details Rendering Function
+function renderCompositionDetails(comp) {
+    // Key Details Section
+    const keyDetailsContainer = document.querySelector('#key-details-content');
+    if (keyDetailsContainer) {
+        const keyDetails = [
+            { label: 'Duration', value: comp.duration || 'Not specified' },
+            { label: 'Year Composed', value: comp.year || 'Not specified' },
+            { label: 'Difficulty Level', value: comp.difficulty || 'Not specified' },
+            { label: 'Genre', value: comp.genre || 'Not specified' },
+            { label: 'Composition Type', value: comp.type || 'Original' }
+        ].filter(item => item.value !== 'Not specified');
+
+        keyDetailsContainer.innerHTML = keyDetails.map(item => `
+            <div class="detail-item">
+                <div class="detail-label">${item.label}</div>
+                <div class="detail-value">${item.value}</div>
+            </div>
+        `).join('');
+    }
+
+    // Instrumentation Details Section
+    const instrumentationContainer = document.querySelector('#instrumentation-details-content');
+    if (instrumentationContainer) {
+        const instrumentationDetails = [
+            { 
+                label: 'Full Instrumentation', 
+                value: comp.instrumentation || 'Not specified',
+                isFullWidth: comp.instrumentation && comp.instrumentation.length > 50
+            },
+            { 
+                label: 'Short Instrument List', 
+                value: comp.shortInstrumentList || 'For ' + (comp.instrumentation || 'ensemble'),
+                isFullWidth: comp.shortInstrumentList && comp.shortInstrumentList.length > 50
+            }
+        ];
+
+        instrumentationContainer.innerHTML = instrumentationDetails.map(item => `
+            <div class="detail-item ${item.isFullWidth ? 'full-width' : ''}">
+                <div class="detail-label">${item.label}</div>
+                <div class="detail-value ${item.isFullWidth ? 'long-text' : ''}">${item.value}</div>
+            </div>
+        `).join('');
+    }
+
+    // Performance & Media Section
+    const performanceMediaContainer = document.querySelector('#performance-media-content');
+    if (performanceMediaContainer) {
+        const audioCount = comp.audioFiles?.length || 0;
+        const videoCount = comp.videoFiles?.length || 0;
+        const hasScore = comp.scoreLink || comp.scoreFiles?.length > 0;
+
+        const performanceMediaDetails = [
+            { 
+                label: 'Audio Recordings', 
+                value: audioCount > 0 ? 
+                    `<span class="media-count">${audioCount} recording${audioCount !== 1 ? 's' : ''} available</span>` : 
+                    'No recordings available'
+            },
+            { 
+                label: 'Video Recordings', 
+                value: videoCount > 0 ? 
+                    `<span class="media-count">${videoCount} video${videoCount !== 1 ? 's' : ''} available</span>` : 
+                    'No videos available'
+            },
+            { 
+                label: 'Score Available', 
+                value: hasScore ? 
+                    '<span class="score-available">✓ Yes</span>' : 
+                    '<span class="score-unavailable">✗ No</span>'
+            },
+            { 
+                label: 'Featured Work', 
+                value: comp.featured ? 
+                    '<span class="score-available">⭐ Featured</span>' : 
+                    'Standard'
+            },
+            { 
+                label: 'Popular', 
+                value: comp.popular ? 
+                    '<span class="media-count">🔥 Popular</span>' : 
+                    'Regular'
+            }
+        ];
+
+        performanceMediaContainer.innerHTML = performanceMediaDetails.map(item => `
+            <div class="detail-item">
+                <div class="detail-label">${item.label}</div>
+                <div class="detail-value">${item.value}</div>
+            </div>
+        `).join('');
+    }
+
+    // Other Information Section
+    const otherInfoContainer = document.querySelector('#other-information-content');
+    if (otherInfoContainer) {
+        const otherInfoDetails = [
+            { 
+                label: 'Price', 
+                value: comp.price ? `$${comp.price}` : 'Contact for pricing'
+            },
+            { 
+                label: 'Tags', 
+                value: comp.tags && comp.tags.length > 0 ? comp.tags.join(', ') : 'None',
+                isFullWidth: comp.tags && comp.tags.join(', ').length > 50
+            },
+            { 
+                label: 'Related Works', 
+                value: `${comp.similarWorks?.length || comp.similarWorksSlugs?.length || 0} related compositions`
+            },
+            { 
+                label: 'Created', 
+                value: formatDate(comp.created) || 'Not specified'
+            },
+            { 
+                label: 'Last Edited', 
+                value: formatDate(comp.lastEdited) || 'Not specified'
+            }
+        ].filter(item => item.value !== 'Not specified');
+
+        otherInfoContainer.innerHTML = otherInfoDetails.map(item => `
+            <div class="detail-item ${item.isFullWidth ? 'full-width' : ''}">
+                <div class="detail-label">${item.label}</div>
+                <div class="detail-value ${item.isFullWidth ? 'long-text' : ''}">${item.value}</div>
+            </div>
+        `).join('');
     }
 }
 
@@ -1726,8 +1797,7 @@ function scrollToScore() {
 }
 
 function scrollToMetadata() {
-    const metadataSection = document.querySelector('.metadata-section') ||
-                           document.querySelector('#metadata-toggle-system');
+    const metadataSection = document.querySelector('.metadata-section');
     if (metadataSection) {
         metadataSection.scrollIntoView({ 
             behavior: 'smooth', 
@@ -1788,38 +1858,7 @@ function stopAllVideos() {
     });
 }
 
-// Enhanced Metadata Toggle System Functions
-function toggleMetadataSection(index) {
-    const toggleItem = document.querySelector(`[data-toggle="${index}"]`);
-    if (!toggleItem) return;
-    
-    // Get all toggle items for accordion behavior
-    const allToggles = document.querySelectorAll('.metadata-toggle-item');
-    const isCurrentlyActive = toggleItem.classList.contains('active');
-    
-    // Close all other sections (accordion style)
-    allToggles.forEach((item, i) => {
-        if (i !== index) {
-            item.classList.remove('active');
-        }
-    });
-    
-    // Toggle the clicked section
-    if (isCurrentlyActive) {
-        toggleItem.classList.remove('active');
-    } else {
-        toggleItem.classList.add('active');
-        
-        // Smooth scroll to the section if it's being opened
-        setTimeout(() => {
-            toggleItem.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'nearest',
-                inline: 'center'
-            });
-        }, 200);
-    }
-}
+// Metadata toggle function removed - using new structured format
 
 // Related Compositions Functions
 function renderRelatedCompositions(compositions) {

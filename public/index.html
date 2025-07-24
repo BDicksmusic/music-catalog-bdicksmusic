@@ -1088,10 +1088,260 @@
              justify-content: center;
          }
 
-                   .score-iframe {
-              height: 400px;
-          }
-      }
+                                     .score-iframe {
+             height: 400px;
+         }
+     }
+
+     /* Featured Compositions Carousel Styles */
+     .featured-carousel-container {
+         position: relative;
+         overflow: hidden;
+         border-radius: 20px;
+         margin: 2rem 0;
+         background: white;
+         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+     }
+
+     .featured-carousel {
+         display: flex;
+         transition: transform 0.5s ease;
+         gap: 0;
+     }
+
+     .featured-composition-item {
+         flex: 0 0 100%;
+         padding: 3rem;
+         box-sizing: border-box;
+         background: white;
+         border-radius: 20px;
+         position: relative;
+     }
+
+     .composition-card-layout {
+         display: grid;
+         grid-template-columns: 300px 1fr;
+         gap: 3rem;
+         align-items: center;
+         min-height: 400px;
+     }
+
+     .composition-image-section {
+         position: relative;
+     }
+
+     .composition-featured-image {
+         width: 100%;
+         height: auto;
+         aspect-ratio: 3/4;
+         object-fit: cover;
+         border-radius: 15px;
+         box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+         transition: all 0.3s ease;
+     }
+
+     .composition-featured-image:hover {
+         transform: scale(1.02);
+         box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+     }
+
+     .composition-placeholder-image {
+         width: 100%;
+         aspect-ratio: 3/4;
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+         align-items: center;
+         background: var(--gray-100);
+         border-radius: 15px;
+         color: var(--gray-500);
+         text-align: center;
+     }
+
+     .composition-placeholder-image span {
+         font-size: 3rem;
+         margin-bottom: 0.5rem;
+     }
+
+     .composition-placeholder-image p {
+         font-size: 0.9rem;
+         margin: 0;
+     }
+
+     .composition-content-section {
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+         gap: 1.5rem;
+     }
+
+     .composition-header {
+         margin-bottom: 1rem;
+     }
+
+     .composition-featured-title {
+         font-size: 2.5rem;
+         font-weight: 700;
+         color: var(--gray-900);
+         margin: 0 0 0.5rem 0;
+         line-height: 1.2;
+     }
+
+     .composition-featured-instrumentation {
+         font-size: 1.3rem;
+         color: var(--primary-600);
+         font-weight: 500;
+         margin-bottom: 1rem;
+     }
+
+     .composition-featured-description {
+         color: var(--gray-700);
+         line-height: 1.6;
+         font-size: 1.1rem;
+         margin-bottom: 1.5rem;
+     }
+
+     .composition-meta-badges {
+         display: flex;
+         gap: 0.75rem;
+         flex-wrap: wrap;
+         margin-bottom: 2rem;
+     }
+
+     .composition-meta-badge {
+         padding: 0.5rem 1rem;
+         background: var(--gray-100);
+         color: var(--gray-700);
+         border-radius: 25px;
+         font-size: 0.9rem;
+         font-weight: 500;
+         border: 1px solid var(--gray-200);
+     }
+
+     .composition-meta-badge.featured {
+         background: var(--primary-100);
+         color: var(--primary-700);
+         border-color: var(--primary-200);
+     }
+
+     .composition-actions {
+         display: flex;
+         gap: 1rem;
+         flex-wrap: wrap;
+     }
+
+     .composition-actions .btn-primary {
+         flex: 0 0 auto;
+         min-width: 150px;
+         padding: 0.75rem 1.5rem;
+         font-size: 1rem;
+     }
+
+     .composition-actions .btn-secondary {
+         flex: 0 0 auto;
+         min-width: 150px;
+         padding: 0.75rem 1.5rem;
+         font-size: 1rem;
+         background: transparent;
+         color: var(--gray-700);
+         border: 2px solid var(--gray-300);
+     }
+
+     .composition-actions .btn-secondary:hover {
+         background: var(--gray-100);
+         border-color: var(--gray-400);
+     }
+
+     /* Navigation Controls */
+     .carousel-navigation {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         gap: 2rem;
+         margin: 2rem 0;
+     }
+
+     .carousel-nav-btn {
+         background: var(--primary-500);
+         color: white;
+         border: none;
+         padding: 0.75rem 1.5rem;
+         border-radius: 25px;
+         cursor: pointer;
+         font-weight: 600;
+         transition: all 0.3s ease;
+         display: flex;
+         align-items: center;
+         gap: 0.5rem;
+     }
+
+     .carousel-nav-btn:hover:not(:disabled) {
+         background: var(--primary-600);
+         transform: translateY(-2px);
+         box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+     }
+
+     .carousel-nav-btn:disabled {
+         background: var(--gray-400);
+         cursor: not-allowed;
+         transform: none;
+         box-shadow: none;
+     }
+
+     .carousel-indicators {
+         display: flex;
+         gap: 0.5rem;
+     }
+
+     .carousel-indicator-dot {
+         width: 12px;
+         height: 12px;
+         border-radius: 50%;
+         background: var(--gray-300);
+         cursor: pointer;
+         transition: all 0.3s ease;
+     }
+
+     .carousel-indicator-dot.active {
+         background: var(--primary-500);
+         transform: scale(1.2);
+     }
+
+     .carousel-indicator-dot:hover {
+         background: var(--primary-400);
+         transform: scale(1.1);
+     }
+
+     @media (max-width: 768px) {
+         .composition-card-layout {
+             grid-template-columns: 1fr;
+             gap: 2rem;
+             text-align: center;
+         }
+
+         .composition-featured-title {
+             font-size: 2rem;
+         }
+
+         .composition-featured-instrumentation {
+             font-size: 1.1rem;
+         }
+
+         .composition-actions {
+             justify-content: center;
+         }
+
+         .carousel-navigation {
+             flex-direction: column;
+             gap: 1rem;
+         }
+
+         .carousel-nav-btn {
+             width: 100%;
+             max-width: 200px;
+             justify-content: center;
+         }
+     }
 
      .card-link {
          color: var(--primary-500);
@@ -1825,39 +2075,40 @@
         </div>
     </section>
 
-    <!-- Enhanced Featured Compositions -->
+    <!-- Featured Compositions Carousel -->
 <section id="compositions" style="scroll-margin-top: 120px;">
-    <page-title>
-        <h3>Featured Compositions</h3>
-    </page-title>
-    <main>
-        <div class="featured-compositions-container">
-            <!-- Main Featured Display -->
-            <div class="featured-main-display">
-                <div class="featured-composition-card" id="featured-display">
-                    <div class="loading">Loading featured composition...</div>
-                </div>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">🎼 Featured Compositions</h2>
+            <p class="section-subtitle">Discover my latest works and musical innovations</p>
+        </div>
+        
+        <!-- Carousel Container -->
+        <div class="featured-carousel-container">
+            <div class="featured-carousel" id="featured-carousel">
+                <div class="loading">Loading compositions...</div>
             </div>
-            
-            <!-- Navigation Controls -->
-            <div class="featured-controls">
-                <button class="featured-nav-btn" id="prev-featured" onclick="navigateFeatured(-1)">
-                    <span class="nav-icon">‹</span>
-                    <span class="nav-text">Previous</span>
-                </button>
-                <div class="featured-indicators" id="featured-indicators">
-                    <!-- Dots will be generated dynamically -->
-                </div>
-                <button class="featured-nav-btn" id="next-featured" onclick="navigateFeatured(1)">
-                    <span class="nav-text">Next</span>
-                    <span class="nav-icon">›</span>
-                </button>
+        </div>
+        
+        <!-- Navigation Controls -->
+        <div class="carousel-navigation">
+            <button class="carousel-nav-btn" id="prev-featured" onclick="navigateFeaturedCarousel(-1)">
+                <span class="nav-icon">‹</span>
+                <span class="nav-text">Previous</span>
+            </button>
+            <div class="carousel-indicators" id="carousel-indicators">
+                <!-- Dots will be generated dynamically -->
             </div>
-            
-            <!-- Auto-cycle Toggle -->
-            <div class="auto-cycle-control">
-                <label class="cycle-toggle">
-                    <input type="checkbox" id="auto-cycle-toggle" checked>
+            <button class="carousel-nav-btn" id="next-featured" onclick="navigateFeaturedCarousel(1)">
+                <span class="nav-text">Next</span>
+                <span class="nav-icon">›</span>
+            </button>
+        </div>
+        
+        <!-- Auto-cycle Toggle -->
+        <div class="auto-cycle-control">
+            <label class="cycle-toggle">
+                <input type="checkbox" id="auto-cycle-toggle" checked>
                     <span class="toggle-slider"></span>
                     <span class="toggle-label">Auto-cycle every 8 seconds</span>
                 </label>
@@ -2363,83 +2614,69 @@
         }
 
         function initializeFeaturedDisplay() {
-            renderFeaturedComposition();
-            createIndicators();
-            updateNavigationButtons();
+            renderFeaturedCarousel();
+            createCarouselIndicators();
+            updateCarouselNavigationButtons();
         }
 
-        function renderFeaturedComposition() {
-            const container = document.getElementById('featured-display');
-            const comp = featuredCompositions[currentFeaturedIndex];
+        function renderFeaturedCarousel() {
+            const carousel = document.getElementById('featured-carousel');
             
-            if (!comp) return;
+            if (!featuredCompositions || featuredCompositions.length === 0) {
+                carousel.innerHTML = '<div class="loading">No featured compositions available</div>';
+                return;
+            }
             
-            // Reset audio and video indices for new composition
-            currentAudioIndex = 0;
-            currentVideoIndex = 0;
-            isScoreViewerOpen = false;
-            
-            container.innerHTML = `
-                <div class="featured-composition-card">
-                <div class="featured-header">
-                    ${comp.coverImage ? `
-                        <div class="featured-image-container">
-                            <img src="${comp.coverImage}" alt="${comp.title}" class="featured-image">
+            // Create carousel HTML with all compositions
+            carousel.innerHTML = featuredCompositions.map((comp, index) => `
+                <div class="featured-composition-item">
+                    <div class="composition-card-layout">
+                        <div class="composition-image-section">
+                            ${comp.coverImage ? `
+                                <img src="${comp.coverImage}" alt="${comp.title}" class="composition-featured-image">
+                            ` : `
+                                <div class="composition-placeholder-image">
+                                    <span>🎼</span>
+                                    <p>No Image Available</p>
+                                </div>
+                            `}
                         </div>
-                    ` : ''}
-                    <div class="featured-info">
-                        <h2 class="featured-title">${comp.title}</h2>
-                        <div class="featured-instrumentation">${comp.instrumentation}</div>
-                        <div class="featured-description">
-                            ${comp.description || `A ${comp.difficulty || 'beautiful'} composition for ${comp.instrumentation}${comp.year ? ` from ${comp.year}` : ''}.`}
-                        </div>
-                        <div class="featured-meta">
-                            ${comp.year ? `<span class="meta-badge">${comp.year}</span>` : ''}
-                            ${comp.difficulty ? `<span class="meta-badge">${comp.difficulty}</span>` : ''}
-                            ${comp.duration ? `<span class="meta-badge">${comp.duration}</span>` : ''}
-                            ${comp.featured || comp.popular ? `<span class="meta-badge featured">Featured</span>` : ''}
+                        
+                        <div class="composition-content-section">
+                            <div class="composition-header">
+                                <h2 class="composition-featured-title">${comp.title}</h2>
+                                <div class="composition-featured-instrumentation">${comp.instrumentation}</div>
+                            </div>
+                            
+                            <div class="composition-featured-description">
+                                ${comp.description || `A ${comp.difficulty || 'beautiful'} composition for ${comp.instrumentation}${comp.year ? ` from ${comp.year}` : ''}.`}
+                            </div>
+                            
+                            <div class="composition-meta-badges">
+                                ${comp.year ? `<span class="composition-meta-badge">${comp.year}</span>` : ''}
+                                ${comp.difficulty ? `<span class="composition-meta-badge">${comp.difficulty}</span>` : ''}
+                                ${comp.duration ? `<span class="composition-meta-badge">${comp.duration}</span>` : ''}
+                                ${comp.featured || comp.popular ? `<span class="composition-meta-badge featured">Featured</span>` : ''}
+                            </div>
+                            
+                            <div class="composition-actions">
+                                <button class="btn-secondary" onclick="learnMore('${comp.slug}')">
+                                    📖 Learn More
+                                </button>
+                                <button class="btn-secondary" onclick="viewScore('${comp.scoreLink || ''}')">
+                                    📄 View Score
+                                </button>
+                                <button class="btn-primary" onclick="buyNow('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 25})">
+                                    💳 Buy Now - $${comp.price || 25}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                ${renderAudioSection(comp)}
-                
-                <div class="featured-score-section" id="score-section">
-                    <div class="score-header">
-                        <span class="score-icon">📄</span>
-                        <span class="score-title">Full Score Preview</span>
-                    </div>
-                    <div class="score-viewer">
-                        <iframe class="score-iframe" id="score-iframe" src=""></iframe>
-                    </div>
-                    <div class="score-audio-section">
-                        <div class="audio-header">
-                            <span class="audio-icon">🎵</span>
-                            <span class="audio-title">Listen while viewing score</span>
-                        </div>
-                        ${renderAudioPlayer(comp)}
-                    </div>
-                </div>
-                
-                <div class="featured-actions">
-                    <button class="btn-secondary" onclick="learnMore('${comp.slug}')">
-                        📖 Learn More
-                    </button>
-                    <button class="btn-secondary btn-score" onclick="toggleScoreViewer('${comp.scoreLink || ''}')">
-                        📄 View Full Score
-                    </button>
-                                         <button class="btn-primary" onclick="buyNow('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 25})">
-                         💳 Buy Now - $${comp.price || 25}
-                     </button>
-                 </div>
-                </div>
-             `;
+            `).join('');
             
-            // Add active class for animation
-            container.querySelector('.featured-composition-card').classList.add('active');
-            
-            // Setup audio/video controls
-            setupMediaControls(comp);
+            // Set initial position
+            updateCarouselPosition();
         }
 
         function renderAudioSection(comp) {
@@ -2518,24 +2755,27 @@
             `).join('');
         }
 
-        function updateNavigationButtons() {
-            const prevBtn = document.getElementById('prev-featured');
-            const nextBtn = document.getElementById('next-featured');
-            
-            if (prevBtn && nextBtn) {
-                prevBtn.disabled = currentFeaturedIndex === 0;
-                nextBtn.disabled = currentFeaturedIndex >= featuredCompositions.length - 1;
+        // Helper functions for composition actions
+        function learnMore(slug) {
+            window.location.href = `/composition/${slug}`;
+        }
+
+        function viewScore(scoreUrl) {
+            if (scoreUrl) {
+                window.open(scoreUrl, '_blank');
+            } else {
+                alert('Score not available for this composition.');
             }
         }
 
-        // Navigation Functions
-        function navigateFeatured(direction) {
+        // Navigation Functions for Carousel
+        function navigateFeaturedCarousel(direction) {
             const newIndex = currentFeaturedIndex + direction;
             if (newIndex >= 0 && newIndex < featuredCompositions.length) {
                 currentFeaturedIndex = newIndex;
-                renderFeaturedComposition();
-                createIndicators();
-                updateNavigationButtons();
+                updateCarouselPosition();
+                createCarouselIndicators();
+                updateCarouselNavigationButtons();
                 
                 // Reset auto-cycle timer
                 if (autoCycleInterval) {
@@ -2548,15 +2788,43 @@
         function goToFeatured(index) {
             if (index >= 0 && index < featuredCompositions.length) {
                 currentFeaturedIndex = index;
-                renderFeaturedComposition();
-                createIndicators();
-                updateNavigationButtons();
+                updateCarouselPosition();
+                createCarouselIndicators();
+                updateCarouselNavigationButtons();
                 
                 // Reset auto-cycle timer
                 if (autoCycleInterval) {
                     clearInterval(autoCycleInterval);
                     setupAutoCycle();
                 }
+            }
+        }
+
+        function updateCarouselPosition() {
+            const carousel = document.getElementById('featured-carousel');
+            if (carousel) {
+                const translateX = -currentFeaturedIndex * 100;
+                carousel.style.transform = `translateX(${translateX}%)`;
+            }
+        }
+
+        function createCarouselIndicators() {
+            const indicatorsContainer = document.getElementById('carousel-indicators');
+            if (!indicatorsContainer) return;
+            
+            indicatorsContainer.innerHTML = featuredCompositions.map((_, index) => 
+                `<div class="carousel-indicator-dot ${index === currentFeaturedIndex ? 'active' : ''}" 
+                      onclick="goToFeatured(${index})"></div>`
+            ).join('');
+        }
+
+        function updateCarouselNavigationButtons() {
+            const prevBtn = document.getElementById('prev-featured');
+            const nextBtn = document.getElementById('next-featured');
+            
+            if (prevBtn && nextBtn) {
+                prevBtn.disabled = currentFeaturedIndex === 0;
+                nextBtn.disabled = currentFeaturedIndex >= featuredCompositions.length - 1;
             }
         }
 

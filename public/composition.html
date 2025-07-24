@@ -936,7 +936,7 @@
         /* Scores Section Styling */
         .scores-section {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             gap: 3rem;
             max-width: 1400px;
             margin: 3rem auto 0;
@@ -1594,119 +1594,109 @@
             gap: 1rem;
         }
         
-        /* Enhanced Metadata Toggle Items */
-        .metadata-toggle-item {
-            background: white;
-            border-radius: 12px;
+        /* New Composition Details Section Styling */
+        .composition-details-section {
+            margin-bottom: 2rem;
             border: 1px solid var(--gray-200);
+            border-radius: 12px;
             overflow: hidden;
-            transition: all 0.3s ease;
+            background: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
         
-        .metadata-toggle-item:hover {
-            border-color: var(--primary-200);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .metadata-toggle-item.active {
-            border-color: var(--primary-300);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
-        }
-        
-        .metadata-toggle-header {
-            padding: 1.25rem 1.5rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .details-header {
             background: var(--gray-50);
-            transition: all 0.3s ease;
-            user-select: none;
-        }
-        
-        .metadata-toggle-header:hover {
-            background: var(--primary-50);
-        }
-        
-        .metadata-toggle-item.active .metadata-toggle-header {
-            background: var(--primary-100);
-        }
-        
-        .toggle-header-content {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
         
-        .toggle-icon {
+        .details-icon {
             font-size: 1.2rem;
         }
         
-        .toggle-title {
-            font-size: 1rem;
+        .details-header h4 {
+            margin: 0;
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--gray-900);
         }
         
-        .metadata-toggle-arrow {
-            font-size: 1.2rem;
-            color: var(--gray-500);
-            transition: transform 0.3s ease;
-        }
-        
-        .metadata-toggle-item.active .metadata-toggle-arrow {
-            transform: rotate(180deg);
-            color: var(--primary-600);
-        }
-        
-        .metadata-toggle-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .metadata-toggle-item.active .metadata-toggle-content {
-            max-height: 500px;
-        }
-        
-        .metadata-items-grid {
+        .details-content {
             padding: 1.5rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            background: white;
         }
         
-        .metadata-item-card {
-            padding: 1rem;
-            background: var(--gray-50);
-            border-radius: 8px;
-            border: 1px solid var(--gray-200);
-            transition: all 0.3s ease;
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--gray-100);
         }
         
-        .metadata-item-card:hover {
-            background: white;
-            border-color: var(--primary-200);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        .detail-item:last-child {
+            border-bottom: none;
         }
         
-        .metadata-label {
-            font-size: 0.8rem;
+        .detail-label {
+            font-size: 0.9rem;
             font-weight: 600;
-            color: var(--gray-600);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
+            color: var(--gray-700);
+            flex: 0 0 40%;
         }
         
-        .metadata-value {
-            font-size: 0.95rem;
-            font-weight: 500;
+        .detail-value {
+            font-size: 0.9rem;
             color: var(--gray-900);
-            line-height: 1.4;
+            text-align: right;
+            flex: 1;
+            word-break: break-word;
+        }
+        
+        .detail-value.long-text {
+            text-align: left;
+            margin-top: 0.5rem;
+        }
+        
+        .detail-item.full-width {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .detail-item.full-width .detail-value {
+            text-align: left;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+        
+        /* Special styling for media counts */
+        .media-count {
+            background: var(--primary-50);
+            color: var(--primary-700);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .score-available {
+            background: var(--success-50);
+            color: var(--success-700);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .score-unavailable {
+            background: var(--gray-100);
+            color: var(--gray-600);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8rem;
         }
         
         /* Removed duplicate mobile styles - handled in consolidated mobile section above */
@@ -2322,29 +2312,71 @@
     </section>
     
     <!-- Scores Section (PDF + Score Video) -->
-     <div class="scores-section-container">
-    <section class="scores-section">
+     
+    <section class="scores-section" id="scores-section">
         <div class="score-pdf-column">
-            <div class="score-carousel-container" id="score-carousel-container"></div>
+            <div class="score-carousel-container" id="score-carousel-container">
+                <!-- Score PDF will be injected here -->
+            </div>
         </div>
         <div class="score-video-column">
             <div class="composition-score-video-container" id="composition-score-video-container">
-                <h3 class="score-video-section-title">📼 Score Performance Video</h3>
-                <div id="score-video-content">
-                    <!-- Score videos will be injected here -->
-                </div>
+                <!-- Score videos will be injected here -->
             </div>
         </div>
     </section>
+
     
     <!-- Metadata Container -->
     <section class="metadata-section">
         <div class="metadata-container">
             <div class="metadata-card">
                 <h3 class="metadata-title">Composition Details</h3>
-                <div class="metadata-toggle-system" id="metadata-toggle-system">
-                    <!-- Metadata toggles will be injected here -->
+                
+                <!-- Key Details Section -->
+                <div class="composition-details-section">
+                    <div class="details-header">
+                        <span class="details-icon">🔑</span>
+                        <h4>Key Details</h4>
+                    </div>
+                    <div class="details-content" id="key-details-content">
+                        <!-- Key details will be injected here -->
+                    </div>
                 </div>
+                
+                <!-- Instrumentation Details Section -->
+                <div class="composition-details-section">
+                    <div class="details-header">
+                        <span class="details-icon">🎼</span>
+                        <h4>Instrumentation Details</h4>
+                    </div>
+                    <div class="details-content" id="instrumentation-details-content">
+                        <!-- Instrumentation details will be injected here -->
+                    </div>
+                </div>
+                
+                <!-- Performance & Media Section -->
+                <div class="composition-details-section">
+                    <div class="details-header">
+                        <span class="details-icon">🎵</span>
+                        <h4>Performance & Media</h4>
+                    </div>
+                    <div class="details-content" id="performance-media-content">
+                        <!-- Performance and media details will be injected here -->
+                    </div>
+                </div>
+                
+                <!-- Other Information Section -->
+                <div class="composition-details-section">
+                    <div class="details-header">
+                        <span class="details-icon">ℹ️</span>
+                        <h4>Other Information and Long Instrument List</h4>
+                    </div>
+                    <div class="details-content" id="other-information-content">
+                        <!-- Other information will be injected here -->
+                    </div>
+                </div>
+                
             </div>
         </div>
     </section>
