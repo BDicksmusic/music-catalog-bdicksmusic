@@ -1,5 +1,12 @@
 // composition.js
 
+// Global variables for audio/video players
+let currentAudioIndex = 0;
+let totalAudioCount = 0;
+let currentVideoIndex = 0;
+let totalVideoCount = 0;
+let videoPlayers = [];
+
 // Dummy renderCarousel to prevent errors (remove or replace with real implementation)
 function renderCarousel(compositions) {
     // For now, just log the compositions
@@ -127,22 +134,37 @@ function renderComposition(comp) {
         coverImg.alt = comp.title;
     }
 
-    // Title
-    const titleContainer = document.querySelector('.composition-title-container');
-    if (titleContainer) {
-        titleContainer.innerHTML = `<h1 class="composition-title">${comp.title || 'Untitled'}</h1>`;
+    // ============================================
+    // CONTAINER 1: Title and Instrumentation
+    // ============================================
+    const titleInstrumentContainer = document.querySelector('.composition-title-container');
+    if (titleInstrumentContainer) {
+        titleInstrumentContainer.innerHTML = `
+            <h1 class="composition-title">${comp.title || 'Untitled'}</h1>
+            <div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>
+        `;
     }
 
-    // Instrument
+    // Also populate individual containers for backwards compatibility
     const instrumentContainer = document.querySelector('.composition-instrument-container');
     if (instrumentContainer) {
         instrumentContainer.innerHTML = `<div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>`;
     }
 
-
+    // ============================================
+    // CONTAINER 2: Short Instrument List + Composition Meta Information
+    // ============================================
     const metaContainer = document.querySelector('.composition-meta-container');
     if (metaContainer) {
+        // Extract short instrument list from full instrumentation
+        const shortInstrumentList = extractShortInstrumentList(comp.instrumentation || '');
+        
         metaContainer.innerHTML = `
+            <div class="composition-short-instruments">
+                <div class="short-instrument-list">
+                    ${shortInstrumentList}
+                </div>
+            </div>
             <div class="composition-meta">
                 ${comp.year ? `<span>Year: ${comp.year}</span>` : ''}
                 ${comp.duration ? `<span>Duration: ${comp.duration}</span>` : ''}
@@ -150,7 +172,34 @@ function renderComposition(comp) {
             </div>
         `;
     }
-    
+
+    // ============================================
+    // CONTAINER 3: Layout Builder Navigation
+    // ============================================
+    const linksContainer = document.querySelector('.composition-links-container');
+    if (linksContainer) {
+        // Check availability of different sections
+        const hasAudio = (comp.audioFiles && comp.audioFiles.length > 0) || comp.audioLink;
+        const hasVideos = (comp.videoFiles && comp.videoFiles.filter(v => v.type !== 'Score Video').length > 0);
+        const scoreFiles = comp.scoreFiles || [];
+        const hasLegacyScore = comp.scoreLink && !scoreFiles.length;
+        const hasScore = scoreFiles.length > 0 || hasLegacyScore;
+        const hasSimilarWorks = comp.similarWorks && comp.similarWorks.length > 0;
+        
+        linksContainer.innerHTML = `
+            <div class="layout-builder-nav">
+                ${hasAudio ? `<button onclick="scrollToAudio()" class="btn-secondary layout-nav-btn">🎵 Listen</button>` : ''}
+                ${hasVideos ? `<button onclick="scrollToVideos()" class="btn-secondary layout-nav-btn">📺 Watch</button>` : ''}
+                ${hasScore ? `<button onclick="scrollToScore()" class="btn-secondary layout-nav-btn">📄 View Score</button>` : ''}
+                <button onclick="scrollToMetadata()" class="btn-secondary layout-nav-btn">📊 Learn More</button>
+                ${hasSimilarWorks ? `<button onclick="scrollToSimilarWorks()" class="btn-secondary layout-nav-btn">🔗 Similar Works</button>` : ''}
+            </div>
+        `;
+    }
+
+    // ============================================
+    // CONTAINER 4: Buy/Purchase Container (Standalone)
+    // ============================================
     const buyContainer = document.querySelector('.composition-buy-container');
     if (buyContainer) {
         buyContainer.innerHTML = comp.paymentLink || comp.stripePriceId ? 
@@ -162,30 +211,10 @@ function renderComposition(comp) {
             </button>`;
     }
 
-// Layout Builder Navigation Buttons
-const linksContainer = document.querySelector('.composition-links-container');
-if (linksContainer) {
-    // Check availability of different sections
-    const hasAudio = (comp.audioFiles && comp.audioFiles.length > 0) || comp.audioLink;
-    const hasVideos = (comp.videoFiles && comp.videoFiles.filter(v => v.type !== 'Score Video').length > 0);
-    const scoreFiles = comp.scoreFiles || [];
-    const hasLegacyScore = comp.scoreLink && !scoreFiles.length;
-    const hasScore = scoreFiles.length > 0 || hasLegacyScore;
-    const hasSimilarWorks = comp.similarWorks && comp.similarWorks.length > 0;
-    
-    linksContainer.innerHTML = `
-        <div class="layout-builder-nav">
-            ${hasAudio ? `<button onclick="scrollToAudio()" class="btn-secondary layout-nav-btn">🎵 Listen</button>` : ''}
-            ${hasVideos ? `<button onclick="scrollToVideos()" class="btn-secondary layout-nav-btn">📺 Watch</button>` : ''}
-            ${hasScore ? `<button onclick="scrollToScore()" class="btn-secondary layout-nav-btn">📄 View Score</button>` : ''}
-            <button onclick="scrollToMetadata()" class="btn-secondary layout-nav-btn">📊 Learn More</button>
-            ${hasSimilarWorks ? `<button onclick="scrollToSimilarWorks()" class="btn-secondary layout-nav-btn">🔗 Similar Works</button>` : ''}
-        </div>
-    `;
-}
-
-// Enhanced multi-audio player with rollup data
-const audioContainer = document.querySelector('.composition-audio-container');
+    // ============================================
+    // CONTAINER 5: Audio Container (Enhanced Multi-Audio Player)
+    // ============================================
+    const audioContainer = document.querySelector('.composition-audio-container');
 if (audioContainer) {
     const audioFiles = comp.audioFiles || [];
     const hasLegacyAudio = comp.audioLink && !audioFiles.length;
@@ -891,6 +920,110 @@ function getRomanNumeral(number) {
     return arabicToRoman[number] || 'Unknown';
 }
 
+// Extract short instrument list from full instrumentation
+function extractShortInstrumentList(fullInstrumentation) {
+    if (!fullInstrumentation) return 'Unknown';
+    
+    // Common instrument abbreviations and simplifications
+    const instrumentMap = {
+        'trumpet': 'Tpt',
+        'trumpets': 'Tpt',
+        'horn': 'Hn', 
+        'horns': 'Hn',
+        'french horn': 'F.Hn',
+        'french horns': 'F.Hn',
+        'trombone': 'Tbn',
+        'trombones': 'Tbn',
+        'tuba': 'Tuba',
+        'tubas': 'Tuba',
+        'euphonium': 'Euph',
+        'euphoniums': 'Euph',
+        'baritone': 'Bar',
+        'baritones': 'Bar',
+        'bass trombone': 'B.Tbn',
+        'bass trombones': 'B.Tbn',
+        'flute': 'Fl',
+        'flutes': 'Fl',
+        'oboe': 'Ob',
+        'oboes': 'Ob',
+        'clarinet': 'Cl',
+        'clarinets': 'Cl',
+        'bassoon': 'Bsn',
+        'bassoons': 'Bsn',
+        'saxophone': 'Sax',
+        'saxophones': 'Sax',
+        'alto saxophone': 'A.Sax',
+        'tenor saxophone': 'T.Sax',
+        'baritone saxophone': 'B.Sax',
+        'soprano saxophone': 'S.Sax',
+        'violin': 'Vln',
+        'violins': 'Vln',
+        'viola': 'Vla',
+        'violas': 'Vla',
+        'cello': 'Vc',
+        'cellos': 'Vc',
+        'double bass': 'Db',
+        'bass': 'Bass',
+        'piano': 'Pno',
+        'harp': 'Hp',
+        'percussion': 'Perc',
+        'timpani': 'Timp',
+        'marimba': 'Mrb',
+        'xylophone': 'Xyl',
+        'vibraphone': 'Vib'
+    };
+    
+    // Special ensemble patterns
+    const ensemblePatterns = {
+        'brass quintet': 'Brass Quintet (2 Tpt, Hn, Tbn, Tuba)',
+        'brass quartet': 'Brass Quartet',
+        'brass trio': 'Brass Trio',
+        'woodwind quintet': 'Woodwind Quintet (Fl, Ob, Cl, Bsn, Hn)',
+        'string quartet': 'String Quartet (2 Vln, Vla, Vc)',
+        'piano trio': 'Piano Trio (Pno, Vln, Vc)',
+        'solo piano': 'Solo Piano',
+        'solo guitar': 'Solo Guitar',
+        'solo violin': 'Solo Violin'
+    };
+    
+    const lower = fullInstrumentation.toLowerCase();
+    
+    // Check for known ensemble patterns first
+    for (const [pattern, shortForm] of Object.entries(ensemblePatterns)) {
+        if (lower.includes(pattern)) {
+            return shortForm;
+        }
+    }
+    
+    // If no ensemble pattern matches, try to abbreviate individual instruments
+    let result = fullInstrumentation;
+    
+    // Replace known instruments with abbreviations
+    for (const [full, abbrev] of Object.entries(instrumentMap)) {
+        const regex = new RegExp(`\\b${full}\\b`, 'gi');
+        result = result.replace(regex, abbrev);
+    }
+    
+    // Clean up extra spaces and common connecting words
+    result = result
+        .replace(/\s+and\s+/g, ', ')
+        .replace(/\s+with\s+/g, ', ')
+        .replace(/\s*,\s*/g, ', ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    
+    // If result is too long (over 50 chars), try to shorten further
+    if (result.length > 50) {
+        // Count unique instrument types
+        const instruments = result.split(',').map(i => i.trim());
+        if (instruments.length > 3) {
+            return `${instruments.length} instruments`;
+        }
+    }
+    
+    return result || 'Mixed Ensemble';
+}
+
 // Extract movement title from API title
 function extractMovementTitle(title) {
     if (!title) return '';
@@ -944,13 +1077,7 @@ function formatDate(dateString) {
     });
 }
 
-// Global variables to track current audio player
-let currentAudioIndex = 0;
-let totalAudioCount = 0;
-
-// Global variables to track current video player  
-let currentVideoIndex = 0;
-let totalVideoCount = 0;
+// Global variables moved to top of file for proper scope
 
 // Add controls for multiple audio files
 function addMultiAudioControls(audioContainer, audioCount) {

@@ -374,6 +374,23 @@
         .composition-meta-container {
             margin-bottom: 2rem;
         }
+        
+        /* Short Instrument List Styling */
+        .composition-short-instruments {
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-500);
+        }
+        
+        .short-instrument-list {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            letter-spacing: 0.025em;
+        }
         .composition-links-container {
             margin-bottom: 1.5rem;
         }
@@ -546,7 +563,7 @@
             
             .composition-audio-container.multi-movement::before {
                 font-size: 0.7rem;
-                margin-bottom: 0.75rem;
+                margin-bottom: 0.2rem;
             }
             
             .composition-audio-player[data-is-movement="true"] {
@@ -555,7 +572,7 @@
             }
             
             .composition-audio-player {
-                padding: 1rem 0;
+                padding: 0 0;
                 min-height: 75px;
             }
             
@@ -956,6 +973,16 @@
         
         /* Mobile responsiveness */
         @media (max-width: 768px) {
+            .composition-short-instruments {
+                padding: 0.5rem 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .short-instrument-list {
+                font-size: 0.9rem;
+                letter-spacing: 0.02em;
+            }
+            
             section.program-video-section {
                 flex-direction: column;
                 gap: 1.5rem;
@@ -1135,8 +1162,6 @@
                     <div class="composition-title-container">
                         <!-- Title will be injected here -->
                     </div>
-                    <div class="composition-instrument-container">
-                        <!-- Instrument will be injected here -->
                     </div>
                     <div class="composition-short-instrument-container">
                         <!-- Short instrument list will be injected here -->
