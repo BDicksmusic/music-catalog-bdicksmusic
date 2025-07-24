@@ -165,11 +165,11 @@ function renderComposition(comp) {
                     <div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>
                 </div>
                 <div class="composition-meta-section">
-                    <div class="composition-short-instruments">
-                        ${shortInstrumentList}
-                    </div>
                     <div class="composition-meta">
                         ${comp.duration ? `<strong>Duration:</strong> ${comp.duration}` : ''}
+                    </div>
+                    <div class="composition-short-instruments">
+                        ${shortInstrumentList}
                     </div>
                 </div>
             </div>

@@ -364,7 +364,7 @@
 
         .composition-instrument {
             font-size: 1.3rem;
-            color: var(--primary-500);
+            color: var(--gray-500);
             font-weight: 600;
             margin-top: -9px; /* Remove any default margin */
         }
@@ -398,6 +398,11 @@
         }
         .composition-meta-container {
             margin-bottom: 0.25rem; /* Reduced from 2rem */
+        }
+        
+        /* Fix alignment - match title margin for consistent positioning */
+        .composition-meta-section {
+            margin-top: -9px; /* Match the negative margin from composition-instrument */
         }
         
         /* Short Instrument List Styling */
