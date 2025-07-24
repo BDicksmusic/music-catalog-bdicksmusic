@@ -577,6 +577,8 @@ const transformNotionPage = (page) => {
         performanceNotes: notionRichTextToHtml(properties['Performance Notes']?.rich_text),
         created: page.created_time,
         lastEdited: page.last_edited_time,
+        type: properties.Type?.select?.name || 'Original',
+        featured: properties.Featured?.checkbox || false,
         popular: properties.Popular?.checkbox || false,
         slug: properties.Slug?.rich_text[0]?.plain_text || '',
         shortInstrumentList: notionRichTextToHtml(properties['Short Instrument List']?.rich_text) || '',
