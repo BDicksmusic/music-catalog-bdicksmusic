@@ -344,42 +344,51 @@ function transformMediaPage(page) {
     };
 }
 
-// Helper function to fetch similar works
-const fetchSimilarWorks = async (similarWorksIds) => {
-    console.log('🔗 DEBUG - fetchSimilarWorks called with IDs:', similarWorksIds?.length, similarWorksIds);
+// Helper function to fetch similar works by slugs
+const fetchSimilarWorksBySlugs = async (similarWorksSlugs) => {
+    console.log('🔗 DEBUG - fetchSimilarWorksBySlugs called with slugs:', similarWorksSlugs?.length, similarWorksSlugs);
     
-    if (!similarWorksIds || similarWorksIds.length === 0) {
-        console.log('🔗 DEBUG - No similar works IDs found, returning empty array');
+    if (!similarWorksSlugs || similarWorksSlugs.length === 0) {
+        console.log('🔗 DEBUG - No similar works slugs found, returning empty array');
         return [];
     }
 
     try {
-        console.log('🔗 DEBUG - Attempting to fetch', similarWorksIds.length, 'similar works individually...');
+        console.log('🔗 DEBUG - Querying database for compositions with matching slugs...');
         
-        const similarWorksPromises = similarWorksIds.map(async (id, index) => {
-            try {
-                console.log(`🔗 DEBUG - Fetching similar work ${index + 1}/${similarWorksIds.length}: ${id}`);
-                const page = await notion.pages.retrieve({ page_id: id });
-                const transformed = transformNotionPage(page);
-                console.log(`🔗 DEBUG - Successfully fetched: "${transformed.title}" (${transformed.id})`);
-                return transformed;
-            } catch (error) {
-                console.error(`🔗 ERROR - Failed to fetch similar work ${index + 1} (${id}):`, error.message);
-                return null; // Return null for failed fetches
+        // Query the database for compositions with matching slugs
+        const response = await notion.databases.query({
+            database_id: process.env.NOTION_DATABASE_ID,
+            filter: {
+                or: similarWorksSlugs.map(slug => ({
+                    property: 'Slug',
+                    rich_text: {
+                        equals: slug
+                    }
+                }))
             }
         });
         
-        const similarWorksPages = await Promise.all(similarWorksPromises);
+        console.log(`🔗 DEBUG - Database query returned ${response.results.length} matching compositions`);
         
-        // Filter out null results (failed fetches)
-        const validWorks = similarWorksPages.filter(work => work !== null);
+        // Transform the results
+        const similarWorks = response.results.map(page => {
+            const transformed = transformNotionPage(page);
+            console.log(`🔗 DEBUG - Found similar work: "${transformed.title}" (slug: ${transformed.slug})`);
+            return transformed;
+        });
         
-        console.log(`🔗 DEBUG - Fetch results: ${validWorks.length}/${similarWorksIds.length} successful`);
-        console.log('🔗 DEBUG - Valid similar works:', validWorks.map(w => `"${w.title}" (${w.id})`));
+        // Sort to match the original order of slugs if possible
+        const orderedSimilarWorks = similarWorksSlugs.map(slug => 
+            similarWorks.find(work => work.slug === slug)
+        ).filter(work => work !== undefined);
         
-        return validWorks;
+        console.log(`🔗 DEBUG - Final results: ${orderedSimilarWorks.length}/${similarWorksSlugs.length} similar works found`);
+        console.log('🔗 DEBUG - Similar works:', orderedSimilarWorks.map(w => `"${w.title}" (${w.slug})`));
+        
+        return orderedSimilarWorks;
     } catch (error) {
-        console.error('🔗 ERROR - Critical error in fetchSimilarWorks:', error);
+        console.error('🔗 ERROR - Critical error in fetchSimilarWorksBySlugs:', error);
         return [];
     }
 };
@@ -475,9 +484,9 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
             });
         }
         
-        // Fetch similar works
-        console.log('🔗 DEBUG - Base composition similarWorksIds:', baseComposition.similarWorksIds?.length, baseComposition.similarWorksIds);
-        const similarWorks = await fetchSimilarWorks(baseComposition.similarWorksIds);
+        // Fetch similar works by slugs
+        console.log('🔗 DEBUG - Base composition similarWorksSlugs:', baseComposition.similarWorksSlugs?.length, baseComposition.similarWorksSlugs);
+        const similarWorks = await fetchSimilarWorksBySlugs(baseComposition.similarWorksSlugs);
         console.log('🔗 DEBUG - Final similarWorks result:', similarWorks?.length, similarWorks?.map(w => w.title));
         
         // Roll up media data - FIXED: Use properly separated arrays
@@ -598,28 +607,30 @@ const transformNotionPage = (page) => {
         popular: properties.Popular?.checkbox || false,
         slug: properties.Slug?.rich_text[0]?.plain_text || '',
         shortInstrumentList: notionRichTextToHtml(properties['Short Instrument List']?.rich_text) || '',
-        similarWorksIds: (() => {
-            // Debug: Check all possible similar works property names
-            const possibleProps = ['similar works', 'Similar Works', 'Similar works', 'SimilarWorks', 'Related Works', 'related works'];
-            let foundProp = null;
-            let foundIds = [];
+        similarWorksSlugs: (() => {
+            // Debug: Check for the new "similar works slugs" rollup field
+            const slugsField = properties['similar works slugs'];
+            let foundSlugs = [];
             
-            for (const prop of possibleProps) {
-                if (properties[prop]?.relation?.length > 0) {
-                    foundProp = prop;
-                    foundIds = properties[prop].relation.map(rel => rel.id);
-                    console.log(`🔗 DEBUG - Found similar works under property "${prop}": ${foundIds.length} items`);
-                    console.log(`🔗 DEBUG - Similar works IDs:`, foundIds);
-                    break;
-                }
+            if (slugsField?.rollup?.array) {
+                // Extract slugs from rollup array
+                foundSlugs = slugsField.rollup.array
+                    .map(item => {
+                        if (item.type === 'rich_text' && item.rich_text && item.rich_text.length > 0) {
+                            return item.rich_text[0].text.content;
+                        }
+                        return null;
+                    })
+                    .filter(slug => slug && slug.trim() !== '');
+                
+                console.log(`🔗 DEBUG - Found similar works slugs: ${foundSlugs.length} items`);
+                console.log(`🔗 DEBUG - Similar works slugs:`, foundSlugs);
+            } else {
+                console.log(`🔗 DEBUG - No similar works slugs found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
+                console.log(`🔗 DEBUG - Available rollup properties:`, Object.keys(properties).filter(key => properties[key].type === 'rollup'));
             }
             
-            if (!foundProp) {
-                console.log(`🔗 DEBUG - No similar works found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
-                console.log(`🔗 DEBUG - Available relation properties:`, Object.keys(properties).filter(key => properties[key].type === 'relation'));
-            }
-            
-            return foundIds;
+            return foundSlugs;
         })(),
     };
 };
@@ -833,20 +844,20 @@ app.get('/api/debug/similar-works/:id', async (req, res) => {
         
         console.log('🔗 DEBUG - Composition data:', {
             title: compositionData.title,
-            similarWorksIds: compositionData.similarWorksIds,
-            similarWorksCount: compositionData.similarWorksIds?.length || 0
+            similarWorksSlugs: compositionData.similarWorksSlugs,
+            similarWorksCount: compositionData.similarWorksSlugs?.length || 0
         });
         
         // Test fetching similar works
-        const similarWorks = await fetchSimilarWorks(compositionData.similarWorksIds);
+        const similarWorks = await fetchSimilarWorksBySlugs(compositionData.similarWorksSlugs);
         
         res.json({
             success: true,
             compositionId,
             compositionTitle: compositionData.title,
             debug: {
-                similarWorksIds: compositionData.similarWorksIds,
-                expectedCount: compositionData.similarWorksIds?.length || 0,
+                similarWorksSlugs: compositionData.similarWorksSlugs,
+                expectedCount: compositionData.similarWorksSlugs?.length || 0,
                 actualCount: similarWorks?.length || 0,
                 similarWorks: similarWorks?.map(w => ({
                     id: w.id,

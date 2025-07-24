@@ -994,7 +994,7 @@ if (notesContainer) {
                 icon: '🏷️',
                 items: [
                     { label: 'Tags', value: comp.tags && comp.tags.length > 0 ? comp.tags.join(', ') : 'None' },
-                    { label: 'Related Works', value: `${comp.similarWorks?.length || 0} related compositions` },
+                    { label: 'Related Works', value: `${comp.similarWorks?.length || comp.similarWorksSlugs?.length || 0} related compositions` },
                     { label: 'Created', value: formatDate(comp.created) || 'Not specified' },
                     { label: 'Last Edited', value: formatDate(comp.lastEdited) || 'Not specified' }
                 ].filter((item, index) => {
@@ -1033,17 +1033,25 @@ if (notesContainer) {
     
     // Related Compositions Carousel
     console.log('🔗 DEBUG - Similar works data:', comp.similarWorks?.length, comp.similarWorks);
+    console.log('🔗 DEBUG - Similar works slugs data:', comp.similarWorksSlugs?.length, comp.similarWorksSlugs);
     
     const relatedSection = document.querySelector('.related-compositions-section');
     
     if (comp.similarWorks && comp.similarWorks.length > 0) {
-        console.log('🔗 DEBUG - Rendering related compositions from Notion:', comp.similarWorks.length);
+        console.log('🔗 DEBUG - Rendering related compositions from slug-based fetch:', comp.similarWorks.length);
         renderRelatedCompositions(comp.similarWorks);
         if (relatedSection) {
             relatedSection.style.display = 'block';
         }
+    } else if (comp.similarWorksSlugs && comp.similarWorksSlugs.length > 0) {
+        console.log('🔗 DEBUG - Similar works slugs found but no compositions loaded, this indicates a server-side issue');
+        if (relatedSection) {
+            relatedSection.style.display = 'block';
+        }
+        // The server should have already fetched these, but fallback to API if needed
+        fetchRelatedCompositions(comp.id);
     } else {
-        console.log('🔗 DEBUG - No similar works from Notion, fetching via API...');
+        console.log('🔗 DEBUG - No similar works or slugs found, fetching via API fallback...');
         // Keep the section visible and fetch related compositions via API
         if (relatedSection) {
             relatedSection.style.display = 'block';
