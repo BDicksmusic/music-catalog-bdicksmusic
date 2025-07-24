@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Components Example</title>
+    
+    <!-- Include your existing stylesheets -->
+    <link rel="stylesheet" href="/variables.css">
+    <link rel="stylesheet" href="/styles.css">
+    
+    <style>
+        .example-section {
+            margin: 2rem 0;
+            padding: 2rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            background: var(--gray-50);
+        }
+        
+        .example-title {
+            color: var(--primary-600);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .example-description {
+            color: var(--gray-700);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        
+        .code-example {
+            background: var(--gray-900);
+            color: var(--gray-100);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        
+        .load-btn {
+            background: var(--primary-500);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .load-btn:hover {
+            background: var(--primary-600);
+        }
+        
+        .component-target {
+            min-height: 100px;
+            border: 2px dashed var(--gray-300);
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-500);
+            font-style: italic;
+        }
+        
+        .component-target.loaded {
+            border: none;
+            background: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+        <h1>Modular Media Components Example</h1>
+        <p>This page demonstrates how to use the modular audio and video player components.</p>
+        
+        <!-- Example 1: Audio Player with Data -->
+        <div class="example-section">
+            <h2 class="example-title">🎵 Audio Player with Sample Data</h2>
+            <p class="example-description">
+                Audio player loaded with predefined sample data. Perfect for when you already have the audio information.
+            </p>
+            
+            <div class="code-example">
+await ComponentLoader.loadAudioPlayer('#audio-target-1', {
+    audioData: [
+        {
+            title: "Movement I - Allegro",
+            url: "/sample-audio.mp3",
+            isMovement: true,
+            metadata: {
+                performanceInfo: "Brandon Dicks, trumpet",
+                additionalInfo: "Recorded at Symphony Hall"
+            }
+        },
+        {
+            title: "Movement II - Andante", 
+            url: "/sample-audio-2.mp3",
+            isMovement: true,
+            metadata: {
+                performanceInfo: "Brandon Dicks, trumpet"
+            }
+        }
+    ],
+    showNavigation: true
+});
+            </div>
+            
+            <button class="load-btn" onclick="loadAudioExample1()">Load Audio Player</button>
+            <div id="audio-target-1" class="component-target">Audio player will load here</div>
+        </div>
+        
+        <!-- Example 2: Video Player with YouTube -->
+        <div class="example-section">
+            <h2 class="example-title">🎬 Video Player with YouTube</h2>
+            <p class="example-description">
+                Video player component with YouTube embeds and metadata.
+            </p>
+            
+            <div class="code-example">
+await ComponentLoader.loadVideoPlayer('#video-target-1', {
+    videoData: [
+        {
+            type: "youtube",
+            videoId: "dQw4w9WgXcQ",
+            title: "Performance Video",
+            metadata: {
+                performanceInfo: "Live at Carnegie Hall",
+                additionalInfo: "December 2023"
+            }
+        }
+    ]
+});
+            </div>
+            
+            <button class="load-btn" onclick="loadVideoExample1()">Load Video Player</button>
+            <div id="video-target-1" class="component-target">Video player will load here</div>
+        </div>
+        
+        <!-- Example 3: Score Video Player -->
+        <div class="example-section">
+            <h2 class="example-title">📄 Score Video Player</h2>
+            <p class="example-description">
+                Specialized score video player for sheet music performances.
+            </p>
+            
+            <div class="code-example">
+await ComponentLoader.loadVideoPlayer('#score-video-target-1', {
+    videoType: 'score',
+    videoData: [
+        {
+            type: "youtube",
+            videoId: "dQw4w9WgXcQ",
+            title: "Score Follow-Along",
+            metadata: {
+                performanceInfo: "Sheet music display",
+                additionalInfo: "Tempo: Allegro moderato"
+            }
+        }
+    ]
+});
+            </div>
+            
+            <button class="load-btn" onclick="loadScoreVideoExample1()">Load Score Video</button>
+            <div id="score-video-target-1" class="component-target">Score video will load here</div>
+        </div>
+        
+        <!-- Example 4: Load from API -->
+        <div class="example-section">
+            <h2 class="example-title">🌐 Load from API</h2>
+            <p class="example-description">
+                Load components dynamically from your composition API.
+            </p>
+            
+            <div class="code-example">
+await ComponentLoader.loadAudioPlayer('#audio-api-target', {
+    compositionId: 'my-composition-id',
+    apiEndpoint: '/api/composition'
+});
+            </div>
+            
+            <button class="load-btn" onclick="loadFromAPI()">Load from API (will show error demo)</button>
+            <div id="audio-api-target" class="component-target">API audio will load here</div>
+        </div>
+        
+        <!-- Example 5: Load Multiple Components -->
+        <div class="example-section">
+            <h2 class="example-title">🔥 Load Multiple Components at Once</h2>
+            <p class="example-description">
+                Batch load multiple media components simultaneously for better performance.
+            </p>
+            
+            <div class="code-example">
+await ComponentLoader.loadMediaComponents([
+    {
+        type: 'audio',
+        targetSelector: '#multi-audio-target',
+        options: { audioData: [...] }
+    },
+    {
+        type: 'video', 
+        targetSelector: '#multi-video-target',
+        options: { videoData: [...] }
+    },
+    {
+        type: 'score-video',
+        targetSelector: '#multi-score-target',
+        options: { videoData: [...] }
+    }
+]);
+            </div>
+            
+            <button class="load-btn" onclick="loadMultipleComponents()">Load All Components</button>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                <div>
+                    <h4>Audio Component:</h4>
+                    <div id="multi-audio-target" class="component-target">Audio here</div>
+                </div>
+                <div>
+                    <h4>Video Component:</h4>
+                    <div id="multi-video-target" class="component-target">Video here</div>
+                </div>
+            </div>
+            <div>
+                <h4>Score Video Component:</h4>
+                <div id="multi-score-target" class="component-target">Score video here</div>
+            </div>
+        </div>
+        
+        <!-- Component Features -->
+        <div class="example-section">
+            <h2 class="example-title">✨ Component Features</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                <div>
+                    <h3>🎵 Audio Player Features</h3>
+                    <ul>
+                        <li>Multiple audio format support</li>
+                        <li>Movement-based compositions</li>
+                        <li>Navigation controls</li>
+                        <li>Performance metadata</li>
+                        <li>Responsive design</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>🎬 Video Player Features</h3>
+                    <ul>
+                        <li>YouTube embed support</li>
+                        <li>Direct video file support</li>
+                        <li>Video metadata display</li>
+                        <li>Multiple video formats</li>
+                        <li>Responsive containers</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>📄 Score Video Features</h3>
+                    <ul>
+                        <li>Specialized for sheet music</li>
+                        <li>Score follow-along videos</li>
+                        <li>Educational content support</li>
+                        <li>Performance annotations</li>
+                        <li>Enhanced metadata</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load the component loader script -->
+    <script src="/includes/component-loader.js"></script>
+    
+    <script>
+        // Example 1: Audio Player with Sample Data
+        async function loadAudioExample1() {
+            const target = document.getElementById('audio-target-1');
+            target.classList.add('loaded');
+            
+            await ComponentLoader.loadAudioPlayer('#audio-target-1', {
+                audioData: [
+                    {
+                        title: "Movement I - Allegro",
+                        url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav", // Sample URL
+                        isMovement: true,
+                        metadata: {
+                            performanceInfo: "Brandon Dicks, trumpet",
+                            additionalInfo: "Recorded at Symphony Hall"
+                        }
+                    },
+                    {
+                        title: "Movement II - Andante", 
+                        url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav", // Sample URL
+                        isMovement: true,
+                        metadata: {
+                            performanceInfo: "Brandon Dicks, trumpet",
+                            additionalInfo: "Live performance recording"
+                        }
+                    }
+                ],
+                showNavigation: true
+            });
+        }
+        
+        // Example 2: Video Player with YouTube
+        async function loadVideoExample1() {
+            const target = document.getElementById('video-target-1');
+            target.classList.add('loaded');
+            
+            await ComponentLoader.loadVideoPlayer('#video-target-1', {
+                videoData: [
+                    {
+                        type: "youtube",
+                        videoId: "dQw4w9WgXcQ", // Rick Roll for demo
+                        title: "Performance Video",
+                        metadata: {
+                            performanceInfo: "Live at Carnegie Hall",
+                            additionalInfo: "December 2023"
+                        }
+                    }
+                ]
+            });
+        }
+        
+        // Example 3: Score Video Player
+        async function loadScoreVideoExample1() {
+            const target = document.getElementById('score-video-target-1');
+            target.classList.add('loaded');
+            
+            await ComponentLoader.loadVideoPlayer('#score-video-target-1', {
+                videoType: 'score',
+                videoData: [
+                    {
+                        type: "youtube",
+                        videoId: "dQw4w9WgXcQ", // Demo video
+                        title: "Score Follow-Along",
+                        metadata: {
+                            performanceInfo: "Sheet music display",
+                            additionalInfo: "Tempo: Allegro moderato"
+                        }
+                    }
+                ]
+            });
+        }
+        
+        // Example 4: Load from API (will demonstrate error handling)
+        async function loadFromAPI() {
+            const target = document.getElementById('audio-api-target');
+            target.classList.add('loaded');
+            
+            await ComponentLoader.loadAudioPlayer('#audio-api-target', {
+                compositionId: 'demo-composition-id',
+                apiEndpoint: '/api/composition' // This will fail for demo purposes
+            });
+        }
+        
+        // Example 5: Load Multiple Components
+        async function loadMultipleComponents() {
+            document.getElementById('multi-audio-target').classList.add('loaded');
+            document.getElementById('multi-video-target').classList.add('loaded');
+            document.getElementById('multi-score-target').classList.add('loaded');
+            
+            await ComponentLoader.loadMediaComponents([
+                {
+                    type: 'audio',
+                    targetSelector: '#multi-audio-target',
+                    options: {
+                        audioData: [
+                            {
+                                title: "Sample Audio Track",
+                                url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+                                metadata: {
+                                    performanceInfo: "Demo performance"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    type: 'video', 
+                    targetSelector: '#multi-video-target',
+                    options: {
+                        videoData: [
+                            {
+                                type: "youtube",
+                                videoId: "dQw4w9WgXcQ",
+                                title: "Demo Video",
+                                metadata: {
+                                    performanceInfo: "Demo recording"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    type: 'score-video',
+                    targetSelector: '#multi-score-target',
+                    options: {
+                        videoData: [
+                            {
+                                type: "youtube",
+                                videoId: "dQw4w9WgXcQ",
+                                title: "Demo Score Video",
+                                metadata: {
+                                    performanceInfo: "Score demonstration"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]);
+        }
+    </script>
+</body>
+</html> 

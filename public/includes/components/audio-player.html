@@ -1,0 +1,23 @@
+<!-- Audio Player Component Template -->
+<div class="composition-audio-container" data-component="audio-player">
+    <!-- Audio players will be injected here by JavaScript -->
+    <div class="audio-players-container" id="audio-players-{{containerId}}">
+        <!-- Placeholder for loading state -->
+        <div class="audio-loading" style="text-align: center; padding: 2rem; color: var(--gray-600);">
+            Loading audio players...
+        </div>
+    </div>
+    
+    <!-- Audio Navigation Controls (will be shown if multiple tracks) -->
+    <div class="audio-nav-container" id="audio-nav-{{containerId}}" style="display: none;">
+        <button class="audio-nav-btn" id="prev-audio-{{containerId}}" disabled>
+            ‹ Previous
+        </button>
+        <div class="audio-nav-info" id="audio-nav-info-{{containerId}}">
+            Track 1 of 1
+        </div>
+        <button class="audio-nav-btn" id="next-audio-{{containerId}}" disabled>
+            Next ›
+        </button>
+    </div>
+</div> 

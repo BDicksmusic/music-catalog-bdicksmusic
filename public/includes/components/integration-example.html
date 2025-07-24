@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Integration Example</title>
+    
+    <!-- Your existing stylesheets -->
+    <link rel="stylesheet" href="/variables.css">
+    <link rel="stylesheet" href="/styles.css">
+    
+    <!-- Template loader (for nav/footer) -->
+    <script src="/includes/template-loader.js"></script>
+    
+    <!-- Component loader (for media components) -->  
+    <script src="/includes/component-loader.js"></script>
+</head>
+<body>
+    <!-- Navigation will be injected here by template loader -->
+    
+    <main>
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+            
+            <!-- Page Title -->
+            <header>
+                <h1>My Musical Portfolio</h1>
+                <p>Featuring recent compositions and performances</p>
+            </header>
+            
+            <!-- Featured Composition Section -->
+            <section class="featured-composition" style="margin: 3rem 0;">
+                <h2>🎼 Featured: "Resolutions Suite"</h2>
+                <p>My latest composition for brass trio, completed in 2023.</p>
+                
+                <!-- Audio Player Component will be injected here -->
+                <div id="featured-audio-player"></div>
+                
+                <!-- Video Player Component will be injected here -->
+                <div id="featured-video-player" style="margin-top: 2rem;"></div>
+            </section>
+            
+            <!-- Score Study Section -->
+            <section class="score-study" style="margin: 3rem 0; padding: 2rem; background: var(--gray-50); border-radius: 12px;">
+                <h2>📄 Score Study Videos</h2>
+                <p>Follow along with the sheet music in these educational videos.</p>
+                
+                <!-- Score Video Component will be injected here -->
+                <div id="score-video-player"></div>
+            </section>
+            
+            <!-- Multiple Compositions Gallery -->
+            <section class="compositions-gallery" style="margin: 3rem 0;">
+                <h2>🎵 Recent Compositions</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                    
+                    <!-- Composition 1 -->
+                    <div class="composition-card" style="padding: 1.5rem; border: 1px solid var(--gray-200); border-radius: 12px;">
+                        <h3>Trumpet Concerto</h3>
+                        <p>A virtuosic piece exploring the full range of the trumpet.</p>
+                        <div id="concerto-audio"></div>
+                    </div>
+                    
+                    <!-- Composition 2 -->
+                    <div class="composition-card" style="padding: 1.5rem; border: 1px solid var(--gray-200); border-radius: 12px;">
+                        <h3>Chamber Symphony</h3>
+                        <p>An intimate work for small ensemble.</p>
+                        <div id="symphony-audio"></div>
+                    </div>
+                    
+                </div>
+            </section>
+            
+        </div>
+    </main>
+    
+    <!-- Footer will be injected here by template loader -->
+    
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            
+            // Load navigation and footer templates
+            await TemplateLoader.loadAllTemplates();
+            
+            // Sample data for demonstrations
+            const resolutionsSuiteAudio = [
+                {
+                    title: "I. Moderato",
+                    url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+                    isMovement: true,
+                    metadata: {
+                        performanceInfo: "Brandon Dicks, trumpet; Sarah Johnson, horn; Mike Williams, trombone",
+                        additionalInfo: "Recorded at Symphony Hall, January 2024"
+                    }
+                },
+                {
+                    title: "II. Allegro",
+                    url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+                    isMovement: true,
+                    metadata: {
+                        performanceInfo: "Brandon Dicks, trumpet; Sarah Johnson, horn; Mike Williams, trombone",
+                        additionalInfo: "World premiere recording"
+                    }
+                },
+                {
+                    title: "III. Andante cantabile",
+                    url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+                    isMovement: true,
+                    metadata: {
+                        performanceInfo: "Brandon Dicks, trumpet; Sarah Johnson, horn; Mike Williams, trombone",
+                        additionalInfo: "Final movement - triumphant conclusion"
+                    }
+                }
+            ];
+            
+            const resolutionsSuiteVideos = [
+                {
+                    type: "youtube",
+                    videoId: "dQw4w9WgXcQ", // Demo video
+                    title: "Resolutions Suite - Live Performance",
+                    metadata: {
+                        performanceInfo: "Brandon Dicks Brass Trio",
+                        additionalInfo: "Live at Carnegie Hall, December 2023"
+                    }
+                }
+            ];
+            
+            const scoreVideos = [
+                {
+                    type: "youtube",
+                    videoId: "dQw4w9WgXcQ", // Demo video
+                    title: "Resolutions Suite - Score Analysis",
+                    metadata: {
+                        performanceInfo: "Educational content",
+                        additionalInfo: "Analysis of harmonic structure and performance techniques"
+                    }
+                }
+            ];
+            
+            // Load all media components in parallel for better performance
+            await ComponentLoader.loadMediaComponents([
+                
+                // Featured audio player
+                {
+                    type: 'audio',
+                    targetSelector: '#featured-audio-player',
+                    options: {
+                        audioData: resolutionsSuiteAudio,
+                        showNavigation: true
+                    }
+                },
+                
+                // Featured video player
+                {
+                    type: 'video',
+                    targetSelector: '#featured-video-player',
+                    options: {
+                        videoData: resolutionsSuiteVideos
+                    }
+                },
+                
+                // Score video player
+                {
+                    type: 'score-video',
+                    targetSelector: '#score-video-player',
+                    options: {
+                        videoData: scoreVideos
+                    }
+                },
+                
+                // Gallery composition 1
+                {
+                    type: 'audio',
+                    targetSelector: '#concerto-audio',
+                    options: {
+                        audioData: [
+                            {
+                                title: "Trumpet Concerto in B♭",
+                                url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+                                metadata: {
+                                    performanceInfo: "Brandon Dicks, trumpet; City Symphony Orchestra",
+                                    additionalInfo: "Soloist debut performance"
+                                }
+                            }
+                        ],
+                        showNavigation: false // Single track, no navigation needed
+                    }
+                },
+                
+                // Gallery composition 2
+                {
+                    type: 'audio',
+                    targetSelector: '#symphony-audio',
+                    options: {
+                        audioData: [
+                            {
+                                title: "Chamber Symphony No. 1",
+                                url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+                                metadata: {
+                                    performanceInfo: "New Music Ensemble",
+                                    additionalInfo: "Contemporary classical composition"
+                                }
+                            }
+                        ],
+                        showNavigation: false
+                    }
+                }
+                
+            ]);
+            
+            console.log('✅ All components loaded successfully!');
+        });
+        
+        // Example of loading from API (commented out for demo)
+        /*
+        async function loadFromAPI() {
+            await ComponentLoader.loadAudioPlayer('#featured-audio-player', {
+                compositionId: 'resolutions-suite',
+                apiEndpoint: '/api/composition'
+            });
+        }
+        */
+        
+        // Example of dynamic loading based on user interaction
+        function loadAdditionalContent() {
+            ComponentLoader.loadVideoPlayer('#additional-content', {
+                videoData: [
+                    {
+                        type: "youtube",
+                        videoId: "new-video-id",
+                        title: "Behind the Scenes",
+                        metadata: {
+                            performanceInfo: "Composer interview",
+                            additionalInfo: "Insights into the creative process"
+                        }
+                    }
+                ]
+            });
+        }
+        
+        // Example error handling
+        window.addEventListener('error', (event) => {
+            if (event.message.includes('ComponentLoader')) {
+                console.error('Component loading failed:', event.error);
+                // Could show user-friendly error message
+            }
+        });
+    </script>
+    
+    <style>
+        /* Additional page-specific styles */
+        .featured-composition {
+            border-left: 4px solid var(--primary-500);
+            padding-left: 2rem;
+        }
+        
+        .composition-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .composition-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .score-study {
+            position: relative;
+        }
+        
+        .score-study::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-300));
+        }
+    </style>
+</body>
+</html> 

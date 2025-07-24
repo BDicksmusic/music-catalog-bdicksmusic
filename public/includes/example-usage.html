@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modular Template Example</title>
+    
+    <!-- Include your existing stylesheets -->
+    <link rel="stylesheet" href="/variables.css">
+    <link rel="stylesheet" href="/styles.css">
+    
+    <!-- Optional: Auto-load templates using data attributes -->
+    <!-- <div data-auto-load-nav="body" data-nav-position="afterbegin"></div> -->
+    <!-- <div data-auto-load-footer="body" data-footer-position="beforeend"></div> -->
+</head>
+<body>
+    <!-- Navigation will be injected here automatically -->
+    
+    <main>
+        <div class="container">
+            <h1>Page Content</h1>
+            <p>This is your main page content. Navigation and footer will be injected dynamically.</p>
+            
+            <section>
+                <h2>How to Use Modular Templates</h2>
+                
+                <h3>Method 1: JavaScript API</h3>
+                <pre><code>
+// Load both templates
+await TemplateLoader.loadAllTemplates();
+
+// Or load individually
+await TemplateLoader.loadNavigation(); // Injects at top of body
+await TemplateLoader.loadFooter();     // Injects at bottom of body
+
+// Custom injection targets
+await TemplateLoader.loadNavigation('#header-container', 'beforeend');
+await TemplateLoader.loadFooter('#footer-container', 'afterbegin');
+                </code></pre>
+                
+                <h3>Method 2: Auto-load with Data Attributes</h3>
+                <pre><code>
+&lt;!-- Add these elements to auto-load templates --&gt;
+&lt;div data-auto-load-nav="body" data-nav-position="afterbegin"&gt;&lt;/div&gt;
+&lt;div data-auto-load-footer="body" data-footer-position="beforeend"&gt;&lt;/div&gt;
+                </code></pre>
+                
+                <h3>Method 3: Manual Injection</h3>
+                <pre><code>
+// Get template HTML and inject manually
+const navHtml = await TemplateLoader.fetchTemplate('navigation');
+document.getElementById('my-nav-container').innerHTML = navHtml;
+                </code></pre>
+            </section>
+            
+            <section>
+                <h2>Template Files</h2>
+                <ul>
+                    <li><strong>/includes/navigation.html</strong> - Complete navigation from composition.html</li>
+                    <li><strong>/includes/footer.html</strong> - Complete footer from index.html</li>
+                    <li><strong>/includes/template-loader.js</strong> - JavaScript loader module</li>
+                </ul>
+            </section>
+            
+            <button onclick="loadTemplatesManually()">Load Templates Manually</button>
+        </div>
+    </main>
+    
+    <!-- Footer will be injected here automatically -->
+    
+    <!-- Load the template loader script -->
+    <script src="/includes/template-loader.js"></script>
+    
+    <script>
+        // Example of manual template loading
+        async function loadTemplatesManually() {
+            console.log('Loading templates manually...');
+            await TemplateLoader.loadAllTemplates();
+        }
+        
+        // Auto-load templates when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Automatically load both templates
+            await TemplateLoader.loadAllTemplates();
+        });
+    </script>
+</body>
+</html> 
