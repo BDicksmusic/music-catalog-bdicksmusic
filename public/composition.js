@@ -829,12 +829,8 @@ if (notesContainer) {
             console.log('🎼 DEBUG - Rendering', allScoreVideos.length, 'score videos');
             
             try {
-                // Add section title for score videos
-                const sectionTitle = allScoreVideos.length > 1 ? 
-                    '<h3 class="score-video-section-title">📹 Score Videos</h3>' : 
-                    '<h3 class="score-video-section-title">📹 Score Video</h3>';
-                
-                finalScoreVideoContent.innerHTML = sectionTitle;
+                // Clear any existing content
+                finalScoreVideoContent.innerHTML = '';
                 const scoreVideosHtml = allScoreVideos.map((scoreVideo, index) => {
                     console.log(`🎼 DEBUG - Processing score video ${index + 1}:`, scoreVideo);
                     
@@ -882,7 +878,7 @@ if (notesContainer) {
                 }).join('');
                 
                 console.log('🎼 DEBUG - Final score videos HTML length:', scoreVideosHtml.length);
-                finalScoreVideoContent.innerHTML += scoreVideosHtml;
+                finalScoreVideoContent.innerHTML = scoreVideosHtml;
                 scoreVideoContainer.style.display = 'block';
                 console.log('🎼 DEBUG - Score video container display set to block');
                 console.log('🎼 SUCCESS - Score videos rendered successfully');

@@ -980,55 +980,119 @@
             text-align: center;
         }
         
-        /* Scores Section Styling */
+        /* Scores Section Styling - Horizontal Row Layout */
         .scores-section {
             display: flex;
             flex-direction: row;
-            gap: 2rem;
+            gap: 3rem;
             max-width: 1400px;
             margin: 2rem auto 0;
-            padding: 0 1rem;
-            flex-wrap: wrap;
+            padding: 0 2rem;
+            flex-wrap: nowrap;
+            align-items: flex-start;
             position: relative;
             z-index: 1;
         }
         
         .score-pdf-column {
-            flex: 1;
+            flex: 1 1 50%;
             display: flex;
             flex-direction: column;
-            min-width: 0;
+            min-width: 300px;
+            max-width: 50%;
             position: relative;
         }
         
         .score-video-column {
-            flex: 1;
+            flex: 1 1 50%;
             display: flex;
             flex-direction: column;
-            min-width: 0;
+            min-width: 300px;
+            max-width: 50%;
             position: relative;
         }
         
-        /* Responsive layout for mobile and tablets */
-        @media (max-width: 1024px) {
+        /* Optional: Add a subtle divider between columns */
+        .score-pdf-column::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -1.5rem;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--gray-200), transparent);
+            opacity: 0.5;
+        }
+        
+        /* Responsive layout for tablets and mobile */
+        @media (max-width: 900px) {
             .scores-section {
                 flex-direction: column;
-                gap: 1.5rem;
-                padding: 0 0.5rem;
+                gap: 2rem;
+                padding: 0 1rem;
                 margin: 1.5rem auto 0;
+                flex-wrap: nowrap;
             }
             
             .score-pdf-column,
             .score-video-column {
+                flex: 1 1 auto;
                 min-width: 0;
+                max-width: 100%;
                 width: 100%;
-                flex: none;
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .score-video-column {
+                margin-bottom: 0;
+            }
+            
+            /* Hide divider on mobile */
+            .score-pdf-column::after {
+                display: none;
+            }
+            
+            /* Adjust headers on mobile */
+            .column-header {
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+                text-align: left;
+            }
+        }
+        
+        /* Additional mobile adjustments */
+        @media (max-width: 600px) {
+            .scores-section {
+                gap: 1.5rem;
+                padding: 0 0.5rem;
             }
         }
         
         .composition-score-video-container {
             width: 100%;
             margin: 0;
+        }
+        
+        /* Add subtle column styling for better visual separation */
+        .score-pdf-column,
+        .score-video-column {
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--gray-100);
+        }
+        
+        /* Column header styling */
+        .column-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin: 0 0 1.5rem 0;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--gray-200);
+            text-align: center;
         }
 
         .score-video-section-title {
@@ -2486,11 +2550,13 @@
      
     <section class="scores-section" id="scores-section">
         <div class="score-pdf-column">
+            <h3 class="column-header">📄 Score PDF</h3>
             <div class="score-carousel-container" id="score-carousel-container">
                 <!-- Score PDF will be injected here -->
             </div>
         </div>
         <div class="score-video-column">
+            <h3 class="column-header">🎬 Score Videos</h3>
             <div class="composition-score-video-container" id="composition-score-video-container">
                 <div id="score-video-content">
                     <!-- Score videos will be injected here -->
