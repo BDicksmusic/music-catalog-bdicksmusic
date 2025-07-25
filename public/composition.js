@@ -841,6 +841,7 @@ if (notesContainer) {
     const audioControlBtn = document.getElementById('audio-control-btn');
     const videoColumn = document.getElementById('score-video-column');
     const scoreDivider = document.getElementById('score-divider');
+    const layoutContainer = document.getElementById('score-layout-container');
     
     // Check if there's an audio player on the page
     const hasAudioPlayer = document.querySelector('.composition-audio-player audio') !== null;
@@ -860,7 +861,12 @@ if (notesContainer) {
             // Check if there's a score video and set it to full width initially
             if (videoColumn && hasScoreVideo) {
                 videoColumn.classList.add('full-width');
-                console.log('📄 DEBUG - Score video set to full width initially');
+                // Set layout container to video-only since PDF starts hidden
+                if (layoutContainer) {
+                    layoutContainer.classList.add('video-only');
+                    layoutContainer.classList.remove('pdf-only');
+                }
+                console.log('📄 DEBUG - Score video set to full width initially (video-only layout)');
             }
         } else {
             // Hide toggle button if no PDF score available
@@ -870,7 +876,12 @@ if (notesContainer) {
             // If no PDF but there's a score video, keep it in full width
             if (videoColumn && hasScoreVideo) {
                 videoColumn.classList.add('full-width');
-                console.log('📄 DEBUG - Score video in full width (no PDF available)');
+                // Set layout container to video-only
+                if (layoutContainer) {
+                    layoutContainer.classList.add('video-only');
+                    layoutContainer.classList.remove('pdf-only');
+                }
+                console.log('📄 DEBUG - Score video in full width (no PDF available, video-only layout)');
             }
         }
     }
@@ -914,6 +925,29 @@ if (notesContainer) {
     if (pdfColumn && hasPdfScore && !hasScoreVideo) {
         pdfColumn.classList.add('full-width');
         console.log('📄 DEBUG - PDF centered (no video available)');
+    }
+
+    // Set initial layout container classes based on what's available
+    if (layoutContainer) {
+        if (hasPdfScore && hasScoreVideo) {
+            // Both available - no special class needed initially (PDF starts hidden)
+            layoutContainer.classList.remove('video-only', 'pdf-only');
+            console.log('🔧 DEBUG - Layout container: both PDF and video available');
+        } else if (hasPdfScore && !hasScoreVideo) {
+            // Only PDF available
+            layoutContainer.classList.add('pdf-only');
+            layoutContainer.classList.remove('video-only');
+            console.log('🔧 DEBUG - Layout container: PDF only');
+        } else if (!hasPdfScore && hasScoreVideo) {
+            // Only video available
+            layoutContainer.classList.add('video-only');
+            layoutContainer.classList.remove('pdf-only');
+            console.log('🔧 DEBUG - Layout container: video only');
+        } else {
+            // Neither available
+            layoutContainer.classList.remove('video-only', 'pdf-only');
+            console.log('🔧 DEBUG - Layout container: neither PDF nor video available');
+        }
     }
     
     // New Structured Composition Details System

@@ -468,11 +468,23 @@
             background: var(--gray-200);
             position: relative;
             cursor: col-resize;
-            transition: background-color 0.2s ease;
+            transition: all 0.3s ease;
             display: none; /* Hidden by default */
             align-items: center;
             justify-content: center;
             margin: 0 0.5rem;
+            opacity: 1;
+            transform: scaleX(1);
+        }
+
+        /* Hide divider when either column is hidden */
+        .score-layout-container.pdf-only .score-divider,
+        .score-layout-container.video-only .score-divider {
+            display: none !important;
+            opacity: 0;
+            transform: scaleX(0);
+            width: 0;
+            margin: 0;
         }
 
         .score-divider:hover {
@@ -1198,6 +1210,7 @@
             const videoColumn = document.getElementById('score-video-column');
             const pdfColumn = document.getElementById('score-pdf-column');
             const scoreDivider = document.getElementById('score-divider');
+            const layoutContainer = document.getElementById('score-layout-container');
             const toggleText = toggleBtn.querySelector('.toggle-text');
             const toggleIcon = toggleBtn.querySelector('.toggle-icon');
             
@@ -1212,10 +1225,17 @@
                 if (hasScoreVideo) {
                     videoColumn.classList.add('full-width');
                     pdfColumn.classList.remove('full-width'); // Remove full-width from PDF
+                    // Add video-only class to layout container
+                    layoutContainer.classList.add('video-only');
+                    layoutContainer.classList.remove('pdf-only');
                     // Hide divider when PDF is hidden
                     if (scoreDivider) {
                         scoreDivider.style.display = 'none';
                     }
+                } else {
+                    // No video, so this is pdf-only
+                    layoutContainer.classList.add('pdf-only');
+                    layoutContainer.classList.remove('video-only');
                 }
                 toggleText.textContent = 'Show Score PDF';
                 toggleIcon.textContent = '▼';
@@ -1226,14 +1246,18 @@
                 if (hasScoreVideo) {
                     videoColumn.classList.remove('full-width');
                     pdfColumn.classList.remove('full-width'); // Remove full-width from PDF when both are shown
-                                    // Show divider when both PDF and video are visible (desktop only)
-                if (scoreDivider) {
-                    const isDesktop = window.innerWidth >= 1024;
-                    scoreDivider.style.display = isDesktop ? 'flex' : 'none';
-                }
+                    // Remove both classes when both are visible
+                    layoutContainer.classList.remove('video-only', 'pdf-only');
+                    // Show divider when both PDF and video are visible (desktop only)
+                    if (scoreDivider) {
+                        const isDesktop = window.innerWidth >= 1024;
+                        scoreDivider.style.display = isDesktop ? 'flex' : 'none';
+                    }
                 } else {
                     // If no video, center the PDF
                     pdfColumn.classList.add('full-width');
+                    layoutContainer.classList.add('pdf-only');
+                    layoutContainer.classList.remove('video-only');
                 }
                 toggleText.textContent = 'Hide Score PDF';
                 toggleIcon.textContent = '▲';
@@ -1248,6 +1272,7 @@
             const pdfColumn = document.getElementById('score-pdf-column');
             const scoreDivider = document.getElementById('score-divider');
             const scoreCarousel = document.getElementById('score-carousel-container');
+            const layoutContainer = document.getElementById('score-layout-container');
             const toggleText = toggleBtn.querySelector('.toggle-text');
             const toggleIcon = toggleBtn.querySelector('.toggle-icon');
             
@@ -1262,10 +1287,23 @@
                 toggleIcon.textContent = '▼';
                 toggleBtn.classList.remove('toggled');
                 
-                // Show divider if PDF is also visible (desktop only)
-                if (scoreDivider && scoreCarousel.classList.contains('show')) {
-                    const isDesktop = window.innerWidth >= 1024;
-                    scoreDivider.style.display = isDesktop ? 'flex' : 'none';
+                // Check if PDF is visible to determine layout class
+                if (scoreCarousel.classList.contains('show')) {
+                    // Both are visible - remove both classes
+                    layoutContainer.classList.remove('video-only', 'pdf-only');
+                    // Show divider (desktop only)
+                    if (scoreDivider) {
+                        const isDesktop = window.innerWidth >= 1024;
+                        scoreDivider.style.display = isDesktop ? 'flex' : 'none';
+                    }
+                } else {
+                    // Only video is visible
+                    layoutContainer.classList.add('video-only');
+                    layoutContainer.classList.remove('pdf-only');
+                    // Hide divider when only video is visible
+                    if (scoreDivider) {
+                        scoreDivider.style.display = 'none';
+                    }
                 }
             } else {
                 // Hide video content
@@ -1274,6 +1312,10 @@
                 toggleText.textContent = 'Show Score Video';
                 toggleIcon.textContent = '▲';
                 toggleBtn.classList.add('toggled');
+                
+                // Add pdf-only class to layout container
+                layoutContainer.classList.add('pdf-only');
+                layoutContainer.classList.remove('video-only');
                 
                 // Hide divider when video is hidden
                 if (scoreDivider) {
