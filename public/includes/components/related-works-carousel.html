@@ -86,15 +86,37 @@
         cursor: pointer;
         border: 1px solid var(--gray-200);
         position: relative;
-        transform: translateY(0);
-        opacity: 1;
+        transform: translateY(20px);
+        opacity: 0;
+        will-change: transform, box-shadow, background, opacity;
+        animation: cardEntrance 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Staggered entrance animation for cards */
+    .related-composition-card:nth-child(1) { animation-delay: 0.1s; }
+    .related-composition-card:nth-child(2) { animation-delay: 0.2s; }
+    .related-composition-card:nth-child(3) { animation-delay: 0.3s; }
+    .related-composition-card:nth-child(4) { animation-delay: 0.4s; }
+    .related-composition-card:nth-child(5) { animation-delay: 0.5s; }
+    .related-composition-card:nth-child(6) { animation-delay: 0.6s; }
+
+    @keyframes cardEntrance {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
     }
 
     .related-composition-card:hover {
-        transform: translateY(-12px) scale(1.05);
-        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(59, 130, 246, 0.15);
+        transform: translateY(-15px) scale(1.08);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(59, 130, 246, 0.2);
         background: linear-gradient(145deg, var(--gray-50) 0%, var(--primary-50) 100%);
         border-color: var(--primary-300);
+        z-index: 10;
     }
 
     .related-composition-card:hover .related-composition-title {
@@ -107,12 +129,13 @@
         height: 258px; /* 200px width * (11/8.5) = 258px height for 8.5x11 ratio */
         object-fit: cover;
         object-position: center;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         background: var(--gray-200);
+        will-change: transform;
     }
 
     .related-composition-card:hover .related-composition-image {
-        transform: scale(1.08);
+        transform: scale(1.12);
     }
 
     /* ===== CARD CONTENT ===== */
@@ -136,12 +159,13 @@
         content: '♪';
         font-size: 0.75rem;
         opacity: 0.7;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform, opacity, color;
     }
 
     .related-composition-card:hover .related-composition-title::before {
         opacity: 1;
-        transform: scale(1.1);
+        transform: scale(1.2) rotate(5deg);
         color: var(--primary-600);
     }
 
