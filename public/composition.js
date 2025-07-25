@@ -435,81 +435,23 @@ function renderComposition(comp) {
         
         // Load the audio player component
         loadAudioPlayerComponent(audioData);
-    } else {
-        // No audio data available
-        console.log('🎵 No audio data available for this composition');
-        audioPlaceholder.innerHTML = `
-            <div style="padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; margin: 1rem 0;">
-                <h4 style="color: #856404; margin: 0 0 10px 0;">⚠️ No Audio Found</h4>
-                <p style="color: #856404; margin: 0; font-size: 0.9rem;">
-                    No audio files are linked to this composition in the Media database. 
-                    Please check that audio files are properly related via "Audio to Comp" relations.
-                </p>
-            </div>
-        `;
-    }
-    
-    // Component loading function
-    async function loadAudioPlayerComponent(audioData) {
-        try {
-            console.log('🎵 Loading audio player component with data:', audioData);
-            
-            // Generate unique container ID
-            const containerId = `composition-${Date.now()}`;
-            
-            // Use ComponentLoader to fetch and inject the component
-            let componentHtml;
-            if (typeof window.ComponentLoader !== 'undefined' && window.ComponentLoader.fetchComponent) {
-                componentHtml = await window.ComponentLoader.fetchComponent('audio-player');
-            } else if (typeof fetchComponent !== 'undefined') {
-                componentHtml = await fetchComponent('audio-player');
             } else {
-                console.error('🎵 No component loader available');
-                showAudioLoadError();
-                return;
+            // No audio data available
+            console.log('🎵 No audio data available for this composition');
+            if (audioPlaceholder) {
+                audioPlaceholder.innerHTML = `
+                    <div style="padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; margin: 1rem 0;">
+                        <h4 style="color: #856404; margin: 0 0 10px 0;">⚠️ No Audio Found</h4>
+                        <p style="color: #856404; margin: 0; font-size: 0.9rem;">
+                            No audio files are linked to this composition in the Media database. 
+                            Please check that audio files are properly related via "Audio to Comp" relations.
+                        </p>
+                    </div>
+                `;
             }
-                
-            if (componentHtml) {
-                    // Replace template variables
-                    const processedHtml = componentHtml.replace(/{{containerId}}/g, containerId);
-                    audioPlaceholder.innerHTML = processedHtml;
-                    
-                    // Wait a bit for the component to initialize, then pass data
-                    setTimeout(() => {
-                        const initFunction = window[`initAudioPlayer_${containerId}`];
-                        if (initFunction && typeof initFunction === 'function') {
-                            console.log('🎵 Initializing audio player component with data');
-                            initFunction(audioData);
-                        } else {
-                            console.error('🎵 Audio player initialization function not found:', `initAudioPlayer_${containerId}`);
-                        }
-                    }, 200);
-                    
-                } else {
-                    console.error('🎵 Failed to load audio player component');
-                    showAudioLoadError();
-                }
-            } else {
-                console.error('🎵 ComponentLoader not available, falling back to basic display');
-                showAudioLoadError();
-            }
-            
-        } catch (error) {
-            console.error('🎵 Error loading audio player component:', error);
-            showAudioLoadError();
         }
-    }
     
-    function showAudioLoadError() {
-        audioPlaceholder.innerHTML = `
-            <div style="padding: 20px; background: #ffe6e6; border: 2px solid #ff9999; border-radius: 8px; margin: 1rem 0;">
-                <h4 style="color: #cc0000; margin: 0 0 10px 0;">⚠️ Audio Player Load Error</h4>
-                <p style="color: #cc0000; margin: 0; font-size: 0.9rem;">
-                    Failed to load the audio player component. Please refresh the page.
-                </p>
-            </div>
-        `;
-    }
+
 
 // ✅ REMOVED: Short instrument container now handled in meta container above
 
@@ -924,6 +866,147 @@ if (notesContainer) {
         // Try to fetch related compositions if not provided
         fetchRelatedCompositions(comp.id);
     }
+}
+
+// Audio Player Component Functions (moved outside renderComposition)
+async function loadAudioPlayerComponent(audioData) {
+    try {
+        console.log('🎵 Loading audio player component with data:', audioData);
+        
+        // Generate unique container ID
+        const containerId = `composition-${Date.now()}`;
+        
+        // Use ComponentLoader to fetch and inject the component
+        let componentHtml;
+        if (typeof window.ComponentLoader !== 'undefined' && window.ComponentLoader.fetchComponent) {
+            componentHtml = await window.ComponentLoader.fetchComponent('audio-player');
+        } else if (typeof fetchComponent !== 'undefined') {
+            componentHtml = await fetchComponent('audio-player');
+        } else {
+            console.error('🎵 No component loader available, using fallback audio player');
+            createFallbackAudioPlayer(audioData);
+            return;
+        }
+            
+        if (componentHtml) {
+            // Replace template variables
+            const processedHtml = componentHtml.replace(/{{containerId}}/g, containerId);
+            audioPlaceholder.innerHTML = processedHtml;
+            
+            // Wait a bit for the component to initialize, then pass data
+            setTimeout(() => {
+                const initFunction = window[`initAudioPlayer_${containerId}`];
+                if (initFunction && typeof initFunction === 'function') {
+                    console.log('🎵 Initializing audio player component with data');
+                    initFunction(audioData);
+                } else {
+                    console.error('🎵 Audio player initialization function not found:', `initAudioPlayer_${containerId}`);
+                    createFallbackAudioPlayer(audioData);
+                }
+            }, 200);
+            
+        } else {
+            console.error('🎵 Failed to load audio player component, using fallback');
+            createFallbackAudioPlayer(audioData);
+        }
+        
+    } catch (error) {
+        console.error('🎵 Error loading audio player component:', error);
+        showAudioLoadError();
+    }
+}
+
+function showAudioLoadError() {
+    const audioPlaceholder = document.querySelector('#audio-player-placeholder');
+    if (audioPlaceholder) {
+        audioPlaceholder.innerHTML = `
+            <div style="padding: 20px; background: #ffe6e6; border: 2px solid #ff9999; border-radius: 8px; margin: 1rem 0;">
+                <h4 style="color: #cc0000; margin: 0 0 10px 0;">⚠️ Audio Player Load Error</h4>
+                <p style="color: #cc0000; margin: 0; font-size: 0.9rem;">
+                    Failed to load the audio player component. Please refresh the page.
+                </p>
+            </div>
+        `;
+    }
+}
+
+function createFallbackAudioPlayer(audioData) {
+    console.log('🎵 Creating fallback audio player with data:', audioData);
+    
+    const audioPlaceholder = document.querySelector('#audio-player-placeholder');
+    if (!audioPlaceholder) {
+        console.error('🎵 No audio placeholder found for fallback player');
+        return;
+    }
+    
+    if (!audioData || !audioData.audioFiles || audioData.audioFiles.length === 0) {
+        audioPlaceholder.innerHTML = `
+            <div style="padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; margin: 1rem 0;">
+                <h4 style="color: #856404; margin: 0 0 10px 0;">⚠️ No Audio Available</h4>
+                <p style="color: #856404; margin: 0; font-size: 0.9rem;">
+                    No audio files are available for this composition.
+                </p>
+            </div>
+        `;
+        return;
+    }
+    
+    const audioFiles = audioData.audioFiles;
+    const isMultiTrack = audioFiles.length > 1;
+    
+    let audioHtml = `
+        <div class="composition-audio-container" style="background: var(--purple-50); border: 1px solid var(--purple-100); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h3 style="color: var(--purple-700); margin: 0 0 1rem 0; font-size: 1.1rem;">🎵 Audio Player</h3>
+    `;
+    
+    if (isMultiTrack) {
+        audioHtml += `
+            <div style="margin-bottom: 1rem;">
+                <select id="audio-track-selector" style="width: 100%; padding: 0.5rem; border: 1px solid var(--gray-300); border-radius: 6px; background: white;">
+                    ${audioFiles.map((file, index) => `
+                        <option value="${index}">${file.title || `Track ${index + 1}`}</option>
+                    `).join('')}
+                </select>
+            </div>
+        `;
+    }
+    
+    audioFiles.forEach((audioFile, index) => {
+        const displayStyle = isMultiTrack && index > 0 ? 'display: none;' : 'display: block;';
+        audioHtml += `
+            <div class="audio-track" data-track="${index}" style="${displayStyle}">
+                ${audioFile.title ? `<div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--gray-700);">${audioFile.title}</div>` : ''}
+                <audio controls preload="metadata" style="width: 100%;">
+                    <source src="${audioFile.url}" type="audio/mpeg">
+                    <source src="${audioFile.url}" type="audio/mp4">
+                    <source src="${audioFile.url}" type="audio/wav">
+                    <source src="${audioFile.url}" type="audio/ogg">
+                    Your browser does not support the audio element.
+                </audio>
+                ${audioFile.performanceBy ? `<div style="font-size: 0.9rem; color: var(--gray-600); margin-top: 0.5rem;">Performed by: ${audioFile.performanceBy}</div>` : ''}
+                ${audioFile.recordingDate ? `<div style="font-size: 0.9rem; color: var(--gray-600);">Recorded: ${new Date(audioFile.recordingDate).toLocaleDateString()}</div>` : ''}
+            </div>
+        `;
+    });
+    
+    audioHtml += `</div>`;
+    
+    audioPlaceholder.innerHTML = audioHtml;
+    
+    // Add track switching functionality for multi-track
+    if (isMultiTrack) {
+        const selector = document.getElementById('audio-track-selector');
+        if (selector) {
+            selector.addEventListener('change', (e) => {
+                const selectedTrack = parseInt(e.target.value);
+                document.querySelectorAll('.audio-track').forEach((track, index) => {
+                    track.style.display = index === selectedTrack ? 'block' : 'none';
+                });
+            });
+        }
+    }
+    
+    console.log('✅ Fallback audio player created successfully');
 }
 
 // Single Page PDF Navigation Implementation
