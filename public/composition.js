@@ -394,7 +394,8 @@ function renderComposition(comp) {
         
         console.log('🎵 Preparing audio data for component:', {
             audioFiles: audioFiles.length,
-            hasLegacyAudio: hasLegacyAudio
+            hasLegacyAudio: hasLegacyAudio,
+            audioFilesDetails: audioFiles.map(a => ({ title: a.title, url: a.url ? 'YES' : 'NO', type: a.type }))
         });
         
         let audioData = {
@@ -430,6 +431,8 @@ function renderComposition(comp) {
             }];
         }
         
+        console.log('🎵 Final audioData object:', audioData);
+        
         // Load the audio player component
         loadAudioPlayerComponent(audioData);
     } else {
@@ -455,10 +458,18 @@ function renderComposition(comp) {
             const containerId = `composition-${Date.now()}`;
             
             // Use ComponentLoader to fetch and inject the component
+            let componentHtml;
             if (typeof window.ComponentLoader !== 'undefined' && window.ComponentLoader.fetchComponent) {
-                const componentHtml = await window.ComponentLoader.fetchComponent('audio-player');
+                componentHtml = await window.ComponentLoader.fetchComponent('audio-player');
+            } else if (typeof fetchComponent !== 'undefined') {
+                componentHtml = await fetchComponent('audio-player');
+            } else {
+                console.error('🎵 No component loader available');
+                showAudioLoadError();
+                return;
+            }
                 
-                if (componentHtml) {
+            if (componentHtml) {
                     // Replace template variables
                     const processedHtml = componentHtml.replace(/{{containerId}}/g, containerId);
                     audioPlaceholder.innerHTML = processedHtml;
