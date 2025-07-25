@@ -41,19 +41,7 @@
             align-items: start;
         }
 
-        .composition-detail-card {
-            display: flex;
-            flex-direction: column;
-            background: none;
-            border-radius: 0;
-            box-shadow: none;
-            padding: 0 0;
-            align-items: flex-end;
-            gap: 5rem;
-            width: 100%;
-            margin: 0;
-            position: relative;
-        }
+        /* ✨ REMOVED: composition-detail-card - no longer needed with simplified structure */
 
         .composition-cover-container {
             width: 362px;
@@ -89,18 +77,16 @@
             text-align: left;
         }
 
-        /* ===== TYPOGRAPHY ===== */
+        /* ===== TYPOGRAPHY & TITLE SECTION ===== */
         .composition-title-container {
-            margin-bottom: 0.25rem;
-            padding: 0;
-        }
-
-        .composition-header-combined {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             width: 100%;
             gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--gray-100);
         }
 
         .composition-title-section {
@@ -112,13 +98,17 @@
             min-width: 0;
         }
 
-        .composition-meta-section {
+        .composition-meta-container {
             flex: 0 0 auto;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             text-align: right;
             min-width: fit-content;
+            background: var(--primary-50);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--primary-100);
         }
 
         .composition-title {
@@ -142,15 +132,16 @@
 
         .composition-meta {
             font-size: 0.98rem;
-            font-weight: 400;
-            color: var(--gray-900);
+            font-weight: 500;
+            color: var(--primary-700);
+            margin-bottom: 0.5rem;
         }
 
         .composition-short-instruments {
-            margin-bottom: 0rem;
             font-size: 0.95rem;
             font-weight: 400;
-            color: var(--gray-900);
+            color: var(--gray-600);
+            margin-top: 0.75rem;
         }
 
         /* ===== CONTENT SECTIONS ===== */
@@ -439,36 +430,32 @@
             border-bottom: 2px solid var(--primary-100);
         }
 
-        /* ===== TABLET STYLES (1024px and below) ===== */
-        @media (max-width: 1024px) {
-            .composition-main {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-                padding: 0 1rem;
-                margin: 1.5rem auto 0;
-            }
+                 /* ===== TABLET STYLES (1024px and below) ===== */
+         @media (max-width: 1024px) {
+             .composition-main {
+                 grid-template-columns: 1fr;
+                 gap: 1.5rem;
+                 padding: 0 1rem;
+                 margin: 1.5rem auto 0;
+             }
 
-            .composition-detail-card {
-                gap: 2rem;
-            }
+             .composition-cover-container {
+                 width: 100%;
+                 max-width: 350px;
+                 margin: 0 auto;
+             }
 
-            .composition-cover-container {
-                width: 100%;
-                max-width: 350px;
-                margin: 0 auto;
-            }
+             .composition-title-container {
+                 flex-direction: column;
+                 align-items: flex-start;
+                 gap: 1rem;
+             }
 
-            .composition-header-combined {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .composition-meta-section {
-                align-items: flex-start;
-                text-align: left;
-                width: 100%;
-            }
+             .composition-meta-container {
+                 align-items: flex-start;
+                 text-align: left;
+                 width: 100%;
+             }
 
             .composition-title {
                 font-size: 2rem;
@@ -509,27 +496,13 @@
                 background: transparent;
             }
 
-            .composition-detail-card {
-                background: transparent;
-                padding: 0;
-                margin: 0;
-                box-shadow: none;
-                border-radius: 0;
-            }
-
-            .composition-content-container {
-                background: transparent;
-                padding: 0;
-                margin: 0;
-                box-shadow: none;
-                border-radius: 0;
-            }
-
-            .composition-info-container {
-                padding: 1rem;
-                margin: 0;
-                background: transparent;
-            }
+                         .composition-content-container {
+                 background: transparent;
+                 padding: 0;
+                 margin: 0;
+                 box-shadow: none;
+                 border-radius: 0;
+             }
 
             /* ✨ CLEAN CONTENT SECTIONS */
             .composition-cover-container {
@@ -573,26 +546,25 @@
                 border-radius: 8px;
             }
 
-            .composition-meta-container {
-                margin: 1.5rem auto;
-                padding: 0.75rem 1rem;
-                background: var(--primary-50);
-                border-radius: 8px;
-                text-align: center;
-            }
+            
 
-            .composition-header-combined {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                gap: 1rem;
-            }
+                         .composition-title-container {
+                 flex-direction: column;
+                 align-items: center;
+                 text-align: center;
+                 gap: 1rem;
+                 border-bottom: 1px solid var(--gray-200);
+                 padding-bottom: 1rem;
+             }
 
-            .composition-meta-section {
-                align-items: center;
-                text-align: center;
-                width: 100%;
-            }
+             .composition-meta-container {
+                 align-items: center;
+                 text-align: center;
+                 width: 100%;
+                 background: var(--primary-50);
+                 padding: 0.75rem 1rem;
+                 border-radius: 8px;
+             }
 
             /* ✨ TYPOGRAPHY */
             .composition-title {
@@ -679,36 +651,42 @@
       <!-- ✨ NAVIGATION: Will be automatically injected by template-loader.js -->
 
     <main>
-        <div class="composition-main">
-            <div class="composition-detail-card">
-                <div class="composition-cover-container">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" 
-                         alt="" 
-                         class="composition-cover" 
-                         id="composition-cover">
-                </div>
+        <section class="composition-main">
+            <!-- ✨ SIMPLIFIED: Direct cover container without redundant wrapper -->
+            <div class="composition-cover-container">
+                <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" 
+                     alt="" 
+                     class="composition-cover" 
+                     id="composition-cover">
             </div>
+            
+            <!-- ✨ STREAMLINED: All content in logical hierarchy -->
             <div class="composition-content-container">
+                <!-- ✨ ROW LAYOUT: Title left, meta right -->
                 <div class="composition-title-container">
-                    <!-- Title will be injected here -->
-                </div>
-
-                <div class="composition-info-container">
+                    <div class="composition-title-section">
+                        <!-- Title and instrument will be injected here -->
+                    </div>
                     <div class="composition-meta-container">
                         <!-- Metadata (year, duration, difficulty, etc.) will be injected here -->
                     </div>
-                    <!-- Buy button will be injected here -->
-                    <div class="composition-buy-button-wrapper"></div>
-                    <div class="composition-links-container">
-                        <!-- Audio and score links will be injected here -->
-                    </div>
-                    <div class="composition-audio-container" id="composition-audio-container">
-                        <!-- Audio players will be injected here -->
-                    </div>
+                </div>
 
+                <!-- ✨ DIRECT CONTENT: No extra info-container nesting -->
+                <div class="composition-buy-button-wrapper">
+                    <!-- Buy button will be injected here -->
+                </div>
+                
+                <div class="composition-links-container">
+                    <!-- Audio and score links will be injected here -->
+                </div>
+                
+                <!-- ✨ MODULAR COMPONENT: Audio Player will be loaded here -->
+                <div id="audio-player-placeholder" data-component-target="audio-player">
+                    <!-- Audio player component will be injected here -->
                 </div>
             </div>
-        </div>
+        </section>
 
             <!-- Program Notes and Videos Section -->
     <section class="program-video-section">

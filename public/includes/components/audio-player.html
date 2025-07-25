@@ -1,23 +1,252 @@
-<!-- Audio Player Component Template -->
-<div class="composition-audio-container" data-component="audio-player">
-    <!-- Audio players will be injected here by JavaScript -->
+<!-- Enhanced Audio Player Component Template -->
+<div class="composition-audio-container" data-component="audio-player" id="audio-player-{{containerId}}">
+    <!-- Audio Players Container -->
     <div class="audio-players-container" id="audio-players-{{containerId}}">
-        <!-- Placeholder for loading state -->
+        <!-- Audio players will be dynamically created here -->
         <div class="audio-loading" style="text-align: center; padding: 2rem; color: var(--gray-600);">
-            Loading audio players...
+            🎵 Loading audio players...
         </div>
     </div>
     
-    <!-- Audio Navigation Controls (will be shown if multiple tracks) -->
+    <!-- Multi-Audio Navigation Controls (hidden by default, shown when multiple tracks) -->
+    <div class="audio-nav-divider" id="audio-nav-divider-{{containerId}}" style="display: none;"></div>
     <div class="audio-nav-container" id="audio-nav-{{containerId}}" style="display: none;">
         <button class="audio-nav-btn" id="prev-audio-{{containerId}}" disabled>
-            ‹ Previous
+            ⏮ Previous
         </button>
         <div class="audio-nav-info" id="audio-nav-info-{{containerId}}">
-            Track 1 of 1
+            Movement 1 of 1
         </div>
         <button class="audio-nav-btn" id="next-audio-{{containerId}}" disabled>
-            Next ›
+            Next ⏭
         </button>
     </div>
-</div> 
+    
+    <!-- Debug Info (only shown in development) -->
+    <div class="audio-debug-info" id="audio-debug-{{containerId}}" style="display: none; font-size: 0.8rem; color: var(--gray-500); margin-top: 1rem;">
+        Component ID: {{containerId}} | Status: Initialized
+    </div>
+</div>
+
+<script>
+// Enhanced Audio Player Component JavaScript
+(function() {
+    const containerId = '{{containerId}}';
+    const audioPlayerContainer = document.getElementById(`audio-player-${containerId}`);
+    
+    if (!audioPlayerContainer) {
+        console.error(`Audio player container not found: audio-player-${containerId}`);
+        return;
+    }
+    
+    console.log(`🎵 Audio Player Component initialized: ${containerId}`);
+    
+    // Global variables for this audio player instance
+    let currentAudioIndex = 0;
+    let totalAudioCount = 0;
+    let audioFiles = [];
+    
+    // Initialize the audio player with data
+    function initializeAudioPlayer(data) {
+        console.log(`🎵 Initializing audio player with data:`, data);
+        
+        if (!data || !data.audioFiles || data.audioFiles.length === 0) {
+            showNoAudioMessage();
+            return;
+        }
+        
+        audioFiles = data.audioFiles;
+        totalAudioCount = audioFiles.length;
+        currentAudioIndex = 0;
+        
+        // Create audio players
+        createAudioPlayers();
+        
+        // Setup navigation if multiple tracks
+        if (totalAudioCount > 1) {
+            setupMultiAudioNavigation();
+        }
+        
+        // Remove loading state
+        removeLoadingState();
+        
+        console.log(`✅ Audio player initialized with ${totalAudioCount} tracks`);
+    }
+    
+    function createAudioPlayers() {
+        const playersContainer = document.getElementById(`audio-players-${containerId}`);
+        if (!playersContainer) return;
+        
+        const playersHtml = audioFiles.map((audioFile, index) => {
+            const displayTitle = extractMovementTitle(audioFile.title) || audioFile.title;
+            const shouldShowTitle = audioFile.numberOfMovements > 1 || audioFile.movementTitle;
+            
+            let titleHtml = '';
+            if (shouldShowTitle && displayTitle) {
+                titleHtml = `
+                    <div class="composition-audio-title movement-title">
+                        🎵 ${displayTitle}
+                    </div>
+                `;
+            }
+            
+            let metadataHtml = '';
+            if (audioFile.performanceBy || audioFile.recordingDate) {
+                metadataHtml = `
+                    <div class="composition-audio-metadata">
+                        ${audioFile.performanceBy ? `<div class="performance-info">Performed by: ${audioFile.performanceBy}</div>` : ''}
+                        ${audioFile.recordingDate ? `<div>Recorded: ${formatDate(audioFile.recordingDate)}</div>` : ''}
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="composition-audio-player" data-audio-index="${index}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
+                    ${titleHtml}
+                    ${metadataHtml}
+                    <audio controls preload="metadata" data-audio-id="${audioFile.id}">
+                        <source src="${audioFile.url}" type="audio/mpeg">
+                        <source src="${audioFile.url}" type="audio/mp4">
+                        <source src="${audioFile.url}" type="audio/wav">
+                        <source src="${audioFile.url}" type="audio/ogg">
+                        Your browser does not support the audio element.
+                    </audio>
+                    ${audioFile.duration ? `<div class="audio-duration">Duration: ${audioFile.duration}</div>` : ''}
+                </div>
+            `;
+        }).join('');
+        
+        playersContainer.innerHTML = playersHtml;
+    }
+    
+    function setupMultiAudioNavigation() {
+        const navContainer = document.getElementById(`audio-nav-${containerId}`);
+        const navDivider = document.getElementById(`audio-nav-divider-${containerId}`);
+        const prevBtn = document.getElementById(`prev-audio-${containerId}`);
+        const nextBtn = document.getElementById(`next-audio-${containerId}`);
+        const navInfo = document.getElementById(`audio-nav-info-${containerId}`);
+        
+        if (!navContainer) return;
+        
+        // Show navigation elements
+        if (navDivider) navDivider.style.display = 'block';
+        navContainer.style.display = 'flex';
+        
+        // Setup event listeners
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => previousAudio());
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => nextAudio());
+        }
+        
+        // Update initial state
+        updateNavigationState();
+    }
+    
+    function switchToAudio(index) {
+        if (index < 0 || index >= totalAudioCount) return;
+        
+        const playersContainer = document.getElementById(`audio-players-${containerId}`);
+        if (!playersContainer) return;
+        
+        const allPlayers = playersContainer.querySelectorAll('.composition-audio-player');
+        
+        // Hide current player
+        if (allPlayers[currentAudioIndex]) {
+            allPlayers[currentAudioIndex].style.display = 'none';
+            const currentAudio = allPlayers[currentAudioIndex].querySelector('audio');
+            if (currentAudio && !currentAudio.paused) {
+                currentAudio.pause();
+            }
+        }
+        
+        // Show new player
+        currentAudioIndex = index;
+        if (allPlayers[currentAudioIndex]) {
+            allPlayers[currentAudioIndex].style.display = 'block';
+        }
+        
+        updateNavigationState();
+    }
+    
+    function previousAudio() {
+        if (currentAudioIndex > 0) {
+            switchToAudio(currentAudioIndex - 1);
+        }
+    }
+    
+    function nextAudio() {
+        if (currentAudioIndex < totalAudioCount - 1) {
+            switchToAudio(currentAudioIndex + 1);
+        }
+    }
+    
+    function updateNavigationState() {
+        const prevBtn = document.getElementById(`prev-audio-${containerId}`);
+        const nextBtn = document.getElementById(`next-audio-${containerId}`);
+        const navInfo = document.getElementById(`audio-nav-info-${containerId}`);
+        
+        if (prevBtn) {
+            prevBtn.disabled = currentAudioIndex === 0;
+        }
+        
+        if (nextBtn) {
+            nextBtn.disabled = currentAudioIndex === totalAudioCount - 1;
+        }
+        
+        if (navInfo) {
+            navInfo.textContent = `Movement ${currentAudioIndex + 1} of ${totalAudioCount}`;
+        }
+    }
+    
+    function showNoAudioMessage() {
+        const playersContainer = document.getElementById(`audio-players-${containerId}`);
+        if (!playersContainer) return;
+        
+        playersContainer.innerHTML = `
+            <div style="padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; margin: 1rem 0;">
+                <h4 style="color: #856404; margin: 0 0 10px 0;">⚠️ No Audio Found</h4>
+                <p style="color: #856404; margin: 0; font-size: 0.9rem;">
+                    No audio files are available for this composition.
+                </p>
+            </div>
+        `;
+    }
+    
+    function removeLoadingState() {
+        const loadingElement = document.querySelector(`#audio-players-${containerId} .audio-loading`);
+        if (loadingElement) {
+            loadingElement.remove();
+        }
+    }
+    
+    // Utility functions
+    function extractMovementTitle(title) {
+        if (!title) return '';
+        
+        const dashMatch = title.match(/^.+?\s*-\s*(.+)$/);
+        if (dashMatch && dashMatch[1]) {
+            return dashMatch[1].trim();
+        }
+        
+        return title;
+    }
+    
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    }
+    
+    // Expose initialization function globally
+    window[`initAudioPlayer_${containerId}`] = initializeAudioPlayer;
+    
+    console.log(`🎵 Audio Player Component ready: ${containerId}`);
+})();
+</script> 

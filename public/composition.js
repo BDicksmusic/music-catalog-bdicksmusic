@@ -272,51 +272,42 @@ function renderComposition(comp) {
     }
 
     // ============================================
-    // NEW COMBINED CONTAINER: Title & Meta Information (Left-Right Layout)
+    // TITLE SECTION: Title & Instrument (Left Side)
     // ============================================
-    console.log('📝 Rendering Combined Container: Title Left, Meta Right');
-    const titleInstrumentContainer = document.querySelector('.composition-title-container');
-    if (titleInstrumentContainer) {
+    console.log('📝 Rendering Title Section');
+    const titleSection = document.querySelector('.composition-title-section');
+    if (titleSection) {
+        titleSection.innerHTML = `
+            <h1 class="composition-title">${comp.title || 'Untitled'}</h1>
+            <div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>
+        `;
+    }
+
+    // ============================================
+    // META CONTAINER: Duration & Short Instruments (Right Side)
+    // ============================================
+    console.log('📊 Rendering Meta Container');
+    const metaContainer = document.querySelector('.composition-meta-container');
+    if (metaContainer) {
         // Use Notion short instrument list if available, otherwise extract from full instrumentation
         const shortInstrumentList = comp.shortInstrumentList || extractShortInstrumentList(comp.instrumentation || '');
         
-        // Debug log (browser-safe)
-        console.log('📊 Combined Container populated:', {
-            title: comp.title,
-            instrumentation: comp.instrumentation,
-            shortInstrumentList: shortInstrumentList,
-            duration: comp.duration
+        console.log('📊 Meta Container populated:', {
+            duration: comp.duration,
+            shortInstrumentList: shortInstrumentList
         });
         
-        titleInstrumentContainer.innerHTML = `
-            <div class="composition-header-combined">
-                <div class="composition-title-section">
-                    <h1 class="composition-title">${comp.title || 'Untitled'}</h1>
-                    <div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>
-                </div>
-                <div class="composition-meta-section">
-                    <div class="composition-meta">
-                        ${comp.duration ? `<strong>Duration:</strong> ${comp.duration}` : ''}
-                    </div>
-                    <div class="composition-short-instruments">
-                        ${shortInstrumentList}
-                    </div>
-                </div>
+        metaContainer.innerHTML = `
+            <div class="composition-meta">
+                ${comp.duration ? `<strong>Duration:</strong> ${comp.duration}` : ''}
+            </div>
+            <div class="composition-short-instruments">
+                ${shortInstrumentList}
             </div>
         `;
     }
 
-    // Also populate individual containers for backwards compatibility
-    const instrumentContainer = document.querySelector('.composition-instrument-container');
-    if (instrumentContainer) {
-        instrumentContainer.innerHTML = `<div class="composition-instrument">${comp.instrumentation || 'Unknown'}</div>`;
-    }
-
-    // Clear the old meta container since it's now part of the combined container
-    const metaContainer = document.querySelector('.composition-meta-container');
-    if (metaContainer) {
-        metaContainer.innerHTML = '';
-    }
+    // ✅ UPDATED: Meta container now populated above with new structure
 
     // ============================================
     // CONTAINER 3: Layout Builder Navigation
@@ -358,263 +349,128 @@ function renderComposition(comp) {
     }
 
     // ============================================
-    // CONTAINER 5: Audio Container (Enhanced Multi-Audio Player)
+    // MODULAR AUDIO PLAYER: Load Component and Initialize with Data
     // ============================================
-    console.log('🎵 Rendering Container 5: Audio Container');
-    console.log('🎵 DEBUG - Audio rendering check:', {
+    console.log('🎵 Loading Modular Audio Player Component');
+    console.log('🎵 DEBUG - Audio data check:', {
         audioFiles: comp.audioFiles?.length || 0,
         audioLink: comp.audioLink ? 'YES' : 'NO',
         hasLegacyAudio: comp.audioLink && (!comp.audioFiles || comp.audioFiles.length === 0)
     });
-    const audioContainer = document.querySelector('.composition-audio-container');
-if (audioContainer) {
-    const audioFiles = comp.audioFiles || [];
-    const hasLegacyAudio = comp.audioLink && !audioFiles.length;
     
-    console.log('🎵 Audio debug info:');
-    console.log('- audioFiles array:', audioFiles);
-    console.log('- audioFiles.length:', audioFiles.length);
-    console.log('- legacy audioLink:', comp.audioLink);
-    console.log('- hasLegacyAudio:', hasLegacyAudio);
-    
-    // 🚨 CRITICAL FIX: Clean up any existing audio players to prevent duplicates
-    console.log('🧹 CLEANUP - Removing any existing audio players to prevent duplicates');
-    const existingPlayers = audioContainer.querySelectorAll('.composition-audio-player');
-    existingPlayers.forEach((player, index) => {
-        console.log(`🧹 CLEANUP - Removing existing player ${index}`);
-        player.remove();
-    });
-    
-    // Also clean up existing navigation controls
-    const existingNavControls = document.querySelectorAll('.audio-nav-container');
-    existingNavControls.forEach(control => {
-        console.log('🧹 CLEANUP - Removing existing navigation controls');
-        control.remove();
-    });
-    
-    // Reset globals
-    currentAudioIndex = 0;
-    totalAudioCount = 0;
-    
-    // Movement-specific debug info
-    if (audioFiles.length > 0) {
-        console.log('🎼 Movement analysis:');
-        audioFiles.forEach((audioFile, index) => {
-            console.log(`  File ${index + 1}:`, {
-                title: audioFile.title,
-                movementTitle: audioFile.movementTitle,
-                numberOfMovements: audioFile.numberOfMovements,
-                shouldShow: audioFile.numberOfMovements > 1 || audioFile.movementTitle
-            });
-        });
-    }
-    
-    if (audioFiles.length > 0 || hasLegacyAudio) {
-        // Detect if this is a multi-movement composition
-        const hasMovements = audioFiles.some(file => file.numberOfMovements > 1 || file.movementTitle);
-        const isMultiMovement = hasMovements && audioFiles.length > 1;
+    const audioPlaceholder = document.querySelector('#audio-player-placeholder');
+    if (audioPlaceholder) {
+        // Prepare audio data for the component
+        const audioFiles = comp.audioFiles || [];
+        const hasLegacyAudio = comp.audioLink && !audioFiles.length;
         
-        console.log('🎼 Composition analysis:', {
-            hasMovements,
-            isMultiMovement,
-            totalFiles: audioFiles.length
+        console.log('🎵 Preparing audio data for component:', {
+            audioFiles: audioFiles.length,
+            hasLegacyAudio: hasLegacyAudio
         });
         
-        // Add classes to container for styling
-        audioContainer.className = `composition-audio-container ${hasMovements ? 'has-movements' : 'single-composition'} ${isMultiMovement ? 'multi-movement' : ''}`;
+        let audioData = {
+            audioFiles: [],
+            hasMovements: false,
+            isMultiMovement: false
+        };
         
-        let audioPlayersHtml = '';
-        
-        // Handle new relational audio files ONLY (ignore legacy if we have new files)
         if (audioFiles.length > 0) {
-            console.log('🎵 PROCESSING - Using new audio files system (ignoring any legacy audio)');
-            
-            // Sort files by movement order (Roman numerals or numbers) with error handling
+            // Sort audio files by movement order
             try {
                 audioFiles.sort((a, b) => {
-                    try {
-                        const orderA = extractMovementOrder(a.title);
-                        const orderB = extractMovementOrder(b.title);
-                        return orderA - orderB;
-                    } catch (error) {
-                        console.error('Error sorting audio files:', error);
-                        return 0; // Keep original order if sorting fails
-                    }
-                });
-
-                // Debug: Log movement analysis for sorted files
-                console.log('🎵 Movement Analysis (sorted):');
-                audioFiles.forEach((file, index) => {
-                    try {
-                        const order = extractMovementOrder(file.title);
-                        const extractedTitle = extractMovementTitle(file.title);
-                        console.log(`  ${index + 1}. Order: ${order}, Extracted: "${extractedTitle}" from "${file.title}"`);
-                    } catch (error) {
-                        console.log(`  ${index + 1}. Error processing: "${file.title}"`);
-                    }
+                    const orderA = extractMovementOrder(a.title);
+                    const orderB = extractMovementOrder(b.title);
+                    return orderA - orderB;
                 });
             } catch (error) {
-                console.error('Error in sorting process:', error);
-                // Continue without sorting if there's an error
-            }
-
-            audioPlayersHtml = audioFiles.map((audioFile, index) => {
-                // Simple approach: just show extracted movement titles
-                let displayTitle = '';
-                let shouldShowTitle = false;
-                
-                // Try to extract title from filename
-                try {
-                    const extractedTitle = extractMovementTitle(audioFile.title);
-                    
-                    if (extractedTitle && extractedTitle.length > 0) {
-                        displayTitle = extractedTitle;
-                        shouldShowTitle = true;
-                        // Don't add Roman numeral prefix since API titles already contain them
-                    }
-                    
-                    // Debug: Log what we're creating
-                    console.log(`🎵 HTML DEBUG - Creating audio player ${index}:`, {
-                        originalTitle: audioFile.title,
-                        extractedTitle: extractedTitle,
-                        displayTitle: displayTitle,
-                        shouldShowTitle: shouldShowTitle
-                    });
-                } catch (error) {
-                    console.error('Error processing movement title:', error);
-                    shouldShowTitle = false;
-                }
-                
-                let titleHtml = '';
-                if (shouldShowTitle) {
-                    titleHtml = `
-                        <div class="composition-audio-title movement-title">
-                            🎵 ${displayTitle}
-                        </div>
-                    `;
-                }
-                // If no movement title to show, leave titleHtml empty (hidden by default)
-                
-                let metadataHtml = '';
-                if (audioFile.performanceBy || audioFile.recordingDate) {
-                    metadataHtml = `
-                        <div class="composition-audio-metadata">
-                            ${audioFile.performanceBy ? `<div class="performance-info">Performed by: ${audioFile.performanceBy}</div>` : ''}
-                            ${audioFile.recordingDate ? `<div>Recorded: ${formatDate(audioFile.recordingDate)}</div>` : ''}
-                        </div>
-                    `;
-                }
-                
-                return `
-                    <div class="composition-audio-player" data-audio-index="${index}" data-is-movement="${shouldShowTitle}">
-                        ${titleHtml}
-                        ${metadataHtml}
-                        <audio controls preload="metadata" data-audio-id="${audioFile.id}">
-                            <source src="${audioFile.url}" type="audio/mpeg">
-                            <source src="${audioFile.url}" type="audio/mp4">
-                            <source src="${audioFile.url}" type="audio/wav">
-                            <source src="${audioFile.url}" type="audio/ogg">
-                            Your browser does not support the audio element.
-                        </audio>
-                        ${audioFile.duration ? `<div class="audio-duration">Duration: ${audioFile.duration}</div>` : ''}
-                    </div>
-                `;
-            }).join('');
-            
-            // Set the correct total count for navigation
-            totalAudioCount = audioFiles.length;
-            console.log('🎵 FINAL COUNT - Set totalAudioCount to:', totalAudioCount);
-        }
-        // Handle legacy single audio link ONLY if no new audio files exist
-        else if (hasLegacyAudio) {
-            console.log('🎵 PROCESSING - Using legacy audio system');
-            // Legacy audio - no movement data available, so hide title by default
-            let metadataHtml = '';
-            if (comp.performanceBy || comp.recordingDate) {
-                metadataHtml = `
-                    <div class="composition-audio-metadata">
-                        ${comp.performanceBy ? `<div class="performance-info">Performed by: ${comp.performanceBy}</div>` : ''}
-                        ${comp.recordingDate ? `<div>Recorded: ${comp.recordingDate}</div>` : ''}
-                    </div>
-                `;
+                console.error('Error sorting audio files:', error);
             }
             
-            audioPlayersHtml = `
-                <div class="composition-audio-player legacy-audio" data-is-movement="false">
-                    <!-- Title hidden by default for legacy audio (no movement data) -->
-                    ${metadataHtml}
-                    <audio controls preload="metadata">
-                        <source src="${comp.audioLink}" type="audio/mpeg">
-                        <source src="${comp.audioLink}" type="audio/mp4">
-                        <source src="${comp.audioLink}" type="audio/wav">
-                        <source src="${comp.audioLink}" type="audio/ogg">
-                        Your browser does not support the audio element.
-                    </audio>
-                </div>
-            `;
+            audioData.audioFiles = audioFiles;
+            audioData.hasMovements = audioFiles.some(file => file.numberOfMovements > 1 || file.movementTitle);
+            audioData.isMultiMovement = audioData.hasMovements && audioFiles.length > 1;
             
-            // Single legacy audio file
-            totalAudioCount = 1;
-            console.log('🎵 FINAL COUNT - Set totalAudioCount to 1 (legacy)');
+        } else if (hasLegacyAudio) {
+            // Handle legacy single audio link
+            audioData.audioFiles = [{
+                id: 'legacy-audio',
+                title: comp.title || 'Audio',
+                url: comp.audioLink,
+                performanceBy: comp.performanceBy,
+                recordingDate: comp.recordingDate
+            }];
         }
         
-        // Insert the HTML into the container
-        audioContainer.innerHTML = audioPlayersHtml;
-        
-        // VERIFY: Check what was actually created
-        const actualPlayers = audioContainer.querySelectorAll('.composition-audio-player');
-        console.log('🔍 VERIFICATION - Created', actualPlayers.length, 'audio players in DOM');
-        console.log('🔍 VERIFICATION - Expected totalAudioCount:', totalAudioCount);
-        
-        if (actualPlayers.length !== totalAudioCount) {
-            console.error('🚨 MISMATCH - DOM players (' + actualPlayers.length + ') != totalAudioCount (' + totalAudioCount + ')');
-            // Fix the mismatch
-            totalAudioCount = actualPlayers.length;
-            console.log('🔧 FIXED - Updated totalAudioCount to match DOM:', totalAudioCount);
-        }
-        
-        // Reset audio index for new composition
-        currentAudioIndex = 0;
-        
-        // Check if this should be treated as a multi-movement composition
-        const compositionTitle = document.querySelector('.composition-title h1')?.textContent || '';
-        const mightHaveMovements = /suite|symphony|sonata|concerto|movements?/i.test(compositionTitle);
-        
-        // Force multi-movement treatment for known compositions
-        if (audioFiles.length === 1 && mightHaveMovements) {
-            console.log('🎵 Single file detected for composition that might have movements');
-            // Add a temporary message
-            const tempMessage = document.createElement('div');
-            tempMessage.style.cssText = 'padding: 10px; margin: 10px 0; background: #f0f8ff; border-left: 4px solid #4a90e2; border-radius: 4px; font-size: 0.9em; color: #2c5282;';
-            tempMessage.innerHTML = '🎵 <strong>Note:</strong> Individual movement files may be available - check your Notion Media database to link them to this composition.';
-            audioContainer.appendChild(tempMessage);
-        }
-        
-        // For multiple audio files, show only the first one initially
-        if (totalAudioCount > 1) {
-            const audioPlayers = audioContainer.querySelectorAll('.composition-audio-player');
-            console.log('🎵 INITIAL SETUP - Setting up display states for', audioPlayers.length, 'players');
-            audioPlayers.forEach((player, index) => {
-                const title = player.querySelector('.composition-audio-title')?.textContent || 
-                             player.querySelector('.audio-title')?.textContent || 
-                             player.querySelector('h4')?.textContent || 'No title';
-                if (index === 0) {
-                    player.style.display = 'block';
-                    console.log(`🎵 INITIAL SETUP - Player ${index} VISIBLE: "${title}"`);
-                } else {
-                    player.style.display = 'none';
-                    console.log(`🎵 INITIAL SETUP - Player ${index} HIDDEN: "${title}"`);
-                }
-            });
-            
-            // Add multi-audio navigation controls
-            console.log('🎵 Adding multi-audio controls for', totalAudioCount, 'audio files');
-            addMultiAudioControls(audioContainer, totalAudioCount);
-        }
+        // Load the audio player component
+        loadAudioPlayerComponent(audioData);
     } else {
-        audioContainer.style.display = 'none';
+        // No audio data available
+        console.log('🎵 No audio data available for this composition');
+        audioPlaceholder.innerHTML = `
+            <div style="padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; margin: 1rem 0;">
+                <h4 style="color: #856404; margin: 0 0 10px 0;">⚠️ No Audio Found</h4>
+                <p style="color: #856404; margin: 0; font-size: 0.9rem;">
+                    No audio files are linked to this composition in the Media database. 
+                    Please check that audio files are properly related via "Audio to Comp" relations.
+                </p>
+            </div>
+        `;
     }
-}
+    
+    // Component loading function
+    async function loadAudioPlayerComponent(audioData) {
+        try {
+            console.log('🎵 Loading audio player component with data:', audioData);
+            
+            // Generate unique container ID
+            const containerId = `composition-${Date.now()}`;
+            
+            // Use ComponentLoader to fetch and inject the component
+            if (typeof window.ComponentLoader !== 'undefined' && window.ComponentLoader.fetchComponent) {
+                const componentHtml = await window.ComponentLoader.fetchComponent('audio-player');
+                
+                if (componentHtml) {
+                    // Replace template variables
+                    const processedHtml = componentHtml.replace(/{{containerId}}/g, containerId);
+                    audioPlaceholder.innerHTML = processedHtml;
+                    
+                    // Wait a bit for the component to initialize, then pass data
+                    setTimeout(() => {
+                        const initFunction = window[`initAudioPlayer_${containerId}`];
+                        if (initFunction && typeof initFunction === 'function') {
+                            console.log('🎵 Initializing audio player component with data');
+                            initFunction(audioData);
+                        } else {
+                            console.error('🎵 Audio player initialization function not found:', `initAudioPlayer_${containerId}`);
+                        }
+                    }, 200);
+                    
+                } else {
+                    console.error('🎵 Failed to load audio player component');
+                    showAudioLoadError();
+                }
+            } else {
+                console.error('🎵 ComponentLoader not available, falling back to basic display');
+                showAudioLoadError();
+            }
+            
+        } catch (error) {
+            console.error('🎵 Error loading audio player component:', error);
+            showAudioLoadError();
+        }
+    }
+    
+    function showAudioLoadError() {
+        audioPlaceholder.innerHTML = `
+            <div style="padding: 20px; background: #ffe6e6; border: 2px solid #ff9999; border-radius: 8px; margin: 1rem 0;">
+                <h4 style="color: #cc0000; margin: 0 0 10px 0;">⚠️ Audio Player Load Error</h4>
+                <p style="color: #cc0000; margin: 0; font-size: 0.9rem;">
+                    Failed to load the audio player component. Please refresh the page.
+                </p>
+            </div>
+        `;
+    }
 
 const shortInstrContainer = document.querySelector('.composition-short-instrument-container');
 if (shortInstrContainer && comp.shortInstrumentList) {
