@@ -381,13 +381,16 @@
             margin-top: 1rem;
         }
 
-        /* ===== SCORE TOGGLE BUTTON ===== */
+        /* ===== SCORE CONTROL BUTTONS ===== */
         .score-toggle-container {
             width: 100%;
             display: flex;
             justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
             margin-bottom: 1rem;
             padding: 0 1rem;
+            flex-wrap: wrap;
         }
 
         .score-toggle-btn {
@@ -464,6 +467,15 @@
             margin: 0 auto; /* Center the video when in full width */
             padding-left: 0;
             padding-right: 0;
+        }
+
+        .score-video-column.hidden {
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            pointer-events: none;
+            height: 0;
+            overflow: hidden;
         }
 
         .scores-section h3 {
@@ -637,6 +649,7 @@
 
             .score-toggle-container {
                 margin-bottom: 0.75rem;
+                gap: 0.5rem;
             }
 
             .score-toggle-btn {
@@ -876,6 +889,7 @@
 
             .score-toggle-container {
                 margin-bottom: 0.5rem;
+                gap: 0.25rem;
             }
 
             .score-toggle-btn {
@@ -965,11 +979,19 @@
  
             <!-- Scores Section (PDF + Score Video) - MOVED INSIDE MAIN -->
             <section class="scores-section" id="scores-section">
-                <!-- Score Toggle Button -->
+                <!-- Score Control Buttons -->
                 <div class="score-toggle-container">
                     <button class="score-toggle-btn" id="score-toggle-btn" onclick="toggleScorePDF()">
                         <span class="toggle-icon">▼</span>
                         <span class="toggle-text">Show Score PDF</span>
+                    </button>
+                    <button class="score-toggle-btn" id="score-video-toggle-btn" onclick="toggleScoreVideo()" style="display: none;">
+                        <span class="toggle-icon">▼</span>
+                        <span class="toggle-text">Hide Score Video</span>
+                    </button>
+                    <button class="score-toggle-btn" id="audio-control-btn" onclick="toggleAudio()" style="display: none;">
+                        <span class="toggle-icon">▶</span>
+                        <span class="toggle-text">Start Audio</span>
                     </button>
                 </div>
                 
@@ -1081,6 +1103,76 @@
                 toggleIcon.textContent = '▲';
                 toggleBtn.classList.add('toggled');
             }
+        }
+
+        // ===== SCORE VIDEO TOGGLE FUNCTIONALITY =====
+        function toggleScoreVideo() {
+            const toggleBtn = document.getElementById('score-video-toggle-btn');
+            const videoColumn = document.getElementById('score-video-column');
+            const toggleText = toggleBtn.querySelector('.toggle-text');
+            const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+            
+            // Stop any playing audio/video first
+            stopAllAudio();
+            
+            if (videoColumn.classList.contains('hidden')) {
+                // Show video content
+                videoColumn.classList.remove('hidden');
+                toggleText.textContent = 'Hide Score Video';
+                toggleIcon.textContent = '▼';
+                toggleBtn.classList.remove('toggled');
+            } else {
+                // Hide video content
+                videoColumn.classList.add('hidden');
+                toggleText.textContent = 'Show Score Video';
+                toggleIcon.textContent = '▲';
+                toggleBtn.classList.add('toggled');
+            }
+        }
+
+        // ===== AUDIO CONTROL FUNCTIONALITY =====
+        function toggleAudio() {
+            const toggleBtn = document.getElementById('audio-control-btn');
+            const toggleText = toggleBtn.querySelector('.toggle-text');
+            const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+            const audioPlayer = document.querySelector('.composition-audio-player audio');
+            
+            if (!audioPlayer) {
+                console.log('🎵 No audio player found');
+                return;
+            }
+            
+            if (audioPlayer.paused) {
+                // Start audio
+                audioPlayer.play().then(() => {
+                    toggleText.textContent = 'Stop Audio';
+                    toggleIcon.textContent = '⏸';
+                    toggleBtn.classList.add('toggled');
+                    console.log('🎵 Audio started');
+                }).catch(error => {
+                    console.error('❌ Error starting audio:', error);
+                });
+            } else {
+                // Stop audio
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+                toggleText.textContent = 'Start Audio';
+                toggleIcon.textContent = '▶';
+                toggleBtn.classList.remove('toggled');
+                console.log('🎵 Audio stopped');
+            }
+        }
+
+        // ===== UTILITY FUNCTION TO STOP ALL AUDIO =====
+        function stopAllAudio() {
+            const allAudioPlayers = document.querySelectorAll('audio, video');
+            allAudioPlayers.forEach(player => {
+                if (!player.paused) {
+                    player.pause();
+                    player.currentTime = 0;
+                }
+            });
+            console.log('🔇 All audio/video stopped');
         }
     </script>
 

@@ -835,9 +835,14 @@ if (notesContainer) {
         });
     }
 
-    // ===== SCORE TOGGLE BUTTON VISIBILITY & INITIAL LAYOUT =====
+    // ===== SCORE CONTROL BUTTONS VISIBILITY & INITIAL LAYOUT =====
     const scoreToggleBtn = document.getElementById('score-toggle-btn');
+    const scoreVideoToggleBtn = document.getElementById('score-video-toggle-btn');
+    const audioControlBtn = document.getElementById('audio-control-btn');
     const videoColumn = document.getElementById('score-video-column');
+    
+    // Check if there's an audio player on the page
+    const hasAudioPlayer = document.querySelector('.composition-audio-player audio') !== null;
     
     if (scoreToggleBtn) {
         if (hasPdfScore) {
@@ -866,6 +871,28 @@ if (notesContainer) {
                 videoColumn.classList.add('full-width');
                 console.log('📄 DEBUG - Score video in full width (no PDF available)');
             }
+        }
+    }
+    
+    // Show/hide score video toggle button
+    if (scoreVideoToggleBtn) {
+        if (hasScoreVideo) {
+            scoreVideoToggleBtn.style.display = 'inline-flex';
+            console.log('🎥 DEBUG - Score video toggle button shown (score video available)');
+        } else {
+            scoreVideoToggleBtn.style.display = 'none';
+            console.log('🎥 DEBUG - Score video toggle button hidden (no score video available)');
+        }
+    }
+    
+    // Show/hide audio control button
+    if (audioControlBtn) {
+        if (hasAudioPlayer) {
+            audioControlBtn.style.display = 'inline-flex';
+            console.log('🎵 DEBUG - Audio control button shown (audio player available)');
+        } else {
+            audioControlBtn.style.display = 'none';
+            console.log('🎵 DEBUG - Audio control button hidden (no audio player available)');
         }
     }
     
