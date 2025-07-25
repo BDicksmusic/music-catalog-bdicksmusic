@@ -858,31 +858,13 @@ if (notesContainer) {
                 scoreCarousel.classList.remove('show'); // PDF starts hidden
             }
             
-            // Check if there's a score video and set it to full width initially
-            if (videoColumn && hasScoreVideo) {
-                videoColumn.classList.add('full-width');
-                // Set layout container to video-only since PDF starts hidden
-                if (layoutContainer) {
-                    layoutContainer.classList.add('video-only');
-                    layoutContainer.classList.remove('pdf-only');
-                }
-                console.log('📄 DEBUG - Score video set to full width initially (video-only layout)');
-            }
+            console.log('📄 DEBUG - Initial layout will be handled by ScoreLayoutManager');
         } else {
             // Hide toggle button if no PDF score available
             scoreToggleBtn.style.display = 'none';
             console.log('📄 DEBUG - Score toggle button hidden (no PDF score available)');
             
-            // If no PDF but there's a score video, keep it in full width
-            if (videoColumn && hasScoreVideo) {
-                videoColumn.classList.add('full-width');
-                // Set layout container to video-only
-                if (layoutContainer) {
-                    layoutContainer.classList.add('video-only');
-                    layoutContainer.classList.remove('pdf-only');
-                }
-                console.log('📄 DEBUG - Score video in full width (no PDF available, video-only layout)');
-            }
+            console.log('📄 DEBUG - Layout will be handled by ScoreLayoutManager');
         }
     }
     
@@ -908,47 +890,8 @@ if (notesContainer) {
         }
     }
 
-    // Show/hide resizable divider (only on desktop)
-    if (scoreDivider) {
-        const isDesktop = window.innerWidth >= 1024; // Only show on desktop
-        if (hasPdfScore && hasScoreVideo && isDesktop) {
-            scoreDivider.classList.remove('divider-handle-hidden');
-            console.log('🔧 DEBUG - Resizable divider shown (both PDF and video available on desktop)');
-        } else {
-            scoreDivider.classList.add('divider-handle-hidden');
-            console.log('🔧 DEBUG - Resizable divider hidden (not both PDF and video available or not desktop)');
-        }
-    }
-
-    // Handle PDF centering when no video is available
-    const pdfColumn = document.getElementById('score-pdf-column');
-    if (pdfColumn && hasPdfScore && !hasScoreVideo) {
-        pdfColumn.classList.add('full-width');
-        console.log('📄 DEBUG - PDF centered (no video available)');
-    }
-
-    // Set initial layout container classes based on what's available
-    if (layoutContainer) {
-        if (hasPdfScore && hasScoreVideo) {
-            // Both available - no special class needed initially (PDF starts hidden)
-            layoutContainer.classList.remove('video-only', 'pdf-only', 'has-content');
-            console.log('🔧 DEBUG - Layout container: both PDF and video available');
-        } else if (hasPdfScore && !hasScoreVideo) {
-            // Only PDF available
-            layoutContainer.classList.add('pdf-only', 'has-content');
-            layoutContainer.classList.remove('video-only');
-            console.log('🔧 DEBUG - Layout container: PDF only');
-        } else if (!hasPdfScore && hasScoreVideo) {
-            // Only video available
-            layoutContainer.classList.add('video-only', 'has-content');
-            layoutContainer.classList.remove('pdf-only');
-            console.log('🔧 DEBUG - Layout container: video only');
-        } else {
-            // Neither available
-            layoutContainer.classList.remove('video-only', 'pdf-only', 'has-content');
-            console.log('🔧 DEBUG - Layout container: neither PDF nor video available');
-        }
-    }
+    // Layout management is now handled by ScoreLayoutManager
+    console.log('🔧 DEBUG - Layout management delegated to ScoreLayoutManager');
     
     // New Structured Composition Details System
     // Related Works Carousel Component
