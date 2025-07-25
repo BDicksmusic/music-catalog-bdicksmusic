@@ -31,10 +31,10 @@
         .composition-main {
             display: grid;
             grid-template-columns: 300px 1fr;
-            gap: 2rem;
+            gap: 3.5rem; /* ✨ INCREASED: Much larger gap to prevent conflicts */
             width: 100%;
             max-width: 100%;
-            margin: 0.5rem auto 0; /* ✨ REDUCED margin to move content up */
+            margin: 0.5rem auto 0;
             padding: 0 0.5rem;
             box-sizing: border-box;
             justify-content: start;
@@ -64,10 +64,10 @@
         .composition-content-container {
             flex: 1 1 0;
             min-width: 0;
-            margin-top: -1rem; /* ✨ MOVE UP to align better with cover photo */
+            margin-top: 0; /* ✨ RESET: With larger gap, no need for negative margin */
             display: flex;
             flex-direction: column;
-            gap: 0.75rem; /* ✨ TIGHTER spacing to bring navigation closer to title */
+            gap: 0.75rem;
         }
 
         .composition-info {
@@ -84,12 +84,13 @@
         .composition-title-container {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: flex-start; /* ✨ KEEP: Aligns both sections to top */
             width: 100%;
             gap: 2rem;
-            margin-bottom: 0; /* ✨ REMOVED margin, using gap from parent container */
-            padding-bottom: 1rem; /* ✨ REDUCED padding for tighter spacing */
+            margin-bottom: 0;
+            padding-bottom: 1rem;
             border-bottom: 2px solid var(--gray-100);
+            min-height: fit-content; /* ✨ ADDED: Ensure proper height calculation */
         }
 
         .composition-title-section {
@@ -99,6 +100,8 @@
             align-items: flex-start;
             justify-content: flex-start;
             min-width: 0;
+            margin-top: 0; /* ✨ ENSURE: No extra margin pushing content down */
+            padding-top: 0; /* ✨ ENSURE: No extra padding */
         }
 
         .composition-meta-container {
@@ -106,8 +109,11 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
+            justify-content: flex-start; /* ✨ ADDED: Align to same baseline as title */
             text-align: right;
             min-width: fit-content;
+            margin-top: 0; /* ✨ ENSURE: No extra margin */
+            padding-top: 0; /* ✨ ENSURE: No extra padding */
             /* ✨ REMOVED: background, padding, border for clean minimal look */
         }
 
@@ -120,7 +126,8 @@
             font-weight: 300;
             letter-spacing: -0.02em;
             line-height: 1.2;
-            margin-bottom: 0.5rem;
+            margin: 0; /* ✨ RESET: Remove all margins for precise alignment */
+            margin-bottom: 0.5rem; /* ✨ KEEP: Only bottom margin for spacing */
         }
 
         .composition-instrument {
@@ -134,7 +141,9 @@
             font-size: 0.98rem;
             font-weight: 500;
             color: var(--primary-700);
-            margin-bottom: 0.5rem;
+            margin: 0; /* ✨ RESET: Remove all margins for alignment */
+            margin-bottom: 0.5rem; /* ✨ KEEP: Only bottom margin for spacing */
+            line-height: 1.2; /* ✨ MATCH: Same line height as title for alignment */
         }
 
         .composition-short-instruments {
