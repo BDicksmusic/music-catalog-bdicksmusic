@@ -239,29 +239,45 @@
     .hero-nav-dots {
         display: flex;
         justify-content: center;
-        gap: 0.75rem;
-        margin-top: 1rem;
+        gap: 1rem;
+        margin-top: 1.5rem;
     }
 
     .dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        border: 2px solid var(--gray-300);
-        background: transparent;
+        width: 40px;
+        height: 4px;
+        border-radius: 2px;
+        border: none;
+        background: rgba(255, 255, 255, 0.3);
         cursor: pointer;
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
 
     .dot.active {
-        background: var(--primary-400);
-        border-color: var(--primary-400);
-        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
     }
 
     .dot:hover {
-        border-color: var(--primary-300);
-        transform: scale(1.2);
+        background: rgba(255, 255, 255, 0.5);
+        transform: scaleX(1.2);
+    }
+
+    .dot::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .dot:hover::before {
+        left: 100%;
     }
 
     @media (max-width: 768px) {
@@ -1930,21 +1946,21 @@
                     <div class="hero-role active" data-role="composer">
                         <h2 class="hero-role-title">Composer</h2>
                         <p class="hero-role-description">Creating original compositions that inspire and challenge musicians</p>
-                        <a href="#compositions" class="explore-btn" onclick="smoothScrollTo('#compositions'); return false;">
+                        <a href="/music-catalog.html" class="explore-btn secondary">
                             🎼 Explore Compositions
-    </a>
+                        </a>
 </div>
                     <div class="hero-role" data-role="trumpeter">
                         <h2 class="hero-role-title">Trumpeter</h2>
                         <p class="hero-role-description">Bringing brass music to life through performance and artistry</p>
-                        <a href="#performances" class="explore-btn" onclick="smoothScrollTo('#performances'); return false;">
+                        <a href="/media.html" class="explore-btn secondary">
                             🎺 View Performances
                         </a>
                     </div>
                     <div class="hero-role" data-role="educator">
                         <h2 class="hero-role-title">Educator</h2>
                         <p class="hero-role-description">Empowering students and organizing musical experiences with innovative tools</p>
-                        <a href="#education" class="explore-btn" onclick="smoothScrollTo('#education'); return false;">
+                        <a href="/about.html" class="explore-btn secondary">
                             📚 Discover Resources
                         </a>
                     </div>
