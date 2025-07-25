@@ -426,14 +426,14 @@
         }
 
         .score-pdf-column {
-            flex: 1 1 45%;
+            flex: 1 1 60%; /* Larger space for PDF */
             display: flex;
             flex-direction: column;
             min-width: 280px;
-            max-width: 600px;
+            max-width: 800px;
             opacity: 0;
             transform: translateX(-20px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             pointer-events: none;
         }
 
@@ -444,7 +444,7 @@
         }
 
         .score-video-column {
-            flex: 1 1 45%;
+            flex: 1 1 40%; /* Smaller space for video */
             display: flex;
             flex-direction: column;
             padding-left: 1rem;
@@ -454,7 +454,10 @@
 
         .score-video-column.full-width {
             flex: 1 1 100%;
-            max-width: 800px;
+            max-width: 1000px;
+            margin: 0 auto; /* Center the video when in full width */
+            padding-left: 0;
+            padding-right: 0;
         }
 
         .scores-section h3 {
@@ -668,6 +671,7 @@
             .score-video-column.full-width {
                 flex: 1 1 100%;
                 max-width: 100%;
+                margin: 0 auto;
             }
 
             .program-video-section {
@@ -941,6 +945,7 @@
             .score-video-column.full-width {
                 flex: 1 1 100%;
                 max-width: 100%;
+                margin: 0 auto;
             }
         }
     </style>
@@ -1099,17 +1104,26 @@
             const toggleText = toggleBtn.querySelector('.toggle-text');
             const toggleIcon = toggleBtn.querySelector('.toggle-icon');
             
+            // Check if there's a score video to determine layout
+            const hasScoreVideo = videoColumn && videoColumn.children.length > 0 && 
+                                 videoColumn.querySelector('#score-video-content') && 
+                                 videoColumn.querySelector('#score-video-content').children.length > 0;
+            
             if (pdfColumn.classList.contains('show')) {
                 // Hide PDF column
                 pdfColumn.classList.remove('show');
-                videoColumn.classList.add('full-width');
+                if (hasScoreVideo) {
+                    videoColumn.classList.add('full-width');
+                }
                 toggleText.textContent = 'Show Score PDF';
                 toggleIcon.textContent = '▼';
                 toggleBtn.classList.remove('toggled');
             } else {
                 // Show PDF column
                 pdfColumn.classList.add('show');
-                videoColumn.classList.remove('full-width');
+                if (hasScoreVideo) {
+                    videoColumn.classList.remove('full-width');
+                }
                 toggleText.textContent = 'Hide Score PDF';
                 toggleIcon.textContent = '▲';
                 toggleBtn.classList.add('toggled');

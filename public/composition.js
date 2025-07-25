@@ -835,17 +835,37 @@ if (notesContainer) {
         });
     }
 
-    // ===== SCORE TOGGLE BUTTON VISIBILITY =====
+    // ===== SCORE TOGGLE BUTTON VISIBILITY & INITIAL LAYOUT =====
     const scoreToggleBtn = document.getElementById('score-toggle-btn');
+    const videoColumn = document.getElementById('score-video-column');
+    
     if (scoreToggleBtn) {
         if (hasPdfScore) {
             // Show toggle button if there's a PDF score available
             scoreToggleBtn.style.display = 'inline-flex';
             console.log('📄 DEBUG - Score toggle button shown (PDF score available)');
+            
+            // Set initial layout: PDF hidden, video in full width if it exists
+            const pdfColumn = document.getElementById('score-pdf-column');
+            if (pdfColumn) {
+                pdfColumn.classList.remove('show'); // PDF starts hidden
+            }
+            
+            // Check if there's a score video and set it to full width initially
+            if (videoColumn && hasScoreVideo) {
+                videoColumn.classList.add('full-width');
+                console.log('📄 DEBUG - Score video set to full width initially');
+            }
         } else {
             // Hide toggle button if no PDF score available
             scoreToggleBtn.style.display = 'none';
             console.log('📄 DEBUG - Score toggle button hidden (no PDF score available)');
+            
+            // If no PDF but there's a score video, keep it in full width
+            if (videoColumn && hasScoreVideo) {
+                videoColumn.classList.add('full-width');
+                console.log('📄 DEBUG - Score video in full width (no PDF available)');
+            }
         }
     }
     
