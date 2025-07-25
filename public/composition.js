@@ -907,6 +907,13 @@ if (notesContainer) {
             console.log('🔧 DEBUG - Resizable divider hidden (not both PDF and video available)');
         }
     }
+
+    // Handle PDF centering when no video is available
+    const pdfColumn = document.getElementById('score-pdf-column');
+    if (pdfColumn && hasPdfScore && !hasScoreVideo) {
+        pdfColumn.classList.add('full-width');
+        console.log('📄 DEBUG - PDF centered (no video available)');
+    }
     
     // New Structured Composition Details System
     // Related Works Carousel Component

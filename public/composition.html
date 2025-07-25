@@ -807,6 +807,12 @@
                 margin: 0 auto;
             }
 
+            .score-pdf-column.full-width {
+                flex: 1 1 100%;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+
             .program-video-section {
                 flex-direction: column;
                 gap: 1.5rem;
@@ -1044,6 +1050,12 @@
                 max-width: 100%;
                 margin: 0 auto;
             }
+
+            .score-pdf-column.full-width {
+                flex: 1 1 100%;
+                max-width: 100%;
+                margin: 0 auto;
+            }
         }
     </style>
 </head>
@@ -1216,6 +1228,7 @@
             const toggleBtn = document.getElementById('score-toggle-btn');
             const scoreCarousel = document.getElementById('score-carousel-container');
             const videoColumn = document.getElementById('score-video-column');
+            const pdfColumn = document.getElementById('score-pdf-column');
             const scoreDivider = document.getElementById('score-divider');
             const toggleText = toggleBtn.querySelector('.toggle-text');
             const toggleIcon = toggleBtn.querySelector('.toggle-icon');
@@ -1230,6 +1243,7 @@
                 scoreCarousel.classList.remove('show');
                 if (hasScoreVideo) {
                     videoColumn.classList.add('full-width');
+                    pdfColumn.classList.remove('full-width'); // Remove full-width from PDF
                     // Hide divider when PDF is hidden
                     if (scoreDivider) {
                         scoreDivider.style.display = 'none';
@@ -1243,10 +1257,14 @@
                 scoreCarousel.classList.add('show');
                 if (hasScoreVideo) {
                     videoColumn.classList.remove('full-width');
+                    pdfColumn.classList.remove('full-width'); // Remove full-width from PDF when both are shown
                     // Show divider when both PDF and video are visible
                     if (scoreDivider) {
                         scoreDivider.style.display = 'flex';
                     }
+                } else {
+                    // If no video, center the PDF
+                    pdfColumn.classList.add('full-width');
                 }
                 toggleText.textContent = 'Hide Score PDF';
                 toggleIcon.textContent = '▲';
@@ -1258,6 +1276,7 @@
         function toggleScoreVideo() {
             const toggleBtn = document.getElementById('score-video-toggle-btn');
             const videoColumn = document.getElementById('score-video-column');
+            const pdfColumn = document.getElementById('score-pdf-column');
             const scoreDivider = document.getElementById('score-divider');
             const scoreCarousel = document.getElementById('score-carousel-container');
             const toggleText = toggleBtn.querySelector('.toggle-text');
@@ -1269,6 +1288,7 @@
             if (videoColumn.classList.contains('hidden')) {
                 // Show video content
                 videoColumn.classList.remove('hidden');
+                pdfColumn.classList.remove('full-width'); // Remove full-width from PDF
                 toggleText.textContent = 'Hide Score Video';
                 toggleIcon.textContent = '▼';
                 toggleBtn.classList.remove('toggled');
@@ -1280,6 +1300,7 @@
             } else {
                 // Hide video content
                 videoColumn.classList.add('hidden');
+                pdfColumn.classList.add('full-width'); // Add full-width to PDF for centering
                 toggleText.textContent = 'Show Score Video';
                 toggleIcon.textContent = '▲';
                 toggleBtn.classList.add('toggled');
