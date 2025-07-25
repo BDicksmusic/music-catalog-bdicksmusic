@@ -1,0 +1,164 @@
+<!-- Related Works Carousel Component Usage Examples -->
+
+<!-- 
+HOW TO USE THE RELATED WORKS CAROUSEL COMPONENT:
+
+1. Include the component loader in your HTML:
+   <script src="/includes/component-loader.js"></script>
+
+2. Add a placeholder div where you want the carousel:
+   <div id="my-related-works-placeholder"></div>
+
+3. Load and initialize the component with your data:
+-->
+
+<script>
+    // Example 1: Load component with existing data
+    async function loadRelatedWorksExample1() {
+        const placeholder = document.getElementById('my-related-works-placeholder');
+        
+        // Your composition data (from API or other source)
+        const compositions = [
+            {
+                id: '123',
+                title: 'Example Composition 1',
+                instrumentation: 'Brass Quintet',
+                slug: 'example-composition-1',
+                coverImage: '/path/to/cover1.jpg'
+            },
+            {
+                id: '456',
+                title: 'Example Composition 2',
+                instrumentation: 'Solo Piano',
+                slug: 'example-composition-2',
+                coverImage: '/path/to/cover2.jpg'
+            }
+        ];
+        
+        await loadRelatedWorksCarouselComponent(compositions, placeholder);
+    }
+
+    // Example 2: Load component with custom title
+    async function loadRelatedWorksExample2() {
+        const placeholder = document.getElementById('my-related-works-placeholder');
+        
+        // Generate unique container ID
+        const containerId = `related-works-${Date.now()}`;
+        
+        // Fetch component HTML
+        const componentHtml = await window.ComponentLoader.fetchComponent('related-works-carousel');
+        
+        // Replace template variables with custom values
+        const processedHtml = componentHtml
+            .replace(/{{containerId}}/g, containerId)
+            .replace(/{{title}}/g, 'Featured Works'); // Custom title
+        
+        placeholder.innerHTML = processedHtml;
+        
+        // Initialize with data
+        setTimeout(() => {
+            const initFunction = window[`initRelatedWorksCarousel_${containerId}`];
+            if (initFunction) {
+                initFunction(yourCompositionsData);
+            }
+        }, 200);
+    }
+
+    // Example 3: Load component for home page
+    async function loadHomePageRelatedWorks() {
+        const placeholder = document.getElementById('home-related-works');
+        
+        // Fetch compositions from API
+        try {
+            const response = await fetch('/api/compositions');
+            const data = await response.json();
+            
+            if (data.success && data.compositions) {
+                // Take first 6 compositions for home page
+                const featuredCompositions = data.compositions.slice(0, 6);
+                await loadRelatedWorksCarouselComponent(featuredCompositions, placeholder);
+            }
+        } catch (error) {
+            console.error('Error loading home page related works:', error);
+        }
+    }
+
+    // Example 4: Load component for genre page
+    async function loadGenrePageRelatedWorks(genre) {
+        const placeholder = document.getElementById('genre-related-works');
+        
+        try {
+            const response = await fetch(`/api/compositions/genre/${genre}`);
+            const data = await response.json();
+            
+            if (data.success && data.compositions) {
+                await loadRelatedWorksCarouselComponent(data.compositions, placeholder);
+            }
+        } catch (error) {
+            console.error('Error loading genre related works:', error);
+        }
+    }
+</script>
+
+<!-- 
+HTML STRUCTURE EXAMPLES:
+
+1. Home Page:
+<div id="home-related-works"></div>
+
+2. Genre Page:
+<div id="genre-related-works"></div>
+
+3. Multiple carousels on same page:
+<div id="featured-works"></div>
+<div id="recent-works"></div>
+<div id="popular-works"></div>
+
+4. Custom styling wrapper:
+<div class="my-custom-wrapper">
+    <div id="my-related-works"></div>
+</div>
+-->
+
+<style>
+    /* Custom styling examples */
+    
+    /* Example: Different background for home page */
+    .home-page .related-works-carousel-component {
+        background: linear-gradient(135deg, var(--primary-50) 0%, var(--gray-50) 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 3rem auto;
+    }
+    
+    /* Example: Compact version for sidebar */
+    .sidebar .related-works-carousel-component {
+        max-width: 300px;
+        margin: 1rem 0;
+    }
+    
+    .sidebar .related-composition-card {
+        min-width: 140px;
+        max-width: 140px;
+    }
+    
+    .sidebar .related-composition-image {
+        height: 181px; /* 140px width * (11/8.5) */
+    }
+    
+    /* Example: Dark theme version */
+    .dark-theme .related-works-carousel-component {
+        background: var(--gray-900);
+        color: var(--gray-100);
+    }
+    
+    .dark-theme .related-works-carousel-container {
+        background: var(--gray-800);
+        border-color: var(--gray-700);
+    }
+    
+    .dark-theme .related-composition-card {
+        background: linear-gradient(145deg, var(--gray-800) 0%, var(--gray-700) 100%);
+        border-color: var(--gray-600);
+    }
+</style> 

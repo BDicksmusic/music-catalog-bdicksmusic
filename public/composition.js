@@ -838,33 +838,23 @@ if (notesContainer) {
     }
     
     // New Structured Composition Details System
-    // Related Compositions Carousel
+    // Related Works Carousel Component
     console.log('🔗 DEBUG - Similar works data:', comp.similarWorks?.length, comp.similarWorks);
     console.log('🔗 DEBUG - Similar works slugs data:', comp.similarWorksSlugs?.length, comp.similarWorksSlugs);
     
-    const relatedSection = document.querySelector('.related-compositions-section');
+    const relatedWorksPlaceholder = document.querySelector('#related-works-placeholder');
     
     if (comp.similarWorks && comp.similarWorks.length > 0) {
-        console.log('🔗 DEBUG - Rendering related compositions from slug-based fetch:', comp.similarWorks.length);
-        renderRelatedCompositions(comp.similarWorks);
-        if (relatedSection) {
-            relatedSection.style.display = 'block';
-        }
+        console.log('🔗 DEBUG - Loading related works carousel component with data:', comp.similarWorks.length);
+        loadRelatedWorksCarouselComponent(comp.similarWorks, relatedWorksPlaceholder);
     } else if (comp.similarWorksSlugs && comp.similarWorksSlugs.length > 0) {
         console.log('🔗 DEBUG - Similar works slugs found but no compositions loaded, this indicates a server-side issue');
-        if (relatedSection) {
-            relatedSection.style.display = 'block';
-        }
         // The server should have already fetched these, but fallback to API if needed
-        fetchRelatedCompositions(comp.id);
+        fetchRelatedCompositionsForComponent(comp.id, relatedWorksPlaceholder);
     } else {
         console.log('🔗 DEBUG - No similar works or slugs found, fetching via API fallback...');
-        // Keep the section visible and fetch related compositions via API
-        if (relatedSection) {
-            relatedSection.style.display = 'block';
-        }
         // Try to fetch related compositions if not provided
-        fetchRelatedCompositions(comp.id);
+        fetchRelatedCompositionsForComponent(comp.id, relatedWorksPlaceholder);
     }
 }
 
@@ -2082,39 +2072,138 @@ function stopAllVideos() {
 
 // Metadata toggle function removed - using new structured format
 
-// Related Compositions Functions
-function renderRelatedCompositions(compositions) {
-    console.log('🎠 DEBUG - renderRelatedCompositions called with:', compositions?.length, 'compositions');
-    const carouselContainer = document.querySelector('#related-compositions-carousel');
-    console.log('🎠 DEBUG - Carousel container found:', !!carouselContainer);
-    
-    if (!carouselContainer || !compositions || compositions.length === 0) {
-        console.log('🎠 DEBUG - Early return:', { carouselContainer: !!carouselContainer, compositions: compositions?.length });
+// Related Works Carousel Component Functions
+async function loadRelatedWorksCarouselComponent(compositions, placeholder) {
+    try {
+        console.log('🎠 Loading related works carousel component with data:', compositions?.length);
+        
+        // Generate unique container ID
+        const containerId = `related-works-${Date.now()}`;
+        
+        // Use ComponentLoader to fetch and inject the component
+        let componentHtml;
+        if (typeof window.ComponentLoader !== 'undefined' && window.ComponentLoader.fetchComponent) {
+            componentHtml = await window.ComponentLoader.fetchComponent('related-works-carousel');
+        } else if (typeof fetchComponent !== 'undefined') {
+            componentHtml = await fetchComponent('related-works-carousel');
+        } else {
+            console.error('🎠 No component loader available, using fallback related works display');
+            createFallbackRelatedWorksDisplay(compositions, placeholder);
+            return;
+        }
+            
+        if (componentHtml) {
+            // Replace template variables
+            const processedHtml = componentHtml
+                .replace(/{{containerId}}/g, containerId)
+                .replace(/{{title}}/g, 'Related Works');
+            
+            placeholder.innerHTML = processedHtml;
+            
+            // Wait a bit for the component to initialize, then pass data
+            setTimeout(() => {
+                const initFunction = window[`initRelatedWorksCarousel_${containerId}`];
+                if (initFunction && typeof initFunction === 'function') {
+                    console.log('🎠 Initializing related works carousel component with data');
+                    initFunction(compositions);
+                } else {
+                    console.error('🎠 Related works carousel initialization function not found:', `initRelatedWorksCarousel_${containerId}`);
+                    createFallbackRelatedWorksDisplay(compositions, placeholder);
+                }
+            }, 200);
+            
+        } else {
+            console.error('🎠 Failed to load related works carousel component, using fallback');
+            createFallbackRelatedWorksDisplay(compositions, placeholder);
+        }
+        
+    } catch (error) {
+        console.error('🎠 Error loading related works carousel component:', error);
+        createFallbackRelatedWorksDisplay(compositions, placeholder);
+    }
+}
+
+function createFallbackRelatedWorksDisplay(compositions, placeholder) {
+    console.log('🎠 Creating fallback related works display with data:', compositions?.length);
+    if (!placeholder) {
+        console.error('🎠 No placeholder found for fallback related works display');
         return;
     }
-
+    
+    if (!compositions || compositions.length === 0) {
+        placeholder.innerHTML = `
+            <div style="padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; margin: 1rem 0;">
+                <h4 style="color: #856404; margin: 0 0 10px 0;">⚠️ No Related Works</h4>
+                <p style="color: #856404; margin: 0; font-size: 0.9rem;">
+                    No related works are available for this composition.
+                </p>
+            </div>
+        `;
+        return;
+    }
+    
     const carouselHtml = compositions.map(comp => `
-        <div class="related-composition-card" onclick="navigateToComposition('${comp.slug}')">
+        <div class="related-composition-card" onclick="navigateToComposition('${comp.slug}')" style="
+            min-width: 200px; max-width: 200px; flex: 0 0 auto; 
+            background: linear-gradient(145deg, var(--gray-50) 0%, var(--gray-100) 100%); 
+            border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; 
+            border: 1px solid var(--gray-200); position: relative; transform: translateY(0); opacity: 1;
+        ">
             ${comp.coverImage ? `
-                <img src="${comp.coverImage}" alt="${comp.title}" class="related-composition-image" loading="lazy">
-            ` : ''}
-            <div class="related-composition-content">
-                <h4 class="related-composition-title">${comp.title}</h4>
-                <div class="related-composition-instrumentation">${comp.instrumentation}</div>
-                ${comp.year ? `<div class="related-composition-year">${comp.year}</div>` : ''}
+                <img src="${comp.coverImage}" alt="${comp.title}" style="
+                    width: 100%; height: 258px; object-fit: cover; object-position: center; 
+                    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: var(--gray-200);
+                " loading="lazy">
+            ` : `
+                <div style="
+                    width: 100%; height: 258px; display: flex; align-items: center; 
+                    justify-content: center; color: var(--gray-400); font-size: 2rem; background: var(--gray-200);
+                ">♪</div>
+            `}
+            <div style="padding: 0.75rem;">
+                <h4 style="
+                    font-size: 0.9rem; font-weight: 600; color: var(--gray-900); 
+                    margin-bottom: 0.25rem; line-height: 1.2; display: flex; align-items: center; gap: 0.25rem;
+                ">♪ ${comp.title}</h4>
+                <div style="
+                    font-size: 0.75rem; color: var(--gray-600); font-weight: 500; 
+                    margin-bottom: 0; line-height: 1.2;
+                ">${comp.instrumentation}</div>
             </div>
         </div>
     `).join('');
-
-    console.log('🎠 DEBUG - Generated carousel HTML length:', carouselHtml.length);
-    carouselContainer.innerHTML = carouselHtml;
-    console.log('🎠 DEBUG - Carousel populated with:', carouselContainer.children.length, 'cards');
+    
+    placeholder.innerHTML = `
+        <div style="
+            width: 100%; max-width: 1400px; margin: 2rem auto 0; padding: 0 1rem; box-sizing: border-box;
+        ">
+            <div style="
+                background: white; border-radius: 12px; border: 1px solid var(--gray-200); 
+                padding: 1.5rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            ">
+                <h3 style="
+                    color: var(--primary-600); margin-bottom: 1.5rem; font-size: 1.25rem; 
+                    font-weight: 600; text-align: center; padding-bottom: 0.75rem; 
+                    border-bottom: 2px solid var(--primary-100);
+                ">Related Works</h3>
+                <div style="
+                    display: flex; flex-direction: row; overflow-x: auto; overflow-y: hidden; 
+                    gap: 1rem; padding: 0.5rem 0; width: 100%; scroll-behavior: smooth; 
+                    -webkit-overflow-scrolling: touch;
+                ">
+                    ${carouselHtml}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    console.log('✅ Fallback related works display created successfully');
 }
 
-async function fetchRelatedCompositions(compositionId) {
-    const carouselContainer = document.querySelector('#related-compositions-carousel');
-    if (!carouselContainer) {
-        console.warn('Related compositions carousel container not found');
+async function fetchRelatedCompositionsForComponent(compositionId, placeholder) {
+    if (!placeholder) {
+        console.warn('Related works placeholder not found');
         return;
     }
     
@@ -2122,10 +2211,31 @@ async function fetchRelatedCompositions(compositionId) {
         console.log('🔗 API - Fetching related compositions for:', compositionId);
         
         // Show loading state
-        carouselContainer.innerHTML = `
-            <div class="related-composition-loading">
-                <div class="loading-spinner"></div>
-                <p>Loading related works...</p>
+        placeholder.innerHTML = `
+            <div style="
+                width: 100%; max-width: 1400px; margin: 2rem auto 0; padding: 0 1rem; box-sizing: border-box;
+            ">
+                <div style="
+                    background: white; border-radius: 12px; border: 1px solid var(--gray-200); 
+                    padding: 1.5rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+                ">
+                    <h3 style="
+                        color: var(--primary-600); margin-bottom: 1.5rem; font-size: 1.25rem; 
+                        font-weight: 600; text-align: center; padding-bottom: 0.75rem; 
+                        border-bottom: 2px solid var(--primary-100);
+                    ">Related Works</h3>
+                    <div style="
+                        display: flex; flex-direction: column; align-items: center; justify-content: center; 
+                        padding: 2rem 1rem; text-align: center; color: var(--gray-600);
+                    ">
+                        <div style="
+                            width: 24px; height: 24px; border: 2px solid var(--gray-200); 
+                            border-top: 2px solid var(--primary-500); border-radius: 50%; 
+                            animation: spin 1s linear infinite; margin-bottom: 0.75rem;
+                        "></div>
+                        <p style="margin: 0; font-size: 0.85rem;">Loading related works...</p>
+                    </div>
+                </div>
             </div>
         `;
         
@@ -2135,21 +2245,55 @@ async function fetchRelatedCompositions(compositionId) {
         console.log('🔗 API - Response:', data);
         
         if (data.success && data.compositions && data.compositions.length > 0) {
-            console.log('🔗 API - Rendering', data.compositions.length, 'related compositions');
-            renderRelatedCompositions(data.compositions);
+            console.log('🔗 API - Loading component with', data.compositions.length, 'related compositions');
+            loadRelatedWorksCarouselComponent(data.compositions, placeholder);
         } else {
             // Show "no related works" message
-            carouselContainer.innerHTML = `
-                <div class="related-composition-empty">
-                    <p>No related works available at this time.</p>
+            placeholder.innerHTML = `
+                <div style="
+                    width: 100%; max-width: 1400px; margin: 2rem auto 0; padding: 0 1rem; box-sizing: border-box;
+                ">
+                    <div style="
+                        background: white; border-radius: 12px; border: 1px solid var(--gray-200); 
+                        padding: 1.5rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+                    ">
+                        <h3 style="
+                            color: var(--primary-600); margin-bottom: 1.5rem; font-size: 1.25rem; 
+                            font-weight: 600; text-align: center; padding-bottom: 0.75rem; 
+                            border-bottom: 2px solid var(--primary-100);
+                        ">Related Works</h3>
+                        <div style="
+                            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+                            padding: 2rem 1rem; text-align: center; color: var(--gray-600);
+                        ">
+                            <p style="margin: 0; font-size: 0.85rem;">No related works available at this time.</p>
+                        </div>
+                    </div>
                 </div>
             `;
         }
     } catch (error) {
         console.error('Error fetching related compositions:', error);
-        carouselContainer.innerHTML = `
-            <div class="related-composition-error">
-                <p>Unable to load related works.</p>
+        placeholder.innerHTML = `
+            <div style="
+                width: 100%; max-width: 1400px; margin: 2rem auto 0; padding: 0 1rem; box-sizing: border-box;
+            ">
+                <div style="
+                    background: white; border-radius: 12px; border: 1px solid var(--gray-200); 
+                    padding: 1.5rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+                ">
+                    <h3 style="
+                        color: var(--primary-600); margin-bottom: 1.5rem; font-size: 1.25rem; 
+                        font-weight: 600; text-align: center; padding-bottom: 0.75rem; 
+                        border-bottom: 2px solid var(--primary-100);
+                    ">Related Works</h3>
+                    <div style="
+                        display: flex; flex-direction: column; align-items: center; justify-content: center; 
+                        padding: 2rem 1rem; text-align: center; color: var(--gray-600);
+                    ">
+                        <p style="margin: 0; font-size: 0.85rem;">Unable to load related works.</p>
+                    </div>
+                </div>
             </div>
         `;
     }
