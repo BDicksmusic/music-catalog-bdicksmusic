@@ -583,7 +583,22 @@ const transformNotionPage = (page) => {
         instrumentation: getTextContent(properties.Instrumentation) || 
                         getTextContent(properties.Instruments) || 
                         'Unknown',
-        year: properties.Year?.number || null,
+        year: (() => {
+            const yearText = getTextContent(properties.Year);
+            const yearNumber = properties.Year?.number;
+            const finalYear = yearText || yearNumber || null;
+            
+            console.log(`📅 DEBUG - Year property for "${getTextContent(properties.Name) || 'Unknown'}":`, {
+                yearText,
+                yearNumber,
+                finalYear,
+                propertyType: properties.Year?.type,
+                hasRichText: !!properties.Year?.rich_text,
+                hasNumber: !!properties.Year?.number
+            });
+            
+            return finalYear;
+        })(),
         duration: getTextContent(properties.Duration) || '',
         difficulty: properties.Difficulty?.select?.name || '',
         genre: properties.Genre?.select?.name || '',

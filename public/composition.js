@@ -275,11 +275,17 @@ function renderComposition(comp) {
     // YEAR CONTAINER: Faint year display under cover
     // ============================================
     console.log('📅 Rendering Year Container');
+    console.log('📅 Year data:', comp.year);
+    console.log('📅 Year type:', typeof comp.year);
     const yearContainer = document.querySelector('.composition-year-container');
     if (yearContainer && comp.year) {
         yearContainer.innerHTML = `${comp.year}`;
+        console.log('✅ Year container populated with:', comp.year);
     } else if (yearContainer) {
         yearContainer.innerHTML = ''; // Clear if no year
+        console.log('⚠️ Year container cleared - no year data');
+    } else {
+        console.log('❌ Year container not found in DOM');
     }
 
     // ============================================
@@ -349,7 +355,7 @@ function renderComposition(comp) {
             <div class="layout-builder-nav">
                 ${hasVideos ? `<button onclick="scrollToVideos()" class="btn-secondary layout-nav-btn">📺 Watch</button>` : ''}
                 ${hasScore ? `<button onclick="scrollToScore()" class="btn-secondary layout-nav-btn">📄 View Score</button>` : ''}
-                <button onclick="scrollToMetadata()" class="btn-secondary layout-nav-btn">📊 Learn More</button>
+                <button onclick="scrollToRelatedWorks()" class="btn-secondary layout-nav-btn">🎵 Related Compositions</button>
                 ${hasSimilarWorks ? `<button onclick="scrollToSimilarWorks()" class="btn-secondary layout-nav-btn">🔗 Similar Works</button>` : ''}
             </div>
         `;
@@ -1873,6 +1879,28 @@ function scrollToMetadata() {
         }, 300);
     } else {
         console.warn('Metadata section not found');
+    }
+}
+
+function scrollToRelatedWorks() {
+    const relatedWorksSection = document.querySelector('.related-compositions-section');
+    if (relatedWorksSection) {
+        relatedWorksSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+        });
+        
+        // Optional: Add a subtle highlight effect
+        relatedWorksSection.style.transition = 'all 0.3s ease';
+        relatedWorksSection.style.transform = 'scale(1.01)';
+        setTimeout(() => {
+            relatedWorksSection.style.transform = 'scale(1)';
+        }, 300);
+        
+        console.log('✅ Scrolled to Related Works section');
+    } else {
+        console.warn('Related Works section not found');
     }
 }
 
