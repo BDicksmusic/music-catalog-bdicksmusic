@@ -440,9 +440,9 @@
             flex: 1 1 60%; /* Default: Larger space for PDF */
             display: flex;
             flex-direction: column;
-            min-width: 280px;
-            max-width: 800px;
-            transition: flex-basis 0.1s ease;
+            min-width: 200px; /* Reduced minimum for smoother resizing */
+            max-width: none; /* Remove max-width constraint */
+            transition: flex-basis 0.2s ease; /* Smoother transition */
         }
 
         .score-carousel-container {
@@ -493,6 +493,13 @@
 
         .score-divider.resizing {
             background: var(--primary-500);
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Add visual feedback during resize */
+        .score-layout-container.resizing .score-pdf-column,
+        .score-layout-container.resizing .score-video-column {
+            transition: none; /* Disable transitions during resize for immediate feedback */
         }
 
         .divider-handle {
@@ -551,7 +558,8 @@
             flex-direction: column;
             padding-left: 1rem;
             padding-right: 1rem;
-            transition: flex-basis 0.1s ease;
+            min-width: 200px; /* Add minimum width for video column */
+            transition: flex-basis 0.2s ease; /* Smoother transition */
         }
 
         .score-video-column.full-width {
@@ -1396,6 +1404,7 @@
                 startVideoFlex = videoColumn.offsetWidth;
                 
                 divider.classList.add('resizing');
+                layoutContainer.classList.add('resizing');
                 document.body.style.cursor = 'col-resize';
                 document.body.style.userSelect = 'none';
                 
@@ -1411,13 +1420,16 @@
                 const delta = currentX - startX;
                 
                 const totalWidth = layoutContainer.offsetWidth - divider.offsetWidth;
-                const pdfWidth = Math.max(280, Math.min(800, startPdfFlex + delta));
-                const videoWidth = totalWidth - pdfWidth;
                 
-                if (videoWidth >= 280) {
-                    pdfColumn.style.flex = `0 0 ${pdfWidth}px`;
-                    videoColumn.style.flex = `0 0 ${videoWidth}px`;
-                }
+                // Calculate percentage-based widths for smoother resizing
+                const pdfPercentage = Math.max(20, Math.min(80, (startPdfFlex / totalWidth * 100) + (delta / totalWidth * 100)));
+                const videoPercentage = 100 - pdfPercentage;
+                
+                // Apply percentage-based flex values
+                pdfColumn.style.flex = `1 1 ${pdfPercentage}%`;
+                videoColumn.style.flex = `1 1 ${videoPercentage}%`;
+                
+                console.log(`🔧 Resizing: PDF ${pdfPercentage.toFixed(1)}%, Video ${videoPercentage.toFixed(1)}%`);
             }
 
             function stopResize() {
@@ -1425,8 +1437,15 @@
                 
                 isResizing = false;
                 divider.classList.remove('resizing');
+                layoutContainer.classList.remove('resizing');
                 document.body.style.cursor = '';
                 document.body.style.userSelect = '';
+                
+                // Remove inline flex styles to allow CSS to take over
+                setTimeout(() => {
+                    pdfColumn.style.flex = '';
+                    videoColumn.style.flex = '';
+                }, 100);
                 
                 console.log('🔧 Resize stopped');
             }
