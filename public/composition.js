@@ -869,7 +869,7 @@ if (notesContainer) {
 }
 
 // Audio Player Component Functions (moved outside renderComposition)
-async function loadAudioPlayerComponent(audioData) {
+async function loadAudioPlayerComponent(audioData, audioPlaceholder) {
     try {
         console.log('🎵 Loading audio player component with data:', audioData);
         
@@ -884,7 +884,7 @@ async function loadAudioPlayerComponent(audioData) {
             componentHtml = await fetchComponent('audio-player');
         } else {
             console.error('🎵 No component loader available, using fallback audio player');
-            createFallbackAudioPlayer(audioData);
+            createFallbackAudioPlayer(audioData, audioPlaceholder);
             return;
         }
             
@@ -901,22 +901,22 @@ async function loadAudioPlayerComponent(audioData) {
                     initFunction(audioData);
                 } else {
                     console.error('🎵 Audio player initialization function not found:', `initAudioPlayer_${containerId}`);
-                    createFallbackAudioPlayer(audioData);
+                    createFallbackAudioPlayer(audioData, audioPlaceholder);
                 }
             }, 200);
             
         } else {
             console.error('🎵 Failed to load audio player component, using fallback');
-            createFallbackAudioPlayer(audioData);
+            createFallbackAudioPlayer(audioData, audioPlaceholder);
         }
         
     } catch (error) {
         console.error('🎵 Error loading audio player component:', error);
-        function showAudioLoadError(audioPlaceholder) {
+        showAudioLoadError(audioPlaceholder);
     }
 }
 
-function showAudioLoadError() {
+function showAudioLoadError(audioPlaceholder) {
     if (audioPlaceholder) {
         audioPlaceholder.innerHTML = `
             <div style="padding: 20px; background: #ffe6e6; border: 2px solid #ff9999; border-radius: 8px; margin: 1rem 0;">
