@@ -360,6 +360,39 @@ async function loadVideoFromAPI(container, compositionId, apiEndpoint, videoType
 }
 
 /**
+ * Load any component by name
+ * @param {string} targetSelector - CSS selector for injection target
+ * @param {string} componentName - Name of the component file (without .html)
+ * @param {Object} variables - Template variables to replace
+ * @param {string} position - Position to insert ('beforebegin', 'afterbegin', 'beforeend', 'afterend')
+ */
+async function loadComponent(targetSelector, componentName, variables = {}, position = 'beforeend') {
+    console.log(`Loading component: ${componentName}`);
+    
+    // Fetch component template
+    const componentHtml = await fetchComponent(componentName);
+    if (!componentHtml) {
+        console.warn(`Component ${componentName} could not be loaded`);
+        return null;
+    }
+    
+    // Replace template variables
+    const finalHtml = replaceTemplateVariables(componentHtml, variables);
+    
+    // Inject component
+    const targetElement = document.querySelector(targetSelector);
+    if (!targetElement) {
+        console.error(`Target element "${targetSelector}" not found for component injection`);
+        return null;
+    }
+    
+    targetElement.insertAdjacentHTML(position, finalHtml);
+    
+    console.log(`Component ${componentName} loaded successfully`);
+    return { componentName, targetElement };
+}
+
+/**
  * Load multiple components at once
  */
 async function loadMediaComponents(components = []) {
@@ -397,6 +430,7 @@ window.ComponentLoader = {
     loadAudioPlayer,
     loadVideoPlayer,
     loadMediaComponents,
+    loadComponent,
     fetchComponent,
     generateComponentId
 }; 

@@ -1386,6 +1386,55 @@
                 
                 console.log('✅ Composition page templates loaded smoothly!');
                 
+                // ✨ Load loading overlay component
+                if (window.ComponentLoader && window.ComponentLoader.loadComponent) {
+                    console.log('🎯 Loading loading overlay component...');
+                    const loadingPlaceholder = document.getElementById('composition-loading-placeholder');
+                    if (loadingPlaceholder) {
+                        const containerId = loadingPlaceholder.getAttribute('data-container-id');
+                        const title = loadingPlaceholder.getAttribute('data-title');
+                        const defaultMessage = loadingPlaceholder.getAttribute('data-default-message');
+                        const timeoutMessage = loadingPlaceholder.getAttribute('data-timeout-message');
+                        const refreshButtonText = loadingPlaceholder.getAttribute('data-refresh-button-text');
+                        const successTitle = loadingPlaceholder.getAttribute('data-success-title');
+                        const successMessage = loadingPlaceholder.getAttribute('data-success-message');
+                        const errorTitle = loadingPlaceholder.getAttribute('data-error-title');
+                        const errorMessage = loadingPlaceholder.getAttribute('data-error-message');
+                        const errorTimeoutMessage = loadingPlaceholder.getAttribute('data-error-timeout-message');
+                        
+                        await window.ComponentLoader.loadComponent(
+                            '#composition-loading-placeholder',
+                            'loading-overlay',
+                            {
+                                containerId,
+                                title,
+                                defaultMessage,
+                                timeoutMessage,
+                                refreshButtonText,
+                                successTitle,
+                                successMessage,
+                                errorTitle,
+                                errorMessage,
+                                errorTimeoutMessage
+                            },
+                            'replace'
+                        );
+                        console.log('✅ Loading overlay component loaded');
+                    } else {
+                        console.error('❌ Loading placeholder not found');
+                    }
+                } else {
+                    console.error('❌ ComponentLoader not available');
+                }
+                
+                // ✨ Initialize composition loading after templates are loaded
+                if (typeof loadCompositionDetail === 'function') {
+                    console.log('🎵 Starting composition detail loading...');
+                    await loadCompositionDetail();
+                } else {
+                    console.error('❌ loadCompositionDetail function not found');
+                }
+                
             } catch (error) {
                 console.error('❌ Composition page template loading failed:', error);
                 TemplateLoader.markPageAsLoaded();
