@@ -1867,6 +1867,20 @@
         </div>
     </nav>
 
+    <!-- Loading Overlay Component -->
+    <div id="catalog-loading-placeholder" data-component-target="loading-overlay"
+         data-container-id="catalog-loading"
+         data-title="Loading Music Catalog..."
+         data-default-message="Fetching compositions from Notion"
+         data-timeout-message="Still loading catalog..."
+         data-refresh-button-text="Refresh Page"
+         data-success-title="Catalog Loaded!"
+         data-success-message="Music catalog loaded successfully"
+         data-error-title="Error Loading Catalog"
+         data-error-message="Failed to load music catalog"
+         data-error-timeout-message="Please try refreshing the page">
+    </div>
+
     <!-- Hero Section -->
     <div class="hero-container">
         <!-- Image Carousel Fallback -->
@@ -2672,6 +2686,11 @@
         let isScoreViewerOpen = false;
 
         async function loadFeaturedCompositions() {
+            // Show loading overlay
+            if (window.showLoading_catalog_loading) {
+                window.showLoading_catalog_loading();
+            }
+            
             try {
                 const response = await fetch('/api/compositions');
                 const data = await response.json();
@@ -2689,14 +2708,30 @@
                     
                     initializeFeaturedDisplay();
                     setupAutoCycle();
+                    
+                    // Hide loading overlay on success
+                    if (window.hideLoading_catalog_loading) {
+                        window.hideLoading_catalog_loading();
+                    }
                 } else {
                     // Fallback to example data
                     featuredCompositions = exampleCompositions.slice(0, 4);
                     initializeFeaturedDisplay();
                     setupAutoCycle();
+                    
+                    // Hide loading overlay on fallback success
+                    if (window.hideLoading_catalog_loading) {
+                        window.hideLoading_catalog_loading();
+                    }
                 }
             } catch (error) {
                 console.error('Error loading featured compositions:', error);
+                
+                // Show error in loading overlay
+                if (window.showLoadingError_catalog_loading) {
+                    window.showLoadingError_catalog_loading('Failed to load music catalog');
+                }
+                
                 featuredCompositions = exampleCompositions.slice(0, 4);
                 initializeFeaturedDisplay();
                 setupAutoCycle();

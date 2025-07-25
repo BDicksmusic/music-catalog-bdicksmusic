@@ -1,0 +1,186 @@
+<!-- Loading Overlay Component -->
+<div id="{{containerId}}" class="loading-overlay hidden">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <h3>{{title}}</h3>
+        <p id="{{containerId}}-message">{{defaultMessage}}</p>
+        <div id="{{containerId}}-timeout" class="timeout-message" style="display: none;">
+            <p>{{timeoutMessage}}</p>
+            <button onclick="location.reload()" class="refresh-btn">{{refreshButtonText}}</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ===== LOADING OVERLAY STYLES ===== */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(4px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .loading-overlay.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .loading-content {
+        text-align: center;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        max-width: 400px;
+        width: 90%;
+    }
+
+    .loading-spinner {
+        width: 48px;
+        height: 48px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1.5rem auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .loading-content h3 {
+        margin: 0 0 0.5rem 0;
+        color: #333;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .loading-content p {
+        margin: 0 0 1rem 0;
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    .timeout-message {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    .timeout-message p {
+        color: #e74c3c;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+
+    .refresh-btn {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .refresh-btn:hover {
+        background: #0056b3;
+    }
+</style>
+
+<script>
+(function() {
+    // Loading state management
+    let loadingTimeout = null;
+    let loadingStartTime = null;
+    
+    // Get container ID from the component
+    const containerId = '{{containerId}}';
+    
+    // Show loading overlay
+    window['showLoading_' + containerId] = function() {
+        const overlay = document.getElementById(containerId);
+        const message = document.getElementById(containerId + '-message');
+        const timeoutMessage = document.getElementById(containerId + '-timeout');
+        
+        if (overlay) {
+            overlay.classList.remove('hidden');
+            message.textContent = '{{defaultMessage}}';
+            timeoutMessage.style.display = 'none';
+            loadingStartTime = Date.now();
+            
+            // Set timeout for 10 seconds
+            loadingTimeout = setTimeout(() => {
+                message.textContent = '{{timeoutMessage}}';
+                timeoutMessage.style.display = 'block';
+            }, 10000);
+        }
+    };
+
+    // Hide loading overlay
+    window['hideLoading_' + containerId] = function() {
+        const overlay = document.getElementById(containerId);
+        if (overlay && loadingTimeout) {
+            clearTimeout(loadingTimeout);
+            loadingTimeout = null;
+            
+            // Show completion message briefly
+            const message = overlay.querySelector('#' + containerId + '-message');
+            const spinner = overlay.querySelector('.loading-spinner');
+            const title = overlay.querySelector('h3');
+            
+            if (message && spinner && title) {
+                title.textContent = '{{successTitle}}';
+                title.style.color = '#28a745';
+                message.textContent = '{{successMessage}}';
+                message.style.color = '#28a745';
+                spinner.style.borderTopColor = '#28a745';
+            }
+            
+            // Add a small delay to show completion briefly
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 800);
+        }
+    };
+
+    // Show error in loading overlay
+    window['showLoadingError_' + containerId] = function(message) {
+        const overlay = document.getElementById(containerId);
+        const loadingContent = overlay.querySelector('.loading-content');
+        const spinner = overlay.querySelector('.loading-spinner');
+        const title = overlay.querySelector('h3');
+        const loadingMessage = overlay.querySelector('#' + containerId + '-message');
+        const timeoutMessage = overlay.querySelector('#' + containerId + '-timeout');
+        
+        if (overlay && loadingTimeout) {
+            clearTimeout(loadingTimeout);
+            loadingTimeout = null;
+            
+            // Update content to show error
+            spinner.style.display = 'none';
+            title.textContent = '{{errorTitle}}';
+            title.style.color = '#e74c3c';
+            loadingMessage.textContent = message || '{{errorMessage}}';
+            loadingMessage.style.color = '#e74c3c';
+            timeoutMessage.style.display = 'block';
+            timeoutMessage.querySelector('p').textContent = '{{errorTimeoutMessage}}';
+        }
+    };
+    
+    console.log('🎯 Loading overlay component initialized for:', containerId);
+})();
+</script> 

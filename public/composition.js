@@ -7,78 +7,22 @@ let currentVideoIndex = 0;
 let totalVideoCount = 0;
 let videoPlayers = [];
 
-// Loading state management
-let loadingTimeout = null;
-let loadingStartTime = null;
-
-// Show loading overlay
+// Loading state management - using component functions
 function showLoading() {
-    const overlay = document.getElementById('loading-overlay');
-    const message = document.getElementById('loading-message');
-    const timeoutMessage = document.getElementById('timeout-message');
-    
-    if (overlay) {
-        overlay.classList.remove('hidden');
-        message.textContent = 'Fetching data from Notion...';
-        timeoutMessage.style.display = 'none';
-        loadingStartTime = Date.now();
-        
-        // Set timeout for 10 seconds
-        loadingTimeout = setTimeout(() => {
-            message.textContent = 'Still loading...';
-            timeoutMessage.style.display = 'block';
-        }, 10000);
+    if (window.showLoading_composition_loading) {
+        window.showLoading_composition_loading();
     }
 }
 
-// Hide loading overlay
 function hideLoading() {
-    const overlay = document.getElementById('loading-overlay');
-    if (overlay && loadingTimeout) {
-        clearTimeout(loadingTimeout);
-        loadingTimeout = null;
-        
-        // Show completion message briefly
-        const message = document.getElementById('loading-message');
-        const spinner = overlay.querySelector('.loading-spinner');
-        const title = overlay.querySelector('h3');
-        
-        if (message && spinner && title) {
-            title.textContent = 'Loading Complete!';
-            title.style.color = '#28a745';
-            message.textContent = 'Composition loaded successfully';
-            message.style.color = '#28a745';
-            spinner.style.borderTopColor = '#28a745';
-        }
-        
-        // Add a small delay to show completion briefly
-        setTimeout(() => {
-            overlay.classList.add('hidden');
-        }, 800);
+    if (window.hideLoading_composition_loading) {
+        window.hideLoading_composition_loading();
     }
 }
 
-// Show error in loading overlay
 function showLoadingError(message) {
-    const overlay = document.getElementById('loading-overlay');
-    const loadingContent = overlay.querySelector('.loading-content');
-    const spinner = overlay.querySelector('.loading-spinner');
-    const title = overlay.querySelector('h3');
-    const loadingMessage = document.getElementById('loading-message');
-    const timeoutMessage = document.getElementById('timeout-message');
-    
-    if (overlay && loadingTimeout) {
-        clearTimeout(loadingTimeout);
-        loadingTimeout = null;
-        
-        // Update content to show error
-        spinner.style.display = 'none';
-        title.textContent = 'Error Loading Composition';
-        title.style.color = '#e74c3c';
-        loadingMessage.textContent = message || 'Failed to load composition data';
-        loadingMessage.style.color = '#e74c3c';
-        timeoutMessage.style.display = 'block';
-        timeoutMessage.querySelector('p').textContent = 'Please try refreshing the page';
+    if (window.showLoadingError_composition_loading) {
+        window.showLoadingError_composition_loading(message);
     }
 }
 

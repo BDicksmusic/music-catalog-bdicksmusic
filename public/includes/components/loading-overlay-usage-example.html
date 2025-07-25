@@ -1,0 +1,145 @@
+<!-- Loading Overlay Component Usage Examples -->
+
+<!-- 
+    HOW TO USE THE LOADING OVERLAY COMPONENT
+    
+    This component provides a reusable loading screen that can be injected into any page
+    that needs API loading functionality. It includes timeout handling and error states.
+    
+    TEMPLATE VARIABLES:
+    - containerId: Unique ID for this loading overlay instance
+    - title: Main title shown during loading
+    - defaultMessage: Initial loading message
+    - timeoutMessage: Message shown after 10 seconds
+    - refreshButtonText: Text for the refresh button
+    - successTitle: Title shown when loading completes
+    - successMessage: Message shown when loading completes
+    - errorTitle: Title shown when an error occurs
+    - errorMessage: Default error message
+    - errorTimeoutMessage: Message shown in timeout section when error occurs
+-->
+
+<!-- EXAMPLE 1: Composition Page Loading -->
+<div id="composition-loading-placeholder" data-component-target="loading-overlay" 
+     data-container-id="composition-loading"
+     data-title="Loading Composition..."
+     data-default-message="Fetching data from Notion"
+     data-timeout-message="Still loading..."
+     data-refresh-button-text="Refresh Page"
+     data-success-title="Loading Complete!"
+     data-success-message="Composition loaded successfully"
+     data-error-title="Error Loading Composition"
+     data-error-message="Failed to load composition data"
+     data-error-timeout-message="Please try refreshing the page">
+</div>
+
+<!-- EXAMPLE 2: Music Catalog Page Loading -->
+<div id="catalog-loading-placeholder" data-component-target="loading-overlay"
+     data-container-id="catalog-loading"
+     data-title="Loading Music Catalog..."
+     data-default-message="Fetching compositions from Notion"
+     data-timeout-message="Still loading catalog..."
+     data-refresh-button-text="Refresh Page"
+     data-success-title="Catalog Loaded!"
+     data-success-message="Music catalog loaded successfully"
+     data-error-title="Error Loading Catalog"
+     data-error-message="Failed to load music catalog"
+     data-error-timeout-message="Please try refreshing the page">
+</div>
+
+<!-- EXAMPLE 3: Related Works Loading -->
+<div id="related-works-loading-placeholder" data-component-target="loading-overlay"
+     data-container-id="related-works-loading"
+     data-title="Loading Related Works..."
+     data-default-message="Finding similar compositions"
+     data-timeout-message="Still searching..."
+     data-refresh-button-text="Refresh Page"
+     data-success-title="Related Works Loaded!"
+     data-success-message="Related works loaded successfully"
+     data-error-title="Error Loading Related Works"
+     data-error-message="Failed to load related works"
+     data-error-timeout-message="Please try refreshing the page">
+</div>
+
+<!-- 
+    JAVASCRIPT USAGE:
+    
+    After the component is loaded, you can use these functions:
+    
+    1. Show loading: window['showLoading_' + containerId]()
+    2. Hide loading: window['hideLoading_' + containerId]()
+    3. Show error: window['showLoadingError_' + containerId](message)
+    
+    Example for composition page:
+    - Show: showLoading_composition-loading()
+    - Hide: hideLoading_composition-loading()
+    - Error: showLoadingError_composition-loading("No composition found")
+    
+    Example for catalog page:
+    - Show: showLoading_catalog-loading()
+    - Hide: hideLoading_catalog-loading()
+    - Error: showLoadingError_catalog-loading("Failed to load catalog")
+-->
+
+<script>
+// Example usage functions for different pages
+
+// Composition page loading functions
+function showCompositionLoading() {
+    if (window.showLoading_composition_loading) {
+        window.showLoading_composition_loading();
+    }
+}
+
+function hideCompositionLoading() {
+    if (window.hideLoading_composition_loading) {
+        window.hideLoading_composition_loading();
+    }
+}
+
+function showCompositionError(message) {
+    if (window.showLoadingError_composition_loading) {
+        window.showLoadingError_composition_loading(message);
+    }
+}
+
+// Catalog page loading functions
+function showCatalogLoading() {
+    if (window.showLoading_catalog_loading) {
+        window.showLoading_catalog_loading();
+    }
+}
+
+function hideCatalogLoading() {
+    if (window.hideLoading_catalog_loading) {
+        window.hideLoading_catalog_loading();
+    }
+}
+
+function showCatalogError(message) {
+    if (window.showLoadingError_catalog_loading) {
+        window.showLoadingError_catalog_loading(message);
+    }
+}
+
+// Related works loading functions
+function showRelatedWorksLoading() {
+    if (window.showLoading_related_works_loading) {
+        window.showLoading_related_works_loading();
+    }
+}
+
+function hideRelatedWorksLoading() {
+    if (window.hideLoading_related_works_loading) {
+        window.hideLoading_related_works_loading();
+    }
+}
+
+function showRelatedWorksError(message) {
+    if (window.showLoadingError_related_works_loading) {
+        window.showLoadingError_related_works_loading(message);
+    }
+}
+
+console.log('🎯 Loading overlay usage examples loaded');
+</script> 
