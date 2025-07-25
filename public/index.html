@@ -4588,7 +4588,12 @@
                 const data = await response.json();
                 
                 if (data && data.success && data.compositions && data.compositions.length > 0) {
-                    compositionsCarousel = data.compositions;
+                    // Prioritize "New in Catalog" compositions at the beginning
+                    const newInCatalogCompositions = data.compositions.filter(comp => comp.newInCatalog === true);
+                    const otherCompositions = data.compositions.filter(comp => comp.newInCatalog !== true);
+                    
+                    // Combine with "New in Catalog" compositions first
+                    compositionsCarousel = [...newInCatalogCompositions, ...otherCompositions];
                     initializeCompositionsCarousel();
                 } else {
                     // Fallback to example data
@@ -4752,11 +4757,28 @@
             const instrumentationElement = document.querySelector('#new-release-preview .composition-instrumentation');
             const descriptionElement = document.querySelector('#new-release-preview .composition-description');
             const imageElement = document.querySelector('#new-release-preview .composition-img');
+            const yearElement = document.querySelector('#new-release-preview .metadata-tag:first-child');
+            const durationElement = document.querySelector('#new-release-preview .metadata-tag:nth-child(2)');
+            const featuredElement = document.querySelector('#new-release-preview .metadata-tag.featured');
             
             if (titleElement) titleElement.textContent = composition.title || 'New Release';
             if (instrumentationElement) instrumentationElement.textContent = composition.instrumentation || 'Brass Ensemble';
             if (descriptionElement) descriptionElement.textContent = composition.description || 'A dynamic new composition showcasing innovative musical ideas and technical brilliance.';
             if (imageElement && composition.coverImage) imageElement.src = composition.coverImage;
+            
+            // Update metadata tags
+            if (yearElement) yearElement.textContent = composition.year || '2025';
+            if (durationElement) durationElement.textContent = `Duration: ${composition.duration || '5:30'}`;
+            
+            // Show/hide featured tag based on composition data
+            if (featuredElement) {
+                if (composition.featured || composition.popular) {
+                    featuredElement.style.display = 'inline-block';
+                    featuredElement.textContent = composition.featured ? 'Featured' : 'Popular';
+                } else {
+                    featuredElement.style.display = 'none';
+                }
+            }
         }
 
         // Featured Audio Player Functions
