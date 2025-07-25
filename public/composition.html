@@ -973,9 +973,10 @@
                 // ✨ WAIT FOR CSS TO LOAD FIRST
                 await waitForCSS();
                 
-                // ✨ Load navigation with smooth loading (no footer on this page)
+                // ✨ Load navigation and footer with smooth loading
                 TemplateLoader.preparePageForLoading();
                 await TemplateLoader.loadNavigation();
+                await TemplateLoader.loadFooter();
                 
                 // Small delay then mark as loaded
                 setTimeout(() => {

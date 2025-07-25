@@ -344,7 +344,6 @@ function renderComposition(comp) {
     const linksContainer = document.querySelector('.composition-links-container');
     if (linksContainer) {
         // Check availability of different sections
-        const hasAudio = (comp.audioFiles && comp.audioFiles.length > 0) || comp.audioLink;
         const hasVideos = (comp.videoFiles && comp.videoFiles.filter(v => v.type !== 'Score Video').length > 0);
         const scoreFiles = comp.scoreFiles || [];
         const hasLegacyScore = comp.scoreLink && !scoreFiles.length;
@@ -355,7 +354,6 @@ function renderComposition(comp) {
             <div class="layout-builder-nav">
                 ${hasVideos ? `<button onclick="scrollToVideos()" class="btn-secondary layout-nav-btn">📺 Watch</button>` : ''}
                 ${hasScore ? `<button onclick="scrollToScore()" class="btn-secondary layout-nav-btn">📄 View Score</button>` : ''}
-                <button onclick="scrollToRelatedWorks()" class="btn-secondary layout-nav-btn">🎵 Related Compositions</button>
                 ${hasSimilarWorks ? `<button onclick="scrollToSimilarWorks()" class="btn-secondary layout-nav-btn">🔗 Similar Works</button>` : ''}
             </div>
         `;
@@ -1945,8 +1943,7 @@ function scrollToAudio() {
 }
 
 function scrollToVideos() {
-    const videosSection = document.querySelector('.program-video-section') || 
-                         document.querySelector('#composition-video-container-main');
+    const videosSection = document.querySelector('.program-video-section');
     if (videosSection) {
         videosSection.scrollIntoView({ 
             behavior: 'smooth', 
@@ -1954,35 +1951,38 @@ function scrollToVideos() {
             inline: 'nearest'
         });
         
-        // Optional: Add a subtle highlight effect
+        // Add a subtle highlight effect
         videosSection.style.transition = 'all 0.3s ease';
         videosSection.style.transform = 'scale(1.02)';
         setTimeout(() => {
             videosSection.style.transform = 'scale(1)';
         }, 300);
+        
+        console.log('✅ Scrolled to Videos section');
     } else {
         console.warn('Videos section not found');
     }
 }
 
 function scrollToScore() {
-            const scoreContainer = document.querySelector('#score-carousel-container') ||
-                          document.querySelector('.scores-section');
-    if (scoreContainer) {
-        scoreContainer.scrollIntoView({ 
+    const scoreSection = document.querySelector('.scores-section');
+    if (scoreSection) {
+        scoreSection.scrollIntoView({ 
             behavior: 'smooth', 
             block: 'start',
             inline: 'nearest'
         });
         
-        // Optional: Add a subtle highlight effect
-        scoreContainer.style.transition = 'all 0.3s ease';
-        scoreContainer.style.transform = 'scale(1.02)';
+        // Add a subtle highlight effect
+        scoreSection.style.transition = 'all 0.3s ease';
+        scoreSection.style.transform = 'scale(1.02)';
         setTimeout(() => {
-            scoreContainer.style.transform = 'scale(1)';
+            scoreSection.style.transform = 'scale(1)';
         }, 300);
+        
+        console.log('✅ Scrolled to Score section');
     } else {
-        console.warn('Score container not found - make sure the PDF is loaded');
+        console.warn('Score section not found');
     }
 }
 
@@ -2006,31 +2006,10 @@ function scrollToMetadata() {
     }
 }
 
-function scrollToRelatedWorks() {
-    const relatedWorksSection = document.querySelector('.related-compositions-section');
-    if (relatedWorksSection) {
-        relatedWorksSection.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start',
-            inline: 'nearest'
-        });
-        
-        // Optional: Add a subtle highlight effect
-        relatedWorksSection.style.transition = 'all 0.3s ease';
-        relatedWorksSection.style.transform = 'scale(1.01)';
-        setTimeout(() => {
-            relatedWorksSection.style.transform = 'scale(1)';
-        }, 300);
-        
-        console.log('✅ Scrolled to Related Works section');
-    } else {
-        console.warn('Related Works section not found');
-    }
-}
+
 
 function scrollToSimilarWorks() {
-    const similarWorksSection = document.querySelector('.related-compositions-section') ||
-                               document.querySelector('#related-compositions-carousel');
+    const similarWorksSection = document.querySelector('#related-works-placeholder');
     if (similarWorksSection) {
         similarWorksSection.scrollIntoView({ 
             behavior: 'smooth', 
@@ -2038,12 +2017,14 @@ function scrollToSimilarWorks() {
             inline: 'nearest'
         });
         
-        // Optional: Add a subtle highlight effect
+        // Add a subtle highlight effect
         similarWorksSection.style.transition = 'all 0.3s ease';
         similarWorksSection.style.transform = 'scale(1.02)';
         setTimeout(() => {
             similarWorksSection.style.transform = 'scale(1)';
         }, 300);
+        
+        console.log('✅ Scrolled to Similar Works section');
     } else {
         console.warn('Similar works section not found');
     }
