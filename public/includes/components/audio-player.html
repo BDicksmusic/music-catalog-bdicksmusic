@@ -1,15 +1,15 @@
 <!-- Enhanced Audio Player Component Template -->
-<div class="composition-audio-container" data-component="audio-player" id="audio-player-{{containerId}}">
+<div class="composition-audio-container" data-component="audio-player" id="audio-player-{{containerId}}" style="background: white; border: 1px solid var(--gray-200); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
     <!-- Audio Players Container -->
     <div class="audio-players-container" id="audio-players-{{containerId}}">
         <!-- Audio players will be dynamically created here -->
-        <div class="audio-loading" style="text-align: center; padding: 2rem; color: var(--gray-600);">
+        <div class="audio-loading" style="text-align: center; padding: 1rem; color: var(--gray-600);">
             Loading audio players...
         </div>
     </div>
     
     <!-- Multi-Audio Navigation Controls (hidden by default, shown when multiple tracks) -->
-    <div class="audio-nav-divider" id="audio-nav-divider-{{containerId}}" style="display: none;"></div>
+    <div class="audio-nav-divider" id="audio-nav-divider-{{containerId}}" style="display: none; height: 1px; background: var(--gray-200); margin: 0.75rem 0;"></div>
     <div class="audio-nav-container" id="audio-nav-{{containerId}}" style="display: none;">
         <button class="audio-nav-btn" id="prev-audio-{{containerId}}" disabled>
             Previous
@@ -95,7 +95,7 @@
             let performanceHtml = '';
             if (audioFile.performanceBy || audioFile.recordingDate) {
                 performanceHtml = `
-                    <div class="composition-audio-metadata" style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 1rem;">
+                    <div class="composition-audio-metadata" style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 0.75rem;">
                         ${audioFile.performanceBy ? `<div class="performance-info">Performed by: ${audioFile.performanceBy}</div>` : ''}
                         ${audioFile.recordingDate ? `<div>Recorded: ${formatDate(audioFile.recordingDate)}</div>` : ''}
                     </div>
@@ -106,7 +106,7 @@
                 <div class="composition-audio-player" data-audio-index="${index}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
                     ${titleHtml}
                     ${performanceHtml}
-                    <audio controls preload="metadata" data-audio-id="${audioFile.id}" style="width: 100%; margin-bottom: 1rem;">
+                    <audio controls preload="metadata" data-audio-id="${audioFile.id}" style="width: 100%; margin-bottom: 0.75rem;">
                         <source src="${audioFile.url}" type="audio/mpeg">
                         <source src="${audioFile.url}" type="audio/mp4">
                         <source src="${audioFile.url}" type="audio/wav">
@@ -208,8 +208,8 @@
         if (!playersContainer) return;
         
         playersContainer.innerHTML = `
-            <div style="padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; margin: 1rem 0;">
-                <h4 style="color: #856404; margin: 0 0 10px 0;">No Audio Found</h4>
+            <div style="padding: 1rem; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px; margin: 0.5rem 0;">
+                <h4 style="color: #856404; margin: 0 0 0.5rem 0;">No Audio Found</h4>
                 <p style="color: #856404; margin: 0; font-size: 0.9rem;">
                     No audio files are available for this composition.
                 </p>

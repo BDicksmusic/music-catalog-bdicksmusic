@@ -952,7 +952,7 @@ function createFallbackAudioPlayer(audioData, audioPlaceholder) {
     const isMultiTrack = audioFiles.length > 1;
     
     let audioHtml = `
-        <div class="composition-audio-container" style="background: var(--purple-50); border: 1px solid var(--purple-100); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+        <div class="composition-audio-container" style="background: white; border: 1px solid var(--gray-200); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
     `;
     
     audioFiles.forEach((audioFile, index) => {
@@ -967,7 +967,7 @@ function createFallbackAudioPlayer(audioData, audioPlaceholder) {
         let performanceHtml = '';
         if (audioFile.performanceBy || audioFile.recordingDate) {
             performanceHtml = `
-                <div style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 1rem;">
+                <div style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 0.75rem;">
                     ${audioFile.performanceBy ? `<div class="performance-info">Performed by: ${audioFile.performanceBy}</div>` : ''}
                     ${audioFile.recordingDate ? `<div>Recorded: ${new Date(audioFile.recordingDate).toLocaleDateString()}</div>` : ''}
                 </div>
@@ -978,7 +978,7 @@ function createFallbackAudioPlayer(audioData, audioPlaceholder) {
             <div class="audio-track" data-track="${index}" style="${displayStyle}">
                 ${titleHtml}
                 ${performanceHtml}
-                <audio controls preload="metadata" style="width: 100%; margin-bottom: 1rem;">
+                <audio controls preload="metadata" style="width: 100%; margin-bottom: 0.75rem;">
                     <source src="${audioFile.url}" type="audio/mpeg">
                     <source src="${audioFile.url}" type="audio/mp4">
                     <source src="${audioFile.url}" type="audio/wav">
@@ -993,7 +993,8 @@ function createFallbackAudioPlayer(audioData, audioPlaceholder) {
     // Add button navigation for multi-track
     if (isMultiTrack) {
         audioHtml += `
-            <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: var(--gray-50); border-radius: 8px; border: 1px solid var(--gray-200);">
+            <div style="height: 1px; background: var(--gray-200); margin: 0.75rem 0;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; background: transparent;">
                 <button class="audio-nav-btn" id="prev-audio-fallback" style="padding: 0.5rem 1rem; background: var(--primary-600); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s;">Previous</button>
                 <span class="audio-nav-info" id="audio-nav-info-fallback" style="font-weight: 600; color: var(--gray-700); font-size: 0.95rem;">Movement 1 of ${audioFiles.length}</span>
                 <button class="audio-nav-btn" id="next-audio-fallback" style="padding: 0.5rem 1rem; background: var(--primary-600); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s;">Next</button>
