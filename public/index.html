@@ -1868,254 +1868,457 @@
           }
     }
 
-    /* News & Updates Highlights Section */
-    .news-highlights-section {
+
+
+    /* Welcome & Navigation Section */
+    .welcome-section {
         padding: 4rem 0;
-        background: var(--gray-50);
-        border-bottom: 1px solid var(--gray-200);
+        background: white;
+        text-align: center;
     }
 
-    .news-highlights-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 2rem;
+    .welcome-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .welcome-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 1.2rem;
+        color: var(--gray-600);
         margin-bottom: 3rem;
     }
 
-    .news-card {
+    .main-navigation {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .nav-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        background: white;
+        border: 2px solid var(--gray-200);
+        border-radius: 12px;
+        text-decoration: none;
+        color: var(--gray-700);
+        transition: all 0.3s ease;
+        min-width: 140px;
+    }
+
+    .nav-card:hover {
+        border-color: var(--primary-400);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        color: var(--primary-600);
+    }
+
+    .nav-card .nav-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .nav-card span {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* Highlights Section */
+    .highlights-section {
+        padding: 3rem 0;
+        background: var(--gray-50);
+    }
+
+    .highlights-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .highlight-card {
         background: white;
         border-radius: 16px;
         padding: 2rem;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
         border: 1px solid var(--gray-200);
+        transition: all 0.3s ease;
     }
 
-    .news-card:hover {
+    .highlight-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 30px rgba(0,0,0,0.12);
     }
 
-    .news-card.featured-news {
-        border: 2px solid var(--primary-300);
-        background: linear-gradient(135deg, var(--primary-50) 0%, white 100%);
-    }
-
-    .news-card-header {
+    .card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
     }
 
-    .news-badge {
+    .card-header h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0;
+    }
+
+    .card-badge {
         padding: 0.25rem 0.75rem;
         border-radius: 20px;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
-    .news-badge.featured {
+    .news-highlight .card-badge {
         background: var(--primary-100);
         color: var(--primary-700);
     }
 
-    .news-badge.media {
+    .catalog-highlight .card-badge {
         background: var(--gray-100);
         color: var(--gray-700);
     }
 
-    .news-badge.teaching {
+    .media-highlight .card-badge {
         background: var(--gray-100);
         color: var(--gray-700);
     }
 
-    .news-date {
-        font-size: 0.85rem;
-        color: var(--gray-500);
-        font-weight: 500;
-    }
-
-    .news-title {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: var(--gray-900);
-        margin-bottom: 1rem;
-        line-height: 1.3;
-    }
-
-    .news-excerpt {
-        color: var(--gray-600);
-        line-height: 1.6;
+    .card-content {
         margin-bottom: 1.5rem;
     }
 
-    .news-actions {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-        flex-wrap: wrap;
+    .card-footer {
+        border-top: 1px solid var(--gray-200);
+        padding-top: 1rem;
     }
 
-    .news-link {
+    .card-link {
         color: var(--primary-600);
         font-weight: 600;
         text-decoration: none;
         transition: color 0.3s ease;
     }
 
-    .news-link:hover {
+    .card-link:hover {
         color: var(--primary-700);
     }
 
-    .news-highlights-cta {
+    /* News Placeholder */
+    .news-placeholder {
         text-align: center;
+        padding: 2rem 1rem;
+        color: var(--gray-500);
     }
 
-    /* Introduction & Overview Section */
-    .intro-overview-section {
-        padding: 5rem 0;
-        background: white;
+    .placeholder-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
     }
 
-    .intro-content {
-        max-width: 1000px;
-        margin: 0 auto;
+    .placeholder-note {
+        font-size: 0.85rem;
+        color: var(--gray-400);
+        font-style: italic;
     }
 
-    .intro-text {
-        text-align: center;
-        margin-bottom: 4rem;
+    /* Catalog Preview */
+    .composition-preview {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
     }
 
-    .intro-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--gray-900);
-        margin-bottom: 1.5rem;
-    }
-
-    .intro-description {
-        font-size: 1.2rem;
-        color: var(--gray-600);
-        line-height: 1.7;
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .intro-navigation-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-    }
-
-    .intro-nav-card {
-        background: white;
-        border-radius: 16px;
-        padding: 2.5rem 2rem;
-        text-align: center;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-        border: 1px solid var(--gray-200);
+    .preview-image {
         position: relative;
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
         overflow: hidden;
+        flex-shrink: 0;
     }
 
-    .intro-nav-card::before {
-        content: '';
+    .composition-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .preview-overlay {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary-400), var(--primary-600));
-        transform: scaleX(0);
-        transition: transform 0.3s ease;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
 
-    .intro-nav-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    .preview-image:hover .preview-overlay {
+        opacity: 1;
     }
 
-    .intro-nav-card:hover::before {
-        transform: scaleX(1);
-    }
-
-    .nav-card-icon {
-        font-size: 3rem;
-        margin-bottom: 1.5rem;
-        display: block;
-    }
-
-    .intro-nav-card h3 {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: var(--gray-900);
-        margin-bottom: 1rem;
-    }
-
-    .intro-nav-card p {
-        color: var(--gray-600);
-        line-height: 1.6;
-        margin-bottom: 2rem;
-    }
-
-    .nav-card-btn {
-        display: inline-block;
+    .preview-btn {
         background: var(--primary-500);
         color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 25px;
-        text-decoration: none;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        font-size: 0.8rem;
+    }
+
+    .preview-info {
+        flex: 1;
+    }
+
+    .composition-title {
+        font-size: 1rem;
         font-weight: 600;
+        color: var(--gray-900);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .composition-instrumentation {
+        font-size: 0.85rem;
+        color: var(--gray-600);
+        margin: 0;
+    }
+
+    /* Media Preview */
+    .media-preview {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .video-thumbnail {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        aspect-ratio: 16/9;
+    }
+
+    .video-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .video-thumbnail:hover .video-overlay {
+        opacity: 1;
+    }
+
+    .play-btn {
+        background: var(--primary-500);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+    }
+
+    .video-duration {
+        position: absolute;
+        bottom: 0.5rem;
+        right: 0.5rem;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
+
+    .video-info h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--gray-900);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .video-info p {
+        font-size: 0.85rem;
+        color: var(--gray-600);
+        margin: 0;
+    }
+
+    /* Compositions Carousel Section */
+    .compositions-carousel-section {
+        padding: 4rem 0;
+        background: white;
+    }
+
+    .compositions-carousel-container {
+        position: relative;
+        margin-top: 2rem;
+    }
+
+    .carousel-controls {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: space-between;
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    .carousel-btn {
+        background: var(--primary-500);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        font-size: 1.5rem;
+        font-weight: bold;
         transition: all 0.3s ease;
-        border: 2px solid var(--primary-500);
+        pointer-events: auto;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
-    .nav-card-btn:hover {
+    .carousel-btn:hover {
         background: var(--primary-600);
-        border-color: var(--primary-600);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        transform: scale(1.1);
     }
 
-    /* Mobile Responsive for new sections */
+    .carousel-btn:disabled {
+        background: var(--gray-400);
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .compositions-carousel {
+        display: flex;
+        gap: 2rem;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding: 1rem 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .compositions-carousel::-webkit-scrollbar {
+        display: none;
+    }
+
+    .carousel-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+        color: var(--gray-500);
+        width: 100%;
+    }
+
+    .carousel-indicators {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    .carousel-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--gray-300);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-indicator.active {
+        background: var(--primary-500);
+        transform: scale(1.2);
+    }
+
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-        .news-highlights-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .news-card {
-            padding: 1.5rem;
-        }
-
-        .news-title {
-            font-size: 1.2rem;
-        }
-
-        .intro-title {
+        .welcome-title {
             font-size: 2rem;
         }
 
-        .intro-description {
+        .welcome-subtitle {
             font-size: 1.1rem;
         }
 
-        .intro-navigation-grid {
+        .main-navigation {
+            gap: 1rem;
+        }
+
+        .nav-card {
+            padding: 1rem 1.5rem;
+            min-width: 120px;
+        }
+
+        .nav-card .nav-icon {
+            font-size: 1.5rem;
+        }
+
+        .highlights-grid {
             grid-template-columns: 1fr;
             gap: 1.5rem;
         }
 
-        .intro-nav-card {
-            padding: 2rem 1.5rem;
+        .highlight-card {
+            padding: 1.5rem;
         }
 
-        .nav-card-icon {
-            font-size: 2.5rem;
+        .composition-preview {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .preview-image {
+            width: 100px;
+            height: 100px;
+        }
+
+        .carousel-controls {
+            display: none;
+        }
+
+        .compositions-carousel {
+            gap: 1rem;
         }
     }
     </style>
@@ -2313,32 +2516,148 @@
         </div>
     </div>
 
-    <!-- Main Content Container -->
+        <!-- Main Content Container -->
     <div class="main-content-container">
 
-    <!-- News & Updates Highlights Section -->
-    <section class="news-highlights-section">
+    <!-- Welcome & Navigation Section -->
+    <section class="welcome-section">
+        <div class="container">
+            <div class="welcome-content">
+                <h1 class="welcome-title">Welcome to BDix Music</h1>
+                <p class="welcome-subtitle">The website of Brandon Dicks</p>
+                
+                <div class="main-navigation">
+                    <a href="/music-catalog.html" class="nav-card">
+                        <div class="nav-icon">🎼</div>
+                        <span>Music Catalog</span>
+                    </a>
+                    <a href="/media.html" class="nav-card">
+                        <div class="nav-icon">🎬</div>
+                        <span>Media</span>
+                    </a>
+                    <a href="/news.html" class="nav-card">
+                        <div class="nav-icon">📰</div>
+                        <span>News</span>
+                    </a>
+                    <a href="/teaching-material.html" class="nav-card">
+                        <div class="nav-icon">📚</div>
+                        <span>Teaching Material</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Highlights Section -->
+    <section class="highlights-section">
+        <div class="container">
+            <div class="highlights-grid">
+                <!-- News and Updates Card -->
+                <div class="highlight-card news-highlight">
+                    <div class="card-header">
+                        <h3>News and Updates</h3>
+                        <span class="card-badge">Latest</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="news-placeholder">
+                            <div class="placeholder-icon">📰</div>
+                            <p>Latest blog post will appear here</p>
+                            <span class="placeholder-note">Database coming soon</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/news.html" class="card-link">View All News →</a>
+                    </div>
+                </div>
+
+                <!-- New Catalog Release Card -->
+                <div class="highlight-card catalog-highlight">
+                    <div class="card-header">
+                        <h3>New Catalog Release</h3>
+                        <span class="card-badge">New</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="catalog-preview" id="new-release-preview">
+                            <div class="composition-preview">
+                                <div class="preview-image">
+                                    <img src="/imgs/Coming Home (Cover Photo).png" alt="New Release" class="composition-img">
+                                    <div class="preview-overlay">
+                                        <button class="preview-btn">▶</button>
+                                    </div>
+                                </div>
+                                <div class="preview-info">
+                                    <h4 class="composition-title">Loading...</h4>
+                                    <p class="composition-instrumentation">Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/music-catalog.html" class="card-link">View in Catalog →</a>
+                    </div>
+                </div>
+
+                <!-- Featured Media Card -->
+                <div class="highlight-card media-highlight">
+                    <div class="card-header">
+                        <h3>Featured Media</h3>
+                        <span class="card-badge">Popular</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="media-preview">
+                            <div class="video-thumbnail">
+                                <img src="/Index Photos/CJL07828.JPG" alt="Featured Video" class="video-img">
+                                <div class="video-overlay">
+                                    <button class="play-btn">▶</button>
+                                    <span class="video-duration">3:45</span>
+                                </div>
+                            </div>
+                            <div class="video-info">
+                                <h4 class="video-title">Live Performance Highlights</h4>
+                                <p class="video-description">Recent performance from Carnegie Hall</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/media.html" class="card-link">Watch More →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Compositions Carousel Section -->
+    <section class="compositions-carousel-section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">📰 Latest Updates</h2>
-                <p class="section-subtitle">Stay current with the latest news, performances, and new compositions</p>
+                <h2 class="section-title">Featured Compositions</h2>
+                <p class="section-subtitle">Explore the complete collection of original works</p>
             </div>
             
-            <div class="news-highlights-grid">
-                <div class="news-card featured-news">
-                    <div class="news-card-header">
-                        <span class="news-badge featured">Featured</span>
-                        <span class="news-date">December 2024</span>
-                    </div>
-                    <h3 class="news-title">New Brass Quintet Composition Released</h3>
-                    <p class="news-excerpt">"Resolutions" - A dynamic work for brass quintet exploring themes of determination and triumph. Available now in the music catalog.</p>
-                    <div class="news-actions">
-                        <a href="/music-catalog.html" class="btn-secondary">View in Catalog</a>
-                        <a href="/news.html" class="news-link">Read More →</a>
+            <div class="compositions-carousel-container">
+                <div class="carousel-controls">
+                    <button class="carousel-btn prev-btn" id="compositions-prev">
+                        <span>‹</span>
+                    </button>
+                    <button class="carousel-btn next-btn" id="compositions-next">
+                        <span>›</span>
+                    </button>
+                </div>
+                
+                <div class="compositions-carousel" id="compositions-carousel">
+                    <!-- Compositions will be loaded here dynamically -->
+                    <div class="carousel-placeholder">
+                        <div class="placeholder-icon">🎼</div>
+                        <p>Loading featured compositions...</p>
                     </div>
                 </div>
                 
-                <div class="news-card">
+                <div class="carousel-indicators" id="compositions-indicators">
+                    <!-- Indicators will be generated dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
                     <div class="news-card-header">
                         <span class="news-badge media">Media</span>
                         <span class="news-date">November 2024</span>
@@ -4005,10 +4324,152 @@
             console.log('🎯 Hero interaction handlers initialized');
         });
 
+        // Compositions Carousel Functionality
+        let compositionsCarousel = [];
+        let currentCarouselIndex = 0;
+
+        async function loadCompositionsCarousel() {
+            try {
+                const response = await fetch('/api/compositions');
+                const data = await response.json();
+                
+                if (data && data.success && data.compositions && data.compositions.length > 0) {
+                    compositionsCarousel = data.compositions;
+                    initializeCompositionsCarousel();
+                } else {
+                    // Fallback to example data
+                    compositionsCarousel = exampleCompositions;
+                    initializeCompositionsCarousel();
+                }
+            } catch (error) {
+                console.error('Error loading compositions for carousel:', error);
+                compositionsCarousel = exampleCompositions;
+                initializeCompositionsCarousel();
+            }
+        }
+
+        function initializeCompositionsCarousel() {
+            const carousel = document.getElementById('compositions-carousel');
+            const indicators = document.getElementById('compositions-indicators');
+            
+            if (!carousel || !indicators) return;
+            
+            // Clear existing content
+            carousel.innerHTML = '';
+            indicators.innerHTML = '';
+            
+            // Create carousel items
+            compositionsCarousel.forEach((composition, index) => {
+                const carouselItem = createCarouselItem(composition, index);
+                carousel.appendChild(carouselItem);
+                
+                // Create indicator
+                const indicator = document.createElement('div');
+                indicator.className = `carousel-indicator ${index === 0 ? 'active' : ''}`;
+                indicator.addEventListener('click', () => goToCarouselSlide(index));
+                indicators.appendChild(indicator);
+            });
+            
+            // Setup carousel controls
+            setupCarouselControls();
+        }
+
+        function createCarouselItem(composition, index) {
+            const item = document.createElement('div');
+            item.className = 'carousel-item';
+            item.style.cssText = `
+                flex: 0 0 300px;
+                background: white;
+                border-radius: 12px;
+                padding: 1.5rem;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                border: 1px solid var(--gray-200);
+                transition: all 0.3s ease;
+            `;
+            
+            item.innerHTML = `
+                <div class="carousel-item-image">
+                    <img src="${composition.coverImage || '/imgs/Coming Home (Cover Photo).png'}" 
+                         alt="${composition.title}" 
+                         style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
+                </div>
+                <h4 style="font-size: 1.1rem; font-weight: 600; color: var(--gray-900); margin: 0 0 0.5rem 0;">
+                    ${composition.title}
+                </h4>
+                <p style="font-size: 0.9rem; color: var(--gray-600); margin: 0 0 1rem 0;">
+                    ${composition.instrumentation}
+                </p>
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                    <span style="padding: 0.25rem 0.5rem; background: var(--gray-100); color: var(--gray-700); border-radius: 12px; font-size: 0.75rem;">
+                        ${composition.difficulty || 'Medium'}
+                    </span>
+                    <span style="padding: 0.25rem 0.5rem; background: var(--gray-100); color: var(--gray-700); border-radius: 12px; font-size: 0.75rem;">
+                        ${composition.year || '2024'}
+                    </span>
+                </div>
+                <a href="/music-catalog.html" style="display: inline-block; background: var(--primary-500); color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+                    View Details
+                </a>
+            `;
+            
+            return item;
+        }
+
+        function setupCarouselControls() {
+            const prevBtn = document.getElementById('compositions-prev');
+            const nextBtn = document.getElementById('compositions-next');
+            
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    currentCarouselIndex = Math.max(0, currentCarouselIndex - 1);
+                    updateCarousel();
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    currentCarouselIndex = Math.min(compositionsCarousel.length - 1, currentCarouselIndex + 1);
+                    updateCarousel();
+                });
+            }
+        }
+
+        function updateCarousel() {
+            const carousel = document.getElementById('compositions-carousel');
+            const indicators = document.querySelectorAll('.carousel-indicator');
+            
+            if (!carousel) return;
+            
+            // Update carousel scroll position
+            const itemWidth = 300 + 32; // item width + gap
+            carousel.scrollTo({
+                left: currentCarouselIndex * itemWidth,
+                behavior: 'smooth'
+            });
+            
+            // Update indicators
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentCarouselIndex);
+            });
+            
+            // Update button states
+            const prevBtn = document.getElementById('compositions-prev');
+            const nextBtn = document.getElementById('compositions-next');
+            
+            if (prevBtn) prevBtn.disabled = currentCarouselIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentCarouselIndex === compositionsCarousel.length - 1;
+        }
+
+        function goToCarouselSlide(index) {
+            currentCarouselIndex = index;
+            updateCarousel();
+        }
+
         // Load everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadFeaturedCompositions(); // Load the enhanced featured compositions system
             loadFeaturedComposition();
+            loadCompositionsCarousel(); // Load the new compositions carousel
             initHeroVideo(); // This will handle fallback to carousel internally
             initHeroRotation();
             // Mobile menu and theme toggle are now handled by main.js
