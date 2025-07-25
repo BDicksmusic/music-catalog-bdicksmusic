@@ -912,12 +912,11 @@ async function loadAudioPlayerComponent(audioData) {
         
     } catch (error) {
         console.error('🎵 Error loading audio player component:', error);
-        showAudioLoadError();
+        function showAudioLoadError(audioPlaceholder) {
     }
 }
 
 function showAudioLoadError() {
-    const audioPlaceholder = document.querySelector('#audio-player-placeholder');
     if (audioPlaceholder) {
         audioPlaceholder.innerHTML = `
             <div style="padding: 20px; background: #ffe6e6; border: 2px solid #ff9999; border-radius: 8px; margin: 1rem 0;">
@@ -930,14 +929,13 @@ function showAudioLoadError() {
     }
 }
 
-function createFallbackAudioPlayer(audioData) {
+function createFallbackAudioPlayer(audioData, audioPlaceholder) {
     console.log('🎵 Creating fallback audio player with data:', audioData);
-    
-    const audioPlaceholder = document.querySelector('#audio-player-placeholder');
     if (!audioPlaceholder) {
         console.error('🎵 No audio placeholder found for fallback player');
         return;
     }
+}
     
     if (!audioData || !audioData.audioFiles || audioData.audioFiles.length === 0) {
         audioPlaceholder.innerHTML = `
