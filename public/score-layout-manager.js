@@ -195,7 +195,7 @@ class ScoreLayoutManager {
             const toggleIcon = this.elements.pdfToggleBtn.querySelector('.toggle-icon');
             
             if (pdfVisible) {
-                toggleText.textContent = 'PDF Showing';
+                toggleText.textContent = 'PDF (In View)';
                 toggleIcon.textContent = '●';
                 this.elements.pdfToggleBtn.classList.add('toggled');
             } else {
@@ -212,7 +212,7 @@ class ScoreLayoutManager {
             const toggleIcon = this.elements.videoToggleBtn.querySelector('.toggle-icon');
             
             if (videoVisible) {
-                toggleText.textContent = 'Score Video Showing';
+                toggleText.textContent = 'Score Video (In View)';
                 toggleIcon.textContent = '●';
                 this.elements.videoToggleBtn.classList.remove('toggled');
             } else {
