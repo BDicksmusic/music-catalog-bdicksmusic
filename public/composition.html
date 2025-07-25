@@ -545,6 +545,18 @@
         .score-layout-container.resizing .score-divider {
             pointer-events: auto; /* Re-enable pointer events on divider */
         }
+        
+        /* Specifically disable iframe interaction during resize */
+        .score-layout-container.resizing iframe {
+            pointer-events: none !important;
+            user-select: none !important;
+        }
+        
+        /* Disable YouTube iframe interaction during resize */
+        .score-layout-container.resizing .youtube-embed-container iframe {
+            pointer-events: none !important;
+            user-select: none !important;
+        }
 
         .divider-handle {
             width: 100%;

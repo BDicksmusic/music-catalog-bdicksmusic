@@ -299,6 +299,13 @@ class ScoreLayoutManager {
             document.body.style.cursor = 'col-resize';
             document.body.style.userSelect = 'none';
             
+            // Disable iframe interactions during resize
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.style.pointerEvents = 'none';
+                iframe.style.userSelect = 'none';
+            });
+            
             console.log('🔧 Resize started - tracking will continue across entire document');
         };
 
@@ -328,6 +335,11 @@ class ScoreLayoutManager {
             if (target && (target.closest('.score-pdf-column') || target.closest('.score-video-column'))) {
                 console.log('🔧 Mouse over content area - resize continues');
             }
+            
+            // Special handling for iframe interference
+            if (target && target.tagName === 'IFRAME') {
+                console.log('🔧 Mouse over iframe - resize continues with enhanced tracking');
+            }
         };
 
         const stopResize = () => {
@@ -338,6 +350,13 @@ class ScoreLayoutManager {
             this.elements.layoutContainer.classList.remove('resizing');
             document.body.style.cursor = '';
             document.body.style.userSelect = '';
+            
+            // Re-enable iframe interactions after resize
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.style.pointerEvents = '';
+                iframe.style.userSelect = '';
+            });
             
             // Keep the current position
             this.elements.pdfColumn.style.flex = `1 1 ${this.dividerPosition.pdfPercentage}%`;
@@ -356,13 +375,22 @@ class ScoreLayoutManager {
         
         // Additional safety: stop resize if window loses focus
         window.addEventListener('blur', stopResize);
+        
+        // Enhanced iframe handling: prevent iframe from capturing mouse events during resize
+        document.addEventListener('mouseover', (e) => {
+            if (isResizing && e.target.tagName === 'IFRAME') {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🔧 Prevented iframe mouseover during resize');
+            }
+        }, { passive: false });
 
         // Touch events for mobile
         this.elements.divider.addEventListener('touchstart', startResize, { passive: false });
         document.addEventListener('touchmove', doResize, { passive: false });
         document.addEventListener('touchend', stopResize, { passive: false });
         
-        console.log('🔧 Divider resize events configured with document-level tracking');
+        console.log('🔧 Divider resize events configured with document-level tracking and iframe protection');
     }
 
     // Utility method to check if content exists
