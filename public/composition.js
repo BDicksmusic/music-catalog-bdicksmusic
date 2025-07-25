@@ -270,6 +270,17 @@ function renderComposition(comp) {
         coverImg.src = comp.coverImage;
         coverImg.alt = comp.title;
     }
+    
+    // ============================================
+    // YEAR CONTAINER: Faint year display under cover
+    // ============================================
+    console.log('📅 Rendering Year Container');
+    const yearContainer = document.querySelector('.composition-year-container');
+    if (yearContainer && comp.year) {
+        yearContainer.innerHTML = `${comp.year}`;
+    } else if (yearContainer) {
+        yearContainer.innerHTML = ''; // Clear if no year
+    }
 
     // ============================================
     // TITLE SECTION: Title & Instrument (Left Side)
@@ -284,7 +295,7 @@ function renderComposition(comp) {
     }
 
     // ============================================
-    // META CONTAINER: Duration & Short Instruments (Right Side)
+    // META CONTAINER: Duration, Short Instruments & Difficulty (Right Side)
     // ============================================
     console.log('📊 Rendering Meta Container');
     const metaContainer = document.querySelector('.composition-meta-container');
@@ -294,17 +305,28 @@ function renderComposition(comp) {
         
         console.log('📊 Meta Container populated:', {
             duration: comp.duration,
-            shortInstrumentList: shortInstrumentList
+            shortInstrumentList: shortInstrumentList,
+            difficulty: comp.difficulty
         });
         
-        metaContainer.innerHTML = `
-            <div class="composition-meta">
-                ${comp.duration ? `<strong>Duration:</strong> ${comp.duration}` : ''}
-            </div>
-            <div class="composition-short-instruments">
-                ${shortInstrumentList}
-            </div>
-        `;
+        let metaHtml = '';
+        
+        // Duration
+        if (comp.duration) {
+            metaHtml += `<div class="composition-meta"><strong>Duration:</strong> ${comp.duration}</div>`;
+        }
+        
+        // Short Instruments (subtle styling)
+        if (shortInstrumentList) {
+            metaHtml += `<div class="composition-short-instruments">${shortInstrumentList}</div>`;
+        }
+        
+        // Difficulty (low-profile badge)
+        if (comp.difficulty) {
+            metaHtml += `<div style="margin-top: 0.5rem;"><span class="composition-difficulty-badge">${comp.difficulty}</span></div>`;
+        }
+        
+        metaContainer.innerHTML = metaHtml;
     }
 
     // ✅ UPDATED: Meta container now populated above with new structure
@@ -472,10 +494,7 @@ function renderComposition(comp) {
         `;
     }
 
-const shortInstrContainer = document.querySelector('.composition-short-instrument-container');
-if (shortInstrContainer && comp.shortInstrumentList) {
-    shortInstrContainer.innerHTML = `<div class="short-instrument-list"><strong>Short Instrument List:</strong> ${comp.shortInstrumentList}</div>`;
-}
+// ✅ REMOVED: Short instrument container now handled in meta container above
 
 
 // Program Notes and Performance Notes (Combined)

@@ -34,7 +34,7 @@
             gap: 5rem; /* ✨ INCREASED: Much larger gap to prevent conflicts */
             width: 100%;
             max-width: 100%;
-            margin: 0.5rem auto 0;
+            margin: 1.5rem auto 0; /* ✨ INCREASED: More breathing room at the top */
             padding: 0 0.5rem;
             box-sizing: border-box;
             justify-content: start;
@@ -59,6 +59,16 @@
             box-shadow: 0 4px 24px rgba(0,0,0,0.13);
             background: var(--gray-200);
             max-width: 454px;
+        }
+        
+        /* ✨ NEW: Faint year container under cover */
+        .composition-year-container {
+            margin-top: 0.75rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--gray-400); /* ✨ VERY FAINT: Barely noticeable */
+            font-weight: 300;
+            opacity: 0.7;
         }
 
         .composition-content-container {
@@ -148,18 +158,32 @@
             font-weight: 500;
             color: var(--primary-700);
             margin: 0; /* ✨ RESET: Remove all margins for alignment */
-            margin-bottom: 0.5rem; /* ✨ KEEP: Only bottom margin for spacing */
             line-height: 1.2; /* ✨ MATCH: Same line height as title for alignment */
         }
 
         .composition-short-instruments {
-            font-size: 0.95rem;
-            font-weight: 400;
-            color: var(--gray-600);
+            font-size: 0.85rem; /* ✨ SMALLER: Less prominent */
+            font-weight: 300; /* ✨ LIGHTER: Less attention-grabbing */
+            color: var(--gray-500); /* ✨ LIGHTER: More subtle color */
             margin-top: 0;
+            opacity: 0.8; /* ✨ FAINT: Additional subtlety */
         }
 
         /* ===== SHORT INSTRUMENTS: Now only in meta container on the right ===== */
+        
+        /* ✨ LOW-PROFILE DIFFICULTY BADGE ===== */
+        .composition-difficulty-badge {
+            background: var(--gray-100); /* ✨ SUBTLE: Light gray background */
+            color: var(--gray-600); /* ✨ MUTED: Subtle text color */
+            padding: 0.2rem 0.6rem; /* ✨ COMPACT: Smaller padding */
+            border-radius: 12px; /* ✨ SUBTLE: Less rounded */
+            font-size: 0.75rem; /* ✨ SMALL: Less prominent */
+            font-weight: 400; /* ✨ LIGHT: Normal weight */
+            border: 1px solid var(--gray-200); /* ✨ FAINT: Subtle border */
+            opacity: 0.8; /* ✨ FADED: Additional subtlety */
+            display: inline-block;
+            margin: 0;
+        }
 
         /* ===== CONTENT SECTIONS ===== */
         .composition-buy-button-wrapper {
@@ -679,6 +703,11 @@
                      alt="" 
                      class="composition-cover" 
                      id="composition-cover">
+                
+                <!-- ✨ NEW: Faint year display under cover -->
+                <div class="composition-year-container">
+                    <!-- Composition year will be injected here -->
+                </div>
             </div>
             
             <!-- ✨ STREAMLINED: All content in logical hierarchy -->
