@@ -429,58 +429,67 @@ const fetchSimilarWorksByRelation = async (similarWorksRelation) => {
     }
 };
 
-// Enhanced function to fetch similar works using multiple methods
+// Enhanced function to fetch similar works using RELATION PROPERTY as primary method
 const fetchSimilarWorks = async (compositionPage) => {
     console.log('🔗 DEBUG - fetchSimilarWorks called for composition:', compositionPage.id);
     
     const properties = compositionPage.properties;
     let similarWorks = [];
     
-    // Method 1: Check for "similar works" relation property
-    const similarWorksRelation = properties['similar works']?.relation || [];
+    // PRIMARY METHOD: Check for "Similar Works" relation property (this is what we want!)
+    const similarWorksRelation = properties['Similar Works']?.relation || [];
     if (similarWorksRelation.length > 0) {
-        console.log('🔗 DEBUG - Found similar works relation property with', similarWorksRelation.length, 'relations');
+        console.log('🔗 DEBUG - Found Similar Works relation property with', similarWorksRelation.length, 'relations');
+        console.log('🔗 DEBUG - Relation IDs:', similarWorksRelation.map(r => r.id));
         const relationWorks = await fetchSimilarWorksByRelation(similarWorksRelation);
         similarWorks = similarWorks.concat(relationWorks);
+        console.log('🔗 DEBUG - Successfully fetched', relationWorks.length, 'works from relation property');
+    } else {
+        console.log('🔗 DEBUG - No Similar Works relation property found');
     }
     
-    // Method 2: Check for "similar works IDs" rollup property
-    const similarWorksIdsField = properties['similar works IDs'];
-    if (similarWorksIdsField?.rollup?.array) {
-        console.log('🔗 DEBUG - Found similar works IDs rollup property');
-        const ids = similarWorksIdsField.rollup.array
-            .map(item => {
-                if (item.type === 'number') {
-                    return item.number;
-                }
-                return null;
-            })
-            .filter(id => id !== null);
+    // ONLY use fallback methods if NO relation property exists
+    if (similarWorks.length === 0) {
+        console.log('🔗 DEBUG - No relation works found, trying fallback methods...');
         
-        if (ids.length > 0) {
-            console.log('🔗 DEBUG - Extracted IDs from rollup:', ids);
-            const idWorks = await fetchSimilarWorksByIds(ids);
-            similarWorks = similarWorks.concat(idWorks);
+        // Fallback Method 1: Check for "Similar Works IDs" rollup property
+        const similarWorksIdsField = properties['Similar Works IDs'];
+        if (similarWorksIdsField?.rollup?.array) {
+            console.log('🔗 DEBUG - Found Similar Works IDs rollup property (fallback)');
+            const ids = similarWorksIdsField.rollup.array
+                .map(item => {
+                    if (item.type === 'number') {
+                        return item.number;
+                    }
+                    return null;
+                })
+                .filter(id => id !== null);
+            
+            if (ids.length > 0) {
+                console.log('🔗 DEBUG - Extracted IDs from rollup:', ids);
+                const idWorks = await fetchSimilarWorksByIds(ids);
+                similarWorks = similarWorks.concat(idWorks);
+            }
         }
-    }
-    
-    // Method 3: Check for "similar works slugs" rollup property (legacy)
-    const similarWorksSlugsField = properties['similar works slugs'];
-    if (similarWorksSlugsField?.rollup?.array) {
-        console.log('🔗 DEBUG - Found similar works slugs rollup property (legacy)');
-        const slugs = similarWorksSlugsField.rollup.array
-            .map(item => {
-                if (item.type === 'rich_text' && item.rich_text && item.rich_text.length > 0) {
-                    return item.rich_text[0].text.content;
-                }
-                return null;
-            })
-            .filter(slug => slug && slug.trim() !== '');
         
-        if (slugs.length > 0) {
-            console.log('🔗 DEBUG - Extracted slugs from rollup:', slugs);
-            const slugWorks = await fetchSimilarWorksBySlugs(slugs);
-            similarWorks = similarWorks.concat(slugWorks);
+        // Fallback Method 2: Check for "Similar Works Slugs" rollup property (legacy)
+        const similarWorksSlugsField = properties['Similar Works Slugs'];
+        if (similarWorksSlugsField?.rollup?.array) {
+            console.log('🔗 DEBUG - Found Similar Works Slugs rollup property (legacy fallback)');
+            const slugs = similarWorksSlugsField.rollup.array
+                .map(item => {
+                    if (item.type === 'rich_text' && item.rich_text && item.rich_text.length > 0) {
+                        return item.rich_text[0].text.content;
+                    }
+                    return null;
+                })
+                .filter(slug => slug && slug.trim() !== '');
+            
+            if (slugs.length > 0) {
+                console.log('🔗 DEBUG - Extracted slugs from rollup:', slugs);
+                const slugWorks = await fetchSimilarWorksBySlugs(slugs);
+                similarWorks = similarWorks.concat(slugWorks);
+            }
         }
     }
     
@@ -778,8 +787,8 @@ const transformNotionPage = (page) => {
         slug: properties.Slug?.rich_text[0]?.plain_text || '',
         shortInstrumentList: notionRichTextToHtml(properties['Short Instrument List']?.rich_text) || '',
         similarWorksSlugs: (() => {
-            // Debug: Check for the new "similar works slugs" rollup field
-            const slugsField = properties['similar works slugs'];
+            // Debug: Check for the new "Similar Works Slugs" rollup field
+            const slugsField = properties['Similar Works Slugs'];
             let foundSlugs = [];
             
             if (slugsField?.rollup?.array) {
@@ -793,17 +802,17 @@ const transformNotionPage = (page) => {
                     })
                     .filter(slug => slug && slug.trim() !== '');
                 
-                console.log(`🔗 DEBUG - Found similar works slugs: ${foundSlugs.length} items`);
-                console.log(`🔗 DEBUG - Similar works slugs:`, foundSlugs);
+                console.log(`🔗 DEBUG - Found Similar Works Slugs: ${foundSlugs.length} items`);
+                console.log(`🔗 DEBUG - Similar Works Slugs:`, foundSlugs);
             } else {
-                console.log(`🔗 DEBUG - No similar works slugs found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
+                console.log(`🔗 DEBUG - No Similar Works Slugs found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
             }
             
             return foundSlugs;
         })(),
         similarWorksIds: (() => {
-            // Debug: Check for "similar works IDs" rollup field
-            const idsField = properties['similar works IDs'];
+            // Debug: Check for "Similar Works IDs" rollup field
+            const idsField = properties['Similar Works IDs'];
             let foundIds = [];
             
             if (idsField?.rollup?.array) {
@@ -817,25 +826,25 @@ const transformNotionPage = (page) => {
                     })
                     .filter(id => id !== null);
                 
-                console.log(`🔗 DEBUG - Found similar works IDs: ${foundIds.length} items`);
-                console.log(`🔗 DEBUG - Similar works IDs:`, foundIds);
+                console.log(`🔗 DEBUG - Found Similar Works IDs: ${foundIds.length} items`);
+                console.log(`🔗 DEBUG - Similar Works IDs:`, foundIds);
             } else {
-                console.log(`🔗 DEBUG - No similar works IDs found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
+                console.log(`🔗 DEBUG - No Similar Works IDs found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
             }
             
             return foundIds;
         })(),
         similarWorksRelation: (() => {
-            // Debug: Check for "similar works" relation field
-            const relationField = properties['similar works'];
+            // Debug: Check for "Similar Works" relation field
+            const relationField = properties['Similar Works'];
             let foundRelations = [];
             
             if (relationField?.relation) {
                 foundRelations = relationField.relation;
-                console.log(`🔗 DEBUG - Found similar works relations: ${foundRelations.length} items`);
-                console.log(`🔗 DEBUG - Similar works relations:`, foundRelations.map(r => r.id));
+                console.log(`🔗 DEBUG - Found Similar Works relations: ${foundRelations.length} items`);
+                console.log(`🔗 DEBUG - Similar Works relations:`, foundRelations.map(r => r.id));
             } else {
-                console.log(`🔗 DEBUG - No similar works relations found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
+                console.log(`🔗 DEBUG - No Similar Works relations found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
             }
             
             return foundRelations;
@@ -1040,47 +1049,6 @@ app.get('/api/debug/test-media-loading', async (req, res) => {
     }
 });
 
-// DEBUG: Show all properties for a composition
-app.get('/api/debug/composition-properties/:id', async (req, res) => {
-    try {
-        const compositionId = req.params.id;
-        console.log('🔍 DEBUG - Showing all properties for composition:', compositionId);
-        
-        // Get the composition page
-        const compositionPage = await notion.pages.retrieve({ page_id: compositionId });
-        const properties = compositionPage.properties;
-        
-        // Extract all property names and their types
-        const propertyInfo = Object.keys(properties).map(key => ({
-            name: key,
-            type: properties[key].type,
-            hasValue: properties[key] !== null && properties[key] !== undefined
-        }));
-        
-        // Show rollup properties in detail
-        const rollupProperties = propertyInfo.filter(prop => prop.type === 'rollup');
-        const relationProperties = propertyInfo.filter(prop => prop.type === 'relation');
-        
-        res.json({
-            success: true,
-            compositionId,
-            compositionTitle: getTextContent(properties.Name) || getTextContent(properties.Title) || 'Unknown',
-            totalProperties: propertyInfo.length,
-            propertyInfo: propertyInfo,
-            rollupProperties: rollupProperties,
-            relationProperties: relationProperties,
-            allPropertyNames: Object.keys(properties)
-        });
-    } catch (error) {
-        console.error('❌ Debug composition properties error:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: error.message,
-            stack: error.stack 
-        });
-    }
-});
-
 // DEBUG: Test similar works for a specific composition
 app.get('/api/debug/similar-works/:id', async (req, res) => {
     try {
@@ -1125,6 +1093,67 @@ app.get('/api/debug/similar-works/:id', async (req, res) => {
         });
     } catch (error) {
         console.error('❌ Debug similar works error:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message,
+            stack: error.stack 
+        });
+    }
+});
+
+// DEBUG: Show all properties for a composition
+app.get('/api/debug/composition-properties/:id', async (req, res) => {
+    try {
+        const compositionId = req.params.id;
+        console.log('🔍 DEBUG - Showing all properties for composition:', compositionId);
+        
+        // Get the composition page
+        const compositionPage = await notion.pages.retrieve({ page_id: compositionId });
+        const properties = compositionPage.properties;
+        
+        // Extract all property names and their types
+        const propertyInfo = Object.keys(properties).map(key => ({
+            name: key,
+            type: properties[key].type,
+            hasValue: properties[key] !== null && properties[key] !== undefined
+        }));
+        
+        // Show rollup properties in detail
+        const rollupProperties = propertyInfo.filter(p => p.type === 'rollup');
+        const relationProperties = propertyInfo.filter(p => p.type === 'relation');
+        
+        res.json({
+            success: true,
+            compositionId: compositionId,
+            compositionTitle: properties.Name?.title?.[0]?.text?.content || 'Unknown',
+            allProperties: propertyInfo,
+            rollupProperties: rollupProperties,
+            relationProperties: relationProperties,
+            similarWorksProperty: {
+                name: 'Similar Works',
+                type: properties['Similar Works']?.type,
+                hasValue: !!properties['Similar Works'],
+                relationCount: properties['Similar Works']?.relation?.length || 0,
+                relations: properties['Similar Works']?.relation?.map(r => ({
+                    id: r.id,
+                    type: r.type
+                })) || []
+            },
+            similarWorksSlugsProperty: {
+                name: 'Similar Works Slugs',
+                type: properties['Similar Works Slugs']?.type,
+                hasValue: !!properties['Similar Works Slugs'],
+                rollupArray: properties['Similar Works Slugs']?.rollup?.array || []
+            },
+            similarWorksIdsProperty: {
+                name: 'Similar Works IDs',
+                type: properties['Similar Works IDs']?.type,
+                hasValue: !!properties['Similar Works IDs'],
+                rollupArray: properties['Similar Works IDs']?.rollup?.array || []
+            }
+        });
+    } catch (error) {
+        console.error('❌ Debug composition properties error:', error);
         res.status(500).json({ 
             success: false, 
             error: error.message,
