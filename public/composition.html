@@ -129,7 +129,7 @@
             justify-content: flex-start; /* ✨ ADDED: Align to same baseline as title */
             text-align: right;
             min-width: fit-content;
-            margin-top: 8px;
+            margin-top: 12px;
             padding-top: 0; /* ✨ ENSURE: No extra padding */
             /* ✨ REMOVED: background, padding, border for clean minimal look */
         }
@@ -351,24 +351,33 @@
             color: var(--gray-700);
             font-size: 15px;
         }
+        
+        .composition-video-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-600);
+            text-align: left;
+            font-style: bold;
+        }
+
+        .performance-info {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--gray-400);
+            text-align: left;
+        }
 
         /* ===== SCORES SECTION ===== */
         .scores-section {
             display: flex;
             flex-direction: row;
-            gap: 2rem;
             width: 100%;
             max-width: none;
-            margin: 3rem auto 2rem auto;
-            padding: 2rem;
             flex-wrap: wrap;
             align-items: flex-start;
             position: relative;
             z-index: 1;
             background: var(--gray-50);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--gray-200);
             justify-content: center;
         }
 
@@ -378,12 +387,7 @@
             flex-direction: column;
             min-width: 280px;
             max-width: 600px;
-            position: relative;
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--gray-200);
+
         }
 
         .score-video-column {
