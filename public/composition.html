@@ -735,53 +735,136 @@
             }
         }
     
+        /* ✨ MOBILE LAYOUT - Simplified Container Structure */
         @media (max-width: 900px) {
             .composition-main {
-                grid-template-columns: 1fr;   /* Single column */
-                grid-template-rows: auto auto; /* Two rows: cover, then content */
-                gap: 1.2rem;                  /* Adjust gap for mobile */
-                padding: 1rem;               /* Better padding on mobile */
-                margin: 1rem auto 0;        /* Adjusted margin */
+                display: block; /* ✨ SIMPLIFIED: Remove grid complexity */
+                padding: 0; /* ✨ REMOVED: Eliminate outer padding */
+                margin: 0 auto; /* ✨ SIMPLIFIED: Clean margins */
+                background: transparent; /* ✨ REMOVED: No background containers */
             }
             
+            /* ✨ FLATTENED: Hide intermediate container styling */
             .composition-detail-card {
-                padding: 1.5rem;
-                margin-bottom: 1rem;
+                background: transparent; /* ✨ REMOVED: No card background */
+                padding: 0; /* ✨ REMOVED: No padding */
+                margin: 0; /* ✨ REMOVED: No margins */
+                box-shadow: none; /* ✨ REMOVED: No shadows */
+                border-radius: 0; /* ✨ REMOVED: No borders */
             }
             
             .composition-content-container {
-                padding: 1.5rem;
+                background: transparent; /* ✨ REMOVED: No background */
+                padding: 0; /* ✨ REMOVED: No padding */
+                margin: 0; /* ✨ REMOVED: No margins */
+                box-shadow: none; /* ✨ REMOVED: No shadows */
+                border-radius: 0; /* ✨ REMOVED: No borders */
             }
             
+            /* ✨ DIRECT CONTENT: Only actual content containers get minimal styling */
+            .composition-info-container {
+                padding: 1rem; /* ✨ MINIMAL: Only essential padding */
+                margin: 0;
+                background: transparent;
+            }
+            
+            /* ✨ TYPOGRAPHY: Clean mobile text styling */
             .composition-title {
-                font-size: 1.8rem;
-                -webkit-text-fill-color: var(--primary-700);
+                font-size: 1.6rem; /* ✨ OPTIMIZED: Better mobile size */
                 color: var(--primary-700);
+                margin: 0 auto 0.5rem auto;
+                text-align: center;
+                line-height: 1.3;
+                padding: 0;
             }
             
             .composition-instrument {
-                font-size: 1.1rem;
+                font-size: 1rem; /* ✨ OPTIMIZED: Better mobile size */
+                text-align: center;
+                margin: 0 auto 1rem auto;
+                color: var(--gray-600);
+            }
+            
+            /* ✨ SPACING: Consistent mobile spacing */
+            .composition-title-container > * {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            /* ✨ MOBILE BODY: Clean overall mobile layout */
+            body.composition-page {
+                padding-top: 100px; /* ✨ ADJUSTED: Account for navigation */
+            }
+            
+            main {
+                padding: 0 0.5rem; /* ✨ MINIMAL: Just edge protection */
+                margin: 0 auto;
+            }
+            
+            /* ✨ CLEAN CONTENT SECTIONS: Proper spacing without over-nesting */
+            .composition-cover-container {
+                margin: 1rem auto 2rem auto; /* ✨ CENTERED: Clean cover spacing */
+                padding: 0;
+                max-width: 300px; /* ✨ OPTIMAL: Better mobile size */
+            }
+            
+            .composition-title-container {
+                margin: 1.5rem auto; /* ✨ CENTERED: Clean title spacing */
+                padding: 0 1rem;
+                text-align: center; /* ✨ CENTERED: Better mobile alignment */
             }
             
             .composition-buy-button-wrapper {
-                margin: 1.5rem 0;
-                padding: 1rem;
+                margin: 2rem auto; /* ✨ CENTERED: Clean button spacing */
+                padding: 0;
+                text-align: center; /* ✨ CENTERED: Button alignment */
+                background: transparent; /* ✨ REMOVED: No background */
+                border: none; /* ✨ REMOVED: No borders */
+                border-radius: 0; /* ✨ REMOVED: No border radius */
             }
             
             .composition-buy-btn {
                 padding: 0.875rem 2rem;
                 font-size: 1.1rem;
+                margin: 0 auto; /* ✨ CENTERED: Center the button */
             }
             
             .composition-links-container {
-                margin: 1.5rem 0;
+                margin: 2rem auto; /* ✨ CENTERED: Clean links spacing */
                 padding: 1rem;
+                background: var(--gray-50); /* ✨ SUBTLE: Keep minimal background */
+                border-radius: 8px; /* ✨ MINIMAL: Small radius */
             }
             
             .composition-audio-container {
-                margin: 1.5rem 0;
-                padding: 1.5rem;
+                margin: 2rem auto; /* ✨ CENTERED: Clean audio spacing */
+                padding: 1rem;
+                background: var(--gray-50); /* ✨ SUBTLE: Keep minimal background */
+                border-radius: 8px; /* ✨ MINIMAL: Small radius */
             }
+            /* ✨ METADATA & TEXT SECTIONS: Clean, direct styling */
+            .composition-meta-container {
+                margin: 1.5rem auto; /* ✨ CENTERED: Clean metadata spacing */
+                padding: 0.75rem 1rem;
+                background: var(--primary-50); /* ✨ SUBTLE: Light accent background */
+                border-radius: 8px;
+                text-align: center; /* ✨ CENTERED: Better mobile alignment */
+            }
+            
+            .composition-header-combined {
+                flex-direction: column; /* ✨ STACKED: Better mobile flow */
+                align-items: center; /* ✨ CENTERED: Center everything */
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .composition-meta-section {
+                align-items: center; /* ✨ CENTERED: Center metadata */
+                text-align: center;
+                width: 100%;
+            }
+            
+            /* ✨ ENSURE RESPONSIVE BEHAVIOR: Full width containers */
             .composition-cover-container,
             .composition-content-container {
                 width: 100%;
