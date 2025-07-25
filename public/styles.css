@@ -103,9 +103,16 @@ page-title {
 /* ===== MAIN CONTENT ===== */
 main {
     margin: var(--space-2) auto;
-    width: 78vw;
+    width: 95vw; /* ✨ INCREASED: More space for side-by-side layouts */
+    max-width: 1400px; /* ✨ ADDED: Reasonable max width for large screens */
     padding-left: 10px;
     padding-right: 10px;
+}
+
+/* ✨ SPECIAL: Composition pages need even more width for scores */
+.composition-page main {
+    width: 98vw;
+    max-width: 1600px;
 }
 
 /* Special main styling for catalog section */

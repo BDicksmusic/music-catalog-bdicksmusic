@@ -990,38 +990,67 @@
             text-align: center;
         }
         
-        /* Scores Section Styling - Horizontal Row Layout (Now inside main) */
+        /* ✨ SCORES SECTION - Optimized for Side-by-Side Layout */
         .scores-section {
             display: flex;
             flex-direction: row;
-            gap: 3rem;
+            gap: 2rem;
             width: 100%;
-            max-width: 100%;
-            margin: 3rem 0 2rem 0;
-            padding: 0;
-            flex-wrap: nowrap;
+            max-width: none; /* ✨ REMOVED: Let it use full available width */
+            margin: 3rem auto 2rem auto; /* ✨ CHANGED: Center the section */
+            padding: 2rem;
+            flex-wrap: wrap; /* ✨ CHANGED: Allow wrapping on smaller screens */
             align-items: flex-start;
             position: relative;
             z-index: 1;
-            grid-column: 1 / -1; /* Span full width of the main grid */
+            background: var(--gray-50);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-200);
+            justify-content: center; /* ✨ ADDED: Center the columns */
         }
         
         .score-pdf-column {
-            flex: 1 1 50%;
+            flex: 1 1 45%; /* ✨ SLIGHTLY REDUCED: Better spacing */
             display: flex;
             flex-direction: column;
-            min-width: 300px;
-            max-width: 50%;
+            min-width: 280px; /* ✨ REDUCED: More flexible on smaller screens */
+            max-width: 600px; /* ✨ ADDED: Reasonable max width */
             position: relative;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-200);
         }
         
         .score-video-column {
-            flex: 1 1 50%;
+            flex: 1 1 45%; /* ✨ SLIGHTLY REDUCED: Better spacing */
             display: flex;
             flex-direction: column;
-            min-width: 300px;
-            max-width: 50%;
+            min-width: 280px; /* ✨ REDUCED: More flexible on smaller screens */
+            max-width: 600px; /* ✨ ADDED: Reasonable max width */
             position: relative;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-200);
+        }
+        
+        /* ✨ COLUMN HEADERS - Beautiful styling for section titles */
+        .scores-section h3 {
+            color: var(--primary-600);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0 0 1.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-200);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+            justify-content: center;
         }
         
         /* Optional: Add a subtle divider between columns */
@@ -1037,10 +1066,10 @@
         }
         
         /* Responsive layout for tablets and mobile */
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
             .scores-section {
-                flex-direction: column;
-                gap: 2rem;
+                flex-direction: column; /* ✨ Stack vertically on smaller screens */
+                gap: 1.5rem;
                 padding: 1rem;
                 margin: 2rem auto;
                 flex-wrap: nowrap;
@@ -1050,11 +1079,10 @@
             .score-pdf-column,
             .score-video-column {
                 flex: 1 1 auto;
-                min-width: 0;
+                min-width: 0; /* ✨ Remove minimum width constraint */
                 max-width: 100%;
                 width: 100%;
-                padding: 1.5rem;
-                margin-bottom: 1rem;
+                margin-bottom: 0; /* ✨ Remove extra margin */
             }
             
             .score-video-column {
@@ -2330,7 +2358,7 @@
 
     </style>
 </head>
-<body>
+  <body class="composition-page">
       <!-- ✨ NAVIGATION: Will be automatically injected by template-loader.js -->
 
     <main>
