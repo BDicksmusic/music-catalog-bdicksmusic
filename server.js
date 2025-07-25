@@ -344,6 +344,157 @@ function transformMediaPage(page) {
     };
 }
 
+// Helper function to fetch similar works by IDs
+const fetchSimilarWorksByIds = async (similarWorksIds) => {
+    console.log('🔗 DEBUG - fetchSimilarWorksByIds called with IDs:', similarWorksIds?.length, similarWorksIds);
+    
+    if (!similarWorksIds || similarWorksIds.length === 0) {
+        console.log('🔗 DEBUG - No similar works IDs found, returning empty array');
+        return [];
+    }
+
+    try {
+        console.log('🔗 DEBUG - Querying database for compositions with matching IDs...');
+        
+        // Query the database for compositions with matching IDs
+        const response = await notion.databases.query({
+            database_id: process.env.NOTION_DATABASE_ID,
+            filter: {
+                or: similarWorksIds.map(id => ({
+                    property: 'ID',
+                    number: {
+                        equals: parseInt(id)
+                    }
+                }))
+            }
+        });
+        
+        console.log(`🔗 DEBUG - Database query returned ${response.results.length} matching compositions by ID`);
+        
+        // Transform the results
+        const similarWorks = response.results.map(page => {
+            const transformed = transformNotionPage(page);
+            console.log(`🔗 DEBUG - Found similar work by ID: "${transformed.title}" (ID: ${transformed.id})`);
+            return transformed;
+        });
+        
+        // Sort to match the original order of IDs if possible
+        const orderedSimilarWorks = similarWorksIds.map(id => 
+            similarWorks.find(work => work.id === id)
+        ).filter(work => work !== undefined);
+        
+        console.log(`🔗 DEBUG - Final results by ID: ${orderedSimilarWorks.length}/${similarWorksIds.length} similar works found`);
+        console.log('🔗 DEBUG - Similar works by ID:', orderedSimilarWorks.map(w => `"${w.title}" (${w.id})`));
+        
+        return orderedSimilarWorks;
+    } catch (error) {
+        console.error('🔗 ERROR - Critical error in fetchSimilarWorksByIds:', error);
+        return [];
+    }
+};
+
+// Helper function to fetch similar works by relation property
+const fetchSimilarWorksByRelation = async (similarWorksRelation) => {
+    console.log('🔗 DEBUG - fetchSimilarWorksByRelation called with relations:', similarWorksRelation?.length, similarWorksRelation);
+    
+    if (!similarWorksRelation || similarWorksRelation.length === 0) {
+        console.log('🔗 DEBUG - No similar works relations found, returning empty array');
+        return [];
+    }
+
+    try {
+        console.log('🔗 DEBUG - Fetching compositions from relation IDs...');
+        
+        // Fetch each related composition directly by ID
+        const compositionPromises = similarWorksRelation.map(relation => 
+            notion.pages.retrieve({ page_id: relation.id })
+        );
+        
+        const compositions = await Promise.all(compositionPromises);
+        
+        // Transform the results
+        const similarWorks = compositions.map(page => {
+            const transformed = transformNotionPage(page);
+            console.log(`🔗 DEBUG - Found similar work by relation: "${transformed.title}" (ID: ${transformed.id})`);
+            return transformed;
+        });
+        
+        console.log(`🔗 DEBUG - Final results by relation: ${similarWorks.length}/${similarWorksRelation.length} similar works found`);
+        console.log('🔗 DEBUG - Similar works by relation:', similarWorks.map(w => `"${w.title}" (${w.id})`));
+        
+        return similarWorks;
+    } catch (error) {
+        console.error('🔗 ERROR - Critical error in fetchSimilarWorksByRelation:', error);
+        return [];
+    }
+};
+
+// Enhanced function to fetch similar works using multiple methods
+const fetchSimilarWorks = async (compositionPage) => {
+    console.log('🔗 DEBUG - fetchSimilarWorks called for composition:', compositionPage.id);
+    
+    const properties = compositionPage.properties;
+    let similarWorks = [];
+    
+    // Method 1: Check for "similar works" relation property
+    const similarWorksRelation = properties['similar works']?.relation || [];
+    if (similarWorksRelation.length > 0) {
+        console.log('🔗 DEBUG - Found similar works relation property with', similarWorksRelation.length, 'relations');
+        const relationWorks = await fetchSimilarWorksByRelation(similarWorksRelation);
+        similarWorks = similarWorks.concat(relationWorks);
+    }
+    
+    // Method 2: Check for "similar works IDs" rollup property
+    const similarWorksIdsField = properties['similar works IDs'];
+    if (similarWorksIdsField?.rollup?.array) {
+        console.log('🔗 DEBUG - Found similar works IDs rollup property');
+        const ids = similarWorksIdsField.rollup.array
+            .map(item => {
+                if (item.type === 'number') {
+                    return item.number;
+                }
+                return null;
+            })
+            .filter(id => id !== null);
+        
+        if (ids.length > 0) {
+            console.log('🔗 DEBUG - Extracted IDs from rollup:', ids);
+            const idWorks = await fetchSimilarWorksByIds(ids);
+            similarWorks = similarWorks.concat(idWorks);
+        }
+    }
+    
+    // Method 3: Check for "similar works slugs" rollup property (legacy)
+    const similarWorksSlugsField = properties['similar works slugs'];
+    if (similarWorksSlugsField?.rollup?.array) {
+        console.log('🔗 DEBUG - Found similar works slugs rollup property (legacy)');
+        const slugs = similarWorksSlugsField.rollup.array
+            .map(item => {
+                if (item.type === 'rich_text' && item.rich_text && item.rich_text.length > 0) {
+                    return item.rich_text[0].text.content;
+                }
+                return null;
+            })
+            .filter(slug => slug && slug.trim() !== '');
+        
+        if (slugs.length > 0) {
+            console.log('🔗 DEBUG - Extracted slugs from rollup:', slugs);
+            const slugWorks = await fetchSimilarWorksBySlugs(slugs);
+            similarWorks = similarWorks.concat(slugWorks);
+        }
+    }
+    
+    // Remove duplicates based on ID
+    const uniqueWorks = similarWorks.filter((work, index, self) => 
+        index === self.findIndex(w => w.id === work.id)
+    );
+    
+    console.log(`🔗 DEBUG - Final unique similar works: ${uniqueWorks.length} total`);
+    console.log('🔗 DEBUG - All similar works:', uniqueWorks.map(w => `"${w.title}" (${w.id})`));
+    
+    return uniqueWorks;
+};
+
 // Helper function to fetch similar works by slugs
 const fetchSimilarWorksBySlugs = async (similarWorksSlugs) => {
     console.log('🔗 DEBUG - fetchSimilarWorksBySlugs called with slugs:', similarWorksSlugs?.length, similarWorksSlugs);
@@ -484,9 +635,13 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
             });
         }
         
-        // Fetch similar works by slugs
+        // Fetch similar works using the new comprehensive function
+        console.log('🔗 DEBUG - Fetching similar works for composition:', page.id);
         console.log('🔗 DEBUG - Base composition similarWorksSlugs:', baseComposition.similarWorksSlugs?.length, baseComposition.similarWorksSlugs);
-        const similarWorks = await fetchSimilarWorksBySlugs(baseComposition.similarWorksSlugs);
+        console.log('🔗 DEBUG - Base composition similarWorksIds:', baseComposition.similarWorksIds?.length, baseComposition.similarWorksIds);
+        console.log('🔗 DEBUG - Base composition similarWorksRelation:', baseComposition.similarWorksRelation?.length, baseComposition.similarWorksRelation);
+        
+        const similarWorks = await fetchSimilarWorks(page); // Use the new fetchSimilarWorks function
         console.log('🔗 DEBUG - Final similarWorks result:', similarWorks?.length, similarWorks?.map(w => w.title));
         
         // Roll up media data - FIXED: Use properly separated arrays
@@ -642,10 +797,48 @@ const transformNotionPage = (page) => {
                 console.log(`🔗 DEBUG - Similar works slugs:`, foundSlugs);
             } else {
                 console.log(`🔗 DEBUG - No similar works slugs found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
-                console.log(`🔗 DEBUG - Available rollup properties:`, Object.keys(properties).filter(key => properties[key].type === 'rollup'));
             }
             
             return foundSlugs;
+        })(),
+        similarWorksIds: (() => {
+            // Debug: Check for "similar works IDs" rollup field
+            const idsField = properties['similar works IDs'];
+            let foundIds = [];
+            
+            if (idsField?.rollup?.array) {
+                // Extract IDs from rollup array
+                foundIds = idsField.rollup.array
+                    .map(item => {
+                        if (item.type === 'number') {
+                            return item.number;
+                        }
+                        return null;
+                    })
+                    .filter(id => id !== null);
+                
+                console.log(`🔗 DEBUG - Found similar works IDs: ${foundIds.length} items`);
+                console.log(`🔗 DEBUG - Similar works IDs:`, foundIds);
+            } else {
+                console.log(`🔗 DEBUG - No similar works IDs found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
+            }
+            
+            return foundIds;
+        })(),
+        similarWorksRelation: (() => {
+            // Debug: Check for "similar works" relation field
+            const relationField = properties['similar works'];
+            let foundRelations = [];
+            
+            if (relationField?.relation) {
+                foundRelations = relationField.relation;
+                console.log(`🔗 DEBUG - Found similar works relations: ${foundRelations.length} items`);
+                console.log(`🔗 DEBUG - Similar works relations:`, foundRelations.map(r => r.id));
+            } else {
+                console.log(`🔗 DEBUG - No similar works relations found for composition "${getTextContent(properties.Name) || 'Unknown'}"`);
+            }
+            
+            return foundRelations;
         })(),
     };
 };
@@ -847,6 +1040,47 @@ app.get('/api/debug/test-media-loading', async (req, res) => {
     }
 });
 
+// DEBUG: Show all properties for a composition
+app.get('/api/debug/composition-properties/:id', async (req, res) => {
+    try {
+        const compositionId = req.params.id;
+        console.log('🔍 DEBUG - Showing all properties for composition:', compositionId);
+        
+        // Get the composition page
+        const compositionPage = await notion.pages.retrieve({ page_id: compositionId });
+        const properties = compositionPage.properties;
+        
+        // Extract all property names and their types
+        const propertyInfo = Object.keys(properties).map(key => ({
+            name: key,
+            type: properties[key].type,
+            hasValue: properties[key] !== null && properties[key] !== undefined
+        }));
+        
+        // Show rollup properties in detail
+        const rollupProperties = propertyInfo.filter(prop => prop.type === 'rollup');
+        const relationProperties = propertyInfo.filter(prop => prop.type === 'relation');
+        
+        res.json({
+            success: true,
+            compositionId,
+            compositionTitle: getTextContent(properties.Name) || getTextContent(properties.Title) || 'Unknown',
+            totalProperties: propertyInfo.length,
+            propertyInfo: propertyInfo,
+            rollupProperties: rollupProperties,
+            relationProperties: relationProperties,
+            allPropertyNames: Object.keys(properties)
+        });
+    } catch (error) {
+        console.error('❌ Debug composition properties error:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message,
+            stack: error.stack 
+        });
+    }
+});
+
 // DEBUG: Test similar works for a specific composition
 app.get('/api/debug/similar-works/:id', async (req, res) => {
     try {
@@ -860,19 +1094,27 @@ app.get('/api/debug/similar-works/:id', async (req, res) => {
         console.log('🔗 DEBUG - Composition data:', {
             title: compositionData.title,
             similarWorksSlugs: compositionData.similarWorksSlugs,
-            similarWorksCount: compositionData.similarWorksSlugs?.length || 0
+            similarWorksIds: compositionData.similarWorksIds,
+            similarWorksRelation: compositionData.similarWorksRelation,
+            similarWorksSlugsCount: compositionData.similarWorksSlugs?.length || 0,
+            similarWorksIdsCount: compositionData.similarWorksIds?.length || 0,
+            similarWorksRelationCount: compositionData.similarWorksRelation?.length || 0
         });
         
         // Test fetching similar works
-        const similarWorks = await fetchSimilarWorksBySlugs(compositionData.similarWorksSlugs);
+        const similarWorks = await fetchSimilarWorks(compositionPage);
         
         res.json({
             success: true,
-            compositionId,
+            compositionId: compositionId,
             compositionTitle: compositionData.title,
             debug: {
                 similarWorksSlugs: compositionData.similarWorksSlugs,
-                expectedCount: compositionData.similarWorksSlugs?.length || 0,
+                similarWorksIds: compositionData.similarWorksIds,
+                similarWorksRelation: compositionData.similarWorksRelation,
+                expectedCount: (compositionData.similarWorksSlugs?.length || 0) + 
+                              (compositionData.similarWorksIds?.length || 0) + 
+                              (compositionData.similarWorksRelation?.length || 0),
                 actualCount: similarWorks?.length || 0,
                 similarWorks: similarWorks?.map(w => ({
                     id: w.id,
