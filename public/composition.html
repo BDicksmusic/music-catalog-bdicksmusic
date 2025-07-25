@@ -498,6 +498,8 @@
             margin: 0 0.5rem;
             opacity: 1;
             transform: scaleX(1);
+            z-index: 10; /* Ensure divider is above content */
+            user-select: none; /* Prevent text selection during resize */
         }
 
         /* Hide divider when either column is hidden */
@@ -533,6 +535,15 @@
         .score-layout-container.resizing .score-pdf-column,
         .score-layout-container.resizing .score-video-column {
             transition: none; /* Disable transitions during resize for immediate feedback */
+        }
+        
+        /* Prevent content interference during resize */
+        .score-layout-container.resizing {
+            pointer-events: none; /* Disable pointer events on content during resize */
+        }
+        
+        .score-layout-container.resizing .score-divider {
+            pointer-events: auto; /* Re-enable pointer events on divider */
         }
 
         .divider-handle {

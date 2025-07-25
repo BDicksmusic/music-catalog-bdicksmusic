@@ -195,11 +195,11 @@ class ScoreLayoutManager {
             const toggleIcon = this.elements.pdfToggleBtn.querySelector('.toggle-icon');
             
             if (pdfVisible) {
-                toggleText.textContent = 'Hide Score PDF';
+                toggleText.textContent = 'PDF Showing';
                 toggleIcon.textContent = '●';
                 this.elements.pdfToggleBtn.classList.add('toggled');
             } else {
-                toggleText.textContent = 'Show Score PDF';
+                toggleText.textContent = 'PDF (Hidden)';
                 toggleIcon.textContent = '○';
                 this.elements.pdfToggleBtn.classList.remove('toggled');
             }
@@ -212,11 +212,11 @@ class ScoreLayoutManager {
             const toggleIcon = this.elements.videoToggleBtn.querySelector('.toggle-icon');
             
             if (videoVisible) {
-                toggleText.textContent = 'Hide Score Video';
+                toggleText.textContent = 'Score Video Showing';
                 toggleIcon.textContent = '●';
                 this.elements.videoToggleBtn.classList.remove('toggled');
             } else {
-                toggleText.textContent = 'Show Score Video';
+                toggleText.textContent = 'Score Video (Hidden)';
                 toggleIcon.textContent = '○';
                 this.elements.videoToggleBtn.classList.add('toggled');
             }
@@ -288,6 +288,7 @@ class ScoreLayoutManager {
 
         const startResize = (e) => {
             e.preventDefault();
+            e.stopPropagation();
             isResizing = true;
             
             startX = e.clientX || e.touches[0].clientX;
@@ -297,12 +298,15 @@ class ScoreLayoutManager {
             this.elements.layoutContainer.classList.add('resizing');
             document.body.style.cursor = 'col-resize';
             document.body.style.userSelect = 'none';
+            
+            console.log('🔧 Resize started - tracking will continue across entire document');
         };
 
         const doResize = (e) => {
             if (!isResizing) return;
             
             e.preventDefault();
+            e.stopPropagation();
             
             const currentX = e.clientX || e.touches[0].clientX;
             const delta = currentX - startX;
@@ -318,6 +322,12 @@ class ScoreLayoutManager {
             // Apply new position
             this.elements.pdfColumn.style.flex = `1 1 ${pdfPercentage}%`;
             this.elements.videoColumn.style.flex = `1 1 ${videoPercentage}%`;
+            
+            // Debug: Log when mouse is over different areas
+            const target = e.target;
+            if (target && (target.closest('.score-pdf-column') || target.closest('.score-video-column'))) {
+                console.log('🔧 Mouse over content area - resize continues');
+            }
         };
 
         const stopResize = () => {
@@ -332,18 +342,27 @@ class ScoreLayoutManager {
             // Keep the current position
             this.elements.pdfColumn.style.flex = `1 1 ${this.dividerPosition.pdfPercentage}%`;
             this.elements.videoColumn.style.flex = `1 1 ${this.dividerPosition.videoPercentage}%`;
+            
+            console.log('🔧 Resize stopped - final position:', this.dividerPosition);
         };
 
-        // Mouse events
-        this.elements.divider.addEventListener('mousedown', startResize);
-        document.addEventListener('mousemove', doResize);
-        document.addEventListener('mouseup', stopResize);
-        document.addEventListener('mouseleave', stopResize);
+        // Enhanced mouse events with better event handling
+        this.elements.divider.addEventListener('mousedown', startResize, { passive: false });
+        
+        // Document-level events ensure tracking continues across entire page
+        document.addEventListener('mousemove', doResize, { passive: false });
+        document.addEventListener('mouseup', stopResize, { passive: false });
+        document.addEventListener('mouseleave', stopResize, { passive: false });
+        
+        // Additional safety: stop resize if window loses focus
+        window.addEventListener('blur', stopResize);
 
-        // Touch events
+        // Touch events for mobile
         this.elements.divider.addEventListener('touchstart', startResize, { passive: false });
         document.addEventListener('touchmove', doResize, { passive: false });
-        document.addEventListener('touchend', stopResize);
+        document.addEventListener('touchend', stopResize, { passive: false });
+        
+        console.log('🔧 Divider resize events configured with document-level tracking');
     }
 
     // Utility method to check if content exists
