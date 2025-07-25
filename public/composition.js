@@ -897,14 +897,15 @@ if (notesContainer) {
         }
     }
 
-    // Show/hide resizable divider
+    // Show/hide resizable divider (only on desktop)
     if (scoreDivider) {
-        if (hasPdfScore && hasScoreVideo) {
+        const isDesktop = window.innerWidth >= 1024; // Only show on desktop
+        if (hasPdfScore && hasScoreVideo && isDesktop) {
             scoreDivider.style.display = 'flex';
-            console.log('🔧 DEBUG - Resizable divider shown (both PDF and video available)');
+            console.log('🔧 DEBUG - Resizable divider shown (both PDF and video available on desktop)');
         } else {
             scoreDivider.style.display = 'none';
-            console.log('🔧 DEBUG - Resizable divider hidden (not both PDF and video available)');
+            console.log('🔧 DEBUG - Resizable divider hidden (not both PDF and video available or not desktop)');
         }
     }
 

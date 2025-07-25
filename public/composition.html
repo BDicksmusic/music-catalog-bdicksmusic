@@ -752,39 +752,7 @@
             }
 
             .score-divider {
-                width: 100%;
-                height: 8px;
-                cursor: row-resize;
-                margin: 0.5rem 0;
-            }
-
-            .divider-handle {
-                width: 60px;
-                height: 100%;
-                margin: 0 auto;
-            }
-
-            .divider-grip {
-                width: 40px;
-                height: 4px;
-            }
-
-            .divider-grip::before,
-            .divider-grip::after {
-                width: 8px;
-                height: 2px;
-                top: 50%;
-                left: auto;
-            }
-
-            .divider-grip::before {
-                left: 8px;
-                transform: translateY(-50%);
-            }
-
-            .divider-grip::after {
-                right: 8px;
-                transform: translateY(-50%);
+                display: none; /* Hide divider on mobile/tablet */
             }
 
             .score-pdf-column,
@@ -1258,10 +1226,11 @@
                 if (hasScoreVideo) {
                     videoColumn.classList.remove('full-width');
                     pdfColumn.classList.remove('full-width'); // Remove full-width from PDF when both are shown
-                    // Show divider when both PDF and video are visible
-                    if (scoreDivider) {
-                        scoreDivider.style.display = 'flex';
-                    }
+                                    // Show divider when both PDF and video are visible (desktop only)
+                if (scoreDivider) {
+                    const isDesktop = window.innerWidth >= 1024;
+                    scoreDivider.style.display = isDesktop ? 'flex' : 'none';
+                }
                 } else {
                     // If no video, center the PDF
                     pdfColumn.classList.add('full-width');
@@ -1293,9 +1262,10 @@
                 toggleIcon.textContent = '▼';
                 toggleBtn.classList.remove('toggled');
                 
-                // Show divider if PDF is also visible
+                // Show divider if PDF is also visible (desktop only)
                 if (scoreDivider && scoreCarousel.classList.contains('show')) {
-                    scoreDivider.style.display = 'flex';
+                    const isDesktop = window.innerWidth >= 1024;
+                    scoreDivider.style.display = isDesktop ? 'flex' : 'none';
                 }
             } else {
                 // Hide video content
@@ -1360,10 +1330,8 @@
         // ===== RESIZABLE DIVIDER FUNCTIONALITY =====
         let isResizing = false;
         let startX = 0;
-        let startY = 0;
         let startPdfFlex = 0;
         let startVideoFlex = 0;
-        let isVertical = false;
 
         function initResizableDivider() {
             const divider = document.getElementById('score-divider');
@@ -1376,36 +1344,20 @@
                 return;
             }
 
-            // Check if layout is vertical (mobile/tablet)
-            function checkLayoutDirection() {
-                const rect = layoutContainer.getBoundingClientRect();
-                isVertical = rect.width < 768; // Same breakpoint as CSS
-            }
-
-            // Initialize layout direction
-            checkLayoutDirection();
-
             // Handle mouse/touch events
             function startResize(e) {
                 e.preventDefault();
                 isResizing = true;
                 
-                const rect = layoutContainer.getBoundingClientRect();
-                if (isVertical) {
-                    startY = e.clientY || e.touches[0].clientY;
-                    startPdfFlex = pdfColumn.offsetHeight;
-                    startVideoFlex = videoColumn.offsetHeight;
-                } else {
-                    startX = e.clientX || e.touches[0].clientX;
-                    startPdfFlex = pdfColumn.offsetWidth;
-                    startVideoFlex = videoColumn.offsetWidth;
-                }
+                startX = e.clientX || e.touches[0].clientX;
+                startPdfFlex = pdfColumn.offsetWidth;
+                startVideoFlex = videoColumn.offsetWidth;
                 
                 divider.classList.add('resizing');
-                document.body.style.cursor = isVertical ? 'row-resize' : 'col-resize';
+                document.body.style.cursor = 'col-resize';
                 document.body.style.userSelect = 'none';
                 
-                console.log('🔧 Starting resize:', isVertical ? 'vertical' : 'horizontal');
+                console.log('🔧 Starting horizontal resize');
             }
 
             function doResize(e) {
@@ -1413,33 +1365,16 @@
                 
                 e.preventDefault();
                 
-                const rect = layoutContainer.getBoundingClientRect();
-                let delta;
+                const currentX = e.clientX || e.touches[0].clientX;
+                const delta = currentX - startX;
                 
-                if (isVertical) {
-                    const currentY = e.clientY || e.touches[0].clientY;
-                    delta = currentY - startY;
-                    
-                    const totalHeight = rect.height - divider.offsetHeight;
-                    const pdfHeight = Math.max(200, Math.min(800, startPdfFlex + delta));
-                    const videoHeight = totalHeight - pdfHeight;
-                    
-                    if (videoHeight >= 200) {
-                        pdfColumn.style.flex = `0 0 ${pdfHeight}px`;
-                        videoColumn.style.flex = `0 0 ${videoHeight}px`;
-                    }
-                } else {
-                    const currentX = e.clientX || e.touches[0].clientX;
-                    delta = currentX - startX;
-                    
-                    const totalWidth = rect.width - divider.offsetWidth;
-                    const pdfWidth = Math.max(280, Math.min(800, startPdfFlex + delta));
-                    const videoWidth = totalWidth - pdfWidth;
-                    
-                    if (videoWidth >= 280) {
-                        pdfColumn.style.flex = `0 0 ${pdfWidth}px`;
-                        videoColumn.style.flex = `0 0 ${videoWidth}px`;
-                    }
+                const totalWidth = layoutContainer.offsetWidth - divider.offsetWidth;
+                const pdfWidth = Math.max(280, Math.min(800, startPdfFlex + delta));
+                const videoWidth = totalWidth - pdfWidth;
+                
+                if (videoWidth >= 280) {
+                    pdfColumn.style.flex = `0 0 ${pdfWidth}px`;
+                    videoColumn.style.flex = `0 0 ${videoWidth}px`;
                 }
             }
 
@@ -1464,17 +1399,7 @@
             document.addEventListener('touchmove', doResize, { passive: false });
             document.addEventListener('touchend', stopResize);
 
-            // Handle window resize
-            window.addEventListener('resize', () => {
-                checkLayoutDirection();
-                // Reset flex properties when switching between horizontal/vertical
-                if (!isResizing) {
-                    pdfColumn.style.flex = '';
-                    videoColumn.style.flex = '';
-                }
-            });
-
-            console.log('🔧 Resizable divider initialized');
+            console.log('🔧 Resizable divider initialized (horizontal only)');
         }
 
         // Initialize resizable divider when DOM is loaded

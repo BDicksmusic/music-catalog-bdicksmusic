@@ -91,10 +91,10 @@
     }
 
     .related-composition-card:hover {
-        transform: translateY(-8px) scale(1.03);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(59, 130, 246, 0.12);
+        transform: translateY(-12px) scale(1.05);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(59, 130, 246, 0.15);
         background: linear-gradient(145deg, var(--gray-50) 0%, var(--primary-50) 100%);
-        border-color: var(--primary-200);
+        border-color: var(--primary-300);
     }
 
     .related-composition-card:hover .related-composition-title {
@@ -112,7 +112,7 @@
     }
 
     .related-composition-card:hover .related-composition-image {
-        transform: scale(1.03);
+        transform: scale(1.08);
     }
 
     /* ===== CARD CONTENT ===== */
@@ -247,41 +247,44 @@
 
 <script>
     // Initialize the related works carousel component
-    function initRelatedWorksCarousel_{{containerId}}(compositions) {
-        console.log('🎠 Initializing related works carousel with:', compositions?.length, 'compositions');
-        
-        const carouselContainer = document.querySelector('#related-works-carousel-{{containerId}}');
-        if (!carouselContainer) {
-            console.error('Related works carousel container not found');
-            return;
-        }
+    (function() {
+        const containerId = '{{containerId}}';
+        window['initRelatedWorksCarousel_' + containerId] = function(compositions) {
+            console.log('🎠 Initializing related works carousel with:', compositions?.length, 'compositions');
+            
+            const carouselContainer = document.querySelector('#related-works-carousel-' + containerId);
+            if (!carouselContainer) {
+                console.error('Related works carousel container not found');
+                return;
+            }
 
-        if (!compositions || compositions.length === 0) {
-            carouselContainer.innerHTML = `
-                <div class="related-composition-empty">
-                    <p>No related works available.</p>
+            if (!compositions || compositions.length === 0) {
+                carouselContainer.innerHTML = `
+                    <div class="related-composition-empty">
+                        <p>No related works available.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const carouselHtml = compositions.map(comp => `
+                <div class="related-composition-card" onclick="navigateToComposition('${comp.slug}')">
+                    ${comp.coverImage ? `
+                        <img src="${comp.coverImage}" alt="${comp.title}" class="related-composition-image" loading="lazy">
+                    ` : `
+                        <div class="related-composition-image" style="display: flex; align-items: center; justify-content: center; color: var(--gray-400); font-size: 2rem;">♪</div>
+                    `}
+                    <div class="related-composition-content">
+                        <h4 class="related-composition-title">${comp.title}</h4>
+                        <div class="related-composition-instrumentation">${comp.instrumentation}</div>
+                    </div>
                 </div>
-            `;
-            return;
-        }
+            `).join('');
 
-        const carouselHtml = compositions.map(comp => `
-            <div class="related-composition-card" onclick="navigateToComposition('${comp.slug}')">
-                ${comp.coverImage ? `
-                    <img src="${comp.coverImage}" alt="${comp.title}" class="related-composition-image" loading="lazy">
-                ` : `
-                    <div class="related-composition-image" style="display: flex; align-items: center; justify-content: center; color: var(--gray-400); font-size: 2rem;">♪</div>
-                `}
-                <div class="related-composition-content">
-                    <h4 class="related-composition-title">${comp.title}</h4>
-                    <div class="related-composition-instrumentation">${comp.instrumentation}</div>
-                </div>
-            </div>
-        `).join('');
-
-        carouselContainer.innerHTML = carouselHtml;
-        console.log('🎠 Related works carousel populated with:', carouselContainer.children.length, 'cards');
-    }
+            carouselContainer.innerHTML = carouselHtml;
+            console.log('🎠 Related works carousel populated with:', carouselContainer.children.length, 'cards');
+        };
+    })();
 
     // Global navigation function
     function navigateToComposition(slug) {
