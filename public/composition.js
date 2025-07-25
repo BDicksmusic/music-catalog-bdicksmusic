@@ -834,6 +834,20 @@ if (notesContainer) {
             noScoreVideo: !hasScoreVideo
         });
     }
+
+    // ===== SCORE TOGGLE BUTTON VISIBILITY =====
+    const scoreToggleBtn = document.getElementById('score-toggle-btn');
+    if (scoreToggleBtn) {
+        if (hasPdfScore) {
+            // Show toggle button if there's a PDF score available
+            scoreToggleBtn.style.display = 'inline-flex';
+            console.log('📄 DEBUG - Score toggle button shown (PDF score available)');
+        } else {
+            // Hide toggle button if no PDF score available
+            scoreToggleBtn.style.display = 'none';
+            console.log('📄 DEBUG - Score toggle button hidden (no PDF score available)');
+        }
+    }
     
     // New Structured Composition Details System
     // Related Works Carousel Component
@@ -1979,6 +1993,16 @@ function scrollToScore() {
         setTimeout(() => {
             scoreSection.style.transform = 'scale(1)';
         }, 300);
+        
+        // Automatically show the PDF if it's hidden
+        const pdfColumn = document.getElementById('score-pdf-column');
+        const toggleBtn = document.getElementById('score-toggle-btn');
+        if (pdfColumn && toggleBtn && !pdfColumn.classList.contains('show')) {
+            // Small delay to ensure scroll animation completes first
+            setTimeout(() => {
+                toggleScorePDF();
+            }, 500);
+        }
         
         console.log('✅ Scrolled to Score section');
     } else {

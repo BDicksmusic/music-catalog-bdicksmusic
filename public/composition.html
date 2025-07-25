@@ -382,13 +382,65 @@
             margin-top: 1rem;
         }
 
+        /* ===== SCORE TOGGLE BUTTON ===== */
+        .score-toggle-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+        }
+
+        .score-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+        }
+
+        .score-toggle-btn:hover {
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .score-toggle-btn:active {
+            transform: translateY(0);
+        }
+
+        .score-toggle-btn .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .score-toggle-btn.toggled .toggle-icon {
+            transform: rotate(180deg);
+        }
+
         .score-pdf-column {
             flex: 1 1 45%;
             display: flex;
             flex-direction: column;
             min-width: 280px;
             max-width: 600px;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
 
+        .score-pdf-column.show {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
         }
 
         .score-video-column {
@@ -397,6 +449,12 @@
             flex-direction: column;
             padding-left: 1rem;
             padding-right: 1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .score-video-column.full-width {
+            flex: 1 1 100%;
+            max-width: 800px;
         }
 
         .scores-section h3 {
@@ -589,6 +647,15 @@
                 max-width: 100%;
             }
 
+            .score-toggle-container {
+                margin-bottom: 0.75rem;
+            }
+
+            .score-toggle-btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.85rem;
+            }
+
             .score-pdf-column,
             .score-video-column {
                 flex: 1 1 auto;
@@ -596,6 +663,11 @@
                 max-width: 100%;
                 width: 100%;
                 margin-bottom: 0;
+            }
+
+            .score-video-column.full-width {
+                flex: 1 1 100%;
+                max-width: 100%;
             }
 
             .program-video-section {
@@ -850,9 +922,25 @@
                 padding: 0.75rem;
             }
 
+            .score-toggle-container {
+                margin-bottom: 0.5rem;
+            }
+
+            .score-toggle-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+                width: 100%;
+                max-width: 200px;
+            }
+
             .score-pdf-column,
             .score-video-column {
                 padding: 1rem;
+            }
+
+            .score-video-column.full-width {
+                flex: 1 1 100%;
+                max-width: 100%;
             }
         }
     </style>
@@ -919,12 +1007,20 @@
  
             <!-- Scores Section (PDF + Score Video) - MOVED INSIDE MAIN -->
             <section class="scores-section" id="scores-section">
-                <div class="score-pdf-column">
+                <!-- Score Toggle Button -->
+                <div class="score-toggle-container">
+                    <button class="score-toggle-btn" id="score-toggle-btn" onclick="toggleScorePDF()">
+                        <span class="toggle-icon">▼</span>
+                        <span class="toggle-text">Show Score PDF</span>
+                    </button>
+                </div>
+                
+                <div class="score-pdf-column" id="score-pdf-column">
                     <div class="score-carousel-container" id="score-carousel-container">
                         <!-- Score PDF will be injected here -->
                     </div>
                 </div>
-                <div class="score-video-column">
+                <div class="score-video-column" id="score-video-column">
                     <div class="composition-score-video-container" id="composition-score-video-container">
                         <div id="score-video-content">
                             <!-- Score videos will be injected here -->
@@ -993,6 +1089,31 @@
 
         function showUnavailableMessage(title) {
             alert(`"${title}" is currently not available for purchase.\n\nPlease contact us directly for more information about acquiring this composition.`);
+        }
+
+        // ===== SCORE PDF TOGGLE FUNCTIONALITY =====
+        function toggleScorePDF() {
+            const toggleBtn = document.getElementById('score-toggle-btn');
+            const pdfColumn = document.getElementById('score-pdf-column');
+            const videoColumn = document.getElementById('score-video-column');
+            const toggleText = toggleBtn.querySelector('.toggle-text');
+            const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+            
+            if (pdfColumn.classList.contains('show')) {
+                // Hide PDF column
+                pdfColumn.classList.remove('show');
+                videoColumn.classList.add('full-width');
+                toggleText.textContent = 'Show Score PDF';
+                toggleIcon.textContent = '▼';
+                toggleBtn.classList.remove('toggled');
+            } else {
+                // Show PDF column
+                pdfColumn.classList.add('show');
+                videoColumn.classList.remove('full-width');
+                toggleText.textContent = 'Hide Score PDF';
+                toggleIcon.textContent = '▲';
+                toggleBtn.classList.add('toggled');
+            }
         }
     </script>
 
