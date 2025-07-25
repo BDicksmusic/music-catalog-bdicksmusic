@@ -2744,8 +2744,8 @@
                                     <p class="composition-instrumentation">Loading...</p>
                                     <p class="composition-description">Loading composition description...</p>
                                     <div class="composition-actions">
-                                        <button class="btn-primary learn-more-btn">Learn More</button>
-                                        <button class="btn-secondary buy-now-btn">Buy Now</button>
+                                        <button class="btn-primary learn-more-btn" onclick="learnMoreComposition()">Learn More</button>
+                                        <button class="btn-secondary buy-now-btn" onclick="buyNowComposition()">Buy Now</button>
                                         <button class="btn-listen listen-btn" onclick="playFeaturedComposition()">Listen</button>
                                     </div>
                                 </div>
@@ -4587,13 +4587,15 @@
                     <span style="padding: 0.25rem 0.5rem; background: var(--gray-100); color: var(--gray-700); border-radius: 12px; font-size: 0.75rem;">
                         ${composition.difficulty || 'Medium'}
                     </span>
-                    <span style="padding: 0.25rem 0.5rem; background: var(--gray-100); color: var(--gray-700); border-radius: 12px; font-size: 0.75rem;">
-                        ${composition.year || '2024'}
-                    </span>
                 </div>
-                <a href="/music-catalog.html" style="display: inline-block; background: var(--primary-500); color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">
-                    View Details
-                </a>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <a href="/music-catalog.html" style="display: inline-block; background: var(--primary-500); color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+                        View Details
+                    </a>
+                    <button onclick="playCarouselComposition(${index})" style="display: inline-block; background: var(--primary-100); color: var(--primary-700); border: 2px solid var(--primary-200); padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                        Listen
+                    </button>
+                </div>
             `;
             
             return item;
@@ -4649,6 +4651,34 @@
             updateCarousel();
         }
 
+        // New Catalog Release Functions
+        async function loadNewCatalogRelease() {
+            try {
+                const response = await fetch('/api/compositions');
+                const data = await response.json();
+                
+                if (data && data.success && data.compositions && data.compositions.length > 0) {
+                    // Get the most recent composition or a featured one
+                    const newRelease = data.compositions.find(comp => comp.featured) || data.compositions[0];
+                    updateNewCatalogRelease(newRelease);
+                }
+            } catch (error) {
+                console.error('Error loading new catalog release:', error);
+            }
+        }
+
+        function updateNewCatalogRelease(composition) {
+            const titleElement = document.querySelector('#new-release-preview .composition-title');
+            const instrumentationElement = document.querySelector('#new-release-preview .composition-instrumentation');
+            const descriptionElement = document.querySelector('#new-release-preview .composition-description');
+            const imageElement = document.querySelector('#new-release-preview .composition-img');
+            
+            if (titleElement) titleElement.textContent = composition.title || 'New Release';
+            if (instrumentationElement) instrumentationElement.textContent = composition.instrumentation || 'Brass Ensemble';
+            if (descriptionElement) descriptionElement.textContent = composition.description || 'A dynamic new composition showcasing innovative musical ideas and technical brilliance.';
+            if (imageElement && composition.coverImage) imageElement.src = composition.coverImage;
+        }
+
         // Featured Audio Player Functions
         function playFeaturedComposition() {
             const audioSection = document.getElementById('featured-audio-section');
@@ -4700,11 +4730,60 @@
             audioSection.style.display = 'none';
         }
 
+        function playCarouselComposition(index) {
+            const audioSection = document.getElementById('featured-audio-section');
+            const audioPlayer = document.getElementById('featured-audio-player');
+            const audioTitle = document.querySelector('.audio-composition-title');
+            const audioInstrumentation = document.querySelector('.audio-composition-instrumentation');
+            const audioCover = document.querySelector('.audio-cover');
+            
+            // Show the audio section
+            audioSection.style.display = 'block';
+            
+            // Get the composition from the carousel
+            if (compositionsCarousel[index]) {
+                const composition = compositionsCarousel[index];
+                
+                // Update audio player content
+                audioTitle.textContent = composition.title || 'Composition';
+                audioInstrumentation.textContent = composition.instrumentation || 'Brass Ensemble';
+                
+                if (composition.coverImage) {
+                    audioCover.src = composition.coverImage;
+                }
+                
+                if (composition.audioPreview) {
+                    audioPlayer.src = composition.audioPreview;
+                    audioPlayer.load();
+                    audioPlayer.play();
+                }
+            }
+            
+            // Smooth scroll to audio player
+            setTimeout(() => {
+                audioSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 300);
+        }
+
+        function learnMoreComposition() {
+            // Navigate to the music catalog page
+            window.location.href = '/music-catalog.html';
+        }
+
+        function buyNowComposition() {
+            // Navigate to the music catalog page with purchase intent
+            window.location.href = '/music-catalog.html';
+        }
+
         // Load everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadFeaturedCompositions(); // Load the enhanced featured compositions system
             loadFeaturedComposition();
             loadCompositionsCarousel(); // Load the new compositions carousel
+            loadNewCatalogRelease(); // Load the new catalog release
             initHeroVideo(); // This will handle fallback to carousel internally
             initHeroRotation();
             // Mobile menu and theme toggle are now handled by main.js
