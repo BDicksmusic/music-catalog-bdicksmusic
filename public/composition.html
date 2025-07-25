@@ -420,11 +420,23 @@
         }
 
         .score-toggle-btn .toggle-icon {
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            line-height: 1;
         }
 
         .score-toggle-btn.toggled .toggle-icon {
-            transform: rotate(180deg);
+            transform: scale(1.1);
+        }
+
+        /* Enhanced circle icons */
+        .score-toggle-btn .toggle-icon {
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-toggle-btn.toggled .toggle-icon {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         /* ===== RESIZABLE SCORE LAYOUT SYSTEM ===== */
@@ -433,6 +445,17 @@
             align-items: stretch;
             width: 100%;
             position: relative;
+            min-height: 0; /* Remove fixed minimum height */
+        }
+
+        /* Add minimum height only when content is visible */
+        .score-layout-container:has(.score-carousel-container.show),
+        .score-layout-container:has(.score-video-column:not(.hidden)) {
+            min-height: 400px;
+        }
+
+        /* Fallback for browsers that don't support :has() */
+        .score-layout-container.has-content {
             min-height: 400px;
         }
 
@@ -485,6 +508,16 @@
             transform: scaleX(0);
             width: 0;
             margin: 0;
+        }
+
+        /* Proper divider handle hiding */
+        .score-divider.divider-handle-hidden {
+            display: none !important;
+            opacity: 0;
+            transform: scaleX(0);
+            width: 0;
+            margin: 0;
+            pointer-events: none;
         }
 
         .score-divider:hover {
@@ -585,6 +618,30 @@
             margin: 0 auto; /* Center the PDF when in full width */
             padding-left: 0;
             padding-right: 0;
+        }
+
+        /* Better centering for PDF-only layout */
+        .score-layout-container.pdf-only .score-pdf-column {
+            flex: 1 1 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding-left: 0;
+            padding-right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* Better centering for video-only layout */
+        .score-layout-container.video-only .score-video-column {
+            flex: 1 1 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding-left: 0;
+            padding-right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
 
         .scores-section h3 {
@@ -1112,15 +1169,15 @@
                 <!-- Score Control Buttons -->
                 <div class="score-toggle-container">
                     <button class="score-toggle-btn" id="score-toggle-btn" onclick="toggleScorePDF()">
-                        <span class="toggle-icon">▼</span>
+                        <span class="toggle-icon">●</span>
                         <span class="toggle-text">Show Score PDF</span>
                     </button>
                     <button class="score-toggle-btn" id="score-video-toggle-btn" onclick="toggleScoreVideo()" style="display: none;">
-                        <span class="toggle-icon">▼</span>
+                        <span class="toggle-icon">●</span>
                         <span class="toggle-text">Hide Score Video</span>
                     </button>
                     <button class="score-toggle-btn" id="audio-control-btn" onclick="toggleAudio()" style="display: none;">
-                        <span class="toggle-icon">▶</span>
+                        <span class="toggle-icon">●</span>
                         <span class="toggle-text">Start Audio</span>
                     </button>
                 </div>
@@ -1238,7 +1295,7 @@
                     layoutContainer.classList.remove('pdf-only');
                     // Hide divider when PDF is hidden
                     if (scoreDivider) {
-                        scoreDivider.style.display = 'none';
+                        scoreDivider.classList.add('divider-handle-hidden');
                     }
                 } else {
                     // No video, so this is pdf-only
@@ -1246,7 +1303,7 @@
                     layoutContainer.classList.remove('video-only');
                 }
                 toggleText.textContent = 'Show Score PDF';
-                toggleIcon.textContent = '▼';
+                toggleIcon.textContent = '○';
                 toggleBtn.classList.remove('toggled');
             } else {
                 // Show PDF content
@@ -1259,7 +1316,19 @@
                     // Show divider when both PDF and video are visible (desktop only)
                     if (scoreDivider) {
                         const isDesktop = window.innerWidth >= 1024;
-                        scoreDivider.style.display = isDesktop ? 'flex' : 'none';
+                        if (isDesktop) {
+                            scoreDivider.classList.remove('divider-handle-hidden');
+                        } else {
+                            scoreDivider.classList.add('divider-handle-hidden');
+                        }
+                        
+                        // Restore saved divider position
+                        const pdfColumn = document.getElementById('score-pdf-column');
+                        const videoColumn = document.getElementById('score-video-column');
+                        if (pdfColumn && videoColumn) {
+                            pdfColumn.style.flex = `1 1 ${currentPdfPercentage}%`;
+                            videoColumn.style.flex = `1 1 ${currentVideoPercentage}%`;
+                        }
                     }
                 } else {
                     // If no video, center the PDF
@@ -1268,7 +1337,7 @@
                     layoutContainer.classList.remove('video-only');
                 }
                 toggleText.textContent = 'Hide Score PDF';
-                toggleIcon.textContent = '▲';
+                toggleIcon.textContent = '●';
                 toggleBtn.classList.add('toggled');
             }
         }
@@ -1292,7 +1361,7 @@
                 videoColumn.classList.remove('hidden');
                 pdfColumn.classList.remove('full-width'); // Remove full-width from PDF
                 toggleText.textContent = 'Hide Score Video';
-                toggleIcon.textContent = '▼';
+                toggleIcon.textContent = '●';
                 toggleBtn.classList.remove('toggled');
                 
                 // Check if PDF is visible to determine layout class
@@ -1302,7 +1371,19 @@
                     // Show divider (desktop only)
                     if (scoreDivider) {
                         const isDesktop = window.innerWidth >= 1024;
-                        scoreDivider.style.display = isDesktop ? 'flex' : 'none';
+                        if (isDesktop) {
+                            scoreDivider.classList.remove('divider-handle-hidden');
+                        } else {
+                            scoreDivider.classList.add('divider-handle-hidden');
+                        }
+                        
+                        // Restore saved divider position
+                        const pdfColumn = document.getElementById('score-pdf-column');
+                        const videoColumn = document.getElementById('score-video-column');
+                        if (pdfColumn && videoColumn) {
+                            pdfColumn.style.flex = `1 1 ${currentPdfPercentage}%`;
+                            videoColumn.style.flex = `1 1 ${currentVideoPercentage}%`;
+                        }
                     }
                 } else {
                     // Only video is visible
@@ -1310,7 +1391,7 @@
                     layoutContainer.classList.remove('pdf-only');
                     // Hide divider when only video is visible
                     if (scoreDivider) {
-                        scoreDivider.style.display = 'none';
+                        scoreDivider.classList.add('divider-handle-hidden');
                     }
                 }
             } else {
@@ -1318,7 +1399,7 @@
                 videoColumn.classList.add('hidden');
                 pdfColumn.classList.add('full-width'); // Add full-width to PDF for centering
                 toggleText.textContent = 'Show Score Video';
-                toggleIcon.textContent = '▲';
+                toggleIcon.textContent = '○';
                 toggleBtn.classList.add('toggled');
                 
                 // Add pdf-only class to layout container
@@ -1327,7 +1408,7 @@
                 
                 // Hide divider when video is hidden
                 if (scoreDivider) {
-                    scoreDivider.style.display = 'none';
+                    scoreDivider.classList.add('divider-handle-hidden');
                 }
             }
         }
@@ -1348,7 +1429,7 @@
                 // Start audio
                 audioPlayer.play().then(() => {
                     toggleText.textContent = 'Stop Audio';
-                    toggleIcon.textContent = '⏸';
+                    toggleIcon.textContent = '●';
                     toggleBtn.classList.add('toggled');
                     console.log('🎵 Audio started');
                 }).catch(error => {
@@ -1359,7 +1440,7 @@
                 audioPlayer.pause();
                 audioPlayer.currentTime = 0;
                 toggleText.textContent = 'Start Audio';
-                toggleIcon.textContent = '▶';
+                toggleIcon.textContent = '○';
                 toggleBtn.classList.remove('toggled');
                 console.log('🎵 Audio stopped');
             }
@@ -1382,6 +1463,8 @@
         let startX = 0;
         let startPdfFlex = 0;
         let startVideoFlex = 0;
+        let currentPdfPercentage = 60; // Track current percentage
+        let currentVideoPercentage = 40; // Track current percentage
 
         function initResizableDivider() {
             const divider = document.getElementById('score-divider');
@@ -1425,6 +1508,10 @@
                 const pdfPercentage = Math.max(20, Math.min(80, (startPdfFlex / totalWidth * 100) + (delta / totalWidth * 100)));
                 const videoPercentage = 100 - pdfPercentage;
                 
+                // Store current percentages
+                currentPdfPercentage = pdfPercentage;
+                currentVideoPercentage = videoPercentage;
+                
                 // Apply percentage-based flex values
                 pdfColumn.style.flex = `1 1 ${pdfPercentage}%`;
                 videoColumn.style.flex = `1 1 ${videoPercentage}%`;
@@ -1441,19 +1528,18 @@
                 document.body.style.cursor = '';
                 document.body.style.userSelect = '';
                 
-                // Remove inline flex styles to allow CSS to take over
-                setTimeout(() => {
-                    pdfColumn.style.flex = '';
-                    videoColumn.style.flex = '';
-                }, 100);
+                // Keep the current flex values instead of resetting
+                pdfColumn.style.flex = `1 1 ${currentPdfPercentage}%`;
+                videoColumn.style.flex = `1 1 ${currentVideoPercentage}%`;
                 
-                console.log('🔧 Resize stopped');
+                console.log(`🔧 Resize stopped - Final: PDF ${currentPdfPercentage.toFixed(1)}%, Video ${currentVideoPercentage.toFixed(1)}%`);
             }
 
-            // Mouse events
+            // Mouse events - use document-level events for better tracking
             divider.addEventListener('mousedown', startResize);
             document.addEventListener('mousemove', doResize);
             document.addEventListener('mouseup', stopResize);
+            document.addEventListener('mouseleave', stopResize); // Stop if mouse leaves window
 
             // Touch events for mobile
             divider.addEventListener('touchstart', startResize, { passive: false });
@@ -1461,6 +1547,20 @@
             document.addEventListener('touchend', stopResize);
 
             console.log('🔧 Resizable divider initialized (horizontal only)');
+        }
+
+        // Function to reset divider to default position
+        function resetDividerToDefault() {
+            const pdfColumn = document.getElementById('score-pdf-column');
+            const videoColumn = document.getElementById('score-video-column');
+            
+            if (pdfColumn && videoColumn) {
+                currentPdfPercentage = 60;
+                currentVideoPercentage = 40;
+                pdfColumn.style.flex = `1 1 ${currentPdfPercentage}%`;
+                videoColumn.style.flex = `1 1 ${currentVideoPercentage}%`;
+                console.log('🔧 Divider reset to default position');
+            }
         }
 
         // Initialize resizable divider when DOM is loaded

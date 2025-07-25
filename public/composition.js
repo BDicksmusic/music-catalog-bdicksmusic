@@ -912,10 +912,10 @@ if (notesContainer) {
     if (scoreDivider) {
         const isDesktop = window.innerWidth >= 1024; // Only show on desktop
         if (hasPdfScore && hasScoreVideo && isDesktop) {
-            scoreDivider.style.display = 'flex';
+            scoreDivider.classList.remove('divider-handle-hidden');
             console.log('🔧 DEBUG - Resizable divider shown (both PDF and video available on desktop)');
         } else {
-            scoreDivider.style.display = 'none';
+            scoreDivider.classList.add('divider-handle-hidden');
             console.log('🔧 DEBUG - Resizable divider hidden (not both PDF and video available or not desktop)');
         }
     }
@@ -931,21 +931,21 @@ if (notesContainer) {
     if (layoutContainer) {
         if (hasPdfScore && hasScoreVideo) {
             // Both available - no special class needed initially (PDF starts hidden)
-            layoutContainer.classList.remove('video-only', 'pdf-only');
+            layoutContainer.classList.remove('video-only', 'pdf-only', 'has-content');
             console.log('🔧 DEBUG - Layout container: both PDF and video available');
         } else if (hasPdfScore && !hasScoreVideo) {
             // Only PDF available
-            layoutContainer.classList.add('pdf-only');
+            layoutContainer.classList.add('pdf-only', 'has-content');
             layoutContainer.classList.remove('video-only');
             console.log('🔧 DEBUG - Layout container: PDF only');
         } else if (!hasPdfScore && hasScoreVideo) {
             // Only video available
-            layoutContainer.classList.add('video-only');
+            layoutContainer.classList.add('video-only', 'has-content');
             layoutContainer.classList.remove('pdf-only');
             console.log('🔧 DEBUG - Layout container: video only');
         } else {
             // Neither available
-            layoutContainer.classList.remove('video-only', 'pdf-only');
+            layoutContainer.classList.remove('video-only', 'pdf-only', 'has-content');
             console.log('🔧 DEBUG - Layout container: neither PDF nor video available');
         }
     }
