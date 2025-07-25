@@ -377,7 +377,6 @@
             align-items: flex-start;
             position: relative;
             z-index: 1;
-            background: var(--gray-50);
             justify-content: center;
             margin-top: 1rem;
         }
@@ -628,27 +627,6 @@
                 padding: 0.5rem 0;
             }
 
-            .related-composition-card {
-                min-width: 240px;
-                max-width: 240px;
-            }
-
-            .related-composition-image {
-                height: 140px;
-            }
-
-            .related-composition-content {
-                padding: 0.75rem;
-            }
-
-            .related-composition-title {
-                font-size: 1rem;
-            }
-
-            .related-composition-instrumentation {
-                font-size: 0.85rem;
-            }
-
             .scores-section {
                 flex-direction: column;
                 gap: 1.5rem;
@@ -868,32 +846,6 @@
                 gap: 0.75rem;
                 padding: 0.5rem 0;
             }
-
-            .related-composition-card {
-                min-width: 200px;
-                max-width: 200px;
-            }
-
-            .related-composition-image {
-                height: 120px;
-            }
-
-            .related-composition-content {
-                padding: 0.5rem;
-            }
-
-            .related-composition-title {
-                font-size: 0.9rem;
-            }
-
-            .related-composition-instrumentation {
-                font-size: 0.8rem;
-            }
-
-            .related-composition-year {
-                font-size: 0.75rem;
-                padding: 0.2rem 0.4rem;
-            }
         }
 
         /* ===== SMALL MOBILE STYLES (480px and below) ===== */
@@ -902,23 +854,7 @@
                 font-size: 1.4rem;
             }
 
-            /* Related compositions small mobile adjustments */
-            .related-composition-card {
-                min-width: 180px;
-                max-width: 180px;
-            }
-
-            .related-composition-image {
-                height: 100px;
-            }
-
-            .related-composition-title {
-                font-size: 0.85rem;
-            }
-
-            .related-composition-instrumentation {
-                font-size: 0.75rem;
-            }
+            /* Related compositions small mobile adjustments - handled by component */
 
             .composition-instrument {
                 font-size: 0.9rem;
