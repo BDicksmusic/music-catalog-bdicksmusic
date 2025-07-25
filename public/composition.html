@@ -398,7 +398,7 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.75rem 1.5rem;
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            background: linear-gradient(135deg, #6b7280, #4b5563); /* Lower saturation primary for hidden */
             color: white;
             border: none;
             border-radius: 8px;
@@ -406,13 +406,24 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 2px 8px rgba(107, 114, 128, 0.2);
         }
 
         .score-toggle-btn:hover {
-            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            background: linear-gradient(135deg, #4b5563, #374151);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+
+        /* Higher saturation orange for "in view" state */
+        .score-toggle-btn.in-view {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.2);
+        }
+
+        .score-toggle-btn.in-view:hover {
+            background: linear-gradient(135deg, #ea580c, #dc2626);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
         }
 
         .score-toggle-btn:active {
@@ -423,20 +434,18 @@
             transition: all 0.3s ease;
             font-size: 1.1rem;
             line-height: 1;
-        }
-
-        .score-toggle-btn.toggled .toggle-icon {
-            transform: scale(1.1);
-        }
-
-        /* Enhanced circle icons */
-        .score-toggle-btn .toggle-icon {
             font-weight: bold;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .score-toggle-btn.toggled .toggle-icon {
+            transform: scale(1.1);
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Smooth color transitions for state changes */
+        .score-toggle-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* ===== RESIZABLE SCORE LAYOUT SYSTEM ===== */
@@ -787,7 +796,7 @@
 
         .related-composition-card:hover {
             transform: translateY(-7px) !important;
-            box-shadow: 0 16px 16px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(59, 130, 246, 0.15) !important;
+            box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 6px 6px rgba(59, 130, 246, 0.15) !important;
             background: linear-gradient(145deg, var(--gray-50) 0%, var(--primary-50) 100%) !important;
             border-color: var(--primary-300) !important;
         }

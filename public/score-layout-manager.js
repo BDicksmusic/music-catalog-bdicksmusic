@@ -197,11 +197,11 @@ class ScoreLayoutManager {
             if (pdfVisible) {
                 toggleText.textContent = 'PDF (In View)';
                 toggleIcon.textContent = '●';
-                this.elements.pdfToggleBtn.classList.add('toggled');
+                this.elements.pdfToggleBtn.classList.add('toggled', 'in-view');
             } else {
                 toggleText.textContent = 'PDF (Hidden)';
                 toggleIcon.textContent = '○';
-                this.elements.pdfToggleBtn.classList.remove('toggled');
+                this.elements.pdfToggleBtn.classList.remove('toggled', 'in-view');
             }
         }
 
@@ -214,10 +214,12 @@ class ScoreLayoutManager {
             if (videoVisible) {
                 toggleText.textContent = 'Score Video (In View)';
                 toggleIcon.textContent = '●';
+                this.elements.videoToggleBtn.classList.add('in-view');
                 this.elements.videoToggleBtn.classList.remove('toggled');
             } else {
                 toggleText.textContent = 'Score Video (Hidden)';
                 toggleIcon.textContent = '○';
+                this.elements.videoToggleBtn.classList.remove('in-view');
                 this.elements.videoToggleBtn.classList.add('toggled');
             }
         }
