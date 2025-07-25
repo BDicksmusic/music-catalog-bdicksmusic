@@ -840,6 +840,7 @@ if (notesContainer) {
     const scoreVideoToggleBtn = document.getElementById('score-video-toggle-btn');
     const audioControlBtn = document.getElementById('audio-control-btn');
     const videoColumn = document.getElementById('score-video-column');
+    const scoreDivider = document.getElementById('score-divider');
     
     // Check if there's an audio player on the page
     const hasAudioPlayer = document.querySelector('.composition-audio-player audio') !== null;
@@ -893,6 +894,17 @@ if (notesContainer) {
         } else {
             audioControlBtn.style.display = 'none';
             console.log('🎵 DEBUG - Audio control button hidden (no audio player available)');
+        }
+    }
+
+    // Show/hide resizable divider
+    if (scoreDivider) {
+        if (hasPdfScore && hasScoreVideo) {
+            scoreDivider.style.display = 'flex';
+            console.log('🔧 DEBUG - Resizable divider shown (both PDF and video available)');
+        } else {
+            scoreDivider.style.display = 'none';
+            console.log('🔧 DEBUG - Resizable divider hidden (not both PDF and video available)');
         }
     }
     

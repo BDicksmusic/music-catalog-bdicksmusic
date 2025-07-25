@@ -427,12 +427,22 @@
             transform: rotate(180deg);
         }
 
+        /* ===== RESIZABLE SCORE LAYOUT SYSTEM ===== */
+        .score-layout-container {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            position: relative;
+            min-height: 400px;
+        }
+
         .score-pdf-column {
-            flex: 1 1 60%; /* Larger space for PDF */
+            flex: 1 1 60%; /* Default: Larger space for PDF */
             display: flex;
             flex-direction: column;
             min-width: 280px;
             max-width: 800px;
+            transition: flex-basis 0.1s ease;
         }
 
         .score-carousel-container {
@@ -452,13 +462,84 @@
             overflow: visible;
         }
 
+        /* ===== RESIZABLE DIVIDER ===== */
+        .score-divider {
+            width: 8px;
+            background: var(--gray-200);
+            position: relative;
+            cursor: col-resize;
+            transition: background-color 0.2s ease;
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            margin: 0 0.5rem;
+        }
+
+        .score-divider:hover {
+            background: var(--primary-300);
+        }
+
+        .score-divider.resizing {
+            background: var(--primary-500);
+        }
+
+        .divider-handle {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .divider-grip {
+            width: 4px;
+            height: 40px;
+            background: var(--gray-400);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .divider-grip::before,
+        .divider-grip::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 2px;
+            height: 8px;
+            background: var(--gray-400);
+            border-radius: 1px;
+        }
+
+        .divider-grip::before {
+            top: 8px;
+            transform: translateX(-50%);
+        }
+
+        .divider-grip::after {
+            bottom: 8px;
+            transform: translateX(-50%);
+        }
+
+        .score-divider:hover .divider-grip,
+        .score-divider.resizing .divider-grip {
+            background: var(--primary-600);
+        }
+
+        .score-divider:hover .divider-grip::before,
+        .score-divider:hover .divider-grip::after,
+        .score-divider.resizing .divider-grip::before,
+        .score-divider.resizing .divider-grip::after {
+            background: var(--primary-600);
+        }
+
         .score-video-column {
-            flex: 1 1 40%; /* Smaller space for video */
+            flex: 1 1 40%; /* Default: Smaller space for video */
             display: flex;
             flex-direction: column;
             padding-left: 1rem;
             padding-right: 1rem;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: flex-basis 0.1s ease;
         }
 
         .score-video-column.full-width {
@@ -476,6 +557,14 @@
             pointer-events: none;
             height: 0;
             overflow: hidden;
+        }
+
+        .score-pdf-column.full-width {
+            flex: 1 1 100%;
+            max-width: 1000px;
+            margin: 0 auto; /* Center the PDF when in full width */
+            padding-left: 0;
+            padding-right: 0;
         }
 
         .scores-section h3 {
@@ -655,6 +744,47 @@
             .score-toggle-btn {
                 padding: 0.6rem 1.2rem;
                 font-size: 0.85rem;
+            }
+
+            .score-layout-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .score-divider {
+                width: 100%;
+                height: 8px;
+                cursor: row-resize;
+                margin: 0.5rem 0;
+            }
+
+            .divider-handle {
+                width: 60px;
+                height: 100%;
+                margin: 0 auto;
+            }
+
+            .divider-grip {
+                width: 40px;
+                height: 4px;
+            }
+
+            .divider-grip::before,
+            .divider-grip::after {
+                width: 8px;
+                height: 2px;
+                top: 50%;
+                left: auto;
+            }
+
+            .divider-grip::before {
+                left: 8px;
+                transform: translateY(-50%);
+            }
+
+            .divider-grip::after {
+                right: 8px;
+                transform: translateY(-50%);
             }
 
             .score-pdf-column,
@@ -995,15 +1125,25 @@
                     </button>
                 </div>
                 
-                <div class="score-pdf-column" id="score-pdf-column">
-                    <div class="score-carousel-container" id="score-carousel-container">
-                        <!-- Score PDF will be injected here -->
+                <div class="score-layout-container" id="score-layout-container">
+                    <div class="score-pdf-column" id="score-pdf-column">
+                        <div class="score-carousel-container" id="score-carousel-container">
+                            <!-- Score PDF will be injected here -->
+                        </div>
                     </div>
-                </div>
-                <div class="score-video-column" id="score-video-column">
-                    <div class="composition-score-video-container" id="composition-score-video-container">
-                        <div id="score-video-content">
-                            <!-- Score videos will be injected here -->
+                    
+                    <!-- Resizable Divider -->
+                    <div class="score-divider" id="score-divider">
+                        <div class="divider-handle">
+                            <div class="divider-grip"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="score-video-column" id="score-video-column">
+                        <div class="composition-score-video-container" id="composition-score-video-container">
+                            <div id="score-video-content">
+                                <!-- Score videos will be injected here -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1076,6 +1216,7 @@
             const toggleBtn = document.getElementById('score-toggle-btn');
             const scoreCarousel = document.getElementById('score-carousel-container');
             const videoColumn = document.getElementById('score-video-column');
+            const scoreDivider = document.getElementById('score-divider');
             const toggleText = toggleBtn.querySelector('.toggle-text');
             const toggleIcon = toggleBtn.querySelector('.toggle-icon');
             
@@ -1089,6 +1230,10 @@
                 scoreCarousel.classList.remove('show');
                 if (hasScoreVideo) {
                     videoColumn.classList.add('full-width');
+                    // Hide divider when PDF is hidden
+                    if (scoreDivider) {
+                        scoreDivider.style.display = 'none';
+                    }
                 }
                 toggleText.textContent = 'Show Score PDF';
                 toggleIcon.textContent = '▼';
@@ -1098,6 +1243,10 @@
                 scoreCarousel.classList.add('show');
                 if (hasScoreVideo) {
                     videoColumn.classList.remove('full-width');
+                    // Show divider when both PDF and video are visible
+                    if (scoreDivider) {
+                        scoreDivider.style.display = 'flex';
+                    }
                 }
                 toggleText.textContent = 'Hide Score PDF';
                 toggleIcon.textContent = '▲';
@@ -1109,6 +1258,8 @@
         function toggleScoreVideo() {
             const toggleBtn = document.getElementById('score-video-toggle-btn');
             const videoColumn = document.getElementById('score-video-column');
+            const scoreDivider = document.getElementById('score-divider');
+            const scoreCarousel = document.getElementById('score-carousel-container');
             const toggleText = toggleBtn.querySelector('.toggle-text');
             const toggleIcon = toggleBtn.querySelector('.toggle-icon');
             
@@ -1121,12 +1272,22 @@
                 toggleText.textContent = 'Hide Score Video';
                 toggleIcon.textContent = '▼';
                 toggleBtn.classList.remove('toggled');
+                
+                // Show divider if PDF is also visible
+                if (scoreDivider && scoreCarousel.classList.contains('show')) {
+                    scoreDivider.style.display = 'flex';
+                }
             } else {
                 // Hide video content
                 videoColumn.classList.add('hidden');
                 toggleText.textContent = 'Show Score Video';
                 toggleIcon.textContent = '▲';
                 toggleBtn.classList.add('toggled');
+                
+                // Hide divider when video is hidden
+                if (scoreDivider) {
+                    scoreDivider.style.display = 'none';
+                }
             }
         }
 
@@ -1174,6 +1335,132 @@
             });
             console.log('🔇 All audio/video stopped');
         }
+
+        // ===== RESIZABLE DIVIDER FUNCTIONALITY =====
+        let isResizing = false;
+        let startX = 0;
+        let startY = 0;
+        let startPdfFlex = 0;
+        let startVideoFlex = 0;
+        let isVertical = false;
+
+        function initResizableDivider() {
+            const divider = document.getElementById('score-divider');
+            const layoutContainer = document.getElementById('score-layout-container');
+            const pdfColumn = document.getElementById('score-pdf-column');
+            const videoColumn = document.getElementById('score-video-column');
+            
+            if (!divider || !layoutContainer || !pdfColumn || !videoColumn) {
+                console.log('🔧 Resizable divider elements not found');
+                return;
+            }
+
+            // Check if layout is vertical (mobile/tablet)
+            function checkLayoutDirection() {
+                const rect = layoutContainer.getBoundingClientRect();
+                isVertical = rect.width < 768; // Same breakpoint as CSS
+            }
+
+            // Initialize layout direction
+            checkLayoutDirection();
+
+            // Handle mouse/touch events
+            function startResize(e) {
+                e.preventDefault();
+                isResizing = true;
+                
+                const rect = layoutContainer.getBoundingClientRect();
+                if (isVertical) {
+                    startY = e.clientY || e.touches[0].clientY;
+                    startPdfFlex = pdfColumn.offsetHeight;
+                    startVideoFlex = videoColumn.offsetHeight;
+                } else {
+                    startX = e.clientX || e.touches[0].clientX;
+                    startPdfFlex = pdfColumn.offsetWidth;
+                    startVideoFlex = videoColumn.offsetWidth;
+                }
+                
+                divider.classList.add('resizing');
+                document.body.style.cursor = isVertical ? 'row-resize' : 'col-resize';
+                document.body.style.userSelect = 'none';
+                
+                console.log('🔧 Starting resize:', isVertical ? 'vertical' : 'horizontal');
+            }
+
+            function doResize(e) {
+                if (!isResizing) return;
+                
+                e.preventDefault();
+                
+                const rect = layoutContainer.getBoundingClientRect();
+                let delta;
+                
+                if (isVertical) {
+                    const currentY = e.clientY || e.touches[0].clientY;
+                    delta = currentY - startY;
+                    
+                    const totalHeight = rect.height - divider.offsetHeight;
+                    const pdfHeight = Math.max(200, Math.min(800, startPdfFlex + delta));
+                    const videoHeight = totalHeight - pdfHeight;
+                    
+                    if (videoHeight >= 200) {
+                        pdfColumn.style.flex = `0 0 ${pdfHeight}px`;
+                        videoColumn.style.flex = `0 0 ${videoHeight}px`;
+                    }
+                } else {
+                    const currentX = e.clientX || e.touches[0].clientX;
+                    delta = currentX - startX;
+                    
+                    const totalWidth = rect.width - divider.offsetWidth;
+                    const pdfWidth = Math.max(280, Math.min(800, startPdfFlex + delta));
+                    const videoWidth = totalWidth - pdfWidth;
+                    
+                    if (videoWidth >= 280) {
+                        pdfColumn.style.flex = `0 0 ${pdfWidth}px`;
+                        videoColumn.style.flex = `0 0 ${videoWidth}px`;
+                    }
+                }
+            }
+
+            function stopResize() {
+                if (!isResizing) return;
+                
+                isResizing = false;
+                divider.classList.remove('resizing');
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+                
+                console.log('🔧 Resize stopped');
+            }
+
+            // Mouse events
+            divider.addEventListener('mousedown', startResize);
+            document.addEventListener('mousemove', doResize);
+            document.addEventListener('mouseup', stopResize);
+
+            // Touch events for mobile
+            divider.addEventListener('touchstart', startResize, { passive: false });
+            document.addEventListener('touchmove', doResize, { passive: false });
+            document.addEventListener('touchend', stopResize);
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                checkLayoutDirection();
+                // Reset flex properties when switching between horizontal/vertical
+                if (!isResizing) {
+                    pdfColumn.style.flex = '';
+                    videoColumn.style.flex = '';
+                }
+            });
+
+            console.log('🔧 Resizable divider initialized');
+        }
+
+        // Initialize resizable divider when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Small delay to ensure all elements are rendered
+            setTimeout(initResizableDivider, 500);
+        });
     </script>
 
     <script src="/composition.js"></script>
