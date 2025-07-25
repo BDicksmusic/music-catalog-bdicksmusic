@@ -31,7 +31,7 @@
         .composition-main {
             display: grid;
             grid-template-columns: 300px 1fr;
-            gap: 3.5rem; /* ✨ INCREASED: Much larger gap to prevent conflicts */
+            gap: 5rem; /* ✨ INCREASED: Much larger gap to prevent conflicts */
             width: 100%;
             max-width: 100%;
             margin: 0.5rem auto 0;
@@ -68,6 +68,11 @@
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
+        }
+        
+        /* ✨ SPECIAL: Reduce gap specifically between title and short instruments */
+        .composition-title-container + .composition-short-instrument-container {
+            margin-top: -0.4rem; /* ✨ PULL UP: Very close to duration/meta section */
         }
 
         .composition-info {
@@ -160,11 +165,12 @@
         
         .short-instrument-list {
             background: var(--gray-50);
-            padding: 0.75rem 1rem;
+            padding: 0.5rem 1rem; /* ✨ REDUCED: Less padding for tighter appearance */
             border-radius: 8px;
             border: 1px solid var(--gray-200);
             font-size: 0.9rem;
             color: var(--gray-700);
+            margin: 0; /* ✨ ENSURE: No extra margins */
         }
         
         .short-instrument-list strong {
