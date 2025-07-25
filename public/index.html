@@ -1907,20 +1907,22 @@
         flex-direction: column;
         align-items: center;
         padding: 1.5rem 2rem;
-        background: white;
-        border: 2px solid var(--gray-200);
+        background: var(--primary-500);
+        border: 2px solid var(--primary-500);
         border-radius: 12px;
         text-decoration: none;
-        color: var(--gray-700);
+        color: white;
         transition: all 0.3s ease;
         min-width: 140px;
+        font-weight: 600;
     }
 
     .nav-card:hover {
-        border-color: var(--primary-400);
+        background: var(--primary-600);
+        border-color: var(--primary-600);
         transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        color: var(--primary-600);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        color: white;
     }
 
     .nav-card .nav-icon {
@@ -1941,7 +1943,7 @@
 
     .highlights-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        grid-template-columns: 1fr 2fr 1fr;
         gap: 2rem;
     }
 
@@ -2036,71 +2038,211 @@
     }
 
     /* Catalog Preview */
-    .composition-preview {
+    .composition-featured {
         display: flex;
-        gap: 1rem;
-        align-items: center;
+        gap: 2rem;
+        align-items: flex-start;
     }
 
-    .preview-image {
-        position: relative;
-        width: 80px;
-        height: 80px;
-        border-radius: 8px;
+    .composition-image {
+        flex: 0 0 200px;
+        border-radius: 12px;
         overflow: hidden;
-        flex-shrink: 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
     .composition-img {
         width: 100%;
-        height: 100%;
+        height: 250px;
         object-fit: cover;
     }
 
-    .preview-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .preview-image:hover .preview-overlay {
-        opacity: 1;
-    }
-
-    .preview-btn {
-        background: var(--primary-500);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        cursor: pointer;
-        font-size: 0.8rem;
-    }
-
-    .preview-info {
+    .composition-details {
         flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
 
     .composition-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .composition-instrumentation {
+        font-size: 1.1rem;
+        color: var(--primary-600);
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .composition-description {
         font-size: 1rem;
+        color: var(--gray-600);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .composition-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    .btn-primary {
+        background: var(--primary-500);
+        color: white;
+        border: 2px solid var(--primary-500);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-600);
+        border-color: var(--primary-600);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: var(--gray-700);
+        border: 2px solid var(--gray-300);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .btn-secondary:hover {
+        background: var(--gray-100);
+        border-color: var(--gray-400);
+        transform: translateY(-2px);
+    }
+
+    .btn-listen {
+        background: var(--primary-100);
+        color: var(--primary-700);
+        border: 2px solid var(--primary-200);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .btn-listen:hover {
+        background: var(--primary-200);
+        border-color: var(--primary-300);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    }
+
+    /* Featured Audio Player Section */
+    .featured-audio-section {
+        padding: 2rem 0;
+        background: var(--gray-50);
+        border-top: 1px solid var(--gray-200);
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .audio-player-container {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid var(--gray-200);
+    }
+
+    .audio-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .audio-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0;
+    }
+
+    .close-audio-btn {
+        background: var(--gray-200);
+        color: var(--gray-600);
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .close-audio-btn:hover {
+        background: var(--gray-300);
+        color: var(--gray-700);
+    }
+
+    .audio-content {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .audio-info {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex: 0 0 auto;
+    }
+
+    .audio-cover {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .audio-details h4 {
+        font-size: 1.1rem;
         font-weight: 600;
         color: var(--gray-900);
         margin: 0 0 0.25rem 0;
     }
 
-    .composition-instrumentation {
-        font-size: 0.85rem;
+    .audio-details p {
+        font-size: 0.9rem;
         color: var(--gray-600);
         margin: 0;
+    }
+
+    .audio-controls {
+        flex: 1;
+    }
+
+    .audio-controls audio {
+        width: 100%;
+        height: 40px;
     }
 
     /* Media Preview */
@@ -2303,14 +2445,33 @@
             padding: 1.5rem;
         }
 
-        .composition-preview {
+        .composition-featured {
             flex-direction: column;
             text-align: center;
         }
 
-        .preview-image {
-            width: 100px;
-            height: 100px;
+        .composition-image {
+            flex: none;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .composition-img {
+            height: 200px;
+        }
+
+        .composition-actions {
+            justify-content: center;
+        }
+
+        .audio-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .audio-info {
+            justify-content: center;
         }
 
         .carousel-controls {
@@ -2574,22 +2735,22 @@
                     </div>
                     <div class="card-content">
                         <div class="catalog-preview" id="new-release-preview">
-                            <div class="composition-preview">
-                                <div class="preview-image">
+                            <div class="composition-featured">
+                                <div class="composition-image">
                                     <img src="/imgs/Coming Home (Cover Photo).png" alt="New Release" class="composition-img">
-                                    <div class="preview-overlay">
-                                        <button class="preview-btn">▶</button>
-                                    </div>
                                 </div>
-                                <div class="preview-info">
+                                <div class="composition-details">
                                     <h4 class="composition-title">Loading...</h4>
                                     <p class="composition-instrumentation">Loading...</p>
+                                    <p class="composition-description">Loading composition description...</p>
+                                    <div class="composition-actions">
+                                        <button class="btn-primary learn-more-btn">Learn More</button>
+                                        <button class="btn-secondary buy-now-btn">Buy Now</button>
+                                        <button class="btn-listen listen-btn" onclick="playFeaturedComposition()">Listen</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <a href="/music-catalog.html" class="card-link">View in Catalog →</a>
                     </div>
                 </div>
 
@@ -2616,6 +2777,33 @@
                     </div>
                     <div class="card-footer">
                         <a href="/media.html" class="card-link">Watch More →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Audio Player Section -->
+    <section class="featured-audio-section" id="featured-audio-section" style="display: none;">
+        <div class="container">
+            <div class="audio-player-container">
+                <div class="audio-header">
+                    <h3 class="audio-title">Now Playing</h3>
+                    <button class="close-audio-btn" onclick="closeFeaturedAudio()">×</button>
+                </div>
+                <div class="audio-content">
+                    <div class="audio-info">
+                        <img src="/imgs/Coming Home (Cover Photo).png" alt="Composition Cover" class="audio-cover">
+                        <div class="audio-details">
+                            <h4 class="audio-composition-title">Loading...</h4>
+                            <p class="audio-composition-instrumentation">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="audio-controls">
+                        <audio controls preload="metadata" id="featured-audio-player">
+                            <source src="" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
                     </div>
                 </div>
             </div>
@@ -4459,6 +4647,57 @@
         function goToCarouselSlide(index) {
             currentCarouselIndex = index;
             updateCarousel();
+        }
+
+        // Featured Audio Player Functions
+        function playFeaturedComposition() {
+            const audioSection = document.getElementById('featured-audio-section');
+            const audioPlayer = document.getElementById('featured-audio-player');
+            const audioTitle = document.querySelector('.audio-composition-title');
+            const audioInstrumentation = document.querySelector('.audio-composition-instrumentation');
+            const audioCover = document.querySelector('.audio-cover');
+            
+            // Show the audio section
+            audioSection.style.display = 'block';
+            
+            // Load the featured composition data
+            if (featuredCompositions.length > 0) {
+                const composition = featuredCompositions[0]; // Use the first featured composition
+                
+                // Update audio player content
+                audioTitle.textContent = composition.title || 'Featured Composition';
+                audioInstrumentation.textContent = composition.instrumentation || 'Brass Ensemble';
+                
+                if (composition.coverImage) {
+                    audioCover.src = composition.coverImage;
+                }
+                
+                if (composition.audioPreview) {
+                    audioPlayer.src = composition.audioPreview;
+                    audioPlayer.load();
+                    audioPlayer.play();
+                }
+            }
+            
+            // Smooth scroll to audio player
+            setTimeout(() => {
+                audioSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 300);
+        }
+
+        function closeFeaturedAudio() {
+            const audioSection = document.getElementById('featured-audio-section');
+            const audioPlayer = document.getElementById('featured-audio-player');
+            
+            // Pause and reset audio
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            
+            // Hide the audio section
+            audioSection.style.display = 'none';
         }
 
         // Load everything when page loads
