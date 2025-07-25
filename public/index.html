@@ -97,9 +97,7 @@
         }
     }
 
-    .hero-explore-section {
-        margin-top: 1.5rem;
-    }
+
 
     .explore-btn.secondary {
         background: rgba(255, 255, 255, 0.2);
@@ -293,10 +291,19 @@
             font-size: 1rem;
         }
         
-                 .hero-content-dynamic {
-             padding: 0 1rem;
-         }
-     }
+        .hero-content-dynamic {
+            padding: 0 1rem;
+        }
+
+        .hero-nav-dots {
+            gap: 0.75rem;
+        }
+
+        .dot {
+            width: 30px;
+            height: 3px;
+        }
+    }
 
      /* Section Styles */
      .section-showcase {
@@ -1971,12 +1978,7 @@
                     <button class="dot" onclick="switchHeroRole(2)"></button>
                 </div>
                 
-                <!-- Explore Button -->
-                <div class="hero-explore-section">
-                    <a href="#compositions" class="explore-btn secondary" onclick="smoothScrollTo('#compositions'); return false;">
-                        Click to Explore All Work
-                    </a>
-                </div>
+
             </div>
         </div>
     </div>
