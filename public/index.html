@@ -229,9 +229,37 @@
         align-items: center;
     }
 
+    .hero-role[data-role="composer"] {
+        transform: translateX(-50px) translateY(0);
+    }
+
+    .hero-role[data-role="trumpeter"] {
+        transform: translateX(50px) translateY(0);
+    }
+
+    .hero-role[data-role="educator"] {
+        transform: translateY(0);
+    }
+
     .hero-role.active {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateX(0) translateY(0);
+    }
+
+    /* Enhanced role transitions for better visual effect */
+    .hero-role[data-role="composer"]:not(.active) {
+        transform: translateX(-80px) translateY(0);
+        opacity: 0;
+    }
+
+    .hero-role[data-role="trumpeter"]:not(.active) {
+        transform: translateX(80px) translateY(0);
+        opacity: 0;
+    }
+
+    .hero-role[data-role="educator"]:not(.active) {
+        transform: translateY(40px);
+        opacity: 0;
     }
 
     .hero-role-title {
@@ -1602,10 +1630,9 @@
       /* Hero Container Styles */
       .hero-container {
           position: relative;
-          width: 100%;
+          width: 100vw;
           height: 100vh;
-          min-height: 700px;
-          max-height: 900px;
+          min-height: 100vh;
           overflow: hidden;
           display: flex;
           align-items: center;
@@ -1645,10 +1672,10 @@
           top: 50%;
           left: 50%;
           width: 100vw;
-          height: 56.25vw; /* 16:9 aspect ratio */
+          height: 100vh;
           min-height: 100vh;
-          min-width: 177.77vh; /* 16:9 aspect ratio */
-          transform: translate(-50%, -50%) scale(1.02);
+          min-width: 100vw;
+          transform: translate(-50%, -50%) scale(1.1);
           filter: brightness(0.9) contrast(1.2) saturate(1.1);
           pointer-events: none; /* Prevent user interaction */
           z-index: 1; /* Ensure it's behind content */
@@ -1678,8 +1705,8 @@
           position: absolute;
           top: 0;
           left: 0;
-          width: 100%;
-          height: 100%;
+          width: 100vw;
+          height: 100vh;
           object-fit: cover;
           z-index: 2;
           opacity: 1;
@@ -1722,7 +1749,7 @@
       
       .hero-content-wrapper {
           position: absolute;
-          bottom: 25%;
+          bottom: 20%;
           left: 0;
           right: 0;
           z-index: 15;
@@ -1753,14 +1780,13 @@
       
       @media (max-width: 768px) {
           .hero-container {
-              height: 80vh;
-              min-height: 500px;
-              max-height: 700px;
+              height: 100vh;
+              min-height: 100vh;
               margin-top: 100px; /* Reduced for mobile - nav elements are smaller */
           }
           
           .hero-content-wrapper {
-              bottom: 20%;
+              bottom: 15%;
           }
           
           /* secondary-nav mobile styles moved to styles.css */
