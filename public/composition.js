@@ -7,6 +7,81 @@ let currentVideoIndex = 0;
 let totalVideoCount = 0;
 let videoPlayers = [];
 
+// Loading state management
+let loadingTimeout = null;
+let loadingStartTime = null;
+
+// Show loading overlay
+function showLoading() {
+    const overlay = document.getElementById('loading-overlay');
+    const message = document.getElementById('loading-message');
+    const timeoutMessage = document.getElementById('timeout-message');
+    
+    if (overlay) {
+        overlay.classList.remove('hidden');
+        message.textContent = 'Fetching data from Notion...';
+        timeoutMessage.style.display = 'none';
+        loadingStartTime = Date.now();
+        
+        // Set timeout for 10 seconds
+        loadingTimeout = setTimeout(() => {
+            message.textContent = 'Still loading...';
+            timeoutMessage.style.display = 'block';
+        }, 10000);
+    }
+}
+
+// Hide loading overlay
+function hideLoading() {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay && loadingTimeout) {
+        clearTimeout(loadingTimeout);
+        loadingTimeout = null;
+        
+        // Show completion message briefly
+        const message = document.getElementById('loading-message');
+        const spinner = overlay.querySelector('.loading-spinner');
+        const title = overlay.querySelector('h3');
+        
+        if (message && spinner && title) {
+            title.textContent = 'Loading Complete!';
+            title.style.color = '#28a745';
+            message.textContent = 'Composition loaded successfully';
+            message.style.color = '#28a745';
+            spinner.style.borderTopColor = '#28a745';
+        }
+        
+        // Add a small delay to show completion briefly
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+        }, 800);
+    }
+}
+
+// Show error in loading overlay
+function showLoadingError(message) {
+    const overlay = document.getElementById('loading-overlay');
+    const loadingContent = overlay.querySelector('.loading-content');
+    const spinner = overlay.querySelector('.loading-spinner');
+    const title = overlay.querySelector('h3');
+    const loadingMessage = document.getElementById('loading-message');
+    const timeoutMessage = document.getElementById('timeout-message');
+    
+    if (overlay && loadingTimeout) {
+        clearTimeout(loadingTimeout);
+        loadingTimeout = null;
+        
+        // Update content to show error
+        spinner.style.display = 'none';
+        title.textContent = 'Error Loading Composition';
+        title.style.color = '#e74c3c';
+        loadingMessage.textContent = message || 'Failed to load composition data';
+        loadingMessage.style.color = '#e74c3c';
+        timeoutMessage.style.display = 'block';
+        timeoutMessage.querySelector('p').textContent = 'Please try refreshing the page';
+    }
+}
+
 // Dummy renderCarousel to prevent errors (remove or replace with real implementation)
 function renderCarousel(compositions) {
     // For now, just log the compositions
@@ -82,15 +157,16 @@ async function loadCompositionDetail() {
     const slug = getSlugFromUrl();
     console.log('Loading composition with slug:', slug);
     const container = document.getElementById('composition-info');
+    
+    // Show loading overlay
+    showLoading();
+    
     if (!slug) {
+        showLoadingError('No composition specified.');
         if (container) {
             container.innerHTML = '<div class="error">No composition specified.</div>';
         }
         return;
-    }
-    // Show loading state
-    if (container) {
-        container.innerHTML = '<div class="loading">Loading composition...</div>';
     }
     try {
         // Try API first
@@ -104,13 +180,16 @@ async function loadCompositionDetail() {
                 console.log('🔍 All video files from API:', data.composition.videoFiles);
             }
             renderComposition(data.composition);
+            hideLoading(); // Hide loading overlay on success
         } else {
             // Fallback to example data
             console.log('API failed, trying example data...');
             const comp = exampleCompositions.find(c => c.slug === slug);
             if (comp) {
                 renderComposition(comp);
+                hideLoading(); // Hide loading overlay on fallback success
             } else {
+                showLoadingError('Composition not found.');
                 if (container) {
                     container.innerHTML = '<div class="error">Composition not found.</div>';
                 }
@@ -123,7 +202,9 @@ async function loadCompositionDetail() {
         if (comp) {
             console.log('Using fallback example data');
             renderComposition(comp);
+            hideLoading(); // Hide loading overlay on fallback success
         } else {
+            showLoadingError('Error loading composition details.');
             if (container) {
                 container.innerHTML = '<div class="error">Error loading composition details.</div>';
             }
