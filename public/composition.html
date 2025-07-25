@@ -431,27 +431,22 @@
             flex-direction: column;
             min-width: 280px;
             max-width: 800px;
+        }
+
+        .score-carousel-container {
             opacity: 0;
             transform: translateX(-20px);
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             pointer-events: none;
-            width: 0;
-            min-width: 0;
-            max-width: 0;
-            margin: 0;
-            padding: 0;
+            height: 0;
             overflow: hidden;
         }
 
-        .score-pdf-column.show {
+        .score-carousel-container.show {
             opacity: 1;
             transform: translateX(0);
             pointer-events: auto;
-            width: auto;
-            min-width: 280px;
-            max-width: 800px;
-            margin: 0;
-            padding: 0;
+            height: auto;
             overflow: visible;
         }
 
@@ -680,12 +675,8 @@
                 margin-bottom: 0;
             }
 
-            .score-pdf-column:not(.show) {
-                width: 0;
-                min-width: 0;
-                max-width: 0;
-                margin: 0;
-                padding: 0;
+            .score-carousel-container:not(.show) {
+                height: 0;
                 overflow: hidden;
             }
 
@@ -963,12 +954,8 @@
                 padding: 1rem;
             }
 
-            .score-pdf-column:not(.show) {
-                width: 0;
-                min-width: 0;
-                max-width: 0;
-                margin: 0;
-                padding: 0;
+            .score-carousel-container:not(.show) {
+                height: 0;
                 overflow: hidden;
             }
 
@@ -1129,7 +1116,7 @@
         // ===== SCORE PDF TOGGLE FUNCTIONALITY =====
         function toggleScorePDF() {
             const toggleBtn = document.getElementById('score-toggle-btn');
-            const pdfColumn = document.getElementById('score-pdf-column');
+            const scoreCarousel = document.getElementById('score-carousel-container');
             const videoColumn = document.getElementById('score-video-column');
             const toggleText = toggleBtn.querySelector('.toggle-text');
             const toggleIcon = toggleBtn.querySelector('.toggle-icon');
@@ -1139,9 +1126,9 @@
                                  videoColumn.querySelector('#score-video-content') && 
                                  videoColumn.querySelector('#score-video-content').children.length > 0;
             
-            if (pdfColumn.classList.contains('show')) {
-                // Hide PDF column
-                pdfColumn.classList.remove('show');
+            if (scoreCarousel.classList.contains('show')) {
+                // Hide PDF content
+                scoreCarousel.classList.remove('show');
                 if (hasScoreVideo) {
                     videoColumn.classList.add('full-width');
                 }
@@ -1149,8 +1136,8 @@
                 toggleIcon.textContent = '▼';
                 toggleBtn.classList.remove('toggled');
             } else {
-                // Show PDF column
-                pdfColumn.classList.add('show');
+                // Show PDF content
+                scoreCarousel.classList.add('show');
                 if (hasScoreVideo) {
                     videoColumn.classList.remove('full-width');
                 }

@@ -846,9 +846,9 @@ if (notesContainer) {
             console.log('📄 DEBUG - Score toggle button shown (PDF score available)');
             
             // Set initial layout: PDF hidden, video in full width if it exists
-            const pdfColumn = document.getElementById('score-pdf-column');
-            if (pdfColumn) {
-                pdfColumn.classList.remove('show'); // PDF starts hidden
+            const scoreCarousel = document.getElementById('score-carousel-container');
+            if (scoreCarousel) {
+                scoreCarousel.classList.remove('show'); // PDF starts hidden
             }
             
             // Check if there's a score video and set it to full width initially
@@ -2015,9 +2015,9 @@ function scrollToScore() {
         }, 300);
         
         // Automatically show the PDF if it's hidden
-        const pdfColumn = document.getElementById('score-pdf-column');
+        const scoreCarousel = document.getElementById('score-carousel-container');
         const toggleBtn = document.getElementById('score-toggle-btn');
-        if (pdfColumn && toggleBtn && !pdfColumn.classList.contains('show')) {
+        if (scoreCarousel && toggleBtn && !scoreCarousel.classList.contains('show')) {
             // Small delay to ensure scroll animation completes first
             setTimeout(() => {
                 toggleScorePDF();
