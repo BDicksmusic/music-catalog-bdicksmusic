@@ -935,7 +935,6 @@ function createFallbackAudioPlayer(audioData, audioPlaceholder) {
         console.error('🎵 No audio placeholder found for fallback player');
         return;
     }
-}
     
     if (!audioData || !audioData.audioFiles || audioData.audioFiles.length === 0) {
         audioPlaceholder.innerHTML = `
