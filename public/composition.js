@@ -961,20 +961,31 @@ function createFallbackAudioPlayer(audioData, audioPlaceholder) {
         // Only show movement title for multi-movement pieces
         const displayTitle = extractMovementTitle(audioFile.title) || audioFile.title;
         const titleHtml = isMultiTrack && displayTitle ? 
-            `<div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--gray-700);">${displayTitle}</div>` : '';
+            `<div style="font-size: 1.1rem; font-weight: 600; color: var(--primary-600); margin-bottom: 0.5rem;">${displayTitle}</div>` : '';
+        
+        // Performance info goes below the title
+        let performanceHtml = '';
+        if (audioFile.performanceBy || audioFile.recordingDate) {
+            performanceHtml = `
+                <div style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 1rem;">
+                    ${audioFile.performanceBy ? `<div class="performance-info">Performed by: ${audioFile.performanceBy}</div>` : ''}
+                    ${audioFile.recordingDate ? `<div>Recorded: ${new Date(audioFile.recordingDate).toLocaleDateString()}</div>` : ''}
+                </div>
+            `;
+        }
         
         audioHtml += `
             <div class="audio-track" data-track="${index}" style="${displayStyle}">
                 ${titleHtml}
-                <audio controls preload="metadata" style="width: 100%;">
+                ${performanceHtml}
+                <audio controls preload="metadata" style="width: 100%; margin-bottom: 1rem;">
                     <source src="${audioFile.url}" type="audio/mpeg">
                     <source src="${audioFile.url}" type="audio/mp4">
                     <source src="${audioFile.url}" type="audio/wav">
                     <source src="${audioFile.url}" type="audio/ogg">
                     Your browser does not support the audio element.
                 </audio>
-                ${audioFile.performanceBy ? `<div style="font-size: 0.9rem; color: var(--gray-600); margin-top: 0.5rem;">Performed by: ${audioFile.performanceBy}</div>` : ''}
-                ${audioFile.recordingDate ? `<div style="font-size: 0.9rem; color: var(--gray-600);">Recorded: ${new Date(audioFile.recordingDate).toLocaleDateString()}</div>` : ''}
+                ${audioFile.duration ? `<div style="font-size: 0.8rem; color: var(--gray-500);">Duration: ${audioFile.duration}</div>` : ''}
             </div>
         `;
     });
@@ -983,9 +994,9 @@ function createFallbackAudioPlayer(audioData, audioPlaceholder) {
     if (isMultiTrack) {
         audioHtml += `
             <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: var(--gray-50); border-radius: 8px; border: 1px solid var(--gray-200);">
-                <button class="audio-nav-btn" id="prev-audio-fallback" style="padding: 0.5rem 1rem; background: var(--primary-600); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s;">⏮ Previous</button>
+                <button class="audio-nav-btn" id="prev-audio-fallback" style="padding: 0.5rem 1rem; background: var(--primary-600); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s;">Previous</button>
                 <span class="audio-nav-info" id="audio-nav-info-fallback" style="font-weight: 600; color: var(--gray-700); font-size: 0.95rem;">Movement 1 of ${audioFiles.length}</span>
-                <button class="audio-nav-btn" id="next-audio-fallback" style="padding: 0.5rem 1rem; background: var(--primary-600); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s;">Next ⏭</button>
+                <button class="audio-nav-btn" id="next-audio-fallback" style="padding: 0.5rem 1rem; background: var(--primary-600); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s;">Next</button>
             </div>
         `;
     }
