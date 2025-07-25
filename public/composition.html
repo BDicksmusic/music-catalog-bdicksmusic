@@ -14,36 +14,36 @@
     <script src="/includes/component-loader.js"></script>
     
     <style>
-        
+        /* ===== BASE STYLES (DESKTOP) ===== */
         body {
             background: var(--gray-100);
             margin: 0;
             overflow-x: hidden;
             width: 100%;
             box-sizing: border-box;
-            padding-top: 60px; /* ✨ REDUCED: More natural spacing with navigation */
         }
         
         * {
             box-sizing: border-box;
         }
+
+        /* ===== MAIN LAYOUT ===== */
         .composition-main {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 2rem;
-    width: 100%;
-    max-width: 100%;
-    margin: 2rem auto 0;
-    padding: 0 0.5rem;
-    box-sizing: border-box;
-    justify-content: start;
-    align-items: start;   /* <-- This aligns items to the top */
-}
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 100%;
+            margin: 2rem auto 0;
+            padding: 0 0.5rem;
+            box-sizing: border-box;
+            justify-content: start;
+            align-items: start;
+        }
 
         .composition-detail-card {
             display: flex;
             flex-direction: column;
-   
             background: none;
             border-radius: 0;
             box-shadow: none;
@@ -54,404 +54,31 @@
             margin: 0;
             position: relative;
         }
+
         .composition-cover-container {
-    width: 362px;
-    min-width: 220px;
-    max-width: 454px;
-    flex-shrink: 0;
-}
-        .score-carousel-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-        
-        /* Dedicated Media Section (for videos) */
-        .composition-media-section {
-            width: 100%;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            box-sizing: border-box;
+            width: 362px;
+            min-width: 220px;
+            max-width: 454px;
+            flex-shrink: 0;
         }
-        
-        .composition-video-container {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        /* YouTube embed container - responsive video */
-        .youtube-embed-container {
-            position: relative;
-            width: 100%;
-            height: 0;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            margin: 1rem 0;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .youtube-embed-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-            border-radius: 8px;
-        }
-        
-        .composition-video-player {
-            margin: 1.5rem 0;
-            padding: 0.5rem 1rem 1rem; /* Reduced top padding */
-            background: var(--gray-50);
-            border-radius: 12px;
-            border: 1px solid var(--gray-200);
-            display: flex;
-            flex-direction: column; /* Changed back to column layout */
-            gap: 0.75rem;
-            align-items: stretch;
-        }
-        
-        .video-content {
-            width: 100%;
-            min-width: 0;
-        }
-        
-        .video-metadata-section {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding-top: 0;
-        }
-        
-        .composition-video-title {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--gray-700);
-            margin-top: 0.1rem;
-            margin-bottom: 0.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.1rem;
-        }
-        
-        .video-counter {
-            font-size: 0.8rem;
-            color: var(--gray-500);
-            font-weight: 400;
-        }
-        
-        .composition-video-metadata {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-            margin-top: 0.10rem;
-            margin-bottom: 0.25rem;
-            line-height: 1.4;
-        }
-        
-        .composition-video-metadata .performance-info {
-            font-weight: 400;
-            color: var(--gray-500);
-        }
-        
-        /* Two-column layout for Program Notes and Videos - Full width distinct section */
-        section.program-video-section {
-            display: flex;
-            gap: 2rem;
-            width: 100vw;
-            max-width: none;
-            margin: 3rem 0 0 0;
-            margin-left: calc(-50vw + 50%);
-            padding: 3rem 2rem;
-            box-sizing: border-box;
-            background: var(--indigo-50);
-            border-top: 3px solid var(--primary-200);
-            border-bottom: 3px solid var(--primary-200);
-            box-shadow: inset 0 0 20px rgba(99, 102, 241, 0.05);
-            background-color: var(--primary-200);
-            position: relative;
-        }
-        
-        .program-notes-column {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .videos-column {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        /* Make program notes section clean */
-        .composition-notes-container {
-            padding: 0.5rem;
-        }
-        
-        /* Program Notes Styling */
-        .composition-program-notes h3 {
-            color: var(--gray-800);
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .program-notes-content {
-            line-height: 1.6;
-            color: var(--gray-700);
-        }
-        
-        /* Performance Notes Styling */
-        .composition-performance-notes {
-            border-top: 1px solid var(--gray-200);
-            padding-top: 1rem;
-        }
-        
-        .composition-performance-notes h3 {
-            color: var(--gray-800);
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .performance-notes-list {
-            margin: 0;
-            padding-left: 1.5rem;
-            list-style-type: disc;
-        }
-        
-        .performance-notes-list li {
-            margin-bottom: 0.5rem;
-            line-height: 1.6;
-            color: var(--gray-700);
-        }
-        
-        .performance-notes-list li:last-child {
-            margin-bottom: 0;
-        }
-        
-        .composition-audio-container {
-            width: 100%;
-            background: var(--purple-50);
-            border: 1px solid var(--purple-100);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
-            margin-bottom: 1.5rem;
-        }
-        
-        /* Multi-movement composition styling */
-        .composition-audio-container.has-movements {
-            padding: 1rem;
-            background: linear-gradient(135deg, var(--gray-50), var(--primary-50));
-            border: 1px solid var(--primary-100);
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        
-        .composition-audio-container.multi-movement {
-            position: relative;
-        }
-        
-        .composition-audio-container.multi-movement::before {
-            display: none; /* Hide multi-movement label as it's implied */
-        }
-        
-        .composition-audio-player {
-            width: 100%;
-            margin-bottom: 0.5rem; /* Reduced from 1rem */
-            background: transparent; /* Remove background */
-            border-radius: 8px;
-            padding: 0.25rem 0; /* Reduced from 1rem */
-            box-shadow: none; /* Remove shadow */
-            border: none; /* Remove border */
-            min-height: 60px; /* Reduced from 80px */
-        }
-        
-        /* Movement-specific styling */
-        .composition-audio-player[data-is-movement="true"] {
-            padding-left: 0.5rem;
-            margin-bottom: 0.75rem; /* Reduced from 1.5rem */
-        }
-        
-        .composition-audio-title.movement-title {
-            font-weight: 600;
-            color: var(--primary-600);
-            font-size: 1rem;
-            gap: 0.1rem;
-        }
-        
-        /* Legacy audio styling */
-        .composition-audio-player.legacy-audio {
-            opacity: 0.95;
-        }
-        
-        .composition-audio-player:last-child {
-            margin-bottom: 0;
-        }
-        
-        /* Audio navigation controls styling */
-        .audio-nav-container {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            padding: 0.75rem 1rem !important;
-            background: var(--gray-50) !important;
-            border-radius: 8px !important;
-            margin-top: 1rem !important;
-            border: 1px solid var(--gray-200) !important;
-        }
-        
-        .audio-nav-btn {
-            padding: 0.5rem 1rem !important;
-            background: var(--primary-600) !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 6px !important;
-            cursor: pointer !important;
-            font-size: 0.9rem !important;
-            transition: background-color 0.2s !important;
-        }
-        
-        .audio-nav-btn:hover:not(:disabled) {
-            background: var(--primary-700) !important;
-        }
-        
-        .audio-nav-btn:disabled {
-            background: var(--gray-400) !important;
-            cursor: not-allowed !important;
-        }
-        
-        .audio-nav-info {
-            font-weight: 600 !important;
-            color: var(--gray-700) !important;
-            font-size: 0.95rem !important;
-        }
-        
-        .audio-nav-divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, #e2e8f0, transparent);
-            margin: 1.5rem 0 1rem 0;
-        }
-        
-        .composition-audio-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--gray-700);
-            margin-bottom: 0.5rem;
-            text-align: left;
-        }
-        
-        .composition-audio-player audio {
-            width: 100%;
-            height: 40px; /* Reduced from 48px */
-            outline: none;
-            border-radius: 6px;
-            margin-top: 0.25rem; /* Reduced from 0.5rem */
-        }
-        
-        .composition-audio-metadata {
-            font-size: 0.75rem; /* Reduced from 0.8rem */
-            color: var(--gray-400);
-            margin-bottom: 0.25rem; /* Reduced from 0.5rem */
-            line-height: 1.3; /* Reduced from 1.4 */
-            background: transparent; /* Ensure transparent background */
-            padding: 0.1rem 0; /* Reduced from 0.25rem */
-            border-radius: 4px;
-        }
-        
-        .composition-audio-metadata .performance-info {
-            font-weight: 500;
-            color: var(--gray-700);
-        }
-        
-        .composition-audio-player audio::-webkit-media-controls-panel {
-            background-color: var(--gray-100);
-            border-radius: 4px;
-        }
-        
-        .composition-audio-player audio::-webkit-media-controls-play-button,
-        .composition-audio-player audio::-webkit-media-controls-pause-button {
-            background-color: var(--primary-500);
-            border-radius: 50%;
-        }
-
-        /* Audio Navigation Button Styles */
-        .audio-nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 0; /* Reduced margin */
-            padding: 0.3rem 0.3rem; /* Tightened vertical padding */
-            background: var(--gray-50);
-            border-radius: 4px;
-            border: none; /* Remove border for cleaner look */
-        }
-
-        .audio-nav-btn {
-            background: var(--gray-100);
-            color: var(--gray-700);
-            border: none; /* Remove border for cleaner look */
-            padding: 0.25rem 0.5rem; /* Compact but proper padding */
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem; /* Smaller font */
-            font-weight: 500;
-            transition: all 0.15s ease;
-            min-width: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .audio-nav-btn:hover:not(:disabled) {
-            background: var(--gray-200);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .audio-nav-btn:disabled {
-            background: var(--gray-50);
-            color: var(--gray-400);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .audio-nav-info {
-            font-size: 0.8rem; /* Smaller font */
-            color: var(--gray-600);
-            font-weight: 500;
-            text-align: center;
-            min-width: 120px;
-        }
-        
-        .audio-nav-divider {
-            height: 4px; /* Made thicker */
-            background: var(--gray-200); /* Faint divider */
-            margin: 0.5rem 0 0.2rem 0; /* Tightened margins */
-            opacity: 0.8;
-        }
-
-.composition-content-container {
-    flex: 1 1 0;
-    min-width: 0;
-    margin-top: 0; /* Adjust as needed */
-}
 
         .composition-cover {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 454 / 600;
-    object-fit: cover;
-    border-radius: 0.7rem;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
-    background: var(--gray-200);
-    max-width: 454px;
-}
+            width: 100%;
+            height: auto;
+            aspect-ratio: 454 / 600;
+            object-fit: cover;
+            border-radius: 0.7rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+            background: var(--gray-200);
+            max-width: 454px;
+        }
+
+        .composition-content-container {
+            flex: 1 1 0;
+            min-width: 0;
+            margin-top: 0;
+        }
+
         .composition-info {
             flex: 1 1 0;
             display: flex;
@@ -461,20 +88,13 @@
             width: 100%;
             text-align: left;
         }
-        /* Original title styles - overridden by enhanced styles above */
-                    .composition-title-container {
+
+        /* ===== TYPOGRAPHY ===== */
+        .composition-title-container {
             margin-bottom: 0.25rem;
             padding: 0;
-        } 
-
-        .composition-instrument {
-            font-size: 1.3rem;
-            color: var(--gray-500);
-            font-weight: 600;
-            margin-top: -9px; /* Remove any default margin */
         }
-        
-        /* Combined Header Container (Title Left, Meta Right) */
+
         .composition-header-combined {
             display: flex;
             justify-content: space-between;
@@ -482,7 +102,7 @@
             width: 100%;
             gap: 2rem;
         }
-        
+
         .composition-title-section {
             flex: 1;
             display: flex;
@@ -491,7 +111,7 @@
             justify-content: flex-start;
             min-width: 0;
         }
-        
+
         .composition-meta-section {
             flex: 0 0 auto;
             display: flex;
@@ -500,88 +120,80 @@
             text-align: right;
             min-width: fit-content;
         }
+
+        .composition-title {
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+
+        .composition-instrument {
+            font-size: 1.3rem;
+            color: var(--gray-500);
+            font-weight: 600;
+            margin-top: -9px;
+        }
+
         .composition-meta {
             font-size: 0.98rem;
             font-weight: 400;
             color: var(--gray-900);
         }
-        .composition-meta-container {
-            margin-bottom: 0.25rem; /* Reduced from 2rem */
-        }
-        
-        
-        /* Short Instrument List Styling */
+
         .composition-short-instruments {
             margin-bottom: 0rem;
             font-size: 0.95rem;
             font-weight: 400;
             color: var(--gray-900);
         }
+
+        /* ===== CONTENT SECTIONS ===== */
         .composition-links-container {
-            margin-bottom: 0.25rem; /* Reduced for tighter spacing */
+            margin-bottom: 0.25rem;
             background: var(--green-50);
             border: 1px solid var(--green-100);
             border-radius: 10px;
             padding: 1rem 1.5rem;
         }
-        
-        /* Layout Builder Navigation Styling */
+
         .layout-builder-nav {
             display: flex;
             flex-wrap: wrap;
             align-items: flex-start;
-            gap: 0.4rem; /* Reduced gap between buttons */
+            gap: 0.4rem;
         }
-        
+
         .layout-nav-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            padding: 0.5rem 0.8rem; /* Reduced padding to make buttons smaller */
-            font-size: 0.85rem; /* Reduced font size */
+            padding: 0.5rem 0.8rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            border-radius: 6px; /* Slightly smaller border radius */
+            border-radius: 6px;
             transition: all 0.2s ease;
             cursor: pointer;
             border: none;
             text-decoration: none;
         }
-        
-        /* Buy button wrapper styling */
+
+        .layout-nav-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
         .composition-buy-button-wrapper {
             margin-bottom: 0.25rem;
             display: flex;
             align-items: center;
         }
-        
-        .layout-nav-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Mobile responsiveness for layout builder */
-        @media (max-width: 768px) {
-            .layout-builder-nav {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.3rem; /* Even tighter on mobile */
-            }
-            
-            .layout-nav-btn {
-                justify-content: center;
-                width: 100%;
-                padding: 0.4rem 0.6rem; /* Smaller padding on mobile */
-                font-size: 0.8rem; /* Smaller font on mobile */
-            }
-        }
-        .composition-description {
-            font-size: 1.08rem;
-            color: var(--gray-800);
-            margin-top: 0.7rem;
-            margin-bottom: 1.2rem;
-            line-height: 1.7;
-            max-width: 600px;
-        }
+
         .composition-buy-btn {
             display: inline-block;
             font-size: 1.15rem;
@@ -597,492 +209,115 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .composition-buy-btn:hover {
             background: linear-gradient(90deg, var(--primary-600), var(--primary-800));
             transform: translateY(-2px) scale(1.02);
             box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
         }
-        
-        .composition-buy-btn:active {
-            transform: translateY(-1px) scale(1.01);
-            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .composition-buy-btn:disabled,
-        .composition-buy-btn.btn-disabled {
-            background: var(--gray-400) !important;
-            color: var(--gray-50) !important;
-            cursor: not-allowed !important;
-            box-shadow: none !important;
-        }
-        .composition-buy-btn:hover:not(:disabled) {
-            background: linear-gradient(90deg, var(--primary-700), var(--primary-500));
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 6px 24px rgba(0,0,0,0.13);
-        }
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: var(--gray-600);
-        }
-        .error {
-            text-align: center;
-            padding: 2rem;
-            color: var(--error-600);
-        }
 
-            .score-carousel-container,
-    .score-pdf-viewer {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        margin: 2rem auto;
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-        position: relative;
-        box-sizing: border-box;
-        flex-wrap: wrap;
-    }
-    
-    /* Score Video Notice Styling */
-    .score-video-notice {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 2rem;
-        width: 100%;
-    }
-    
-    .score-notice-card {
-        background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
-        border: 2px solid var(--primary-200);
-        border-radius: 12px;
-        padding: 2rem;
-        text-align: center;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        max-width: 500px;
-        width: 100%;
-    }
-    
-    .score-notice-card h3 {
-        color: var(--primary-700);
-        margin: 0 0 1rem 0;
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
-    
-    .score-notice-card p {
-        color: var(--gray-700);
-        margin: 0 0 1.5rem 0;
-        line-height: 1.5;
-    }
-    
-    .score-notice-card .btn-primary {
-        background: var(--primary-600);
-        color: white;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-decoration: none;
-        display: inline-block;
-    }
-    
-    .score-notice-card .btn-primary:hover {
-        background: var(--primary-700);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-        .score-pdf-viewer iframe {
-            /* 8.5 x 11 aspect ratio: width = height * (8.5/11) = height * 0.773 */
-            width: 680px;
-            height: 880px;
-            max-width: min(80vw, 680px);
-            max-height: min(90vh, 880px);
-            border-radius: 8px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-            border: 1px solid var(--gray-200);
-        }
-
-        /* Maintain aspect ratio on smaller screens */
-        @media (max-width: 768px) {
-            .score-pdf-viewer iframe {
-                width: 93%;
-                max-width: 100%;
-                height: calc(90% * 1.294); /* 11/8.5 = 1.294 */
-                max-height: 85vh;
-            }
-            
-            .score-video-notice {
-                padding: 1rem;
-            }
-            
-            .score-notice-card {
-                padding: 1.5rem;
-                margin: 0 1rem;
-            }
-            
-            .score-notice-card h3 {
-                font-size: 1.1rem;
-            }
-            
-            .score-notice-card p {
-                font-size: 0.9rem;
-            }
-        }
-    
-        /* ✨ MOBILE LAYOUT - Simplified Container Structure */
-        @media (max-width: 900px) {
-            .composition-main {
-                display: block; /* ✨ SIMPLIFIED: Remove grid complexity */
-                padding: 0; /* ✨ REMOVED: Eliminate outer padding */
-                margin: 0 auto; /* ✨ SIMPLIFIED: Clean margins */
-                background: transparent; /* ✨ REMOVED: No background containers */
-            }
-            
-            /* ✨ FLATTENED: Hide intermediate container styling */
-            .composition-detail-card {
-                background: transparent; /* ✨ REMOVED: No card background */
-                padding: 0; /* ✨ REMOVED: No padding */
-                margin: 0; /* ✨ REMOVED: No margins */
-                box-shadow: none; /* ✨ REMOVED: No shadows */
-                border-radius: 0; /* ✨ REMOVED: No borders */
-            }
-            
-            .composition-content-container {
-                background: transparent; /* ✨ REMOVED: No background */
-                padding: 0; /* ✨ REMOVED: No padding */
-                margin: 0; /* ✨ REMOVED: No margins */
-                box-shadow: none; /* ✨ REMOVED: No shadows */
-                border-radius: 0; /* ✨ REMOVED: No borders */
-            }
-            
-            /* ✨ DIRECT CONTENT: Only actual content containers get minimal styling */
-            .composition-info-container {
-                padding: 1rem; /* ✨ MINIMAL: Only essential padding */
-                margin: 0;
-                background: transparent;
-            }
-            
-            /* ✨ TYPOGRAPHY: Clean mobile text styling */
-            .composition-title {
-                font-size: 1.6rem; /* ✨ OPTIMIZED: Better mobile size */
-                color: var(--primary-700);
-                margin: 0 auto 0.5rem auto;
-                text-align: center;
-                line-height: 1.3;
-                padding: 0;
-            }
-            
-            .composition-instrument {
-                font-size: 1rem; /* ✨ OPTIMIZED: Better mobile size */
-                text-align: center;
-                margin: 0 auto 1rem auto;
-                color: var(--gray-600);
-            }
-            
-            /* ✨ SPACING: Consistent mobile spacing */
-            .composition-title-container > * {
-                margin-left: auto;
-                margin-right: auto;
-            }
-            
-            /* ✨ MOBILE BODY: Clean overall mobile layout */
-            body.composition-page {
-                padding-top: 100px; /* ✨ ADJUSTED: Account for navigation */
-            }
-            
-            main {
-                padding: 0 0.5rem; /* ✨ MINIMAL: Just edge protection */
-                margin: 0 auto;
-            }
-            
-            /* ✨ CLEAN CONTENT SECTIONS: Proper spacing without over-nesting */
-            .composition-cover-container {
-                margin: 1rem auto 2rem auto; /* ✨ CENTERED: Clean cover spacing */
-                padding: 0;
-                max-width: 300px; /* ✨ OPTIMAL: Better mobile size */
-            }
-            
-            .composition-title-container {
-                margin: 1.5rem auto; /* ✨ CENTERED: Clean title spacing */
-                padding: 0 1rem;
-                text-align: center; /* ✨ CENTERED: Better mobile alignment */
-            }
-            
-            .composition-buy-button-wrapper {
-                margin: 2rem auto; /* ✨ CENTERED: Clean button spacing */
-                padding: 0;
-                text-align: center; /* ✨ CENTERED: Button alignment */
-                background: transparent; /* ✨ REMOVED: No background */
-                border: none; /* ✨ REMOVED: No borders */
-                border-radius: 0; /* ✨ REMOVED: No border radius */
-            }
-            
-            .composition-buy-btn {
-                padding: 0.875rem 2rem;
-                font-size: 1.1rem;
-                margin: 0 auto; /* ✨ CENTERED: Center the button */
-            }
-            
-            .composition-links-container {
-                margin: 2rem auto; /* ✨ CENTERED: Clean links spacing */
-                padding: 1rem;
-                background: var(--gray-50); /* ✨ SUBTLE: Keep minimal background */
-                border-radius: 8px; /* ✨ MINIMAL: Small radius */
-            }
-            
-            .composition-audio-container {
-                margin: 2rem auto; /* ✨ CENTERED: Clean audio spacing */
-                padding: 1rem;
-                background: var(--gray-50); /* ✨ SUBTLE: Keep minimal background */
-                border-radius: 8px; /* ✨ MINIMAL: Small radius */
-            }
-            /* ✨ METADATA & TEXT SECTIONS: Clean, direct styling */
-            .composition-meta-container {
-                margin: 1.5rem auto; /* ✨ CENTERED: Clean metadata spacing */
-                padding: 0.75rem 1rem;
-                background: var(--primary-50); /* ✨ SUBTLE: Light accent background */
-                border-radius: 8px;
-                text-align: center; /* ✨ CENTERED: Better mobile alignment */
-            }
-            
-            .composition-header-combined {
-                flex-direction: column; /* ✨ STACKED: Better mobile flow */
-                align-items: center; /* ✨ CENTERED: Center everything */
-                text-align: center;
-                gap: 1rem;
-            }
-            
-            .composition-meta-section {
-                align-items: center; /* ✨ CENTERED: Center metadata */
-                text-align: center;
-                width: 100%;
-            }
-            
-            /* ✨ ENSURE RESPONSIVE BEHAVIOR: Full width containers */
-            .composition-cover-container,
-            .composition-content-container {
-                width: 100%;
-                max-width: 100%;
-                margin: 0 auto;
-                box-sizing: border-box;
-            }
-            
-            .composition-media-section {
-                padding: 0 0.5rem;
-                margin: 1.5rem auto;
-            }
-            
-            .composition-video-container {
-                max-width: 100%;
-            }
-            
-            .composition-audio-container {
-                margin: 1rem 0;
-            }
-            
-            .composition-audio-container.has-movements {
-                padding: 0.75rem;
-                background: var(--gray-50);
-                border: 1px solid var(--gray-200);
-            }
-            
-            .composition-audio-container.multi-movement::before {
-                font-size: 0.7rem;
-                margin-bottom: 0.2rem;
-            }
-            
-            .composition-audio-player[data-is-movement="true"] {
-                padding-left: 0.75rem;
-                border-left-width: 2px;
-            }
-            
-            .composition-audio-player {
-                padding: 0 0;
-                min-height: 75px;
-            }
-            
-            .composition-audio-title {
-                font-size: 0.85rem;
-            }
-    .composition-title {
-        word-break: break-word;
-        font-size: 1.3rem; /* Optionally reduce font size on mobile */
-        margin: 0;
-    }
-    
-    /* Mobile styles for combined header container */
-    .composition-header-combined {
-        flex-direction: column;
-        gap: 1rem;
-        display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-    }
-    
-    .composition-meta-section {
-        align-items: flex-start;
-        text-align: left;
-        width: 100%;
-    }
-
-    .composition-cover {
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-        aspect-ratio: 454 / 600;
-        box-sizing: border-box;
-    }
-
-        .score-carousel {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* ===== AUDIO PLAYER ===== */
+        .composition-audio-container {
             width: 100%;
-            height: auto;
-        }
-        .score-carousel-viewer {
-            flex: 1;
-        }
-        .carousel-btn {
-            background: var(--primary-500);
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 16px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .carousel-btn:hover {
-            background: var(--primary-700);
-        }
-        
-        /* Single Page Score Viewer Styles */
-        .single-page-score-viewer {
-            margin: 3rem auto;
-            width: 100%;
-            max-width: min(95%, 900px); /* Optimized for single page view */
-            background: var(--gray-50);
+            background: var(--purple-50);
+            border: 1px solid var(--purple-100);
             border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            overflow: hidden;
-            box-sizing: border-box;
-        }
-        
-        .score-container {
-            padding: 2rem;
-            background: white;
-        }
-        
-        .score-iframe-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: var(--gray-100);
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        
-        .score-iframe-container iframe {
-            /* Single 8.5x11 page aspect ratio */
-            width: 680px; /* 8.5 * 80px per inch for better clarity */
-            height: 880px; /* 11 * 80px per inch for better clarity */
-            max-width: min(90vw, 680px);
-            max-height: min(85vh, 880px);
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        }
-        
-        .score-navigation-bottom {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
             padding: 1.5rem;
-            background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
-            border-radius: 12px;
-            border: 1px solid var(--gray-200);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            position: relative;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+            margin-bottom: 1.5rem;
         }
-        
-        .score-nav-btn {
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            color: white;
-            border: none;
-            padding: 0.75rem 1.25rem;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
-            min-width: 140px;
-            justify-content: center;
-        }
-        
-        .score-nav-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
-        }
-        
-        .score-nav-btn:active:not(:disabled) {
-            transform: translateY(-1px);
-            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .score-nav-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-            background: var(--gray-400);
+
+        .composition-audio-player {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            background: transparent;
+            border-radius: 8px;
+            padding: 0.25rem 0;
             box-shadow: none;
+            border: none;
+            min-height: 60px;
         }
-        
-        .nav-icon {
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-        
-        .nav-text {
-            font-size: 0.85rem;
-        }
-        
-        .score-page-info {
+
+        .composition-audio-title {
+            font-size: 0.9rem;
             font-weight: 600;
             color: var(--gray-700);
-            font-size: 1rem;
-            background: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            border: 2px solid var(--gray-200);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            min-width: 140px;
-            text-align: center;
+            margin-bottom: 0.5rem;
+            text-align: left;
         }
-        
-        /* ✨ SCORES SECTION - Optimized for Side-by-Side Layout */
+
+        .composition-audio-player audio {
+            width: 100%;
+            height: 40px;
+            outline: none;
+            border-radius: 6px;
+            margin-top: 0.25rem;
+        }
+
+        .composition-audio-metadata {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+            background: transparent;
+            padding: 0.1rem 0;
+            border-radius: 4px;
+        }
+
+        /* ===== PROGRAM NOTES & VIDEOS ===== */
+        .program-video-section {
+            display: flex;
+            gap: 2rem;
+            width: 100vw;
+            max-width: none;
+            margin: 3rem 0 0 0;
+            margin-left: calc(-50vw + 50%);
+            padding: 3rem 2rem;
+            box-sizing: border-box;
+            background: var(--indigo-50);
+            border-top: 3px solid var(--primary-200);
+            border-bottom: 3px solid var(--primary-200);
+            box-shadow: inset 0 0 20px rgba(99, 102, 241, 0.05);
+            background-color: var(--primary-200);
+            position: relative;
+        }
+
+        .program-notes-column {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .videos-column {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .composition-notes-container {
+            padding: 0.5rem;
+        }
+
+        .composition-program-notes h3 {
+            color: var(--gray-800);
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .program-notes-content {
+            line-height: 1.6;
+            color: var(--gray-700);
+        }
+
+        /* ===== SCORES SECTION ===== */
         .scores-section {
             display: flex;
             flex-direction: row;
             gap: 2rem;
             width: 100%;
-            max-width: none; /* ✨ REMOVED: Let it use full available width */
-            margin: 3rem auto 2rem auto; /* ✨ CHANGED: Center the section */
+            max-width: none;
+            margin: 3rem auto 2rem auto;
             padding: 2rem;
-            flex-wrap: wrap; /* ✨ CHANGED: Allow wrapping on smaller screens */
+            flex-wrap: wrap;
             align-items: flex-start;
             position: relative;
             z-index: 1;
@@ -1090,15 +325,15 @@
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid var(--gray-200);
-            justify-content: center; /* ✨ ADDED: Center the columns */
+            justify-content: center;
         }
-        
+
         .score-pdf-column {
-            flex: 1 1 45%; /* ✨ SLIGHTLY REDUCED: Better spacing */
+            flex: 1 1 45%;
             display: flex;
             flex-direction: column;
-            min-width: 280px; /* ✨ REDUCED: More flexible on smaller screens */
-            max-width: 600px; /* ✨ ADDED: Reasonable max width */
+            min-width: 280px;
+            max-width: 600px;
             position: relative;
             background: white;
             border-radius: 12px;
@@ -1106,13 +341,13 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--gray-200);
         }
-        
+
         .score-video-column {
-            flex: 1 1 45%; /* ✨ SLIGHTLY REDUCED: Better spacing */
+            flex: 1 1 45%;
             display: flex;
             flex-direction: column;
-            min-width: 280px; /* ✨ REDUCED: More flexible on smaller screens */
-            max-width: 600px; /* ✨ ADDED: Reasonable max width */
+            min-width: 280px;
+            max-width: 600px;
             position: relative;
             background: white;
             border-radius: 12px;
@@ -1120,8 +355,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--gray-200);
         }
-        
-        /* ✨ COLUMN HEADERS - Beautiful styling for section titles */
+
         .scores-section h3 {
             color: var(--primary-600);
             font-size: 1.3rem;
@@ -1135,878 +369,49 @@
             text-align: center;
             justify-content: center;
         }
-        
-        /* Optional: Add a subtle divider between columns */
-        .score-pdf-column::after {
-            content: '';
-            position: absolute;
-            top: 2rem;
-            right: -1.5rem;
-            width: 1px;
-            height: calc(100% - 4rem);
-            background: linear-gradient(to bottom, transparent, var(--gray-200), transparent);
-            opacity: 0.5;
-        }
-        
-        /* Responsive layout for tablets and mobile */
-        @media (max-width: 1000px) {
-            .scores-section {
-                flex-direction: column; /* ✨ Stack vertically on smaller screens */
-                gap: 1.5rem;
-                padding: 1rem;
-                margin: 2rem auto;
-                flex-wrap: nowrap;
-                max-width: 100%;
-            }
-            
-            .score-pdf-column,
-            .score-video-column {
-                flex: 1 1 auto;
-                min-width: 0; /* ✨ Remove minimum width constraint */
-                max-width: 100%;
-                width: 100%;
-                margin-bottom: 0; /* ✨ Remove extra margin */
-            }
-            
-            .score-video-column {
-                margin-bottom: 0;
-            }
-            
-            /* Hide divider on mobile */
-            .score-pdf-column::after {
-                display: none;
-            }
-            
-            /* Adjust headers on mobile */
-            .column-header {
-                font-size: 1.1rem;
-                margin-bottom: 1rem;
-                text-align: left;
-            }
-        }
-        
-        /* Additional mobile adjustments */
-        @media (max-width: 600px) {
-            .scores-section {
-                gap: 1.5rem;
-                margin: 1.5rem 0;
-            }
-            
-            .score-pdf-column,
-            .score-video-column {
-                padding: 1rem;
-            }
-        }
-        
-        .composition-score-video-container {
+
+        /* ===== VIDEO PLAYERS ===== */
+        .composition-video-container {
             width: 100%;
-            margin: 0;
-        }
-        
-        /* Add subtle column styling for better visual separation */
-        .score-pdf-column,
-        .score-video-column {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--gray-150);
-        }
-        
-        /* Column header styling */
-        .column-header {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin: 0 0 1.5rem 0;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid var(--gray-200);
-            text-align: center;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            box-sizing: border-box;
         }
 
-        .score-video-section-title {
-            font-size: 1.4rem;
-            color: var(--primary-600);
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--primary-200);
-            font-weight: 600;
-        }
-        
-        .composition-score-video-player {
-            margin: 0 0 1.5rem 0;
-            padding: 1.5rem;
-            background: white;
+        .composition-video-player {
+            margin: 1.5rem 0;
+            padding: 0.5rem 1rem 1rem;
+            background: var(--gray-50);
             border-radius: 12px;
             border: 1px solid var(--gray-200);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            display: block;
-            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: stretch;
         }
-        
-        .score-video-content {
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-        
-        .score-video-content video,
-        .score-video-content .youtube-embed-container {
-            width: 100%;
-            max-width: 100%;
-        }
-        
-        /* YouTube Embed Container Styling */
+
         .youtube-embed-container {
             position: relative;
             width: 100%;
             height: 0;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            overflow: hidden;
+            padding-bottom: 56.25%;
+            margin: 1rem 0;
             border-radius: 8px;
-            background: #000;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         .youtube-embed-container iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border: none;
+            border: 0;
             border-radius: 8px;
         }
-        
-        /* Fallback for direct video elements */
-        .score-video-content video {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            background: #000;
-        }
-        
-        .score-video-metadata-section {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: var(--gray-50);
-            border-radius: 8px;
-            border: 1px solid var(--gray-200);
-        }
-        
-        .score-video-metadata {
-            font-size: 0.9rem;
-            color: var(--gray-700);
-            margin: 0;
-            line-height: 1.4;
-        }
-        
-        .score-video-metadata .performance-info {
-            font-weight: 600;
-            color: var(--gray-800);
-        }
-        
-        /* Score Video Section Title */
-        .score-video-section-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin: 0 0 1.5rem 0;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--primary-200);
-        }
-        
-        .video-error {
-            padding: 1rem;
-            background: #ffe6e6;
-            border: 2px solid #ff9999;
-            border-radius: 8px;
-            color: #cc0000;
-            text-align: center;
-            font-weight: 500;
-        }
-        
-        /* Score Error Notice Styling */
-        .score-error-notice {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-            width: 100%;
-        }
-        
-        .score-error-notice .score-notice-card {
-            background: linear-gradient(135deg, var(--red-50), var(--red-100));
-            border: 2px solid var(--red-200);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 100%;
-        }
-        
-        .score-error-notice .score-notice-card h3 {
-            color: var(--red-700);
-            margin: 0 0 1rem 0;
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-        
-        .score-error-notice .score-notice-card p {
-            color: var(--red-600);
-            margin: 0;
-            line-height: 1.5;
-        }
-        
-        /* Enhanced Layout and Typography */
-        .composition-main {
-            background: var(--gray-50);
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--gray-200);
-        }
-        
-        .composition-detail-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--gray-150);
-        }
-        
-        .composition-content-container {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--gray-150);
-        }
-        
-        /* Enhanced Typography for Composition Details */
-        .composition-header-combined {
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid var(--gray-100);
-            margin-bottom: 2rem;
-        }
-        
-        .composition-title {
-            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 2.4rem;
-            font-weight: 300;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-            margin-bottom: 0.5rem;
-        }
-        
-        .composition-instrument {
-            font-size: 1.4rem;
-            color: var(--gray-600);
-            font-weight: 500;
-            font-style: italic;
-            margin-bottom: 1rem;
-        }
-        
-        .composition-meta {
-            background: var(--primary-50);
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--primary-100);
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--primary-700);
-        }
-        
-        .composition-short-instruments {
-            background: var(--gray-100);
-            padding: 0.75rem 1.25rem;
-            border-radius: 10px;
-            border: 1px solid var(--gray-200);
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--gray-700);
-            margin-top: 0.75rem;
-        }
-        
-        /* Enhanced Button Styling */
-        .composition-buy-button-wrapper {
-            margin: 2rem 0;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
-            border-radius: 16px;
-            border: 2px solid var(--primary-200);
-            text-align: center;
-            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.1);
-        }
-        
-        .composition-buy-btn {
-            padding: 1rem 3rem;
-            font-size: 1.25rem;
-            font-weight: 700;
-            border-radius: 12px;
-            min-width: 200px;
-            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        /* Enhanced Links Container */
-        .composition-links-container {
-            background: linear-gradient(135deg, var(--green-50), var(--green-100));
-            border: 2px solid var(--green-200);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.1);
-        }
-        
-        .layout-nav-btn {
-            background: white;
-            color: var(--gray-700);
-            border: 2px solid var(--gray-200);
-            padding: 0.75rem 1.25rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        }
-        
-        .layout-nav-btn:hover {
-            background: var(--primary-500);
-            color: white;
-            border-color: var(--primary-500);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        /* Enhanced Audio Container */
-        .composition-audio-container {
-            background: linear-gradient(135deg, var(--purple-50), var(--purple-100));
-            border: 2px solid var(--purple-200);
-            border-radius: 16px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: 0 4px 16px rgba(147, 51, 234, 0.1);
-        }
-        
-        .composition-audio-player {
-            background: white;
-            border-radius: 12px;
-            border: 1px solid var(--purple-200);
-            box-shadow: 0 2px 8px rgba(147, 51, 234, 0.08);
-        }
-        
-        .composition-audio-title {
-            background: var(--purple-100);
-            color: var(--purple-800);
-            padding: 0.75rem 1rem;
-            border-radius: 8px 8px 0 0;
-            font-weight: 600;
-            font-size: 1rem;
-            border-bottom: 1px solid var(--purple-200);
-        }
-        
-        /* Metadata Section Styling - Enhanced Design */
-        .metadata-section {
-            width: 100%;
-            max-width: 1000px;
-            margin: 4rem auto 0;
-            padding: 0 2rem;
-            box-sizing: border-box;
-        }
-        
-        .metadata-container {
-            width: 100%;
-        }
-        
-        .metadata-card {
-            background: white;
-            border-radius: 16px;
-            border: 1px solid var(--gray-200);
-            padding: 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .metadata-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                #3b82f6 20%, 
-                #60a5fa 50%, 
-                #3b82f6 80%, 
-                transparent 100%);
-            animation: blueprint-scan 3s ease-in-out infinite;
-        }
-        
-        @keyframes blueprint-scan {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-        
-        .metadata-card:hover {
-            box-shadow: 
-                0 0 40px rgba(59, 130, 246, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .metadata-title {
-            color: var(--gray-900);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 0;
-            padding: 2rem 2rem 1rem;
-            text-align: center;
-            border-bottom: 2px solid var(--primary-100);
-        }
-        
-        /* Blueprint Grid Layout */
-        .composition-essential-details {
-            padding: 2rem;
-            background: rgba(59, 130, 246, 0.05);
-            border-bottom: 1px solid #2d4a6b;
-            position: relative;
-        }
-        
-        .composition-essential-details::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 2rem;
-            width: 1px;
-            background: repeating-linear-gradient(
-                to bottom,
-                #3b82f6 0px,
-                #3b82f6 2px,
-                transparent 2px,
-                transparent 10px
-            );
-            opacity: 0.3;
-        }
-        
-        .composition-essential-details h4 {
-            color: #93c5fd;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin: 0 0 1.5rem 2rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .essential-details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            padding-left: 2rem;
-        }
-        
-        .essential-detail-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: rgba(15, 20, 25, 0.8);
-            border: 1px solid #374151;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .essential-detail-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(to bottom, #3b82f6, #60a5fa);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .essential-detail-item:hover {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3b82f6;
-            transform: translateX(5px);
-        }
-        
-        .essential-detail-item:hover::before {
-            opacity: 1;
-        }
-        
-        .detail-icon {
-            font-size: 1.4rem;
-            flex-shrink: 0;
-            color: #60a5fa;
-            filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3));
-        }
-        
-        .detail-content {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .detail-label {
-            font-size: 0.75rem;
-            color: #9ca3af;
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .detail-value {
-            font-size: 1rem;
-            color: #f3f4f6;
-            font-weight: 600;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
-        
-        /* Advanced Metadata Toggle System */
-        .metadata-toggle-system {
-            padding: 0;
-        }
-        
-        .metadata-toggle-item {
-            margin: 0;
-            border: none;
-            border-bottom: 1px solid #374151;
-            border-radius: 0;
-            background: transparent;
-            transition: all 0.3s ease;
-        }
-        
-        .metadata-toggle-item:last-child {
-            border-bottom: none;
-        }
-        
-        .metadata-toggle-item:hover {
-            background: rgba(59, 130, 246, 0.05);
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .metadata-toggle-item.active {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3b82f6;
-        }
-        
-        .metadata-toggle-header {
-            background: transparent;
-            padding: 1.25rem 2rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            font-size: 1rem;
-            color: #d1d5db;
-            transition: all 0.2s ease;
-            user-select: none;
-            font-family: 'Courier New', monospace;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-        }
-        
-        .metadata-toggle-header::before {
-            content: '▶';
-            color: #60a5fa;
-            margin-right: 0.75rem;
-            transition: transform 0.3s ease;
-            font-family: system-ui;
-        }
-        
-        .metadata-toggle-item.active .metadata-toggle-header::before {
-            transform: rotate(90deg);
-        }
-        
-        .metadata-toggle-header:hover {
-            color: #93c5fd;
-        }
-        
-        .metadata-toggle-icon {
-            font-size: 1rem;
-            color: #60a5fa;
-            transition: all 0.3s ease;
-            opacity: 0.7;
-        }
-        
-        .metadata-toggle-item.active .metadata-toggle-icon {
-            opacity: 1;
-            color: #93c5fd;
-        }
-        
-        .metadata-toggle-content {
-            padding: 0 2rem;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(15, 20, 25, 0.5);
-            border-top: 1px solid transparent;
-        }
-        
-        .metadata-toggle-item.active .metadata-toggle-content {
-            max-height: 600px;
-            padding: 2rem;
-            border-top-color: #374151;
-        }
-        
-        /* Enhanced Essential Details Section */
-        .composition-essential-details {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--gray-200);
-        }
-        
-        .composition-essential-details h4 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin: 0 0 1.5rem 0;
-            text-align: center;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--primary-100);
-        }
-        
-        .essential-details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .essential-detail-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: var(--gray-50);
-            border-radius: 12px;
-            border: 1px solid var(--gray-200);
-            transition: all 0.3s ease;
-        }
-        
-        .essential-detail-item:hover {
-            background: white;
-            border-color: var(--primary-200);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .detail-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-        
-        .detail-content {
-            flex: 1;
-        }
-        
-        .detail-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--gray-600);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.25rem;
-        }
-        
-        .detail-value {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--gray-900);
-        }
-        
-        /* Collapsible Sections Container */
-        .collapsible-sections {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        /* New Composition Details Section Styling */
-        .composition-details-section {
-            margin-bottom: 2rem;
-            border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            overflow: hidden;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        
-        .details-header {
-            background: var(--gray-50);
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--gray-200);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .details-icon {
-            font-size: 1.2rem;
-        }
-        
-        .details-header h4 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--gray-900);
-        }
-        
-        .details-content {
-            padding: 1.5rem;
-        }
-        
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--gray-100);
-        }
-        
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-        
-        .detail-label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--gray-700);
-            flex: 0 0 40%;
-        }
-        
-        .detail-value {
-            font-size: 0.9rem;
-            color: var(--gray-900);
-            text-align: right;
-            flex: 1;
-            word-break: break-word;
-        }
-        
-        .detail-value.long-text {
-            text-align: left;
-            margin-top: 0.5rem;
-        }
-        
-        .detail-item.full-width {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        
-        .detail-item.full-width .detail-value {
-            text-align: left;
-            margin-top: 0.5rem;
-            width: 100%;
-        }
-        
-        /* Special styling for media counts */
-        .media-count {
-            background: var(--primary-50);
-            color: var(--primary-700);
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-        
-        .score-available {
-            background: var(--success-50);
-            color: var(--success-700);
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-        
-        .score-unavailable {
-            background: var(--gray-100);
-            color: var(--gray-600);
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-        
-        /* Removed duplicate mobile styles - handled in consolidated mobile section above */
-            
-            .metadata-toggle-item {
-                margin-bottom: 1rem;
-                border-radius: 10px;
-            }
-            
-            .metadata-toggle-header {
-                padding: 0.875rem 1rem;
-                font-size: 1rem;
-            }
-            
-            .metadata-toggle-content {
-                padding: 0 1rem;
-            }
-            
-            .metadata-toggle-item.active .metadata-toggle-content {
-                padding: 1rem;
-            }
-            
-            .metadata-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-                padding: 0.625rem 0;
-            }
-            
-            .metadata-label {
-                font-size: 0.9rem;
-            }
-            
-            .metadata-value {
-                font-size: 0.9rem;
-                text-align: left;
-                margin-left: 0;
-            }
-            
-            /* Essential Details Mobile Styles */
-            .essential-details-grid {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
-            }
-            
-            .essential-detail-item {
-                padding: 0.5rem;
-                gap: 0.5rem;
-            }
-            
-            .detail-icon {
-                font-size: 1rem;
-            }
-            
-            .detail-label {
-                font-size: 0.75rem;
-            }
-            
-            .detail-value {
-                font-size: 0.85rem;
-            }
-        }
-        
-        /* Related Compositions Section Styling */
+
+        /* ===== RELATED COMPOSITIONS ===== */
         .related-compositions-section {
             width: 100%;
             max-width: 1400px;
@@ -2014,7 +419,7 @@
             padding: 0 2rem;
             box-sizing: border-box;
         }
-        
+
         .related-compositions-container {
             background: white;
             border-radius: 16px;
@@ -2023,11 +428,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             transition: box-shadow 0.3s ease;
         }
-        
-        .related-compositions-container:hover {
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-        }
-        
+
         .related-compositions-title {
             color: var(--primary-600);
             margin-bottom: 2rem;
@@ -2037,408 +438,241 @@
             padding-bottom: 1rem;
             border-bottom: 2px solid var(--primary-100);
         }
-        
-        .related-compositions-carousel {
-            display: flex;
-            flex-direction: row;
-            overflow-x: auto;
-            overflow-y: hidden;
-            gap: 1.5rem;
-            padding: 1rem 0;
-            scroll-behavior: smooth;
-            cursor: grab;
-        }
-        
-        .related-compositions-carousel::-webkit-scrollbar {
-            height: 8px;
-        }
-        
-        .related-compositions-carousel::-webkit-scrollbar-track {
-            background: var(--gray-100);
-            border-radius: 4px;
-        }
-        
-        .related-compositions-carousel::-webkit-scrollbar-thumb {
-            background: var(--gray-300);
-            border-radius: 4px;
-        }
-        
-        .related-compositions-carousel::-webkit-scrollbar-thumb:hover {
-            background: var(--gray-400);
-        }
-        
-        /* Related compositions loading and state styles */
-        .related-composition-loading,
-        .related-composition-empty,
-        .related-composition-error {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            text-align: center;
-            min-height: 200px;
-        }
-        
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--gray-200);
-            border-top: 3px solid var(--primary-500);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .related-composition-empty p,
-        .related-composition-error p {
-            color: var(--gray-600);
-            font-size: 0.95rem;
-            margin: 0;
-        }
-        
-        .related-composition-error p {
-            color: var(--red-600);
-        }
-        
-        .related-composition-card {
-            flex: 0 0 280px;
-            background: var(--gray-50);
-            border-radius: 12px;
-            border: 1px solid var(--gray-200);
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .related-composition-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        
-        .related-composition-image {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-        
-        .related-composition-content {
-            padding: 1rem;
-        }
-        
-        .related-composition-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin-bottom: 0.5rem;
-            line-height: 1.2;
-        }
-        
-        .related-composition-instrumentation {
-            font-size: 0.85rem;
-            color: var(--gray-600);
-            margin-bottom: 0.5rem;
-        }
-        
-        .related-composition-year {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-        }
-        
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            .composition-short-instruments {
-                padding: 0.5rem 0.75rem;
-                margin-bottom: 0.75rem;
+
+        /* ===== TABLET STYLES (1024px and below) ===== */
+        @media (max-width: 1024px) {
+            .composition-main {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0 1rem;
+                margin: 1.5rem auto 0;
             }
-            
-            .composition-short-instruments {
-                font-size: 0.9rem;
+
+            .composition-detail-card {
+                gap: 2rem;
             }
-            
-            .composition-meta {
-                font-size: 0.85rem;
+
+            .composition-cover-container {
+                width: 100%;
+                max-width: 350px;
+                margin: 0 auto;
             }
-            
-            section.program-video-section {
+
+            .composition-header-combined {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .composition-meta-section {
+                align-items: flex-start;
+                text-align: left;
+                width: 100%;
+            }
+
+            .composition-title {
+                font-size: 2rem;
+            }
+
+            .scores-section {
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 1rem;
+                margin: 2rem auto;
+                max-width: 100%;
+            }
+
+            .score-pdf-column,
+            .score-video-column {
+                flex: 1 1 auto;
+                min-width: 0;
+                max-width: 100%;
+                width: 100%;
+                margin-bottom: 0;
+            }
+
+            .program-video-section {
                 flex-direction: column;
                 gap: 1.5rem;
                 padding: 2rem 1rem;
-                width: 100vw;
-                max-width: none;
-                margin: 2rem 0 0 0;
                 margin-left: calc(-50vw + 50%);
-                background-color: var(--primary-200);
             }
-            
-            .composition-video-player {
-                gap: 0.5rem;
-            }
-            
-            /* Score video mobile adjustments */
-            .composition-score-video-player {
-                flex-direction: column;
-                gap: 0.75rem;
-                padding: 1rem;
-                margin: 0 0 1rem 0;
-            }
-            
-            .score-video-metadata-section {
-                padding-top: 0;
-                margin-top: 0.5rem;
-            }
-            
-            .related-composition-card {
-                flex: 0 0 250px;
-            }
-            
-            /* Mobile Metadata Styling */
-            .composition-essential-details {
-                padding: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-            
-            .composition-essential-details h4 {
-                font-size: 1.1rem;
-                margin-bottom: 1rem;
-            }
-            
-            .essential-details-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            
-            .essential-detail-item {
-                padding: 0.75rem;
-            }
-            
-            .detail-icon {
-                font-size: 1.3rem;
-            }
-            
-            .detail-label {
-                font-size: 0.75rem;
-            }
-            
-            .detail-value {
-                font-size: 0.9rem;
-            }
-            
-            .metadata-toggle-header {
-                padding: 1rem 1.25rem;
-            }
-            
-            .toggle-title {
-                font-size: 0.9rem;
-            }
-            
-            .metadata-items-grid {
-                grid-template-columns: 1fr;
-                padding: 1rem;
-                gap: 0.75rem;
-            }
-            
-            .metadata-item-card {
-                padding: 0.75rem;
-            }
-            
-            .metadata-label {
-                font-size: 0.75rem;
-            }
-            
-            .metadata-value {
-                font-size: 0.85rem;
-            }
-            
-            /* Mobile scores section handled in main responsive section above */
         }
-            
-            .single-page-score-viewer {
+
+        /* ===== MOBILE STYLES (768px and below) ===== */
+        @media (max-width: 768px) {
+            /* ✨ MOBILE LAYOUT - Simplified Container Structure */
+            .composition-main {
+                display: block;
+                padding: 0;
+                margin: 0 auto;
+                background: transparent;
+            }
+
+            .composition-detail-card {
+                background: transparent;
+                padding: 0;
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .composition-content-container {
+                background: transparent;
+                padding: 0;
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .composition-info-container {
+                padding: 1rem;
+                margin: 0;
+                background: transparent;
+            }
+
+            /* ✨ CLEAN CONTENT SECTIONS */
+            .composition-cover-container {
+                margin: 1rem auto 2rem auto;
+                padding: 0;
+                max-width: 300px;
+            }
+
+            .composition-title-container {
+                margin: 1.5rem auto;
+                padding: 0 1rem;
+                text-align: center;
+            }
+
+            .composition-buy-button-wrapper {
                 margin: 2rem auto;
-                width: 100%;
-                max-width: 100%;
+                padding: 0;
+                text-align: center;
+                background: transparent;
+                border: none;
+                border-radius: 0;
+            }
+
+            .composition-buy-btn {
+                padding: 0.875rem 2rem;
+                font-size: 1.1rem;
+                margin: 0 auto;
+            }
+
+            .composition-links-container {
+                margin: 2rem auto;
+                padding: 1rem;
+                background: var(--gray-50);
                 border-radius: 8px;
             }
-            
-            .score-container {
-                padding: 1rem;
-            }
-            
-            .score-iframe-container {
-                padding: 0.5rem;
-                margin-bottom: 1rem;
-            }
-            
-            .score-iframe-container iframe {
-                width: 100% !important;
-                height: 500px !important;
-                max-width: 100% !important;
-                max-height: 500px !important;
-            }
-            
-            .score-navigation-bottom {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-            
-            .score-nav-btn {
-                width: 100%;
-                max-width: 250px;
-                padding: 1rem 1.5rem;
-                min-width: auto;
-            }
-            
-            .nav-text {
-                font-size: 0.9rem;
-            }
-            
-            .score-page-info {
-                order: -1;
-                margin-bottom: 0.5rem;
-                min-width: auto;
-                width: 100%;
-                max-width: 200px;
-            }
-        
-        /* Keyboard navigation hint */
-        .score-navigation-bottom::after {
-            content: "💡 Use ← → arrow keys to navigate pages";
-            font-size: 0.75rem;
-            color: var(--gray-500);
-            position: absolute;
-            bottom: -1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        
-        @media (max-width: 768px) {
-            .score-navigation-bottom::after {
-                display: none;
-            }
-        }
 
-        /* Mobile Responsive Adjustments - Blueprint Theme */
-        @media (max-width: 768px) {
-            .metadata-section,
-            .related-compositions-section {
-                padding: 0 1rem;
-                margin: 3rem auto 0;
+            .composition-audio-container {
+                margin: 2rem auto;
+                padding: 1rem;
+                background: var(--gray-50);
+                border-radius: 8px;
             }
-            
-            .metadata-card,
-            .related-compositions-container {
+
+            .composition-meta-container {
+                margin: 1.5rem auto;
+                padding: 0.75rem 1rem;
+                background: var(--primary-50);
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .composition-header-combined {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .composition-meta-section {
+                align-items: center;
+                text-align: center;
+                width: 100%;
+            }
+
+            /* ✨ TYPOGRAPHY */
+            .composition-title {
+                font-size: 1.6rem;
+                color: var(--primary-700);
+                margin: 0 auto 0.5rem auto;
+                text-align: center;
+                line-height: 1.3;
                 padding: 0;
-                border-radius: 12px;
             }
-            
-            .metadata-title {
-                font-size: 1.1rem;
-                padding: 1.5rem 1rem 1rem;
-                letter-spacing: 1px;
+
+            .composition-instrument {
+                font-size: 1rem;
+                text-align: center;
+                margin: 0 auto 1rem auto;
+                color: var(--gray-600);
             }
-            
-            .metadata-title::after {
-                font-size: 0.6rem;
-                top: 0.3rem;
-                right: 1rem;
+
+            .composition-title-container > * {
+                margin-left: auto;
+                margin-right: auto;
             }
-            
-            .metadata-title::before {
-                left: 1rem;
-                right: 1rem;
+
+            /* ✨ MOBILE BODY */
+            body.composition-page {
+                padding-top: 100px;
             }
-            
-            .composition-essential-details {
-                padding: 1.5rem 1rem;
+
+            main {
+                padding: 0 0.5rem;
+                margin: 0 auto;
             }
-            
-            .composition-essential-details::before {
-                left: 1rem;
+
+            .layout-builder-nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.3rem;
             }
-            
-            .composition-essential-details h4 {
-                margin: 0 0 1rem 1rem;
+
+            .layout-nav-btn {
+                justify-content: center;
+                width: 100%;
+                padding: 0.4rem 0.6rem;
                 font-size: 0.8rem;
             }
-            
-            .essential-details-grid {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
-                padding-left: 1rem;
-            }
-            
-            .essential-detail-item {
-                padding: 0.75rem;
-                gap: 0.75rem;
-            }
-            
-            .detail-icon {
-                font-size: 1.2rem;
-            }
-            
-            .detail-label {
-                font-size: 0.7rem;
-            }
-            
-            .detail-value {
-                font-size: 0.9rem;
-            }
-            
-            .metadata-toggle-header {
-                padding: 1rem 1rem;
-                font-size: 0.9rem;
-                letter-spacing: 0.5px;
-            }
-            
-            .metadata-toggle-header::before {
-                margin-right: 0.5rem;
-            }
-            
-            .metadata-toggle-content {
-                padding: 0 1rem;
-            }
-            
-            .metadata-toggle-item.active .metadata-toggle-content {
-                padding: 1.5rem 1rem;
-            }
-            
-            .metadata-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-                padding: 0.625rem 0;
-            }
-            
-            .metadata-label {
-                font-size: 0.75rem;
-            }
-            
-            .metadata-value {
-                font-size: 0.85rem;
-                text-align: left;
-            }
-            
-            .score-video-section-title {
-                font-size: 1.1rem;
-            }
-            
-            .related-compositions-title {
-                font-size: 1.3rem;
-                margin-bottom: 1.5rem;
+
+            .program-video-section {
+                padding: 2rem 1rem;
             }
         }
-        
 
-        
-        /* ✨ REMOVED: Secondary Navigation Styles - now in styles.css for modular consistency */
+        /* ===== SMALL MOBILE STYLES (480px and below) ===== */
+        @media (max-width: 480px) {
+            .composition-title {
+                font-size: 1.4rem;
+            }
 
+            .composition-instrument {
+                font-size: 0.9rem;
+            }
+
+            .composition-buy-btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .composition-links-container,
+            .composition-audio-container {
+                padding: 0.75rem;
+            }
+
+            .scores-section {
+                padding: 0.75rem;
+            }
+
+            .score-pdf-column,
+            .score-video-column {
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
   <body class="composition-page">
