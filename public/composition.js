@@ -953,26 +953,19 @@ function createFallbackAudioPlayer(audioData, audioPlaceholder) {
     
     let audioHtml = `
         <div class="composition-audio-container" style="background: var(--purple-50); border: 1px solid var(--purple-100); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
-            <h3 style="color: var(--purple-700); margin: 0 0 1rem 0; font-size: 1.1rem;">🎵 Audio Player</h3>
     `;
-    
-    if (isMultiTrack) {
-        audioHtml += `
-            <div style="margin-bottom: 1rem;">
-                <select id="audio-track-selector" style="width: 100%; padding: 0.5rem; border: 1px solid var(--gray-300); border-radius: 6px; background: white;">
-                    ${audioFiles.map((file, index) => `
-                        <option value="${index}">${file.title || `Track ${index + 1}`}</option>
-                    `).join('')}
-                </select>
-            </div>
-        `;
-    }
     
     audioFiles.forEach((audioFile, index) => {
         const displayStyle = isMultiTrack && index > 0 ? 'display: none;' : 'display: block;';
+        
+        // Only show movement title for multi-movement pieces
+        const displayTitle = extractMovementTitle(audioFile.title) || audioFile.title;
+        const titleHtml = isMultiTrack && displayTitle ? 
+            `<div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--gray-700);">${displayTitle}</div>` : '';
+        
         audioHtml += `
             <div class="audio-track" data-track="${index}" style="${displayStyle}">
-                ${audioFile.title ? `<div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--gray-700);">${audioFile.title}</div>` : ''}
+                ${titleHtml}
                 <audio controls preload="metadata" style="width: 100%;">
                     <source src="${audioFile.url}" type="audio/mpeg">
                     <source src="${audioFile.url}" type="audio/mp4">
@@ -986,21 +979,59 @@ function createFallbackAudioPlayer(audioData, audioPlaceholder) {
         `;
     });
     
+    // Add button navigation for multi-track
+    if (isMultiTrack) {
+        audioHtml += `
+            <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: var(--gray-50); border-radius: 8px; border: 1px solid var(--gray-200);">
+                <button class="audio-nav-btn" id="prev-audio-fallback" style="padding: 0.5rem 1rem; background: var(--primary-600); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s;">⏮ Previous</button>
+                <span class="audio-nav-info" id="audio-nav-info-fallback" style="font-weight: 600; color: var(--gray-700); font-size: 0.95rem;">Movement 1 of ${audioFiles.length}</span>
+                <button class="audio-nav-btn" id="next-audio-fallback" style="padding: 0.5rem 1rem; background: var(--primary-600); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s;">Next ⏭</button>
+            </div>
+        `;
+    }
+    
     audioHtml += `</div>`;
     
     audioPlaceholder.innerHTML = audioHtml;
     
     // Add track switching functionality for multi-track
     if (isMultiTrack) {
-        const selector = document.getElementById('audio-track-selector');
-        if (selector) {
-            selector.addEventListener('change', (e) => {
-                const selectedTrack = parseInt(e.target.value);
-                document.querySelectorAll('.audio-track').forEach((track, index) => {
-                    track.style.display = index === selectedTrack ? 'block' : 'none';
-                });
+        let currentTrack = 0;
+        const prevBtn = document.getElementById('prev-audio-fallback');
+        const nextBtn = document.getElementById('next-audio-fallback');
+        const navInfo = document.getElementById('audio-nav-info-fallback');
+        
+        function updateFallbackNavigation() {
+            prevBtn.disabled = currentTrack === 0;
+            nextBtn.disabled = currentTrack === audioFiles.length - 1;
+            navInfo.textContent = `Movement ${currentTrack + 1} of ${audioFiles.length}`;
+        }
+        
+        function switchTrack(index) {
+            document.querySelectorAll('.audio-track').forEach((track, i) => {
+                track.style.display = i === index ? 'block' : 'none';
+            });
+            currentTrack = index;
+            updateFallbackNavigation();
+        }
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (currentTrack > 0) {
+                    switchTrack(currentTrack - 1);
+                }
             });
         }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (currentTrack < audioFiles.length - 1) {
+                    switchTrack(currentTrack + 1);
+                }
+            });
+        }
+        
+        updateFallbackNavigation();
     }
     
     console.log('✅ Fallback audio player created successfully');

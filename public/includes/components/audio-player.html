@@ -4,7 +4,7 @@
     <div class="audio-players-container" id="audio-players-{{containerId}}">
         <!-- Audio players will be dynamically created here -->
         <div class="audio-loading" style="text-align: center; padding: 2rem; color: var(--gray-600);">
-            🎵 Loading audio players...
+            Loading audio players...
         </div>
     </div>
     
@@ -12,13 +12,13 @@
     <div class="audio-nav-divider" id="audio-nav-divider-{{containerId}}" style="display: none;"></div>
     <div class="audio-nav-container" id="audio-nav-{{containerId}}" style="display: none;">
         <button class="audio-nav-btn" id="prev-audio-{{containerId}}" disabled>
-            ⏮ Previous
+            Previous
         </button>
         <div class="audio-nav-info" id="audio-nav-info-{{containerId}}">
             Movement 1 of 1
         </div>
         <button class="audio-nav-btn" id="next-audio-{{containerId}}" disabled>
-            Next ⏭
+            Next
         </button>
     </div>
     
@@ -39,7 +39,7 @@
         return;
     }
     
-    console.log(`🎵 Audio Player Component initialized: ${containerId}`);
+    console.log(`Audio Player Component initialized: ${containerId}`);
     
     // Global variables for this audio player instance
     let currentAudioIndex = 0;
@@ -48,7 +48,7 @@
     
     // Initialize the audio player with data
     function initializeAudioPlayer(data) {
-        console.log(`🎵 Initializing audio player with data:`, data);
+        console.log(`Initializing audio player with data:`, data);
         
         if (!data || !data.audioFiles || data.audioFiles.length === 0) {
             showNoAudioMessage();
@@ -70,7 +70,7 @@
         // Remove loading state
         removeLoadingState();
         
-        console.log(`✅ Audio player initialized with ${totalAudioCount} tracks`);
+        console.log(`Audio player initialized with ${totalAudioCount} tracks`);
     }
     
     function createAudioPlayers() {
@@ -78,22 +78,24 @@
         if (!playersContainer) return;
         
         const playersHtml = audioFiles.map((audioFile, index) => {
+            // Only show movement title for multi-movement pieces
+            const isMultiMovement = totalAudioCount > 1;
             const displayTitle = extractMovementTitle(audioFile.title) || audioFile.title;
-            const shouldShowTitle = audioFile.numberOfMovements > 1 || audioFile.movementTitle;
             
             let titleHtml = '';
-            if (shouldShowTitle && displayTitle) {
+            if (isMultiMovement && displayTitle) {
                 titleHtml = `
-                    <div class="composition-audio-title movement-title">
-                        🎵 ${displayTitle}
+                    <div class="composition-audio-title movement-title" style="font-size: 1.1rem; font-weight: 600; color: var(--primary-600); margin-bottom: 0.5rem;">
+                        ${displayTitle}
                     </div>
                 `;
             }
             
-            let metadataHtml = '';
+            // Performance info goes below the title
+            let performanceHtml = '';
             if (audioFile.performanceBy || audioFile.recordingDate) {
-                metadataHtml = `
-                    <div class="composition-audio-metadata">
+                performanceHtml = `
+                    <div class="composition-audio-metadata" style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 1rem;">
                         ${audioFile.performanceBy ? `<div class="performance-info">Performed by: ${audioFile.performanceBy}</div>` : ''}
                         ${audioFile.recordingDate ? `<div>Recorded: ${formatDate(audioFile.recordingDate)}</div>` : ''}
                     </div>
@@ -103,15 +105,15 @@
             return `
                 <div class="composition-audio-player" data-audio-index="${index}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
                     ${titleHtml}
-                    ${metadataHtml}
-                    <audio controls preload="metadata" data-audio-id="${audioFile.id}">
+                    ${performanceHtml}
+                    <audio controls preload="metadata" data-audio-id="${audioFile.id}" style="width: 100%; margin-bottom: 1rem;">
                         <source src="${audioFile.url}" type="audio/mpeg">
                         <source src="${audioFile.url}" type="audio/mp4">
                         <source src="${audioFile.url}" type="audio/wav">
                         <source src="${audioFile.url}" type="audio/ogg">
                         Your browser does not support the audio element.
                     </audio>
-                    ${audioFile.duration ? `<div class="audio-duration">Duration: ${audioFile.duration}</div>` : ''}
+                    ${audioFile.duration ? `<div class="audio-duration" style="font-size: 0.8rem; color: var(--gray-500);">Duration: ${audioFile.duration}</div>` : ''}
                 </div>
             `;
         }).join('');
@@ -207,7 +209,7 @@
         
         playersContainer.innerHTML = `
             <div style="padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; margin: 1rem 0;">
-                <h4 style="color: #856404; margin: 0 0 10px 0;">⚠️ No Audio Found</h4>
+                <h4 style="color: #856404; margin: 0 0 10px 0;">No Audio Found</h4>
                 <p style="color: #856404; margin: 0; font-size: 0.9rem;">
                     No audio files are available for this composition.
                 </p>
@@ -247,6 +249,6 @@
     // Expose initialization function globally
     window[`initAudioPlayer_${containerId}`] = initializeAudioPlayer;
     
-    console.log(`🎵 Audio Player Component ready: ${containerId}`);
+    console.log(`Audio Player Component ready: ${containerId}`);
 })();
 </script> 
