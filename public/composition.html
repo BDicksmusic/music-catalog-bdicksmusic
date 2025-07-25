@@ -435,12 +435,24 @@
             transform: translateX(-20px);
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             pointer-events: none;
+            width: 0;
+            min-width: 0;
+            max-width: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
         }
 
         .score-pdf-column.show {
             opacity: 1;
             transform: translateX(0);
             pointer-events: auto;
+            width: auto;
+            min-width: 280px;
+            max-width: 800px;
+            margin: 0;
+            padding: 0;
+            overflow: visible;
         }
 
         .score-video-column {
@@ -666,6 +678,15 @@
                 max-width: 100%;
                 width: 100%;
                 margin-bottom: 0;
+            }
+
+            .score-pdf-column:not(.show) {
+                width: 0;
+                min-width: 0;
+                max-width: 0;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
             }
 
             .score-video-column.full-width {
@@ -940,6 +961,15 @@
             .score-pdf-column,
             .score-video-column {
                 padding: 1rem;
+            }
+
+            .score-pdf-column:not(.show) {
+                width: 0;
+                min-width: 0;
+                max-width: 0;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
             }
 
             .score-video-column.full-width {
