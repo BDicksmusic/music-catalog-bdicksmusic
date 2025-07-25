@@ -1801,7 +1801,7 @@
       
       /* Ensure all sections respect container width */
       .container {
-          max-width: 1200px;
+          max-width: 90vw;
           margin: 0 auto;
           padding: 0 1rem;
           width: 100%;
@@ -1845,7 +1845,7 @@
       
       @media (max-width: 1200px) {
           .container {
-              max-width: 95%;
+              max-width: 95vw;
           }
       }
       
@@ -1906,22 +1906,22 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 1.5rem 2rem;
+        padding: 1rem 1.5rem;
         background: var(--primary-500);
-        border: 2px solid var(--primary-500);
-        border-radius: 12px;
+        border: 1px solid var(--primary-500);
+        border-radius: 8px;
         text-decoration: none;
         color: white;
         transition: all 0.3s ease;
-        min-width: 140px;
+        min-width: 120px;
         font-weight: 600;
     }
 
     .nav-card:hover {
         background: var(--primary-600);
         border-color: var(--primary-600);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
         color: white;
     }
 
@@ -2086,70 +2086,122 @@
         margin: 0;
     }
 
+    .composition-metadata {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+
+    .metadata-tag {
+        padding: 0.25rem 0.75rem;
+        background: var(--gray-100);
+        color: var(--gray-600);
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .metadata-tag.featured {
+        background: var(--primary-100);
+        color: var(--primary-700);
+    }
+
     .composition-actions {
         display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
         flex-wrap: wrap;
         margin-top: 1rem;
     }
 
+    .btn-icon {
+        margin-right: 0.5rem;
+        font-size: 0.9rem;
+    }
+
     .btn-primary {
-        background: var(--primary-500);
-        color: white;
-        border: 2px solid var(--primary-500);
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
+        background: white;
+        color: var(--primary-600);
+        border: 1px solid var(--gray-300);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
         text-decoration: none;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
     }
 
     .btn-primary:hover {
-        background: var(--primary-600);
-        border-color: var(--primary-600);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        background: var(--gray-50);
+        border-color: var(--gray-400);
+        transform: translateY(-1px);
     }
 
     .btn-secondary {
-        background: transparent;
-        color: var(--gray-700);
-        border: 2px solid var(--gray-300);
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
+        background: white;
+        color: var(--primary-600);
+        border: 1px solid var(--gray-300);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
         text-decoration: none;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
     }
 
     .btn-secondary:hover {
-        background: var(--gray-100);
+        background: var(--gray-50);
         border-color: var(--gray-400);
-        transform: translateY(-2px);
+        transform: translateY(-1px);
+    }
+
+    .btn-buy {
+        background: var(--primary-500);
+        color: white;
+        border: 1px solid var(--primary-500);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-buy:hover {
+        background: var(--primary-600);
+        border-color: var(--primary-600);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
     }
 
     .btn-listen {
         background: var(--primary-100);
         color: var(--primary-700);
-        border: 2px solid var(--primary-200);
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
+        border: 1px solid var(--primary-200);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
         text-decoration: none;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
     }
 
     .btn-listen:hover {
         background: var(--primary-200);
         border-color: var(--primary-300);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        transform: translateY(-1px);
     }
 
     /* Featured Audio Player Section */
@@ -2428,8 +2480,8 @@
         }
 
         .nav-card {
-            padding: 1rem 1.5rem;
-            min-width: 120px;
+            padding: 0.75rem 1.25rem;
+            min-width: 100px;
         }
 
         .nav-card .nav-icon {
@@ -2743,10 +2795,28 @@
                                     <h4 class="composition-title">Loading...</h4>
                                     <p class="composition-instrumentation">Loading...</p>
                                     <p class="composition-description">Loading composition description...</p>
+                                    <div class="composition-metadata">
+                                        <span class="metadata-tag">2025</span>
+                                        <span class="metadata-tag">Duration: 5:30</span>
+                                        <span class="metadata-tag featured">Featured</span>
+                                    </div>
                                     <div class="composition-actions">
-                                        <button class="btn-primary learn-more-btn" onclick="learnMoreComposition()">Learn More</button>
-                                        <button class="btn-secondary buy-now-btn" onclick="buyNowComposition()">Buy Now</button>
-                                        <button class="btn-listen listen-btn" onclick="playFeaturedComposition()">Listen</button>
+                                        <button class="btn-primary learn-more-btn" onclick="learnMoreComposition()">
+                                            <span class="btn-icon">📖</span>
+                                            Learn More
+                                        </button>
+                                        <button class="btn-secondary view-score-btn" onclick="viewScoreComposition()">
+                                            <span class="btn-icon">🎼</span>
+                                            View Score
+                                        </button>
+                                        <button class="btn-buy buy-now-btn" onclick="buyNowComposition()">
+                                            <span class="btn-icon">🛒</span>
+                                            Buy Now - $19.99
+                                        </button>
+                                        <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn">
+                                            <span class="btn-icon">🎵</span>
+                                            Listen
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -4592,7 +4662,7 @@
                     <a href="/music-catalog.html" style="display: inline-block; background: var(--primary-500); color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">
                         View Details
                     </a>
-                    <button onclick="playCarouselComposition(${index})" style="display: inline-block; background: var(--primary-100); color: var(--primary-700); border: 2px solid var(--primary-200); padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    <button onclick="playCarouselComposition(${index})" id="carousel-listen-${index}" style="display: inline-block; background: var(--primary-100); color: var(--primary-700); border: 1px solid var(--primary-200); padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
                         Listen
                     </button>
                 </div>
@@ -4658,9 +4728,19 @@
                 const data = await response.json();
                 
                 if (data && data.success && data.compositions && data.compositions.length > 0) {
-                    // Get the most recent composition or a featured one
-                    const newRelease = data.compositions.find(comp => comp.featured) || data.compositions[0];
-                    updateNewCatalogRelease(newRelease);
+                    // Filter for compositions marked as "New in Catalog"
+                    const newInCatalogCompositions = data.compositions.filter(comp => comp.newInCatalog === true);
+                    
+                    if (newInCatalogCompositions.length > 0) {
+                        // Use the first "New in Catalog" composition
+                        const newRelease = newInCatalogCompositions[0];
+                        updateNewCatalogRelease(newRelease);
+                    } else {
+                        // Fallback to featured or first composition if no "New in Catalog" items
+                        const fallbackComposition = data.compositions.find(comp => comp.featured) || data.compositions[0];
+                        updateNewCatalogRelease(fallbackComposition);
+                        console.log('No compositions marked as "New in Catalog", using fallback');
+                    }
                 }
             } catch (error) {
                 console.error('Error loading new catalog release:', error);
@@ -4686,9 +4766,15 @@
             const audioTitle = document.querySelector('.audio-composition-title');
             const audioInstrumentation = document.querySelector('.audio-composition-instrumentation');
             const audioCover = document.querySelector('.audio-cover');
+            const listenBtn = document.getElementById('listen-btn');
             
             // Show the audio section
             audioSection.style.display = 'block';
+            
+            // Update listen button text
+            if (listenBtn) {
+                listenBtn.innerHTML = '<span class="btn-icon">🎵</span>Listen [HIDDEN]';
+            }
             
             // Load the featured composition data
             if (featuredCompositions.length > 0) {
@@ -4721,6 +4807,7 @@
         function closeFeaturedAudio() {
             const audioSection = document.getElementById('featured-audio-section');
             const audioPlayer = document.getElementById('featured-audio-player');
+            const listenBtn = document.getElementById('listen-btn');
             
             // Pause and reset audio
             audioPlayer.pause();
@@ -4728,6 +4815,11 @@
             
             // Hide the audio section
             audioSection.style.display = 'none';
+            
+            // Reset listen button text
+            if (listenBtn) {
+                listenBtn.innerHTML = '<span class="btn-icon">🎵</span>Listen';
+            }
         }
 
         function playCarouselComposition(index) {
@@ -4736,9 +4828,15 @@
             const audioTitle = document.querySelector('.audio-composition-title');
             const audioInstrumentation = document.querySelector('.audio-composition-instrumentation');
             const audioCover = document.querySelector('.audio-cover');
+            const listenBtn = document.getElementById(`carousel-listen-${index}`);
             
             // Show the audio section
             audioSection.style.display = 'block';
+            
+            // Update listen button text
+            if (listenBtn) {
+                listenBtn.innerHTML = 'Listen [HIDDEN]';
+            }
             
             // Get the composition from the carousel
             if (compositionsCarousel[index]) {
@@ -4769,6 +4867,11 @@
         }
 
         function learnMoreComposition() {
+            // Navigate to the music catalog page
+            window.location.href = '/music-catalog.html';
+        }
+
+        function viewScoreComposition() {
             // Navigate to the music catalog page
             window.location.href = '/music-catalog.html';
         }
