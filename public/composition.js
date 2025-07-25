@@ -434,7 +434,7 @@ function renderComposition(comp) {
         console.log('🎵 Final audioData object:', audioData);
         
         // Load the audio player component
-        loadAudioPlayerComponent(audioData);
+        loadAudioPlayerComponent(audioData, audioPlaceholder);
             } else {
             // No audio data available
             console.log('🎵 No audio data available for this composition');
