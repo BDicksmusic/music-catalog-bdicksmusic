@@ -1261,8 +1261,10 @@ app.get('/api/compositions/:id/media/:type?', async (req, res) => {
 // GET all compositions from Notion (WITH CACHING)
 app.get('/api/compositions', async (req, res) => {
     try {
+        const includeMedia = req.query.includeMedia === 'true'; // Default to false for performance
+        
         const fetchCompositions = async () => {
-            console.log('🔄 Fetching fresh compositions from Notion...');
+            console.log(`🔄 Fetching fresh compositions from Notion${includeMedia ? ' with media' : ''}...`);
             const response = await notion.databases.query({
                 database_id: process.env.NOTION_DATABASE_ID,
                 sorts: [
@@ -1274,7 +1276,16 @@ app.get('/api/compositions', async (req, res) => {
             });
             
             // Transform Notion data to clean format
-            const compositions = response.results.map(transformNotionPage);
+            let compositions;
+            if (includeMedia) {
+                // Use transformNotionPageWithMedia for full media data
+                compositions = await Promise.all(
+                    response.results.map(page => transformNotionPageWithMedia(page, true))
+                );
+            } else {
+                // Use basic transformNotionPage for performance
+                compositions = response.results.map(transformNotionPage);
+            }
             
             return { 
                 success: true,
@@ -1285,9 +1296,13 @@ app.get('/api/compositions', async (req, res) => {
             };
         };
 
-        // Use cache wrapper
+        // Use cache wrapper with media inclusion in cache key
+        const cacheKey = includeMedia ? 
+            CACHE_KEYS.allCompositions + '_with_media' :
+            CACHE_KEYS.allCompositions;
+            
         const result = await withCache(
-            CACHE_KEYS.allCompositions,
+            cacheKey,
             CACHE_DURATIONS.allCompositions,
             fetchCompositions
         );

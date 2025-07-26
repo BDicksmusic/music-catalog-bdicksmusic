@@ -2503,7 +2503,28 @@
         background: var(--gray-50);
         border-radius: 12px;
         border: 1px solid var(--gray-200);
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        max-height: 0;
+        overflow: hidden;
+    }
+
+    .new-release-audio-container.has-audio {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+        max-height: 500px;
         animation: slideDown 0.3s ease-out;
+    }
+
+    .new-release-audio-container.no-audio {
+        opacity: 0;
+        transform: translateY(-10px);
+        pointer-events: none;
+        max-height: 0;
+        overflow: hidden;
     }
 
     .audio-player-content {
@@ -3431,7 +3452,7 @@
                         </div>
                         
                         <!-- Integrated Multi-Audio Player Container -->
-                        <div class="new-release-audio-container" id="new-release-audio-container" style="display: none;">
+                        <div class="new-release-audio-container no-audio" id="new-release-audio-container" style="display: none;">
                             <div class="audio-player-content">
                                 <!-- Audio Players Container -->
                                 <div class="new-release-audio-players" id="new-release-audio-players">
@@ -5285,11 +5306,115 @@
         let newReleaseCompositions = [];
         let currentNewReleaseIndex = 0;
         let newReleaseAutoCycleInterval = null;
+        
+        // Audio Container State Management System
+        const AudioContainerManager = {
+            container: null,
+            playersContainer: null,
+            navContainer: null,
+            navDivider: null,
+            
+            // Initialize the audio container manager
+            init() {
+                this.container = document.getElementById('new-release-audio-container');
+                this.playersContainer = document.getElementById('new-release-audio-players');
+                this.navContainer = document.getElementById('new-release-audio-nav');
+                this.navDivider = document.getElementById('new-release-audio-nav-divider');
+                
+                console.log('🎵 Audio Container Manager initialized');
+                console.log('🎵 Container elements found:', {
+                    container: !!this.container,
+                    playersContainer: !!this.playersContainer,
+                    navContainer: !!this.navContainer,
+                    navDivider: !!this.navDivider
+                });
+                return this;
+            },
+            
+            // Show audio container with smooth animation
+            show() {
+                if (!this.container) {
+                    console.log('❌ AudioContainerManager.show() - No container found');
+                    return;
+                }
+                
+                console.log('🎵 AudioContainerManager.show() - Showing container');
+                this.container.classList.remove('no-audio');
+                this.container.classList.add('has-audio');
+                this.container.style.display = 'block';
+                
+                console.log('🎵 Audio container shown');
+            },
+            
+            // Hide audio container with smooth animation
+            hide() {
+                if (!this.container) return;
+                
+                this.container.classList.remove('has-audio');
+                this.container.classList.add('no-audio');
+                
+                // Hide after animation completes
+                setTimeout(() => {
+                    if (this.container.classList.contains('no-audio')) {
+                        this.container.style.display = 'none';
+                    }
+                }, 300);
+                
+                console.log('🎵 Audio container hidden');
+            },
+            
+            // Update container state based on audio availability
+            updateState(hasAudio) {
+                console.log('🎵 AudioContainerManager.updateState called with hasAudio:', hasAudio);
+                console.log('🎵 AudioContainerManager container exists:', !!this.container);
+                if (hasAudio) {
+                    console.log('🎵 Showing audio container...');
+                    this.show();
+                } else {
+                    console.log('🎵 Hiding audio container...');
+                    this.hide();
+                }
+            },
+            
+            // Clear all audio content
+            clearContent() {
+                if (this.playersContainer) {
+                    this.playersContainer.innerHTML = `
+                        <div class="audio-loading" style="text-align: center; padding: 1rem; color: var(--gray-600);">
+                            Loading audio players...
+                        </div>
+                    `;
+                }
+                
+                if (this.navContainer) {
+                    this.navContainer.style.display = 'none';
+                }
+                
+                if (this.navDivider) {
+                    this.navDivider.style.display = 'none';
+                }
+            },
+            
+            // Set no audio message
+            setNoAudioMessage() {
+                if (this.playersContainer) {
+                    this.playersContainer.innerHTML = `
+                        <div style="padding: 1rem; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px; margin: 0.5rem 0;">
+                            <h4 style="color: #856404; margin: 0 0 0.5rem 0;">No Audio Available</h4>
+                            <p style="color: #856404; margin: 0; font-size: 0.9rem;">
+                                Audio files are not available for this composition.
+                            </p>
+                        </div>
+                    `;
+                }
+            }
+        };
 
         async function loadNewCatalogRelease() {
             try {
                 console.log('🔄 Loading New Catalog Release...');
-                const response = await fetch('/api/compositions');
+                
+                const response = await fetch('/api/compositions?includeMedia=true');
                 const data = await response.json();
                 
                 console.log('📊 API Response:', {
@@ -5310,8 +5435,20 @@
                     console.log('🎯 New in Catalog compositions found:', newReleaseCompositions.length);
                     console.log('📝 New in Catalog compositions:', newReleaseCompositions.map(comp => comp.title));
                     
+                    // Debug: Log detailed audio information for each composition
+                    newReleaseCompositions.forEach((comp, index) => {
+                        console.log(`🎵 Composition ${index + 1} - "${comp.title}":`, {
+                            audioLink: comp.audioLink,
+                            audioFiles: comp.audioFiles,
+                            audioFilesLength: comp.audioFiles?.length,
+                            performedBy: comp.performedBy,
+                            hasAudio: comp.audioLink || (comp.audioFiles && comp.audioFiles.length > 0)
+                        });
+                    });
+                    
                     if (newReleaseCompositions.length > 0) {
                         currentNewReleaseIndex = 0;
+                        console.log('🎯 About to update with first composition:', newReleaseCompositions[0].title);
                         updateNewCatalogRelease(newReleaseCompositions[0]);
                         initializeNewReleaseCarousel();
                         startNewReleaseAutoCycle();
@@ -5357,21 +5494,29 @@
                             performedByElement.textContent = composition.performedBy || 'Unknown Artist';
                         }
                         
-                        // Check if audio is available and update Listen button
+                        // Check if audio is available and update Listen button and container
                         const listenBtn = document.getElementById('listen-btn');
-                        const audioContainer = document.getElementById('new-release-audio-container');
-                        const hasAudio = composition.audioPreview || (composition.audioFiles && composition.audioFiles.length > 0);
+                        const hasAudio = composition.audioLink || (composition.audioFiles && composition.audioFiles.length > 0);
+                        
+                        console.log('🎵 updateNewCatalogRelease - Audio check for:', composition.title, {
+                            audioLink: composition.audioLink,
+                            audioFiles: composition.audioFiles,
+                            audioFilesLength: composition.audioFiles?.length,
+                            hasAudio: hasAudio
+                        });
+                        
+                        // Update audio container state using the manager
+                        AudioContainerManager.updateState(hasAudio);
                         
                         if (listenBtn) {
                             if (hasAudio) {
                                 // Show Listen button and update text based on visibility
                                 listenBtn.style.display = 'flex';
-                                if (audioContainer) {
-                                    const isVisible = audioContainer.style.display !== 'none';
-                                    listenBtn.innerHTML = isVisible ? 
-                                        '<span class="btn-icon">🎵</span>Listen (In View)' : 
-                                        '<span class="btn-icon">🎵</span>Listen (Hidden)';
-                                }
+                                const isVisible = AudioContainerManager.container && 
+                                    AudioContainerManager.container.classList.contains('has-audio');
+                                listenBtn.innerHTML = isVisible ? 
+                                    '<span class="btn-icon">🎵</span>Listen (In View)' : 
+                                    '<span class="btn-icon">🎵</span>Listen (Hidden)';
                             } else {
                                 // Hide Listen button if no audio available
                                 listenBtn.style.display = 'none';
@@ -5405,7 +5550,7 @@
                 // Check if audio is available and update Listen button
                 const listenBtn = document.getElementById('listen-btn');
                 const audioContainer = document.getElementById('new-release-audio-container');
-                const hasAudio = composition.audioPreview || (composition.audioFiles && composition.audioFiles.length > 0);
+                const hasAudio = composition.audioLink || (composition.audioFiles && composition.audioFiles.length > 0);
                 
                 if (listenBtn) {
                     if (hasAudio) {
@@ -5532,9 +5677,6 @@
         let newReleaseAudioFiles = [];
 
         function updateNewReleaseAudioPlayer() {
-            const audioContainer = document.getElementById('new-release-audio-container');
-            const audioPlayersContainer = document.getElementById('new-release-audio-players');
-            
             if (!newReleaseCompositions[currentNewReleaseIndex]) {
                 console.log('❌ No composition found at index:', currentNewReleaseIndex);
                 return;
@@ -5550,7 +5692,8 @@
             console.log('🎵 Found audio files:', newReleaseAudioFiles);
             
             if (newReleaseAudioFiles.length === 0) {
-                showNewReleaseNoAudioMessage();
+                // Use AudioContainerManager to handle no audio state
+                AudioContainerManager.setNoAudioMessage();
                 return;
             }
             
@@ -5573,36 +5716,45 @@
         function parseAudioFiles(composition) {
             const audioFiles = [];
             
-            // Check for single audio preview
-            if (composition.audioPreview) {
+            console.log('🎵 Parsing audio files for composition:', composition.title);
+            console.log('🎵 Composition audio data:', {
+                audioLink: composition.audioLink,
+                audioFiles: composition.audioFiles,
+                audioFilesLength: composition.audioFiles?.length
+            });
+            
+            // Check for single audio link (backward compatibility)
+            if (composition.audioLink) {
                 audioFiles.push({
-                    id: 'preview',
-                    url: composition.audioPreview,
+                    id: 'audio-link',
+                    url: composition.audioLink,
                     title: composition.title,
-                    performanceBy: composition.performedBy,
+                    performanceBy: composition.performedBy || '',
                     duration: null
                 });
+                console.log('🎵 Added single audio link:', composition.audioLink);
             }
             
-            // Check for multiple audio files (if the API provides them)
+            // Check for multiple audio files from media database
             if (composition.audioFiles && Array.isArray(composition.audioFiles)) {
                 composition.audioFiles.forEach((audioFile, index) => {
                     audioFiles.push({
                         id: audioFile.id || `audio-${index}`,
                         url: audioFile.url,
                         title: audioFile.title || composition.title,
-                        performanceBy: audioFile.performanceBy || composition.performedBy,
+                        performanceBy: audioFile.performanceBy || composition.performedBy || '',
                         duration: audioFile.duration || null
                     });
+                    console.log(`🎵 Added audio file ${index + 1}:`, audioFile.title, audioFile.url);
                 });
             }
             
+            console.log('🎵 Total audio files parsed:', audioFiles.length);
             return audioFiles;
         }
 
         function createNewReleaseAudioPlayers() {
-            const playersContainer = document.getElementById('new-release-audio-players');
-            if (!playersContainer) return;
+            if (!AudioContainerManager.playersContainer) return;
             
             const playersHtml = newReleaseAudioFiles.map((audioFile, index) => {
                 // Only show movement title for multi-movement pieces
@@ -5642,21 +5794,19 @@
                 `;
             }).join('');
             
-            playersContainer.innerHTML = playersHtml;
+            AudioContainerManager.playersContainer.innerHTML = playersHtml;
         }
 
         function setupNewReleaseAudioNavigation() {
-            const navContainer = document.getElementById('new-release-audio-nav');
-            const navDivider = document.getElementById('new-release-audio-nav-divider');
             const prevBtn = document.getElementById('new-release-prev-audio');
             const nextBtn = document.getElementById('new-release-next-audio');
             const navInfo = document.getElementById('new-release-audio-nav-info');
             
-            if (!navContainer) return;
+            if (!AudioContainerManager.navContainer) return;
             
             // Show navigation elements
-            if (navDivider) navDivider.style.display = 'block';
-            navContainer.style.display = 'flex';
+            if (AudioContainerManager.navDivider) AudioContainerManager.navDivider.style.display = 'block';
+            AudioContainerManager.navContainer.style.display = 'flex';
             
             // Setup event listeners
             if (prevBtn) {
@@ -5672,20 +5822,16 @@
         }
 
         function hideNewReleaseAudioNavigation() {
-            const navContainer = document.getElementById('new-release-audio-nav');
-            const navDivider = document.getElementById('new-release-audio-nav-divider');
-            
-            if (navDivider) navDivider.style.display = 'none';
-            if (navContainer) navContainer.style.display = 'none';
+            if (AudioContainerManager.navDivider) AudioContainerManager.navDivider.style.display = 'none';
+            if (AudioContainerManager.navContainer) AudioContainerManager.navContainer.style.display = 'none';
         }
 
         function switchToNewReleaseAudio(index) {
             if (index < 0 || index >= newReleaseAudioFiles.length) return;
             
-            const playersContainer = document.getElementById('new-release-audio-players');
-            if (!playersContainer) return;
+            if (!AudioContainerManager.playersContainer) return;
             
-            const allPlayers = playersContainer.querySelectorAll('.new-release-audio-player');
+            const allPlayers = AudioContainerManager.playersContainer.querySelectorAll('.new-release-audio-player');
             
             // Hide current player
             if (allPlayers[currentNewReleaseAudioIndex]) {
@@ -5735,24 +5881,14 @@
             }
         }
 
-        function showNewReleaseNoAudioMessage() {
-            const playersContainer = document.getElementById('new-release-audio-players');
-            if (!playersContainer) return;
-            
-            playersContainer.innerHTML = `
-                <div style="padding: 1rem; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px; margin: 0.5rem 0;">
-                    <h4 style="color: #856404; margin: 0 0 0.5rem 0;">No Audio Found</h4>
-                    <p style="color: #856404; margin: 0; font-size: 0.9rem;">
-                        No audio files are available for this composition.
-                    </p>
-                </div>
-            `;
-        }
+
 
         function removeNewReleaseLoadingState() {
-            const loadingElement = document.querySelector('#new-release-audio-players .audio-loading');
-            if (loadingElement) {
-                loadingElement.remove();
+            if (AudioContainerManager.playersContainer) {
+                const loadingElement = AudioContainerManager.playersContainer.querySelector('.audio-loading');
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
             }
         }
 
@@ -5798,15 +5934,15 @@
 
         // Featured Audio Player Functions
         function playFeaturedComposition() {
-            const audioContainer = document.getElementById('new-release-audio-container');
             const listenBtn = document.getElementById('listen-btn');
             
-            // Toggle audio container visibility
-            const isVisible = audioContainer.style.display !== 'none';
+            // Check if audio container is currently visible
+            const isVisible = AudioContainerManager.container && 
+                AudioContainerManager.container.classList.contains('has-audio');
             
             if (!isVisible) {
-                // Show the audio container
-                audioContainer.style.display = 'block';
+                // Show the audio container using the manager
+                AudioContainerManager.show();
                 
                 // Update listen button text
                 if (listenBtn) {
@@ -5818,8 +5954,8 @@
                 
                 console.log('🎵 Audio container shown for composition:', newReleaseCompositions[currentNewReleaseIndex]?.title);
             } else {
-                // Hide the audio container
-                audioContainer.style.display = 'none';
+                // Hide the audio container using the manager
+                AudioContainerManager.hide();
                 
                 // Update listen button text
                 if (listenBtn) {
@@ -5920,6 +6056,9 @@
 
         // Load everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Audio Container Manager first
+            AudioContainerManager.init();
+            
             loadFeaturedCompositions(); // Load the enhanced featured compositions system
             loadFeaturedComposition();
             loadCompositionsCarousel(); // Load the new compositions carousel
