@@ -2297,6 +2297,192 @@
         height: 40px;
     }
 
+    /* New Catalog Release Carousel Navigation */
+    .new-release-carousel-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1.5rem;
+        padding: 0 1rem;
+    }
+
+    .nav-btn {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        color: #495057;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .nav-btn:hover {
+        background: #e9ecef;
+        border-color: #dee2e6;
+    }
+
+    .nav-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .nav-btn.next-btn {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    .nav-btn.next-btn:hover {
+        background: #0056b3;
+        border-color: #0056b3;
+    }
+
+    .carousel-dots {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .carousel-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #dee2e6;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-dot.active {
+        background: #007bff;
+        transform: scale(1.2);
+    }
+
+    .auto-cycle-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+        background-color: #007bff;
+    }
+
+    input:checked + .toggle-slider:before {
+        transform: translateX(26px);
+    }
+
+    .toggle-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    /* New Release Integrated Audio Player */
+    .new-release-audio-container {
+        margin-top: 1.5rem;
+        padding: 1.5rem;
+        background: var(--gray-50);
+        border-radius: 12px;
+        border: 1px solid var(--gray-200);
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .audio-player-content {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+    }
+
+    .audio-info {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex: 0 0 auto;
+    }
+
+    .audio-cover {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .audio-details h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--gray-900);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .audio-details p {
+        font-size: 0.85rem;
+        color: var(--gray-600);
+        margin: 0;
+    }
+
+    .audio-controls {
+        flex: 1;
+    }
+
+    .audio-controls audio {
+        width: 100%;
+        height: 36px;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
     /* Media Preview */
     .media-preview {
         display: flex;
@@ -2791,36 +2977,74 @@
                                 <div class="composition-image">
                                     <img src="/imgs/Coming Home (Cover Photo).png" alt="New Release" class="composition-img">
                                 </div>
-                                <div class="composition-details">
-                                    <h4 class="composition-title">Loading...</h4>
-                                    <p class="composition-instrumentation">Loading...</p>
-                                    <p class="composition-description">Loading composition description...</p>
-                                    <div class="composition-metadata">
-                                        <span class="metadata-tag">2025</span>
-                                        <span class="metadata-tag">Duration: 5:30</span>
-                                        <span class="metadata-tag featured">Featured</span>
+                                                <div class="composition-details">
+                    <h4 class="composition-title">Loading...</h4>
+                    <p class="composition-instrumentation">Loading...</p>
+                    <div class="composition-actions">
+                        <button class="btn-primary learn-more-btn" onclick="learnMoreComposition()">
+                            <span class="btn-icon">📖</span>
+                            Learn More
+                        </button>
+                        <button class="btn-secondary view-score-btn" onclick="viewScoreComposition()">
+                            <span class="btn-icon">🎼</span>
+                            View Score
+                        </button>
+                        <button class="btn-buy buy-now-btn" onclick="buyNowComposition()">
+                            <span class="btn-icon">🛒</span>
+                            Buy Now - $19.99
+                        </button>
+                        <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn">
+                            <span class="btn-icon">🎵</span>
+                            Listen
+                        </button>
+                    </div>
+                    <p class="composition-description">Loading composition description...</p>
+                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Integrated Audio Player Container -->
+                        <div class="new-release-audio-container" id="new-release-audio-container" style="display: none;">
+                            <div class="audio-player-content">
+                                <div class="audio-info">
+                                    <img src="/imgs/Coming Home (Cover Photo).png" alt="Composition Cover" class="audio-cover">
+                                    <div class="audio-details">
+                                        <h4 class="audio-composition-title">Loading...</h4>
+                                        <p class="audio-composition-instrumentation">Loading...</p>
                                     </div>
-                                    <div class="composition-actions">
-                                        <button class="btn-primary learn-more-btn" onclick="learnMoreComposition()">
-                                            <span class="btn-icon">📖</span>
-                                            Learn More
-                                        </button>
-                                        <button class="btn-secondary view-score-btn" onclick="viewScoreComposition()">
-                                            <span class="btn-icon">🎼</span>
-                                            View Score
-                                        </button>
-                                        <button class="btn-buy buy-now-btn" onclick="buyNowComposition()">
-                                            <span class="btn-icon">🛒</span>
-                                            Buy Now - $19.99
-                                        </button>
-                                        <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn">
-                                            <span class="btn-icon">🎵</span>
-                                            Listen
-                                        </button>
-                                    </div>
+                                </div>
+                                <div class="audio-controls">
+                                    <audio controls preload="metadata" id="new-release-audio-player">
+                                        <source src="" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    
+                    <!-- New Catalog Release Carousel Navigation -->
+                    <div class="new-release-carousel-nav">
+                        <button class="nav-btn prev-btn" onclick="previousNewRelease()" id="new-release-prev">
+                            <span class="nav-icon">←</span>
+                            Previous
+                        </button>
+                        <div class="carousel-dots" id="new-release-dots">
+                            <!-- Dots will be generated dynamically -->
+                        </div>
+                        <button class="nav-btn next-btn" onclick="nextNewRelease()" id="new-release-next">
+                            <span class="nav-icon">→</span>
+                            Next
+                        </button>
+                    </div>
+                    
+                    <!-- Auto-cycle Toggle -->
+                    <div class="auto-cycle-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="new-release-auto-cycle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">Auto-cycle every 12 seconds</span>
                     </div>
                 </div>
 
@@ -4727,6 +4951,10 @@
         }
 
         // New Catalog Release Functions
+        let newReleaseCompositions = [];
+        let currentNewReleaseIndex = 0;
+        let newReleaseAutoCycleInterval = null;
+
         async function loadNewCatalogRelease() {
             try {
                 const response = await fetch('/api/compositions');
@@ -4734,16 +4962,20 @@
                 
                 if (data && data.success && data.compositions && data.compositions.length > 0) {
                     // Filter for compositions marked as "New in Catalog"
-                    const newInCatalogCompositions = data.compositions.filter(comp => comp.newInCatalog === true);
+                    newReleaseCompositions = data.compositions.filter(comp => comp.newInCatalog === true);
                     
-                    if (newInCatalogCompositions.length > 0) {
-                        // Use the first "New in Catalog" composition
-                        const newRelease = newInCatalogCompositions[0];
-                        updateNewCatalogRelease(newRelease);
+                    if (newReleaseCompositions.length > 0) {
+                        currentNewReleaseIndex = 0;
+                        updateNewCatalogRelease(newReleaseCompositions[0]);
+                        initializeNewReleaseCarousel();
+                        startNewReleaseAutoCycle();
                     } else {
                         // Fallback to featured or first composition if no "New in Catalog" items
                         const fallbackComposition = data.compositions.find(comp => comp.featured) || data.compositions[0];
+                        newReleaseCompositions = [fallbackComposition];
+                        currentNewReleaseIndex = 0;
                         updateNewCatalogRelease(fallbackComposition);
+                        initializeNewReleaseCarousel();
                         console.log('No compositions marked as "New in Catalog", using fallback');
                     }
                 }
@@ -4757,28 +4989,107 @@
             const instrumentationElement = document.querySelector('#new-release-preview .composition-instrumentation');
             const descriptionElement = document.querySelector('#new-release-preview .composition-description');
             const imageElement = document.querySelector('#new-release-preview .composition-img');
-            const yearElement = document.querySelector('#new-release-preview .metadata-tag:first-child');
-            const durationElement = document.querySelector('#new-release-preview .metadata-tag:nth-child(2)');
-            const featuredElement = document.querySelector('#new-release-preview .metadata-tag.featured');
             
             if (titleElement) titleElement.textContent = composition.title || 'New Release';
             if (instrumentationElement) instrumentationElement.textContent = composition.instrumentation || 'Brass Ensemble';
             if (descriptionElement) descriptionElement.textContent = composition.description || 'A dynamic new composition showcasing innovative musical ideas and technical brilliance.';
             if (imageElement && composition.coverImage) imageElement.src = composition.coverImage;
+        }
+
+        function initializeNewReleaseCarousel() {
+            const dotsContainer = document.getElementById('new-release-dots');
+            const prevBtn = document.getElementById('new-release-prev');
+            const nextBtn = document.getElementById('new-release-next');
             
-            // Update metadata tags
-            if (yearElement) yearElement.textContent = composition.year || '2025';
-            if (durationElement) durationElement.textContent = `Duration: ${composition.duration || '5:30'}`;
+            if (!dotsContainer || !prevBtn || !nextBtn) return;
             
-            // Show/hide featured tag based on composition data
-            if (featuredElement) {
-                if (composition.featured || composition.popular) {
-                    featuredElement.style.display = 'inline-block';
-                    featuredElement.textContent = composition.featured ? 'Featured' : 'Popular';
-                } else {
-                    featuredElement.style.display = 'none';
-                }
+            // Clear existing dots
+            dotsContainer.innerHTML = '';
+            
+            // Create dots for each composition
+            newReleaseCompositions.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
+                dot.onclick = () => goToNewRelease(index);
+                dotsContainer.appendChild(dot);
+            });
+            
+            // Update button states
+            updateNewReleaseNavButtons();
+        }
+
+        function updateNewReleaseNavButtons() {
+            const prevBtn = document.getElementById('new-release-prev');
+            const nextBtn = document.getElementById('new-release-next');
+            
+            if (prevBtn) prevBtn.disabled = currentNewReleaseIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentNewReleaseIndex === newReleaseCompositions.length - 1;
+        }
+
+        function updateNewReleaseDots() {
+            const dots = document.querySelectorAll('#new-release-dots .carousel-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentNewReleaseIndex);
+            });
+        }
+
+        function previousNewRelease() {
+            if (currentNewReleaseIndex > 0) {
+                currentNewReleaseIndex--;
+                updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
+                updateNewReleaseDots();
+                updateNewReleaseNavButtons();
+                resetNewReleaseAutoCycle();
             }
+        }
+
+        function nextNewRelease() {
+            if (currentNewReleaseIndex < newReleaseCompositions.length - 1) {
+                currentNewReleaseIndex++;
+                updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
+                updateNewReleaseDots();
+                updateNewReleaseNavButtons();
+                resetNewReleaseAutoCycle();
+            }
+        }
+
+        function goToNewRelease(index) {
+            if (index >= 0 && index < newReleaseCompositions.length) {
+                currentNewReleaseIndex = index;
+                updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
+                updateNewReleaseDots();
+                updateNewReleaseNavButtons();
+                resetNewReleaseAutoCycle();
+            }
+        }
+
+        function startNewReleaseAutoCycle() {
+            const autoCycleCheckbox = document.getElementById('new-release-auto-cycle');
+            if (!autoCycleCheckbox || !autoCycleCheckbox.checked) return;
+            
+            newReleaseAutoCycleInterval = setInterval(() => {
+                if (currentNewReleaseIndex < newReleaseCompositions.length - 1) {
+                    nextNewRelease();
+                } else {
+                    // Loop back to first
+                    currentNewReleaseIndex = 0;
+                    updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
+                    updateNewReleaseDots();
+                    updateNewReleaseNavButtons();
+                }
+            }, 12000); // 12 seconds
+        }
+
+        function stopNewReleaseAutoCycle() {
+            if (newReleaseAutoCycleInterval) {
+                clearInterval(newReleaseAutoCycleInterval);
+                newReleaseAutoCycleInterval = null;
+            }
+        }
+
+        function resetNewReleaseAutoCycle() {
+            stopNewReleaseAutoCycle();
+            startNewReleaseAutoCycle();
         }
 
         // Featured Audio Player Functions
@@ -4911,6 +5222,19 @@
             loadNewCatalogRelease(); // Load the new catalog release
             initHeroVideo(); // This will handle fallback to carousel internally
             initHeroRotation();
+            
+            // Auto-cycle toggle event listener
+            const autoCycleCheckbox = document.getElementById('new-release-auto-cycle');
+            if (autoCycleCheckbox) {
+                autoCycleCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        startNewReleaseAutoCycle();
+                    } else {
+                        stopNewReleaseAutoCycle();
+                    }
+                });
+            }
+            
             // Mobile menu and theme toggle are now handled by main.js
         });
         
