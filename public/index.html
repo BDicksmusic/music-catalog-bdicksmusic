@@ -2516,6 +2516,71 @@
         font-weight: 600;
     }
 
+    /* New Release Multi-Audio Navigation Styles */
+    .new-release-audio-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .new-release-audio-nav .audio-nav-btn {
+        background: var(--primary-500);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .new-release-audio-nav .audio-nav-btn:hover:not(:disabled) {
+        background: var(--primary-600);
+        transform: translateY(-1px);
+    }
+
+    .new-release-audio-nav .audio-nav-btn:disabled {
+        background: var(--gray-400);
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .new-release-audio-nav .audio-nav-info {
+        font-size: 0.9rem;
+        color: var(--gray-600);
+        font-weight: 500;
+    }
+
+    .new-release-audio-player {
+        margin-bottom: 1rem;
+    }
+
+    .new-release-audio-player .movement-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary-600);
+        margin-bottom: 0.5rem;
+    }
+
+    .new-release-audio-player .audio-metadata {
+        font-size: 0.9rem;
+        color: var(--gray-600);
+        margin-bottom: 0.75rem;
+    }
+
+    .new-release-audio-player audio {
+        width: 100%;
+        margin-bottom: 0.75rem;
+    }
+
+    .new-release-audio-player .audio-duration {
+        font-size: 0.8rem;
+        color: var(--gray-500);
+    }
+
     @keyframes slideDown {
         from {
             opacity: 0;
@@ -2543,6 +2608,12 @@
         padding: 1.5rem;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
         transition: box-shadow 0.3s ease;
+    }
+
+    /* Full width for featured compositions carousel */
+    #featured-compositions-carousel .related-works-carousel-container {
+        max-width: 100%;
+        width: 100%;
     }
 
     .related-works-carousel-title {
@@ -3312,17 +3383,28 @@
                             </div>
                         </div>
                         
-                        <!-- Integrated Audio Player Container -->
+                        <!-- Integrated Multi-Audio Player Container -->
                         <div class="new-release-audio-container" id="new-release-audio-container" style="display: none;">
                             <div class="audio-player-content">
-                                <div class="audio-controls">
-                                    <audio controls preload="metadata" id="new-release-audio-player">
-                                        <source src="" type="audio/mpeg">
-                                        Your browser does not support the audio element.
-                                    </audio>
+                                <!-- Audio Players Container -->
+                                <div class="new-release-audio-players" id="new-release-audio-players">
+                                    <div class="audio-loading" style="text-align: center; padding: 1rem; color: var(--gray-600);">
+                                        Loading audio players...
+                                    </div>
                                 </div>
-                                <div class="performed-by-info">
-                                    <p class="performed-by-text">Performed By: <span class="performed-by-artist">Loading...</span></p>
+                                
+                                <!-- Multi-Audio Navigation Controls -->
+                                <div class="new-release-audio-nav-divider" id="new-release-audio-nav-divider" style="display: none; height: 1px; background: var(--gray-200); margin: 0.75rem 0;"></div>
+                                <div class="new-release-audio-nav" id="new-release-audio-nav" style="display: none;">
+                                    <button class="audio-nav-btn" id="new-release-prev-audio" disabled>
+                                        Previous
+                                    </button>
+                                    <div class="audio-nav-info" id="new-release-audio-nav-info">
+                                        Movement 1 of 1
+                                    </div>
+                                    <button class="audio-nav-btn" id="new-release-next-audio" disabled>
+                                        Next
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -5352,43 +5434,244 @@
             }
         }
 
+        // Global variables for new release multi-audio
+        let currentNewReleaseAudioIndex = 0;
+        let newReleaseAudioFiles = [];
+
         function updateNewReleaseAudioPlayer() {
             const audioContainer = document.getElementById('new-release-audio-container');
-            const audioPlayer = document.getElementById('new-release-audio-player');
-            const performedByElement = document.querySelector('#new-release-audio-container .performed-by-artist');
+            const audioPlayersContainer = document.getElementById('new-release-audio-players');
             
-            // Always update the audio player and performed by info when carousel changes
-            if (newReleaseCompositions[currentNewReleaseIndex]) {
-                const composition = newReleaseCompositions[currentNewReleaseIndex];
-                
-                console.log('🎵 Updating audio player for composition:', composition.title);
-                console.log('🎵 Performed By:', composition.performedBy);
-                console.log('🎵 Audio Preview URL:', composition.audioPreview);
-                
-                // Update performed by information
-                if (performedByElement) {
-                    performedByElement.textContent = composition.performedBy || 'Unknown Artist';
-                    console.log('✅ Updated performed by to:', composition.performedBy || 'Unknown Artist');
-                }
-                
-                // Update audio source if available
-                if (composition.audioPreview) {
-                    audioPlayer.src = composition.audioPreview;
-                    audioPlayer.load();
-                    console.log('✅ Updated audio source to:', composition.audioPreview);
-                    
-                    // Only auto-play if the audio container is visible
-                    if (audioContainer.style.display !== 'none') {
-                        audioPlayer.play().catch(e => {
-                            console.log('⚠️ Auto-play prevented by browser:', e);
-                        });
-                    }
-                } else {
-                    console.log('⚠️ No audio preview available for this composition');
-                }
-            } else {
+            if (!newReleaseCompositions[currentNewReleaseIndex]) {
                 console.log('❌ No composition found at index:', currentNewReleaseIndex);
+                return;
             }
+            
+            const composition = newReleaseCompositions[currentNewReleaseIndex];
+            console.log('🎵 Updating audio player for composition:', composition.title);
+            
+            // Parse audio files from the composition
+            newReleaseAudioFiles = parseAudioFiles(composition);
+            currentNewReleaseAudioIndex = 0;
+            
+            console.log('🎵 Found audio files:', newReleaseAudioFiles);
+            
+            if (newReleaseAudioFiles.length === 0) {
+                showNewReleaseNoAudioMessage();
+                return;
+            }
+            
+            // Create audio players
+            createNewReleaseAudioPlayers();
+            
+            // Setup navigation if multiple tracks
+            if (newReleaseAudioFiles.length > 1) {
+                setupNewReleaseAudioNavigation();
+            } else {
+                hideNewReleaseAudioNavigation();
+            }
+            
+            // Remove loading state
+            removeNewReleaseLoadingState();
+            
+            console.log('✅ Audio player updated with', newReleaseAudioFiles.length, 'tracks');
+        }
+
+        function parseAudioFiles(composition) {
+            const audioFiles = [];
+            
+            // Check for single audio preview
+            if (composition.audioPreview) {
+                audioFiles.push({
+                    id: 'preview',
+                    url: composition.audioPreview,
+                    title: composition.title,
+                    performanceBy: composition.performedBy,
+                    duration: null
+                });
+            }
+            
+            // Check for multiple audio files (if the API provides them)
+            if (composition.audioFiles && Array.isArray(composition.audioFiles)) {
+                composition.audioFiles.forEach((audioFile, index) => {
+                    audioFiles.push({
+                        id: audioFile.id || `audio-${index}`,
+                        url: audioFile.url,
+                        title: audioFile.title || composition.title,
+                        performanceBy: audioFile.performanceBy || composition.performedBy,
+                        duration: audioFile.duration || null
+                    });
+                });
+            }
+            
+            return audioFiles;
+        }
+
+        function createNewReleaseAudioPlayers() {
+            const playersContainer = document.getElementById('new-release-audio-players');
+            if (!playersContainer) return;
+            
+            const playersHtml = newReleaseAudioFiles.map((audioFile, index) => {
+                // Only show movement title for multi-movement pieces
+                const isMultiMovement = newReleaseAudioFiles.length > 1;
+                const displayTitle = extractMovementTitle(audioFile.title) || audioFile.title;
+                
+                let titleHtml = '';
+                if (isMultiMovement && displayTitle) {
+                    titleHtml = `
+                        <div class="movement-title">${displayTitle}</div>
+                    `;
+                }
+                
+                // Performance info
+                let performanceHtml = '';
+                if (audioFile.performanceBy) {
+                    performanceHtml = `
+                        <div class="audio-metadata">
+                            <div class="performance-info">Performed by: ${audioFile.performanceBy}</div>
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="new-release-audio-player" data-audio-index="${index}" style="${index === 0 ? 'display: block;' : 'display: none;'}">
+                        ${titleHtml}
+                        ${performanceHtml}
+                        <audio controls preload="metadata" data-audio-id="${audioFile.id}" style="width: 100%; margin-bottom: 0.75rem;">
+                            <source src="${audioFile.url}" type="audio/mpeg">
+                            <source src="${audioFile.url}" type="audio/mp4">
+                            <source src="${audioFile.url}" type="audio/wav">
+                            <source src="${audioFile.url}" type="audio/ogg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        ${audioFile.duration ? `<div class="audio-duration">Duration: ${audioFile.duration}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+            
+            playersContainer.innerHTML = playersHtml;
+        }
+
+        function setupNewReleaseAudioNavigation() {
+            const navContainer = document.getElementById('new-release-audio-nav');
+            const navDivider = document.getElementById('new-release-audio-nav-divider');
+            const prevBtn = document.getElementById('new-release-prev-audio');
+            const nextBtn = document.getElementById('new-release-next-audio');
+            const navInfo = document.getElementById('new-release-audio-nav-info');
+            
+            if (!navContainer) return;
+            
+            // Show navigation elements
+            if (navDivider) navDivider.style.display = 'block';
+            navContainer.style.display = 'flex';
+            
+            // Setup event listeners
+            if (prevBtn) {
+                prevBtn.onclick = () => previousNewReleaseAudio();
+            }
+            
+            if (nextBtn) {
+                nextBtn.onclick = () => nextNewReleaseAudio();
+            }
+            
+            // Update initial state
+            updateNewReleaseAudioNavigationState();
+        }
+
+        function hideNewReleaseAudioNavigation() {
+            const navContainer = document.getElementById('new-release-audio-nav');
+            const navDivider = document.getElementById('new-release-audio-nav-divider');
+            
+            if (navDivider) navDivider.style.display = 'none';
+            if (navContainer) navContainer.style.display = 'none';
+        }
+
+        function switchToNewReleaseAudio(index) {
+            if (index < 0 || index >= newReleaseAudioFiles.length) return;
+            
+            const playersContainer = document.getElementById('new-release-audio-players');
+            if (!playersContainer) return;
+            
+            const allPlayers = playersContainer.querySelectorAll('.new-release-audio-player');
+            
+            // Hide current player
+            if (allPlayers[currentNewReleaseAudioIndex]) {
+                allPlayers[currentNewReleaseAudioIndex].style.display = 'none';
+                const currentAudio = allPlayers[currentNewReleaseAudioIndex].querySelector('audio');
+                if (currentAudio && !currentAudio.paused) {
+                    currentAudio.pause();
+                }
+            }
+            
+            // Show new player
+            currentNewReleaseAudioIndex = index;
+            if (allPlayers[currentNewReleaseAudioIndex]) {
+                allPlayers[currentNewReleaseAudioIndex].style.display = 'block';
+            }
+            
+            updateNewReleaseAudioNavigationState();
+        }
+
+        function previousNewReleaseAudio() {
+            if (currentNewReleaseAudioIndex > 0) {
+                switchToNewReleaseAudio(currentNewReleaseAudioIndex - 1);
+            }
+        }
+
+        function nextNewReleaseAudio() {
+            if (currentNewReleaseAudioIndex < newReleaseAudioFiles.length - 1) {
+                switchToNewReleaseAudio(currentNewReleaseAudioIndex + 1);
+            }
+        }
+
+        function updateNewReleaseAudioNavigationState() {
+            const prevBtn = document.getElementById('new-release-prev-audio');
+            const nextBtn = document.getElementById('new-release-next-audio');
+            const navInfo = document.getElementById('new-release-audio-nav-info');
+            
+            if (prevBtn) {
+                prevBtn.disabled = currentNewReleaseAudioIndex === 0;
+            }
+            
+            if (nextBtn) {
+                nextBtn.disabled = currentNewReleaseAudioIndex === newReleaseAudioFiles.length - 1;
+            }
+            
+            if (navInfo) {
+                navInfo.textContent = `Movement ${currentNewReleaseAudioIndex + 1} of ${newReleaseAudioFiles.length}`;
+            }
+        }
+
+        function showNewReleaseNoAudioMessage() {
+            const playersContainer = document.getElementById('new-release-audio-players');
+            if (!playersContainer) return;
+            
+            playersContainer.innerHTML = `
+                <div style="padding: 1rem; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px; margin: 0.5rem 0;">
+                    <h4 style="color: #856404; margin: 0 0 0.5rem 0;">No Audio Found</h4>
+                    <p style="color: #856404; margin: 0; font-size: 0.9rem;">
+                        No audio files are available for this composition.
+                    </p>
+                </div>
+            `;
+        }
+
+        function removeNewReleaseLoadingState() {
+            const loadingElement = document.querySelector('#new-release-audio-players .audio-loading');
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+        }
+
+        function extractMovementTitle(title) {
+            if (!title) return '';
+            
+            const dashMatch = title.match(/^.+?\s*-\s*(.+)$/);
+            if (dashMatch && dashMatch[1]) {
+                return dashMatch[1].trim();
+            }
+            
+            return title;
         }
 
         function startNewReleaseAutoCycle() {
@@ -5423,7 +5706,6 @@
         // Featured Audio Player Functions
         function playFeaturedComposition() {
             const audioContainer = document.getElementById('new-release-audio-container');
-            const audioPlayer = document.getElementById('new-release-audio-player');
             const listenBtn = document.getElementById('listen-btn');
             
             // Toggle audio container visibility
@@ -5451,13 +5733,16 @@
                     listenBtn.innerHTML = '<span class="btn-icon">🎵</span>Listen';
                 }
                 
+                // Pause all audio players when hiding
+                const allPlayers = document.querySelectorAll('#new-release-audio-players .new-release-audio-player audio');
+                allPlayers.forEach(audio => {
+                    if (!audio.paused) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                });
+                
                 console.log('🎵 Audio container hidden');
-            }
-            
-            // Pause and reset audio when hiding
-            if (isVisible) {
-                audioPlayer.pause();
-                audioPlayer.currentTime = 0;
             }
         }
 
