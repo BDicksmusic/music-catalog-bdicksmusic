@@ -5104,55 +5104,7 @@
             }
         }
 
-        function setupCarouselControls() {
-            const prevBtn = document.getElementById('compositions-prev');
-            const nextBtn = document.getElementById('compositions-next');
-            
-            if (prevBtn) {
-                prevBtn.addEventListener('click', () => {
-                    currentCarouselIndex = Math.max(0, currentCarouselIndex - 1);
-                    updateCarousel();
-                });
-            }
-            
-            if (nextBtn) {
-                nextBtn.addEventListener('click', () => {
-                    currentCarouselIndex = Math.min(compositionsCarousel.length - 1, currentCarouselIndex + 1);
-                    updateCarousel();
-                });
-            }
-        }
 
-        function updateCarousel() {
-            const carousel = document.getElementById('compositions-carousel');
-            const indicators = document.querySelectorAll('.carousel-indicator');
-            
-            if (!carousel) return;
-            
-            // Update carousel scroll position
-            const itemWidth = 300 + 32; // item width + gap
-            carousel.scrollTo({
-                left: currentCarouselIndex * itemWidth,
-                behavior: 'smooth'
-            });
-            
-            // Update indicators
-            indicators.forEach((indicator, index) => {
-                indicator.classList.toggle('active', index === currentCarouselIndex);
-            });
-            
-            // Update button states
-            const prevBtn = document.getElementById('compositions-prev');
-            const nextBtn = document.getElementById('compositions-next');
-            
-            if (prevBtn) prevBtn.disabled = currentCarouselIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentCarouselIndex === compositionsCarousel.length - 1;
-        }
-
-        function goToCarouselSlide(index) {
-            currentCarouselIndex = index;
-            updateCarousel();
-        }
 
         // New Catalog Release Functions
         let newReleaseCompositions = [];
