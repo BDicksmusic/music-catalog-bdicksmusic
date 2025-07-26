@@ -2010,6 +2010,8 @@
         border: 1px solid var(--gray-200);
         transition: all 0.3s ease;
     }
+    
+
 
     .highlight-card:hover {
         transform: translateY(-5px);
@@ -2188,7 +2190,7 @@
         display: flex;
         gap: 0.75rem;
         flex-wrap: wrap;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
     }
 
     .btn-icon {
@@ -2497,19 +2499,20 @@
     }
 
     /* New Release Integrated Audio Player */
-    .new-release-audio-container {
-        margin-top: 1.5rem;
-        padding: 1.5rem;
-        background: var(--gray-50);
-        border-radius: 12px;
-        border: 1px solid var(--gray-200);
-        opacity: 0;
-        transform: translateY(-10px);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        pointer-events: none;
-        max-height: 0;
-        overflow: hidden;
-    }
+                    .new-release-audio-container {
+                    margin-top: 1.5rem;
+                    padding: 1.5rem;
+                    background: var(--gray-50);
+                    border-radius: 12px;
+                    border: 1px solid var(--gray-200);
+                    opacity: 0;
+                    transform: translateY(-10px);
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    pointer-events: none;
+                    max-height: 0;
+                    overflow: hidden;
+                    margin-bottom: 0;
+                }
 
     .new-release-audio-container.has-audio {
         opacity: 1;
@@ -2517,15 +2520,20 @@
         pointer-events: auto;
         max-height: 500px;
         animation: slideDown 0.3s ease-out;
+        margin-bottom: 1.5rem;
+        display: block;
     }
 
-    .new-release-audio-container.no-audio {
-        opacity: 0;
-        transform: translateY(-10px);
-        pointer-events: none;
-        max-height: 0;
-        overflow: hidden;
-    }
+                    .new-release-audio-container.no-audio {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                    pointer-events: none;
+                    max-height: 0;
+                    overflow: hidden;
+                    margin: 0;
+                    padding: 0;
+                    display: none;
+                }
 
     .audio-player-content {
         display: flex;
@@ -5324,6 +5332,14 @@
                 this.navContainer = document.getElementById('new-release-audio-nav');
                 this.navDivider = document.getElementById('new-release-audio-nav-divider');
                 
+                // Ensure audio container starts in hidden state
+                if (this.container) {
+                    this.container.classList.remove('has-audio');
+                    this.container.classList.add('no-audio');
+                    this.container.style.display = 'none';
+                    console.log('🎵 Audio container initialized in hidden state');
+                }
+                
                 console.log('🎵 Audio Container Manager initialized');
                 console.log('🎵 Container elements found:', {
                     container: !!this.container,
@@ -5371,10 +5387,13 @@
                 console.log('🎵 AudioContainerManager.updateState called with hasAudio:', hasAudio);
                 console.log('🎵 AudioContainerManager container exists:', !!this.container);
                 if (hasAudio) {
-                    console.log('🎵 Showing audio container...');
-                    this.show();
+                    // Don't automatically show - just update the class for button state
+                    console.log('🎵 Audio available - container remains hidden by default');
+                    this.container.classList.remove('no-audio');
+                    this.container.classList.add('has-audio');
+                    // Keep display: none - only show when user clicks Listen button
                 } else {
-                    console.log('🎵 Hiding audio container...');
+                    console.log('🎵 No audio available - hiding container...');
                     this.hide();
                 }
             },
@@ -5912,13 +5931,21 @@
             const autoCycleCheckbox = document.getElementById('new-release-auto-cycle');
             if (!autoCycleCheckbox || !autoCycleCheckbox.checked) return;
             
+            // Clear any existing interval first
+            if (newReleaseAutoCycleInterval) {
+                clearInterval(newReleaseAutoCycleInterval);
+            }
+            
             // Hide paused status
             const statusElement = document.getElementById('auto-cycle-status');
             if (statusElement) {
                 statusElement.style.display = 'none';
             }
             
+            console.log('🔄 Starting new release auto-cycle (12 seconds)');
+            
             newReleaseAutoCycleInterval = setInterval(() => {
+                console.log('🔄 Auto-cycle triggered - moving to next composition');
                 if (currentNewReleaseIndex < newReleaseCompositions.length - 1) {
                     nextNewRelease();
                 } else {
@@ -5948,6 +5975,7 @@
         }
 
         function resetNewReleaseAutoCycle() {
+            console.log('🔄 Resetting new release auto-cycle timer to 12 seconds');
             stopNewReleaseAutoCycle();
             startNewReleaseAutoCycle();
         }
@@ -6000,10 +6028,10 @@
                     }
                 });
                 
-                // Restart auto-scrolling when hiding audio
-                startNewReleaseAutoCycle();
+                // Restart auto-scrolling when hiding audio (reset timer to 12 seconds)
+                resetNewReleaseAutoCycle();
                 
-                console.log('🎵 Audio container hidden');
+                console.log('🎵 Audio container hidden - auto-cycle reset to 12 seconds');
             }
         }
 
