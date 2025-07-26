@@ -2263,9 +2263,9 @@
     }
 
     .btn-listen {
-        background: var(--primary-100);
-        color: var(--primary-700);
-        border: 1px solid var(--primary-200);
+        background: var(--gray-600);
+        color: white;
+        border: 1px solid var(--gray-600);
         padding: 0.5rem 1rem;
         border-radius: 6px;
         text-decoration: none;
@@ -2275,6 +2275,26 @@
         font-size: 0.85rem;
         display: flex;
         align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-listen.in-view {
+        background: #ff6b35;
+        color: white;
+        border: 1px solid #ff6b35;
+    }
+
+    .btn-listen .status-circle {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid white;
+        background: transparent;
+        transition: all 0.3s ease;
+    }
+
+    .btn-listen.in-view .status-circle {
+        background: white;
     }
 
     .btn-listen:hover {
@@ -3530,12 +3550,12 @@
                                         </button>
                                     </div>
                                     <p class="composition-description">Loading composition description...</p>
-                                    <div class="composition-actions">
-                                        <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn">
-                                            <span class="btn-icon">🎵</span>
-                                            Listen
-                                        </button>
-                                    </div>
+                                                                    <div class="composition-actions">
+                                    <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn">
+                                        <span class="status-circle"></span>
+                                        Listen (Hidden)
+                                    </button>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -5657,8 +5677,15 @@
                                 const isVisible = AudioContainerManager.container && 
                                     AudioContainerManager.container.classList.contains('has-audio');
                                 listenBtn.innerHTML = isVisible ? 
-                                    '<span class="btn-icon">🎵</span>Listen (In View)' : 
-                                    '<span class="btn-icon">🎵</span>Listen (Hidden)';
+                                    '<span class="status-circle"></span>Listen (In View)' : 
+                                    '<span class="status-circle"></span>Listen (Hidden)';
+                                
+                                // Update button state
+                                if (isVisible) {
+                                    listenBtn.classList.add('in-view');
+                                } else {
+                                    listenBtn.classList.remove('in-view');
+                                }
                             } else {
                                 // Hide Listen button if no audio available
                                 listenBtn.style.display = 'none';
@@ -5702,8 +5729,15 @@
                         if (audioContainer) {
                             const isVisible = audioContainer.style.display !== 'none';
                             listenBtn.innerHTML = isVisible ? 
-                                '<span class="btn-icon">🎵</span>Listen (In View)' : 
-                                '<span class="btn-icon">🎵</span>Listen (Hidden)';
+                                '<span class="status-circle"></span>Listen (In View)' : 
+                                '<span class="status-circle"></span>Listen (Hidden)';
+                            
+                            // Update button state
+                            if (isVisible) {
+                                listenBtn.classList.add('in-view');
+                            } else {
+                                listenBtn.classList.remove('in-view');
+                            }
                         }
                     } else {
                         // Hide Listen button if no audio available
@@ -6114,9 +6148,10 @@
                 // Show the audio container using the manager
                 AudioContainerManager.show();
                 
-                // Update listen button text
+                // Update listen button text and state
                 if (listenBtn) {
-                    listenBtn.innerHTML = '<span class="btn-icon">🎵</span>Listen (In View)';
+                    listenBtn.innerHTML = '<span class="status-circle"></span>Listen (In View)';
+                    listenBtn.classList.add('in-view');
                 }
                 
                 // Show auto-cycle paused status
@@ -6133,9 +6168,10 @@
                 // Hide the audio container using the manager
                 AudioContainerManager.hide();
                 
-                // Update listen button text
+                // Update listen button text and state
                 if (listenBtn) {
-                    listenBtn.innerHTML = '<span class="btn-icon">🎵</span>Listen (Hidden)';
+                    listenBtn.innerHTML = '<span class="status-circle"></span>Listen (Hidden)';
+                    listenBtn.classList.remove('in-view');
                 }
                 
                 // Pause all audio players when hiding
