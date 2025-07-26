@@ -2079,6 +2079,17 @@
         gap: 1rem;
     }
 
+    .title-badge-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .title-instrumentation-container {
+        flex: 1;
+    }
+
     .composition-title {
         font-size: 1.5rem;
         font-weight: 700;
@@ -3259,41 +3270,42 @@
 
                 <!-- New Catalog Release Card -->
                 <div class="highlight-card catalog-highlight">
-                    <div class="card-header">
-                        <h3>New Catalog Release</h3>
-                        <span class="card-badge">New</span>
-                    </div>
                     <div class="card-content">
                         <div class="catalog-preview" id="new-release-preview">
                             <div class="composition-featured">
                                 <div class="composition-image">
                                     <img src="/imgs/Coming Home (Cover Photo).png" alt="New Release" class="composition-img">
                                 </div>
-                                                <div class="composition-details">
-                    <h4 class="composition-title">Loading...</h4>
-                    <p class="composition-instrumentation">Loading...</p>
-                    <div class="buy-now-container">
-                        <button class="btn-buy buy-now-btn" onclick="buyNowComposition()">
-                            <span class="btn-icon">🛒</span>
-                            Buy Now - $19.99
-                        </button>
-                    </div>
-                    <div class="composition-actions">
-                        <button class="btn-primary learn-more-btn" onclick="learnMoreComposition()">
-                            <span class="btn-icon">📖</span>
-                            Learn More
-                        </button>
-                        <button class="btn-secondary view-score-btn" onclick="viewScoreComposition()">
-                            <span class="btn-icon">🎼</span>
-                            View Score
-                        </button>
-                        <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn">
-                            <span class="btn-icon">🎵</span>
-                            Listen
-                        </button>
-                    </div>
-                    <p class="composition-description">Loading composition description...</p>
-                </div>
+                                <div class="composition-details">
+                                    <div class="title-badge-container">
+                                        <div class="title-instrumentation-container">
+                                            <h4 class="composition-title">Loading...</h4>
+                                            <p class="composition-instrumentation">Loading...</p>
+                                        </div>
+                                        <span class="card-badge">New</span>
+                                    </div>
+                                    <div class="buy-now-container">
+                                        <button class="btn-buy buy-now-btn" onclick="buyNowComposition()">
+                                            <span class="btn-icon">🛒</span>
+                                            Buy Now - $19.99
+                                        </button>
+                                    </div>
+                                    <div class="composition-actions">
+                                        <button class="btn-primary learn-more-btn" onclick="learnMoreComposition()">
+                                            <span class="btn-icon">📖</span>
+                                            Learn More
+                                        </button>
+                                        <button class="btn-secondary view-score-btn" onclick="viewScoreComposition()">
+                                            <span class="btn-icon">🎼</span>
+                                            View Score
+                                        </button>
+                                        <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn">
+                                            <span class="btn-icon">🎵</span>
+                                            Listen
+                                        </button>
+                                    </div>
+                                    <p class="composition-description">Loading composition description...</p>
+                                </div>
                             </div>
                         </div>
                         
