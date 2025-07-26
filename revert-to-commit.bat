@@ -1,8 +1,8 @@
 @echo off
-echo === REVERT TO COMMIT 1675cd3 ===
+echo === REVERT TO COMMIT ad05cc2 ===
 echo.
 
-echo This will revert your repository to commit: 1675cd37e4cc7fbd78c1b2b6a59979733cf2a247
+echo This will revert your repository to commit: ad05cc28ab4b189e6ef83ef3f1431e83d4473241
 echo.
 echo WARNING: This will permanently change your repository to that state.
 echo.
@@ -19,8 +19,8 @@ if /i "%confirm%"=="y" (
     git branch -D music-catalog-2 2>nul
     
     echo.
-    echo 3. Resetting to commit 1675cd3...
-    git reset --hard 1675cd37e4cc7fbd78c1b2b6a59979733cf2a247
+    echo 3. Resetting to commit ad05cc2...
+    git reset --hard ad05cc28ab4b189e6ef83ef3f1431e83d4473241
     
     echo.
     echo 4. Force pushing to GitHub...
@@ -38,7 +38,7 @@ if /i "%confirm%"=="y" (
     
     echo.
     echo === REVERT COMPLETE ===
-    echo Your repository is now at commit 1675cd3
+    echo Your repository is now at commit ad05cc2
     echo Backup branch created: backup-before-revert-[timestamp]
     echo.
     echo Next steps:

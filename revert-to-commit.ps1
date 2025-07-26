@@ -1,10 +1,10 @@
 # Revert to Specific Commit Script
-# This will revert your repository to commit f940ae92135fd5822ebe06b80ddca0aa02930124
+# This will revert your repository to commit ad05cc28ab4b189e6ef83ef3f1431e83d4473241
 
-Write-Host "=== REVERT TO COMMIT f940ae9 ===" -ForegroundColor Green
+Write-Host "=== REVERT TO COMMIT ad05cc2 ===" -ForegroundColor Green
 Write-Host ""
 
-$targetCommit = "f940ae92135fd5822ebe06b80ddca0aa02930124"
+$targetCommit = "ad05cc28ab4b189e6ef83ef3f1431e83d4473241"
 
 Write-Host "Target commit: $targetCommit" -ForegroundColor Yellow
 Write-Host "This will revert your repository to this exact state." -ForegroundColor Yellow

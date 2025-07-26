@@ -2010,8 +2010,6 @@
         border: 1px solid var(--gray-200);
         transition: all 0.3s ease;
     }
-    
-
 
     .highlight-card:hover {
         transform: translateY(-5px);
@@ -2190,7 +2188,7 @@
         display: flex;
         gap: 0.75rem;
         flex-wrap: wrap;
-        margin-top: 0.5rem;
+        margin-top: 1rem;
     }
 
     .btn-icon {
@@ -2578,7 +2576,10 @@
         pointer-events: none;
         max-height: 0;
         overflow: hidden;
+<<<<<<< HEAD
         margin-bottom: 0;
+=======
+>>>>>>> parent of ad05cc2 (Update index.html)
     }
 
     .new-release-audio-container.has-audio {
@@ -2587,20 +2588,15 @@
         pointer-events: auto;
         max-height: 500px;
         animation: slideDown 0.3s ease-out;
-        margin-bottom: 1.5rem;
-        display: block;
     }
 
-                    .new-release-audio-container.no-audio {
-                    opacity: 0;
-                    transform: translateY(-10px);
-                    pointer-events: none;
-                    max-height: 0;
-                    overflow: hidden;
-                    margin: 0;
-                    padding: 0;
-                    display: none;
-                }
+    .new-release-audio-container.no-audio {
+        opacity: 0;
+        transform: translateY(-10px);
+        pointer-events: none;
+        max-height: 0;
+        overflow: hidden;
+    }
 
     .audio-player-content {
         display: flex;
@@ -5470,14 +5466,6 @@
                 this.navContainer = document.getElementById('new-release-audio-nav');
                 this.navDivider = document.getElementById('new-release-audio-nav-divider');
                 
-                // Ensure audio container starts in hidden state
-                if (this.container) {
-                    this.container.classList.remove('has-audio');
-                    this.container.classList.add('no-audio');
-                    this.container.style.display = 'none';
-                    console.log('🎵 Audio container initialized in hidden state');
-                }
-                
                 console.log('🎵 Audio Container Manager initialized');
                 console.log('🎵 Container elements found:', {
                     container: !!this.container,
@@ -5549,14 +5537,19 @@
                 }
                 
                 if (hasAudio) {
+<<<<<<< HEAD
                     // Don't automatically show - just update the class for button state
                     console.log('🎵 Audio available - container remains hidden by default');
                     this.container.classList.remove('no-audio');
                     this.container.classList.add('has-audio');
                     // Keep display: none - only show when user clicks Listen button
                     console.log('🎵 Container updated classes:', this.container.className);
+=======
+                    console.log('🎵 Showing audio container...');
+                    this.show();
+>>>>>>> parent of ad05cc2 (Update index.html)
                 } else {
-                    console.log('🎵 No audio available - hiding container...');
+                    console.log('🎵 Hiding audio container...');
                     this.hide();
                 }
             },
@@ -6163,21 +6156,13 @@
             const autoCycleCheckbox = document.getElementById('new-release-auto-cycle');
             if (!autoCycleCheckbox || !autoCycleCheckbox.checked) return;
             
-            // Clear any existing interval first
-            if (newReleaseAutoCycleInterval) {
-                clearInterval(newReleaseAutoCycleInterval);
-            }
-            
             // Hide paused status
             const statusElement = document.getElementById('auto-cycle-status');
             if (statusElement) {
                 statusElement.style.display = 'none';
             }
             
-            console.log('🔄 Starting new release auto-cycle (12 seconds)');
-            
             newReleaseAutoCycleInterval = setInterval(() => {
-                console.log('🔄 Auto-cycle triggered - moving to next composition');
                 if (currentNewReleaseIndex < newReleaseCompositions.length - 1) {
                     nextNewRelease();
                 } else {
@@ -6207,7 +6192,6 @@
         }
 
         function resetNewReleaseAutoCycle() {
-            console.log('🔄 Resetting new release auto-cycle timer to 12 seconds');
             stopNewReleaseAutoCycle();
             startNewReleaseAutoCycle();
         }
@@ -6292,10 +6276,10 @@
                     }
                 });
                 
-                // Restart auto-scrolling when hiding audio (reset timer to 12 seconds)
-                resetNewReleaseAutoCycle();
+                // Restart auto-scrolling when hiding audio
+                startNewReleaseAutoCycle();
                 
-                console.log('🎵 Audio container hidden - auto-cycle reset to 12 seconds');
+                console.log('🎵 Audio container hidden');
             }
         }
 
