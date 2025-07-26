@@ -2498,21 +2498,88 @@
         color: #6c757d;
     }
 
+        /* New Release Loading State */
+    .new-release-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+        padding: 2rem;
+        background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+        border-radius: 12px;
+        border: 2px dashed var(--gray-300);
+        animation: loadingPulse 2s ease-in-out infinite;
+    }
+
+    .loading-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .loading-image {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid var(--gray-200);
+        border-top: 4px solid var(--primary-500);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .loading-text h3 {
+        color: var(--gray-700);
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .loading-text p {
+        color: var(--gray-500);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    @keyframes loadingPulse {
+        0%, 100% {
+            opacity: 0.8;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.02);
+        }
+    }
+
     /* New Release Integrated Audio Player */
-                    .new-release-audio-container {
-                    margin-top: 1.5rem;
-                    padding: 1.5rem;
-                    background: var(--gray-50);
-                    border-radius: 12px;
-                    border: 1px solid var(--gray-200);
-                    opacity: 0;
-                    transform: translateY(-10px);
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    pointer-events: none;
-                    max-height: 0;
-                    overflow: hidden;
-                    margin-bottom: 0;
-                }
+    .new-release-audio-container {
+        margin-top: 1.5rem;
+        padding: 1.5rem;
+        background: var(--gray-50);
+        border-radius: 12px;
+        border: 1px solid var(--gray-200);
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        max-height: 0;
+        overflow: hidden;
+        margin-bottom: 0;
+    }
 
     .new-release-audio-container.has-audio {
         opacity: 1;
@@ -3426,9 +3493,23 @@
                 <div class="highlight-card catalog-highlight">
                     <div class="card-content">
                         <div class="catalog-preview" id="new-release-preview">
-                            <div class="composition-featured">
+                            <!-- Loading State -->
+                            <div class="new-release-loading" id="new-release-loading">
+                                <div class="loading-content">
+                                    <div class="loading-image">
+                                        <div class="loading-spinner"></div>
+                                    </div>
+                                    <div class="loading-text">
+                                        <h3>Loading New Releases...</h3>
+                                        <p>Discovering the latest compositions</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Content State (Hidden during loading) -->
+                            <div class="composition-featured" id="new-release-content" style="display: none;">
                                 <div class="composition-image">
-                                    <img src="/imgs/Coming Home (Cover Photo).png" alt="New Release" class="composition-img">
+                                    <img src="/imgs/Coming Home (Cover Photo).png" alt="New Release" class="composition-img" id="new-release-cover">
                                 </div>
                                 <div class="composition-details">
                                     <div class="title-badge-container">
@@ -3496,8 +3577,8 @@
                             <!-- Dots will be generated dynamically -->
                         </div>
                         <button class="nav-btn next-btn" onclick="nextNewRelease()" id="new-release-next">
-                            <span class="nav-icon">→</span>
                             Next
+                            <span class="nav-icon">→</span>
                         </button>
                     </div>
                     
@@ -5318,6 +5399,29 @@
         let currentNewReleaseIndex = 0;
         let newReleaseAutoCycleInterval = null;
         
+        // Loading State Management Functions
+        function showNewReleaseLoading() {
+            const loadingElement = document.getElementById('new-release-loading');
+            const contentElement = document.getElementById('new-release-content');
+            
+            if (loadingElement && contentElement) {
+                loadingElement.style.display = 'flex';
+                contentElement.style.display = 'none';
+                console.log('🔄 Showing new release loading state');
+            }
+        }
+
+        function hideNewReleaseLoading() {
+            const loadingElement = document.getElementById('new-release-loading');
+            const contentElement = document.getElementById('new-release-content');
+            
+            if (loadingElement && contentElement) {
+                loadingElement.style.display = 'none';
+                contentElement.style.display = 'block';
+                console.log('✅ Hiding new release loading state, showing content');
+            }
+        }
+
         // Audio Container State Management System
         const AudioContainerManager = {
             container: null,
@@ -5436,6 +5540,9 @@
             try {
                 console.log('🔄 Loading New Catalog Release...');
                 
+                // Show loading state
+                showNewReleaseLoading();
+                
                 const response = await fetch('/api/compositions?includeMedia=true');
                 const data = await response.json();
                 
@@ -5474,6 +5581,10 @@
                         updateNewCatalogRelease(newReleaseCompositions[0]);
                         initializeNewReleaseCarousel();
                         startNewReleaseAutoCycle();
+                        
+                        // Hide loading state and show content
+                        hideNewReleaseLoading();
+                        
                         console.log('✅ New Catalog Release loaded successfully with', newReleaseCompositions.length, 'compositions');
                     } else {
                         // Fallback to featured or first composition if no "New in Catalog" items
@@ -5482,22 +5593,30 @@
                         currentNewReleaseIndex = 0;
                         updateNewCatalogRelease(fallbackComposition);
                         initializeNewReleaseCarousel();
+                        
+                        // Hide loading state and show content
+                        hideNewReleaseLoading();
+                        
                         console.log('⚠️ No compositions marked as "New in Catalog", using fallback:', fallbackComposition?.title);
                     }
                 } else {
                     console.log('❌ No compositions data available');
+                    // Hide loading state when no data
+                    hideNewReleaseLoading();
                 }
             } catch (error) {
                 console.error('❌ Error loading new catalog release:', error);
+                // Hide loading state even on error
+                hideNewReleaseLoading();
             }
         }
 
         function updateNewCatalogRelease(composition) {
-            const previewContainer = document.querySelector('#new-release-preview .composition-featured');
-            const titleElement = document.querySelector('#new-release-preview .composition-title');
-            const instrumentationElement = document.querySelector('#new-release-preview .composition-instrumentation');
-            const descriptionElement = document.querySelector('#new-release-preview .composition-description');
-            const imageElement = document.querySelector('#new-release-preview .composition-img');
+            const previewContainer = document.querySelector('#new-release-content .composition-featured');
+            const titleElement = document.querySelector('#new-release-content .composition-title');
+            const instrumentationElement = document.querySelector('#new-release-content .composition-instrumentation');
+            const descriptionElement = document.querySelector('#new-release-content .composition-description');
+            const imageElement = document.querySelector('#new-release-content .composition-img');
             
             // Add fade out animation
             if (previewContainer) {
