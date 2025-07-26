@@ -1876,7 +1876,7 @@
 
     /* Welcome & Navigation Section */
     .welcome-section {
-        padding: 4rem 0;
+        padding: 1rem 0;
         background: white;
         text-align: center;
     }
@@ -1890,13 +1890,13 @@
         font-size: 2.5rem;
         font-weight: 700;
         color: var(--gray-900);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
     }
 
     .welcome-subtitle {
         font-size: 1.2rem;
         color: var(--gray-600);
-        margin-bottom: 3rem;
+        margin-bottom: 1rem;
     }
 
     .main-navigation {
@@ -1941,7 +1941,7 @@
 
     /* Highlights Section */
     .highlights-section {
-        padding: 3rem 0;
+        padding: 1rem 0;
         background: var(--gray-50);
     }
 
@@ -2046,6 +2046,17 @@
         display: flex;
         gap: 2rem;
         align-items: flex-start;
+        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    }
+
+    .composition-featured.fade-out {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    .composition-featured.fade-in {
+        opacity: 1;
+        transform: translateX(0);
     }
 
     .composition-image {
@@ -2435,8 +2446,9 @@
 
     .audio-player-content {
         display: flex;
-        gap: 1.5rem;
-        align-items: center;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
     }
 
     .audio-info {
@@ -2474,6 +2486,23 @@
     .audio-controls audio {
         width: 100%;
         height: 36px;
+    }
+
+    .performed-by-info {
+        text-align: center;
+        padding: 0.5rem 0;
+    }
+
+    .performed-by-text {
+        font-size: 0.9rem;
+        color: var(--gray-600);
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .performed-by-artist {
+        color: var(--primary-600);
+        font-weight: 600;
     }
 
     @keyframes slideDown {
@@ -3271,18 +3300,14 @@
                         <!-- Integrated Audio Player Container -->
                         <div class="new-release-audio-container" id="new-release-audio-container" style="display: none;">
                             <div class="audio-player-content">
-                                <div class="audio-info">
-                                    <img src="/imgs/Coming Home (Cover Photo).png" alt="Composition Cover" class="audio-cover">
-                                    <div class="audio-details">
-                                        <h4 class="audio-composition-title">Loading...</h4>
-                                        <p class="audio-composition-instrumentation">Loading...</p>
-                                    </div>
-                                </div>
                                 <div class="audio-controls">
                                     <audio controls preload="metadata" id="new-release-audio-player">
                                         <source src="" type="audio/mpeg">
                                         Your browser does not support the audio element.
                                     </audio>
+                                </div>
+                                <div class="performed-by-info">
+                                    <p class="performed-by-text">Performed By: <span class="performed-by-artist">Loading...</span></p>
                                 </div>
                             </div>
                         </div>
@@ -5165,15 +5190,51 @@
         }
 
         function updateNewCatalogRelease(composition) {
+            const previewContainer = document.querySelector('#new-release-preview .composition-featured');
             const titleElement = document.querySelector('#new-release-preview .composition-title');
             const instrumentationElement = document.querySelector('#new-release-preview .composition-instrumentation');
             const descriptionElement = document.querySelector('#new-release-preview .composition-description');
             const imageElement = document.querySelector('#new-release-preview .composition-img');
             
-            if (titleElement) titleElement.textContent = composition.title || 'New Release';
-            if (instrumentationElement) instrumentationElement.textContent = composition.instrumentation || 'Brass Ensemble';
-            if (descriptionElement) descriptionElement.textContent = composition.description || 'A dynamic new composition showcasing innovative musical ideas and technical brilliance.';
-            if (imageElement && composition.coverImage) imageElement.src = composition.coverImage;
+            // Add fade out animation
+            if (previewContainer) {
+                previewContainer.classList.add('fade-out');
+                
+                                    // Update content after fade out
+                    setTimeout(() => {
+                        if (titleElement) titleElement.textContent = composition.title || 'New Release';
+                        if (instrumentationElement) instrumentationElement.textContent = composition.instrumentation || 'Brass Ensemble';
+                        if (descriptionElement) descriptionElement.textContent = composition.description || 'A dynamic new composition showcasing innovative musical ideas and technical brilliance.';
+                        if (imageElement && composition.coverImage) imageElement.src = composition.coverImage;
+                        
+                        // Update performed by information
+                        const performedByElement = document.querySelector('#new-release-audio-container .performed-by-artist');
+                        if (performedByElement) {
+                            performedByElement.textContent = composition.performedBy || 'Unknown Artist';
+                        }
+                    
+                    // Add fade in animation
+                    previewContainer.classList.remove('fade-out');
+                    previewContainer.classList.add('fade-in');
+                    
+                    // Remove fade-in class after animation completes
+                    setTimeout(() => {
+                        previewContainer.classList.remove('fade-in');
+                    }, 500);
+                }, 250);
+            } else {
+                // Fallback without animation
+                if (titleElement) titleElement.textContent = composition.title || 'New Release';
+                if (instrumentationElement) instrumentationElement.textContent = composition.instrumentation || 'Brass Ensemble';
+                if (descriptionElement) descriptionElement.textContent = composition.description || 'A dynamic new composition showcasing innovative musical ideas and technical brilliance.';
+                if (imageElement && composition.coverImage) imageElement.src = composition.coverImage;
+                
+                // Update performed by information
+                const performedByElement = document.querySelector('#new-release-audio-container .performed-by-artist');
+                if (performedByElement) {
+                    performedByElement.textContent = composition.performedBy || 'Unknown Artist';
+                }
+            }
         }
 
         function initializeNewReleaseCarousel() {
@@ -5279,20 +5340,15 @@
         function updateNewReleaseAudioPlayer() {
             const audioContainer = document.getElementById('new-release-audio-container');
             const audioPlayer = document.getElementById('new-release-audio-player');
-            const audioTitle = document.querySelector('#new-release-audio-container .audio-composition-title');
-            const audioInstrumentation = document.querySelector('#new-release-audio-container .audio-composition-instrumentation');
-            const audioCover = document.querySelector('#new-release-audio-container .audio-cover');
+            const performedByElement = document.querySelector('#new-release-audio-container .performed-by-artist');
             
             // Only update if audio container is visible
             if (audioContainer.style.display !== 'none' && newReleaseCompositions[currentNewReleaseIndex]) {
                 const composition = newReleaseCompositions[currentNewReleaseIndex];
                 
-                // Update audio player content
-                audioTitle.textContent = composition.title || 'Composition';
-                audioInstrumentation.textContent = composition.instrumentation || 'Brass Ensemble';
-                
-                if (composition.coverImage) {
-                    audioCover.src = composition.coverImage;
+                // Update performed by information
+                if (performedByElement) {
+                    performedByElement.textContent = composition.performedBy || 'Unknown Artist';
                 }
                 
                 if (composition.audioPreview) {
