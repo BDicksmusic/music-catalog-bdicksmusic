@@ -2364,6 +2364,47 @@
         transform: translateY(-1px);
     }
 
+    .btn-score {
+        background: var(--gray-600);
+        color: white;
+        border: 1px solid var(--gray-600);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-score.in-view {
+        background: #ff6b35;
+        color: white;
+        border: 1px solid #ff6b35;
+    }
+
+    .btn-score .status-circle {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid white;
+        background: transparent;
+        transition: all 0.3s ease;
+    }
+
+    .btn-score.in-view .status-circle {
+        background: white;
+    }
+
+    .btn-score:hover {
+        background: var(--primary-200);
+        border-color: var(--primary-300);
+        transform: translateY(-1px);
+    }
+
     /* Featured Audio Player Section */
     .featured-audio-section {
         padding: 2rem 0;
@@ -2683,16 +2724,16 @@
         display: block;
     }
 
-                    .new-release-audio-container.no-audio {
-                    opacity: 0;
-                    transform: translateY(-10px);
-                    pointer-events: none;
-                    max-height: 0;
-                    overflow: hidden;
+    .new-release-audio-container.no-audio {
+        opacity: 0;
+        transform: translateY(-10px);
+        pointer-events: none;
+        max-height: 0;
+        overflow: hidden;
                     margin: 0;
                     padding: 0;
                     display: none;
-                }
+    }
 
     .audio-player-content {
         display: flex;
@@ -3001,6 +3042,496 @@
         font-weight: 500;
         margin-bottom: 0;
         line-height: 1.2;
+    }
+
+    /* ===== NEW RELEASE SCORE SECTION ===== */
+    .new-release-score-section {
+        width: 100%;
+        max-width: 1400px;
+        margin: 2rem auto 0;
+        padding: 2rem 1rem;
+        box-sizing: border-box;
+        background: var(--gray-50);
+        border-radius: 12px;
+        border: 1px solid var(--gray-200);
+    }
+
+    /* ===== SCORE TOGGLE BUTTONS ===== */
+    .score-toggle-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding: 0 1rem;
+        flex-wrap: wrap;
+    }
+
+    .score-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #6b7280, #4b5563); /* Lower saturation primary for hidden */
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(107, 114, 128, 0.2);
+    }
+
+    .score-toggle-btn:hover {
+        background: linear-gradient(135deg, #4b5563, #374151);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+    }
+
+    /* Higher saturation orange for "in view" state */
+    .score-toggle-btn.in-view {
+        background: linear-gradient(135deg, #f97316, #ea580c);
+        box-shadow: 0 2px 8px rgba(249, 115, 22, 0.2);
+    }
+
+    .score-toggle-btn.in-view:hover {
+        background: linear-gradient(135deg, #ea580c, #dc2626);
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+    }
+
+    .score-toggle-btn:active {
+        transform: translateY(0);
+    }
+
+    .score-toggle-btn .toggle-icon {
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+        line-height: 1;
+        font-weight: bold;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .score-toggle-btn.toggled .toggle-icon {
+        transform: scale(1.1);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Smooth color transitions for state changes */
+    .score-toggle-btn {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ===== RESIZABLE SCORE LAYOUT SYSTEM ===== */
+    .score-layout-container {
+        display: flex;
+        align-items: stretch;
+        width: 100%;
+        position: relative;
+        min-height: 0; /* Remove fixed minimum height */
+    }
+
+    /* Add minimum height only when content is visible */
+    .score-layout-container:has(.score-carousel-container.show),
+    .score-layout-container:has(.score-video-column:not(.hidden)) {
+        min-height: 400px;
+    }
+
+    /* Fallback for browsers that don't support :has() */
+    .score-layout-container.has-content {
+        min-height: 400px;
+    }
+
+    .score-pdf-column {
+        flex: 1 1 60%; /* Default: Larger space for PDF */
+        display: flex;
+        flex-direction: column;
+        min-width: 300px; /* Increased minimum for better proportions */
+        max-width: none; /* Remove max-width constraint */
+        transition: flex-basis 0.2s ease; /* Smoother transition */
+    }
+
+    .score-carousel-container {
+        opacity: 0;
+        transform: translateX(-20px);
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        pointer-events: none;
+        height: 0;
+        overflow: hidden;
+    }
+
+    .score-carousel-container.show {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+        height: auto;
+        overflow: visible;
+    }
+
+    /* ===== RESIZABLE DIVIDER ===== */
+    .score-divider {
+        width: 8px;
+        background: var(--gray-200);
+        position: relative;
+        cursor: col-resize;
+        transition: all 0.3s ease;
+        display: none; /* Hidden by default */
+        align-items: center;
+        justify-content: center;
+        margin: 0 0.5rem;
+        opacity: 1;
+        transform: scaleX(1);
+        z-index: 10; /* Ensure divider is above content */
+        user-select: none; /* Prevent text selection during resize */
+    }
+
+    /* Hide divider when either column is hidden */
+    .score-layout-container.pdf-only .score-divider,
+    .score-layout-container.video-only .score-divider {
+        display: none !important;
+        opacity: 0;
+        transform: scaleX(0);
+        width: 0;
+        margin: 0;
+    }
+
+    /* Proper divider handle hiding */
+    .score-divider.divider-handle-hidden {
+        display: none !important;
+        opacity: 0;
+        transform: scaleX(0);
+        width: 0;
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .score-divider:hover {
+        background: var(--primary-300);
+    }
+
+    .score-divider.resizing {
+        background: var(--primary-500);
+        box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Add visual feedback during resize */
+    .score-layout-container.resizing .score-pdf-column,
+    .score-layout-container.resizing .score-video-column {
+        transition: none; /* Disable transitions during resize for immediate feedback */
+    }
+    
+    /* Prevent content interference during resize */
+    .score-layout-container.resizing {
+        pointer-events: none; /* Disable pointer events on content during resize */
+    }
+    
+    .score-layout-container.resizing .score-divider {
+        pointer-events: auto; /* Re-enable pointer events on divider */
+    }
+    
+    /* Specifically disable iframe interaction during resize */
+    .score-layout-container.resizing iframe {
+        pointer-events: none !important;
+        user-select: none !important;
+    }
+    
+    /* Disable YouTube iframe interaction during resize */
+    .score-layout-container.resizing .youtube-embed-container iframe {
+        pointer-events: none !important;
+        user-select: none !important;
+    }
+
+    .divider-handle {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .divider-grip {
+        width: 4px;
+        height: 40px;
+        background: var(--gray-400);
+        border-radius: 2px;
+        position: relative;
+    }
+
+    .divider-grip::before,
+    .divider-grip::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        width: 2px;
+        height: 8px;
+        background: var(--gray-400);
+        border-radius: 1px;
+    }
+
+    .divider-grip::before {
+        top: 8px;
+        transform: translateX(-50%);
+    }
+
+    .divider-grip::after {
+        bottom: 8px;
+        transform: translateX(-50%);
+    }
+
+    .score-divider:hover .divider-grip,
+    .score-divider.resizing .divider-grip {
+        background: var(--primary-600);
+    }
+
+    .score-divider:hover .divider-grip::before,
+    .score-divider:hover .divider-grip::after,
+    .score-divider.resizing .divider-grip::before,
+    .score-divider.resizing .divider-grip::after {
+        background: var(--primary-600);
+    }
+
+    .score-video-column {
+        flex: 1 1 40%; /* Default: Smaller space for video */
+        display: flex;
+        flex-direction: column;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        min-width: 300px; /* Increased minimum width for video column */
+        transition: flex-basis 0.2s ease; /* Smoother transition */
+        /* ✨ ADDED: Initial state for smooth animation */
+        opacity: 0;
+        transform: translateX(20px);
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), flex-basis 0.2s ease;
+    }
+
+    .score-video-column.full-width {
+        flex: 1 1 100%;
+        max-width: 1000px;
+        margin: 0 auto; /* Center the video when in full width */
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .score-video-column.hidden {
+        opacity: 0;
+        transform: translateX(20px);
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        pointer-events: none;
+        height: 0;
+        overflow: hidden;
+    }
+
+    .score-pdf-column.full-width {
+        flex: 1 1 100%;
+        max-width: 1000px;
+        margin: 0 auto; /* Center the PDF when in full width */
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    /* Better centering for PDF-only layout */
+    .score-layout-container.pdf-only .score-pdf-column {
+        flex: 1 1 100%;
+        max-width: 800px; /* Reduced from 1000px for better proportions */
+        margin: 0 auto;
+        padding-left: 0;
+        padding-right: 0;
+        display: block; /* Changed from flex to block for easier navigation */
+        text-align: center;
+    }
+    
+    /* Hide video column completely in PDF-only state */
+    .score-layout-container.pdf-only .score-video-column {
+        display: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Better centering for video-only layout */
+    .score-layout-container.video-only .score-video-column {
+        flex: 1 1 100%;
+        max-width: 1200px; /* Increased for better video sizing */
+        margin: 0 auto;
+        padding-left: 0;
+        padding-right: 0;
+        display: block; /* Changed from flex to block for easier navigation */
+        text-align: center;
+        /* ✨ ADDED: Smooth slide-in animation from right (opposite PDF) */
+        opacity: 1;
+        transform: translateX(0);
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        animation: videoSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s both;
+    }
+
+    /* ✨ ADDED: Keyframe animation for video slide-in */
+    @keyframes videoSlideIn {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    /* Hide PDF column completely in video-only state */
+    .score-layout-container.video-only .score-pdf-column {
+        display: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* ✨ ADDED: Animation for video column when both are visible */
+    .score-layout-container:not(.pdf-only):not(.video-only) .score-video-column {
+        opacity: 1;
+        transform: translateX(0);
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    
+    /* Ensure video content is properly sized in video-only mode */
+    .score-layout-container.video-only .composition-score-video-player {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    /* Ensure YouTube embeds are properly sized in video-only mode */
+    .score-layout-container.video-only .youtube-embed-container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* ===== PDF NAVIGATION STYLES ===== */
+    .single-page-score-viewer {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .score-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .score-iframe-container {
+        flex: 1;
+        width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .score-navigation-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--gray-50);
+        border-top: 1px solid var(--gray-200);
+        border-radius: 0 0 8px 8px;
+        margin-top: 0.5rem;
+    }
+
+    .score-nav-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: var(--primary-500);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .score-nav-btn:hover:not(:disabled) {
+        background: var(--primary-600);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .score-nav-btn:disabled {
+        background: var(--gray-400);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .score-nav-btn .nav-icon {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    .score-page-info {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--gray-700);
+        background: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        border: 1px solid var(--gray-300);
+        min-width: 120px;
+        text-align: center;
+    }
+
+    /* ===== VIDEO PLAYER STYLES ===== */
+    .composition-score-video-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .composition-video-player {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .composition-video-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--gray-800);
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .youtube-embed-container {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .youtube-embed-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 8px;
     }
 
     /* ===== LOADING AND ERROR STATES ===== */
@@ -3429,7 +3960,7 @@
 
         .compositions-carousel {
             gap: 1rem;
-        }
+          }
     }
     
     /* Small Mobile Breakpoint */
@@ -3480,14 +4011,14 @@
         .btn-buy {
             width: 100%;
             justify-content: center;
-        }
+          }
     }
     </style>
 </head>
 
-<body>
-    <!-- Navigation -->
-<nav>
+    <body>
+        <!-- Navigation -->
+        <nav>
     <div class="nav-container">
         <a href="index.html" class="logo">BRANDON DICKS</a>
         <div class="nav-right">
@@ -3733,7 +4264,11 @@
                                         <span class="status-circle"></span>
                                         Listen (Hidden)
                                     </button>
-                                </div>
+                                    <button class="btn-score score-btn" onclick="viewFeaturedScore()" id="view-score-btn" style="display: none;">
+                                        <span class="status-circle"></span>
+                                        View Score (Hidden)
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -3821,20 +4356,59 @@
                 </div>
             </div>
         </div>
-                    <!-- Related Works Carousel Component for Featured Compositions -->
-                    <div class="related-works-carousel-component" id="featured-compositions-carousel">
-                        <div class="related-works-carousel-container">
-                            <h3 class="related-works-carousel-title">Popular Compositions</h3>
-                            <div class="related-works-carousel" id="related-works-carousel-featured-compositions">
-                                <!-- Content will be populated by JavaScript -->
-                                <div class="related-composition-loading">
-                                    <div class="loading-spinner"></div>
-                                    <p>Loading popular compositions...</p>
-                                </div>
-                            </div>
+
+        <!-- New Release Score Layout Section -->
+        <section class="new-release-score-section" id="new-release-score-section" style="display: none;">
+            <!-- Score Control Buttons -->
+            <div class="score-toggle-container">
+                <button class="score-toggle-btn" id="score-toggle-btn" onclick="toggleNewReleaseScorePDF()">
+                    <span class="toggle-icon">○</span>
+                    <span class="toggle-text">PDF (Hidden)</span>
+                </button>
+                <button class="score-toggle-btn" id="score-video-toggle-btn" onclick="toggleNewReleaseScoreVideo()">
+                    <span class="toggle-icon">○</span>
+                    <span class="toggle-text">Score Video (Hidden)</span>
+                </button>
+            </div>
+            
+            <div class="score-layout-container" id="score-layout-container">
+                <div class="score-pdf-column" id="score-pdf-column">
+                    <div class="score-carousel-container" id="score-carousel-container">
+                        <!-- Score PDF will be injected here -->
+                    </div>
+                </div>
+                
+                <!-- Resizable Divider -->
+                <div class="score-divider" id="score-divider">
+                    <div class="divider-handle">
+                        <div class="divider-grip"></div>
+                    </div>
+            </div>
+                
+                <div class="score-video-column" id="score-video-column">
+                    <div class="composition-score-video-container" id="composition-score-video-container">
+                        <div id="score-video-content">
+                            <!-- Score videos will be injected here -->
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+            
+            <!-- Related Works Carousel Component for Featured Compositions -->
+            <div class="related-works-carousel-component" id="featured-compositions-carousel">
+                <div class="related-works-carousel-container">
+                    <h3 class="related-works-carousel-title">Popular Compositions</h3>
+                    <div class="related-works-carousel" id="related-works-carousel-featured-compositions">
+                        <!-- Content will be populated by JavaScript -->
+                        <div class="related-composition-loading">
+                            <div class="loading-spinner"></div>
+                            <p>Loading popular compositions...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
 
@@ -3848,24 +4422,24 @@
     <section id="performances" class="section-showcase" style="scroll-margin-top: 120px;">
         <div class="container">
             <div class="catalog-stats-horizontal">
-                <div class="stat-item featured-stat">
-                    <span class="stat-number" id="total-compositions">25+</span>
-                    <span class="stat-label">Original Compositions</span>
-                    <span class="stat-detail">Across multiple genres</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">8</span>
-                    <span class="stat-label">Instrumentation Types</span>
-                    <span class="stat-detail">From solo to large ensemble</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">500+</span>
-                    <span class="stat-label">Downloads</span>
-                    <span class="stat-detail">By musicians worldwide</span>
+                    <div class="stat-item featured-stat">
+                        <span class="stat-number" id="total-compositions">25+</span>
+                        <span class="stat-label">Original Compositions</span>
+                        <span class="stat-detail">Across multiple genres</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">8</span>
+                        <span class="stat-label">Instrumentation Types</span>
+                        <span class="stat-detail">From solo to large ensemble</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">Downloads</span>
+                        <span class="stat-detail">By musicians worldwide</span>
                 </div>
             </div>
-        </div>
-    </section>
+                </div>
+            </section>
 
     <!-- Education & Notion Tools Section -->
     <section id="education" class="section-showcase alt-bg" style="scroll-margin-top: 120px;">
@@ -5229,22 +5803,22 @@
         
         // ✨ SEPARATED: Data processing for popular compositions
         function processPopularCompositionsData(data) {
-            if (data && data.success && data.compositions && data.compositions.length > 0) {
-                // Filter for compositions marked as "Popular"
-                const popularCompositions = data.compositions.filter(comp => comp.popular === true);
-                
-                if (popularCompositions.length > 0) {
-                    compositionsCarousel = popularCompositions;
-                    initializeFeaturedCompositionsCarousel();
+                if (data && data.success && data.compositions && data.compositions.length > 0) {
+                    // Filter for compositions marked as "Popular"
+                    const popularCompositions = data.compositions.filter(comp => comp.popular === true);
+                    
+                    if (popularCompositions.length > 0) {
+                        compositionsCarousel = popularCompositions;
+                        initializeFeaturedCompositionsCarousel();
+                    } else {
+                        // Fallback to featured compositions if no popular items
+                        const featuredCompositions = data.compositions.filter(comp => comp.featured === true);
+                        compositionsCarousel = featuredCompositions.length > 0 ? featuredCompositions : data.compositions.slice(0, 6);
+                        initializeFeaturedCompositionsCarousel();
+                        console.log('No compositions marked as "Popular", using fallback');
+                    }
                 } else {
-                    // Fallback to featured compositions if no popular items
-                    const featuredCompositions = data.compositions.filter(comp => comp.featured === true);
-                    compositionsCarousel = featuredCompositions.length > 0 ? featuredCompositions : data.compositions.slice(0, 6);
-                    initializeFeaturedCompositionsCarousel();
-                    console.log('No compositions marked as "Popular", using fallback');
-                }
-            } else {
-                // Fallback to example data
+                    // Fallback to example data
                 compositionsCarousel = exampleCompositions;
                 initializeFeaturedCompositionsCarousel();
             }
@@ -5379,7 +5953,7 @@
                 // Hide after animation completes
                 setTimeout(() => {
                     if (this.container.classList.contains('no-audio')) {
-                        this.container.style.display = 'none';
+                this.container.style.display = 'none';
                     }
                 }, 300);
                 
@@ -5443,8 +6017,8 @@
                 // Show loading state
                 showNewReleaseLoading();
                 
-                // Optimized API call with specific fields to reduce payload
-                const response = await fetch('/api/compositions?fields=title,instrumentation,description,coverImage,newInCatalog,featured,popular,audioLink,audioFiles,performedBy,paymentLink,price&includeMedia=true');
+                // Optimized API call with specific fields to reduce payload - including score data
+                const response = await fetch('/api/compositions?fields=title,instrumentation,description,coverImage,newInCatalog,featured,popular,audioLink,audioFiles,scoreLink,scoreFiles,videoFiles,performedBy,paymentLink,price&includeMedia=true');
                 const data = await response.json();
                 
                 console.log('📊 API Response:', {
@@ -5454,7 +6028,10 @@
                         title: comp.title,
                         newInCatalog: comp.newInCatalog,
                         featured: comp.featured,
-                        popular: comp.popular
+                        popular: comp.popular,
+                        scoreLink: comp.scoreLink,
+                        scoreFiles: comp.scoreFiles?.length || 0,
+                        videoFiles: comp.videoFiles?.length || 0
                     })) || []
                 });
                 
@@ -5512,16 +6089,26 @@
             const descriptionElement = document.querySelector('#new-release-content .composition-description');
             const imageElement = document.querySelector('#new-release-content .composition-img');
             
+            // ✨ RESET VIEW SCORE TO HIDDEN when composition changes
+            const viewScoreBtn = document.getElementById('view-score-btn');
+            const scoreSection = document.getElementById('new-release-score-section');
+            if (viewScoreBtn && scoreSection) {
+                scoreSection.style.display = 'none';
+                viewScoreBtn.innerHTML = '<span class="status-circle"></span>View Score (Hidden)';
+                viewScoreBtn.classList.remove('in-view');
+                console.log('📄 View Score reset to hidden for new composition:', composition.title);
+            }
+            
             // Add fade out animation
             if (previewContainer) {
                 console.log('🎬 Starting animation for:', composition.title);
                 previewContainer.classList.add('fade-out');
                 
                                     // Update content after fade out - optimized timing
-                    setTimeout(() => {
-                        if (titleElement) titleElement.textContent = composition.title || 'New Release';
-                        if (instrumentationElement) instrumentationElement.textContent = composition.instrumentation || 'Brass Ensemble';
-                        if (descriptionElement) descriptionElement.textContent = composition.description || 'A dynamic new composition showcasing innovative musical ideas and technical brilliance.';
+                setTimeout(() => {
+                    if (titleElement) titleElement.textContent = composition.title || 'New Release';
+                    if (instrumentationElement) instrumentationElement.textContent = composition.instrumentation || 'Brass Ensemble';
+                    if (descriptionElement) descriptionElement.textContent = composition.description || 'A dynamic new composition showcasing innovative musical ideas and technical brilliance.';
                         
                         // Handle cover image with default fallback
                         if (imageElement) {
@@ -5568,26 +6155,55 @@
                             }
                         }
                         
-                        // ✨ Update Buy Now button based on payment link availability
-                        const buyNowBtn = document.querySelector('#new-release-content .buy-now-btn');
-                        if (buyNowBtn) {
-                            if (composition.paymentLink) {
-                                // Show Buy Now button with actual price
-                                buyNowBtn.style.display = 'flex';
-                                buyNowBtn.innerHTML = `<span class="btn-icon">🛒</span>Buy Now - $${composition.price || '19.99'}`;
-                                buyNowBtn.onclick = () => buyNowComposition();
-                                console.log('💳 Buy Now button updated with payment link for:', composition.title);
+                                // ✨ Update Buy Now button based on payment link availability
+        const buyNowBtn = document.querySelector('#new-release-content .buy-now-btn');
+        if (buyNowBtn) {
+            if (composition.paymentLink) {
+                // Show Buy Now button with actual price
+                buyNowBtn.style.display = 'flex';
+                buyNowBtn.innerHTML = `<span class="btn-icon">🛒</span>Buy Now - $${composition.price || '19.99'}`;
+                buyNowBtn.onclick = () => buyNowComposition();
+                console.log('💳 Buy Now button updated with payment link for:', composition.title);
+            } else {
+                // Show "Currently Not Available" when no payment link
+                buyNowBtn.style.display = 'flex';
+                buyNowBtn.innerHTML = `<span class="btn-icon">❌</span>Currently Not Available`;
+                buyNowBtn.onclick = null; // Disable click functionality
+                buyNowBtn.style.opacity = '0.6';
+                buyNowBtn.style.cursor = 'not-allowed';
+                console.log('⚠️ Buy Now button set to "Currently Not Available" for:', composition.title);
+            }
+        }
+
+                // ✨ Update View Score button based on score availability
+        const viewScoreBtn = document.querySelector('#new-release-content .score-btn');
+                        if (viewScoreBtn) {
+            // Check for score availability - PDF scores and score videos
+            const hasPdfScore = (composition.scoreFiles && composition.scoreFiles.length > 0) || composition.scoreLink;
+            const hasScoreVideos = (composition.videoFiles && composition.videoFiles.filter(video => video.type === 'Score Video').length > 0);
+            const hasScore = hasPdfScore || hasScoreVideos;
+            
+                            if (hasScore) {
+                // Show View Score button - always start in hidden state
+                                viewScoreBtn.style.display = 'flex';
+                viewScoreBtn.innerHTML = '<span class="status-circle"></span>View Score (Hidden)';
+                viewScoreBtn.classList.remove('in-view');
+                console.log('📄 View Score button set to hidden state for composition:', composition.title);
+                console.log('📄 Score data found:', {
+                    scoreFiles: composition.scoreFiles?.length || 0,
+                    scoreLink: composition.scoreLink || 'none',
+                    videoFiles: composition.videoFiles?.length || 0,
+                    scoreVideos: composition.videoFiles?.filter(video => video.type === 'Score Video').length || 0,
+                    hasPdfScore,
+                    hasScoreVideos
+                });
                             } else {
-                                // Show "Currently Not Available" when no payment link
-                                buyNowBtn.style.display = 'flex';
-                                buyNowBtn.innerHTML = `<span class="btn-icon">❌</span>Currently Not Available`;
-                                buyNowBtn.onclick = null; // Disable click functionality
-                                buyNowBtn.style.opacity = '0.6';
-                                buyNowBtn.style.cursor = 'not-allowed';
-                                console.log('⚠️ Buy Now button set to "Currently Not Available" for:', composition.title);
+                                // Hide View Score button if no score available
+                                viewScoreBtn.style.display = 'none';
+                console.log('📄 View Score button hidden - no score available for composition:', composition.title);
                             }
                         }
-                        
+                    
 
                     
                     // Add fade in animation - optimized timing
@@ -5665,6 +6281,35 @@
                         buyNowBtn.style.opacity = '0.6';
                         buyNowBtn.style.cursor = 'not-allowed';
                         console.log('⚠️ Buy Now button set to "Currently Not Available" (fallback) for:', composition.title);
+                    }
+                }
+                
+                // ✨ Update View Score button based on score availability (fallback)
+                const viewScoreBtn = document.querySelector('#new-release-content .score-btn');
+                if (viewScoreBtn) {
+                    // Check for score availability - PDF scores and score videos
+                    const hasPdfScore = (composition.scoreFiles && composition.scoreFiles.length > 0) || composition.scoreLink;
+                    const hasScoreVideos = (composition.videoFiles && composition.videoFiles.filter(video => video.type === 'Score Video').length > 0);
+                    const hasScore = hasPdfScore || hasScoreVideos;
+                    
+                    if (hasScore) {
+                        // Show View Score button - always start in hidden state
+                        viewScoreBtn.style.display = 'flex';
+                        viewScoreBtn.innerHTML = '<span class="status-circle"></span>View Score (Hidden)';
+                        viewScoreBtn.classList.remove('in-view');
+                        console.log('📄 View Score button set to hidden state (fallback) for composition:', composition.title);
+                        console.log('📄 Score data found (fallback):', {
+                            scoreFiles: composition.scoreFiles?.length || 0,
+                            scoreLink: composition.scoreLink || 'none',
+                            videoFiles: composition.videoFiles?.length || 0,
+                            scoreVideos: composition.videoFiles?.filter(video => video.type === 'Score Video').length || 0,
+                            hasPdfScore,
+                            hasScoreVideos
+                        });
+                    } else {
+                        // Hide View Score button if no score available
+                        viewScoreBtn.style.display = 'none';
+                        console.log('📄 View Score button hidden - no score available (fallback) for composition:', composition.title);
                     }
                 }
                 
@@ -5748,12 +6393,12 @@
                 
                 // Update content after fade out
                 setTimeout(() => {
-                    updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
-                    updateNewReleaseDots();
-                    updateNewReleaseNavButtons();
-                    resetNewReleaseAutoCycle();
-                    
-                    // Update audio player if it's visible
+                updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
+                updateNewReleaseDots();
+                updateNewReleaseNavButtons();
+                resetNewReleaseAutoCycle();
+                
+                // Update audio player if it's visible
                     updateNewReleaseAudioPlayer();
                     
                     // Add fade in animation
@@ -5772,6 +6417,8 @@
                 updateNewReleaseNavButtons();
                 resetNewReleaseAutoCycle();
                 updateNewReleaseAudioPlayer();
+                // ✨ RESET SCORE LAYOUT for new composition (fallback)
+                resetScoreLayoutForNewComposition();
             }
         }
 
@@ -5792,12 +6439,12 @@
                 
                 // Update content after fade out
                 setTimeout(() => {
-                    updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
-                    updateNewReleaseDots();
-                    updateNewReleaseNavButtons();
-                    resetNewReleaseAutoCycle();
-                    
-                    // Update audio player if it's visible
+                updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
+                updateNewReleaseDots();
+                updateNewReleaseNavButtons();
+                resetNewReleaseAutoCycle();
+                
+                // Update audio player if it's visible
                     updateNewReleaseAudioPlayer();
                     
                     // Add fade in animation
@@ -5816,6 +6463,36 @@
                 updateNewReleaseNavButtons();
                 resetNewReleaseAutoCycle();
                 updateNewReleaseAudioPlayer();
+                // ✨ RESET SCORE LAYOUT for new composition (fallback)
+                resetScoreLayoutForNewComposition();
+            }
+        }
+
+        // ✨ HELPER FUNCTION: Reset score layout for new composition
+        function resetScoreLayoutForNewComposition() {
+            // Reset PDF navigation state
+            newReleaseCurrentPage = 1;
+            newReleaseTotalPages = 1;
+            
+            if (window.newReleaseScoreLayoutManager) {
+                const currentComposition = newReleaseCompositions[currentNewReleaseIndex];
+                if (currentComposition) {
+                    loadNewReleaseScoreData(currentComposition);
+                    
+                    // Set default state for new composition
+                    setTimeout(() => {
+                        const hasPdf = (currentComposition.scoreFiles && currentComposition.scoreFiles.length > 0) || currentComposition.scoreLink;
+                        const hasScoreVideos = (currentComposition.videoFiles && currentComposition.videoFiles.filter(video => video.type === 'Score Video').length > 0);
+                        
+                        if (hasScoreVideos) {
+                            window.newReleaseScoreLayoutManager.setState('VIDEO_ONLY');
+                        } else if (hasPdf) {
+                            window.newReleaseScoreLayoutManager.setState('PDF_ONLY');
+                        } else {
+                            window.newReleaseScoreLayoutManager.setState('HIDDEN');
+                        }
+                    }, 100);
+                }
             }
         }
 
@@ -5829,6 +6506,9 @@
                 
                 // Update audio player if it's visible
                 updateNewReleaseAudioPlayer();
+                
+                // ✨ RESET SCORE LAYOUT for new composition
+                resetScoreLayoutForNewComposition();
             }
         }
 
@@ -6171,7 +6851,428 @@
             }
         }
 
+        function viewFeaturedScore() {
+            console.log('🎯 viewFeaturedScore function called!');
+            const viewScoreBtn = document.getElementById('view-score-btn');
+            const scoreSection = document.getElementById('new-release-score-section');
+            
+            console.log('🔍 Debug elements:', {
+                viewScoreBtn: !!viewScoreBtn,
+                scoreSection: !!scoreSection,
+                viewScoreBtnId: viewScoreBtn?.id,
+                scoreSectionId: scoreSection?.id
+            });
+            
+            if (!viewScoreBtn || !scoreSection) {
+                console.error('❌ View Score button or score section not found');
+                return;
+            }
+            
+            if (viewScoreBtn.classList.contains('in-view')) {
+                // Hide score section
+                scoreSection.style.display = 'none';
+                viewScoreBtn.innerHTML = '<span class="status-circle"></span>View Score (Hidden)';
+                viewScoreBtn.classList.remove('in-view');
+                console.log('📄 Score section hidden');
+            } else {
+                // Show score section and STOP auto-scroll
+                scoreSection.style.display = 'block';
+                viewScoreBtn.innerHTML = '<span class="status-circle"></span>View Score (View)';
+                viewScoreBtn.classList.add('in-view');
+                
+                // ✨ STOP AUTO-SCROLL when View Score is opened
+                stopNewReleaseAutoCycle();
+                console.log('🔄 Auto-scroll stopped - user is viewing score');
+                
+                // Initialize score layout if not already done
+                if (!window.newReleaseScoreLayoutManager) {
+                    initializeNewReleaseScoreLayout();
+                } else {
+                    // Update score data for current composition
+                    const currentComposition = newReleaseCompositions[currentNewReleaseIndex];
+                    if (currentComposition) {
+                        loadNewReleaseScoreData(currentComposition);
+                    }
+                }
+                
+                console.log('📄 Score section shown');
+            }
+        }
 
+        function initializeNewReleaseScoreLayout() {
+            console.log('🎯 Initializing New Release Score Layout...');
+            
+            // Create a new instance of ScoreLayoutManager for new releases
+            window.newReleaseScoreLayoutManager = new ScoreLayoutManager();
+            window.newReleaseScoreLayoutManager.init();
+            
+            // Set up the score layout with the current composition's data
+            const currentComposition = newReleaseCompositions[currentNewReleaseIndex];
+            if (currentComposition) {
+                loadNewReleaseScoreData(currentComposition);
+                
+                // After loading data, set the default state based on content availability
+                setTimeout(() => {
+                    const hasPdf = (currentComposition.scoreFiles && currentComposition.scoreFiles.length > 0) || currentComposition.scoreLink;
+                    const hasScoreVideos = (currentComposition.videoFiles && currentComposition.videoFiles.filter(video => video.type === 'Score Video').length > 0);
+                    
+                    console.log('🎯 Setting default score layout state:', { hasPdf, hasScoreVideos });
+                    
+                    if (hasScoreVideos) {
+                        // ✨ DEFAULT: Score Video in view, PDF hidden
+                        window.newReleaseScoreLayoutManager.setState('VIDEO_ONLY');
+                        console.log('🎯 Default state set to VIDEO_ONLY (score video in view, PDF hidden)');
+                    } else if (hasPdf) {
+                        // Fallback: PDF in view if no score videos
+                        window.newReleaseScoreLayoutManager.setState('PDF_ONLY');
+                        console.log('🎯 Default state set to PDF_ONLY (PDF in view, no score videos)');
+                    } else {
+                        // No score content available
+                        window.newReleaseScoreLayoutManager.setState('HIDDEN');
+                        console.log('🎯 Default state set to HIDDEN (no score content)');
+                    }
+                }, 100);
+            }
+        }
+
+        function loadNewReleaseScoreData(composition) {
+            console.log('📄 Loading score data for:', composition.title);
+            
+            // Clear existing content first
+            const pdfContainer = document.getElementById('score-carousel-container');
+            const videoContainer = document.getElementById('score-video-content');
+            
+            if (pdfContainer) {
+                pdfContainer.innerHTML = '';
+                pdfContainer.classList.remove('show');
+            }
+            
+            if (videoContainer) {
+                videoContainer.innerHTML = '';
+            }
+            
+            // Load PDF score if available
+            if (composition.scoreLink) {
+                loadNewReleaseScorePDF(composition.scoreLink);
+            }
+            
+            // Load score videos from videoFiles array (filtered by type)
+            const scoreVideos = (composition.videoFiles || []).filter(video => video.type === 'Score Video');
+            if (scoreVideos.length > 0) {
+                loadNewReleaseScoreVideos(scoreVideos);
+            }
+            
+            console.log('📄 Score data loaded:', {
+                hasPdf: !!composition.scoreLink,
+                hasVideos: scoreVideos.length > 0,
+                scoreLink: composition.scoreLink,
+                scoreVideos: scoreVideos.length,
+                videoFiles: composition.videoFiles?.length || 0,
+                scoreVideosFromFilter: scoreVideos
+            });
+        }
+
+        function loadNewReleaseScorePDF(pdfUrl) {
+            const pdfContainer = document.getElementById('score-carousel-container');
+            if (!pdfContainer) return;
+            
+            pdfContainer.innerHTML = `
+                <div class="single-page-score-viewer">
+                    <div class="score-container">
+                        <div class="score-iframe-container">
+                            <iframe 
+                                id="new-release-score-iframe"
+                                src="/pdfjs/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#page=1&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=0&scrollModeOnLoad=1"
+                                width="100%"
+                                height="700px"
+                                style="border: none; border-radius: 8px;">
+                            </iframe>
+                        </div>
+                        <div class="score-navigation-bottom">
+                            <button class="score-nav-btn prev-btn" id="new-release-score-prev">
+                                <span class="nav-icon">←</span>
+                                <span class="nav-text">Previous Page</span>
+                            </button>
+                            <span class="score-page-info" id="new-release-score-page-info">Page 1 of ?</span>
+                            <button class="score-nav-btn next-btn" id="new-release-score-next">
+                                <span class="nav-text">Next Page</span>
+                                <span class="nav-icon">→</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            pdfContainer.classList.add('show');
+            
+            // Initialize single-page PDF navigation
+            initNewReleaseSinglePagePDFNavigation(pdfUrl);
+            console.log('📄 PDF score loaded with navigation:', pdfUrl);
+        }
+
+        function loadNewReleaseScoreVideos(videos) {
+            const videoContainer = document.getElementById('score-video-content');
+            if (!videoContainer) return;
+            
+            console.log('🎥 DEBUG - Loading score videos:', videos.length, videos);
+            
+            const videoHtml = videos.map((video, index) => {
+                console.log(`🎥 DEBUG - Processing score video ${index + 1}:`, video);
+                
+                // Validate video data
+                if (!video.url) {
+                    console.error(`🎥 ERROR - Score video ${index + 1} has no URL:`, video);
+                    return `
+                        <div class="composition-score-video-player">
+                            <div class="score-video-content">
+                                <div class="video-error">Score video URL not available</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                const videoPlayerHtml = createVideoPlayer(video.url, video.title);
+                console.log(`🎥 DEBUG - Generated video player HTML length:`, videoPlayerHtml?.length || 0);
+                
+                // Validate generated HTML
+                if (!videoPlayerHtml || videoPlayerHtml.trim() === '') {
+                    console.error(`🎥 ERROR - Failed to generate video player HTML for:`, video);
+                    return `
+                        <div class="composition-score-video-player">
+                            <div class="score-video-content">
+                                <div class="video-error">Failed to create video player</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                const metadataHtml = video.performanceBy ? `
+                    <div class="score-video-metadata">
+                        <div class="performance-info">Performed by: ${video.performanceBy}</div>
+                    </div>
+                ` : '';
+
+                return `
+                    <div class="composition-score-video-player" style="${index === 0 ? 'display: block;' : 'display: none;'}">
+                        <div class="score-video-content">
+                            ${videoPlayerHtml}
+                        </div>
+                        ${metadataHtml ? `<div class="score-video-metadata-section">${metadataHtml}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+            
+            videoContainer.innerHTML = videoHtml;
+            console.log('🎥 DEBUG - Score videos loaded successfully:', videos.length);
+        }
+
+        function toggleNewReleaseScorePDF() {
+            if (window.newReleaseScoreLayoutManager) {
+                window.newReleaseScoreLayoutManager.togglePdf();
+            } else {
+                console.error('NewReleaseScoreLayoutManager not initialized');
+            }
+        }
+
+        function toggleNewReleaseScoreVideo() {
+            if (window.newReleaseScoreLayoutManager) {
+                window.newReleaseScoreLayoutManager.toggleVideo();
+            } else {
+                console.error('NewReleaseScoreLayoutManager not initialized');
+            }
+        }
+
+        function getYouTubeVideoId(url) {
+            if (!url) return null;
+            
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        function isYouTubeUrl(url) {
+            return url && (url.includes('youtube.com') || url.includes('youtu.be'));
+        }
+
+        function createYouTubeEmbed(url, title = 'Video') {
+            const videoId = getYouTubeVideoId(url);
+            if (!videoId) {
+                console.warn('Invalid YouTube URL:', url);
+                return null;
+            }
+            
+            return `
+                <div class="youtube-embed-container">
+                    <iframe src="https://www.youtube.com/embed/${videoId}" 
+                            frameborder="0" 
+                            allowfullscreen
+                            title="${title}">
+                    </iframe>
+                </div>
+            `;
+        }
+
+        function createVideoPlayer(url, title = 'Video') {
+            if (!url) {
+                console.warn('No URL provided for video player');
+                return '<div class="video-error">Video URL not available</div>';
+            }
+            
+            console.log('🎥 DEBUG - Creating video player for URL:', url);
+            
+            // Check if this is a YouTube video
+            const isYouTube = isYouTubeUrl(url);
+            console.log('🎥 DEBUG - Is YouTube URL:', isYouTube);
+            
+            if (isYouTube) {
+                // Use YouTube embed for YouTube URLs
+                const youtubeEmbed = createYouTubeEmbed(url, title);
+                if (youtubeEmbed) {
+                    console.log('🎥 DEBUG - YouTube embed created successfully');
+                    return youtubeEmbed;
+                } else {
+                    console.warn('🎥 DEBUG - Failed to create YouTube embed, falling back to direct video');
+                    // Fall back to direct video if YouTube embed fails
+                    return `
+                        <video controls preload="metadata" style="width: 100%; height: auto;">
+                            <source src="${url}" type="video/mp4">
+                            Your browser does not support the video element.
+                        </video>
+                    `;
+                }
+            } else {
+                // Use standard video element for direct video files
+                console.log('🎥 DEBUG - Creating standard video element');
+                return `
+                    <video controls preload="metadata" style="width: 100%; height: auto;">
+                        <source src="${url}" type="video/mp4">
+                        <source src="${url}" type="video/webm">
+                        <source src="${url}" type="video/ogg">
+                        Your browser does not support the video element.
+                    </video>
+                `;
+            }
+        }
+
+        // ===== NEW RELEASE PDF NAVIGATION FUNCTIONS =====
+        let newReleaseScoreIframe = null;
+        let newReleaseCurrentPage = 1;
+        let newReleaseTotalPages = 1;
+
+        function initNewReleaseSinglePagePDFNavigation(pdfUrl) {
+            console.log('🔄 Initializing new release single-page PDF navigation for:', pdfUrl);
+            
+            newReleaseScoreIframe = document.getElementById('new-release-score-iframe');
+            
+            if (!newReleaseScoreIframe) {
+                console.error('❌ New release score iframe not found');
+                return;
+            }
+            
+            // Wait for iframe to load, then get total pages
+            newReleaseScoreIframe.addEventListener('load', () => {
+                console.log('✅ New release PDF iframe loaded');
+                
+                // Try to get page count from PDF.js viewer
+                setTimeout(() => {
+                    try {
+                        const iframeWindow = newReleaseScoreIframe.contentWindow;
+                        if (iframeWindow && iframeWindow.PDFViewerApplication) {
+                            newReleaseTotalPages = iframeWindow.PDFViewerApplication.pagesCount;
+                            console.log(`📄 New release total pages: ${newReleaseTotalPages}`);
+                            updateNewReleasePageInfo();
+                            updateNewReleaseNavigationButtons();
+                        } else {
+                            // Fallback: estimate based on PDF or just enable navigation
+                            console.log('⚠️ Could not get page count, enabling navigation anyway');
+                            newReleaseTotalPages = 999; // Large number to allow navigation
+                            updateNewReleasePageInfo();
+                            updateNewReleaseNavigationButtons();
+                        }
+                    } catch (error) {
+                        console.log('⚠️ Cannot access iframe content, enabling navigation anyway');
+                        newReleaseTotalPages = 999;
+                        updateNewReleasePageInfo();
+                        updateNewReleaseNavigationButtons();
+                    }
+                }, 1000);
+            });
+            
+            // Set up single-page navigation buttons
+            setupNewReleaseSinglePageNavigation();
+        }
+
+        function setupNewReleaseSinglePageNavigation() {
+            const prevBtn = document.getElementById('new-release-score-prev');
+            const nextBtn = document.getElementById('new-release-score-next');
+            
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (newReleaseCurrentPage > 1) {
+                        goToNewReleasePage(newReleaseCurrentPage - 1);
+                    }
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (newReleaseCurrentPage < newReleaseTotalPages) {
+                        goToNewReleasePage(newReleaseCurrentPage + 1);
+                    }
+                });
+            }
+            
+            // Add keyboard support
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                    if (e.key === 'ArrowLeft' && newReleaseCurrentPage > 1) {
+                        e.preventDefault();
+                        goToNewReleasePage(newReleaseCurrentPage - 1);
+                    } else if (e.key === 'ArrowRight' && newReleaseCurrentPage < newReleaseTotalPages) {
+                        e.preventDefault();
+                        goToNewReleasePage(newReleaseCurrentPage + 1);
+                    }
+                }
+            });
+        }
+
+        function goToNewReleasePage(pageNumber) {
+            if (pageNumber < 1 || (newReleaseTotalPages !== 999 && pageNumber > newReleaseTotalPages)) {
+                return;
+            }
+            
+            newReleaseCurrentPage = pageNumber;
+            
+            // Update iframe src with new page
+            const baseUrl = newReleaseScoreIframe.src.split('#')[0];
+            newReleaseScoreIframe.src = `${baseUrl}#page=${pageNumber}&zoom=page-fit&toolbar=0&navpanes=0&spreadModeOnLoad=0&scrollModeOnLoad=1`;
+            
+            updateNewReleasePageInfo();
+            updateNewReleaseNavigationButtons();
+            
+            console.log(`📄 New release navigated to page ${pageNumber}`);
+        }
+
+        function updateNewReleasePageInfo() {
+            const pageInfo = document.getElementById('new-release-score-page-info');
+            if (pageInfo) {
+                pageInfo.textContent = `Page ${newReleaseCurrentPage} of ${newReleaseTotalPages === 999 ? '?' : newReleaseTotalPages}`;
+            }
+        }
+
+        function updateNewReleaseNavigationButtons() {
+            const prevBtn = document.getElementById('new-release-score-prev');
+            const nextBtn = document.getElementById('new-release-score-next');
+            
+            if (prevBtn) {
+                prevBtn.disabled = newReleaseCurrentPage <= 1;
+                prevBtn.style.opacity = newReleaseCurrentPage <= 1 ? '0.5' : '1';
+            }
+            
+            if (nextBtn) {
+                nextBtn.disabled = newReleaseCurrentPage >= newReleaseTotalPages;
+                nextBtn.style.opacity = newReleaseCurrentPage >= newReleaseTotalPages ? '0.5' : '1';
+            }
+        }
 
         function playCarouselComposition(index) {
             const audioContainer = document.getElementById('new-release-audio-container');
@@ -6286,6 +7387,7 @@
     </script>
     
     <!-- Load external script for additional functionality -->
+    <script src="/score-layout-manager.js"></script>
     <script src="composition.js"></script>
     <script src="main.js"></script>
     
