@@ -3551,7 +3551,7 @@
                                     </div>
                                     <p class="composition-description">Loading composition description...</p>
                                                                     <div class="composition-actions">
-                                    <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn">
+                                    <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn" style="display: none;">
                                         <span class="status-circle"></span>
                                         Listen (Hidden)
                                     </button>
@@ -5672,23 +5672,15 @@
                         
                         if (listenBtn) {
                             if (hasAudio) {
-                                // Show Listen button and update text based on visibility
+                                // Show Listen button - always start in hidden state
                                 listenBtn.style.display = 'flex';
-                                const isVisible = AudioContainerManager.container && 
-                                    AudioContainerManager.container.classList.contains('has-audio');
-                                listenBtn.innerHTML = isVisible ? 
-                                    '<span class="status-circle"></span>Listen (In View)' : 
-                                    '<span class="status-circle"></span>Listen (Hidden)';
-                                
-                                // Update button state
-                                if (isVisible) {
-                                    listenBtn.classList.add('in-view');
-                                } else {
-                                    listenBtn.classList.remove('in-view');
-                                }
+                                listenBtn.innerHTML = '<span class="status-circle"></span>Listen (Hidden)';
+                                listenBtn.classList.remove('in-view');
+                                console.log('🎵 Listen button set to hidden state for composition:', composition.title);
                             } else {
                                 // Hide Listen button if no audio available
                                 listenBtn.style.display = 'none';
+                                console.log('🎵 Listen button hidden - no audio available for composition:', composition.title);
                             }
                         }
                         
@@ -5724,24 +5716,15 @@
                 
                 if (listenBtn) {
                     if (hasAudio) {
-                        // Show Listen button and update text based on visibility
+                        // Show Listen button - always start in hidden state
                         listenBtn.style.display = 'flex';
-                        if (audioContainer) {
-                            const isVisible = audioContainer.style.display !== 'none';
-                            listenBtn.innerHTML = isVisible ? 
-                                '<span class="status-circle"></span>Listen (In View)' : 
-                                '<span class="status-circle"></span>Listen (Hidden)';
-                            
-                            // Update button state
-                            if (isVisible) {
-                                listenBtn.classList.add('in-view');
-                            } else {
-                                listenBtn.classList.remove('in-view');
-                            }
-                        }
+                        listenBtn.innerHTML = '<span class="status-circle"></span>Listen (Hidden)';
+                        listenBtn.classList.remove('in-view');
+                        console.log('🎵 Listen button set to hidden state (fallback) for composition:', composition.title);
                     } else {
                         // Hide Listen button if no audio available
                         listenBtn.style.display = 'none';
+                        console.log('🎵 Listen button hidden - no audio available (fallback) for composition:', composition.title);
                     }
                 }
                 
