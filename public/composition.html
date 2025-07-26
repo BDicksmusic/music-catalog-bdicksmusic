@@ -1459,6 +1459,25 @@
                             'replace'
                         );
                         console.log('✅ Loading overlay component loaded');
+                        
+                        // ✨ Show loading overlay immediately after component is loaded
+                        setTimeout(() => {
+                            if (window['showLoading_composition-loading']) {
+                                console.log('🎯 Showing loading overlay for composition...');
+                                window['showLoading_composition-loading']();
+                                
+                                // ✨ Hide loading overlay after 7-8 seconds (simulating loading completion)
+                                setTimeout(() => {
+                                    if (window['hideLoading_composition-loading']) {
+                                        console.log('✅ Hiding loading overlay - composition loaded');
+                                        window['hideLoading_composition-loading']();
+                                    }
+                                }, 7500); // 7.5 seconds
+                            } else {
+                                console.error('❌ showLoading_composition-loading function not found');
+                            }
+                        }, 100);
+                        
                     } else {
                         console.error('❌ Loading placeholder not found');
                     }
@@ -1471,7 +1490,7 @@
                     console.log('🎵 Starting composition detail loading...');
                     await loadCompositionDetail();
                 } else {
-                    console.error('❌ loadCompositionDetail function not found');
+                    console.log('ℹ️ loadCompositionDetail function not found - using simulated loading');
                 }
                 
             } catch (error) {

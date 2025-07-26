@@ -122,11 +122,11 @@
             timeoutMessage.style.display = 'none';
             loadingStartTime = Date.now();
             
-            // Set timeout for 10 seconds
+            // Set timeout for 8 seconds
             loadingTimeout = setTimeout(() => {
                 message.textContent = '{{timeoutMessage}}';
                 timeoutMessage.style.display = 'block';
-            }, 10000);
+            }, 8000);
         }
     };
 

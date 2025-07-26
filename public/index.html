@@ -47,6 +47,50 @@
             background-position: 200% 0, 0 0;
         }
     }
+
+    /* Section Borders for Visual Separation */
+    .highlights-section {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        margin-bottom: 0;
+        padding-bottom: 4rem;
+    }
+
+    .section-showcase {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        margin-bottom: 0;
+        padding-bottom: 4rem;
+    }
+
+    .section-showcase.alt-bg {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .testimonials-section {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        margin-bottom: 0;
+        padding-bottom: 4rem;
+    }
+
+    .cta-section {
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        margin-top: 0;
+        padding-top: 4rem;
+    }
+
+    /* Responsive borders for mobile */
+    @media (max-width: 768px) {
+        .highlights-section,
+        .section-showcase,
+        .testimonials-section,
+        .cta-section {
+            border-width: 0.5px;
+            padding-bottom: 3rem;
+        }
+        
+        .cta-section {
+            padding-top: 3rem;
+        }
+    }
     /* Explore Button Styles */
     .explore-btn {
         display: inline-block;
@@ -62,6 +106,8 @@
         box-shadow: 0 4px 10px rgba(0,0,0,0.13);
         position: relative;
         overflow: hidden;
+        z-index: 10;
+        pointer-events: auto;
         
         /* Initial hidden state for animation */
         opacity: 0;
@@ -114,14 +160,16 @@
         border: 2px solid rgba(255, 255, 255, 0.4);
         backdrop-filter: blur(10px);
         font-size: 1rem;
-        padding: 0.75rem 1.5rem;
+        padding: 0.75rem 2rem;
+        min-width: 200px;
         position: relative;
-        z-index: 20;
+        z-index: 25;
         text-decoration: none;
         display: inline-block;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         transform: translateY(0);
+        pointer-events: auto;
     }
 
     .explore-btn.secondary:hover {
@@ -219,44 +267,57 @@
     .hero-rotating-content {
         position: relative;
         min-height: 200px;
+        height: 200px;
         margin-bottom: 2rem;
+        overflow: hidden;
+        width: 100%;
+        display: block;
     }
 
     .hero-role {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
         opacity: 0;
         transform: translateY(20px);
         transition: all 0.6s ease;
         text-align: center;
         min-height: 200px;
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        pointer-events: none;
+        z-index: 1;
     }
 
     .hero-role.active {
-        opacity: 1;
-        transform: translateY(0);
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        pointer-events: auto !important;
+        z-index: 2 !important;
     }
 
     /* Enhanced role transitions - all roles slide in from different directions but end up in the same spot */
     .hero-role[data-role="composer"]:not(.active) {
         transform: translateX(-100px) translateY(0);
         opacity: 0;
+        pointer-events: none;
     }
 
     .hero-role[data-role="trumpeter"]:not(.active) {
         transform: translateX(100px) translateY(0);
         opacity: 0;
+        pointer-events: none;
     }
 
     .hero-role[data-role="educator"]:not(.active) {
         transform: translateY(60px);
         opacity: 0;
+        pointer-events: none;
     }
 
     .hero-role-title {
@@ -273,7 +334,7 @@
         margin-bottom: 2rem;
         line-height: 1.6;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        max-width: 600px;
+        max-width: 800px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -392,11 +453,11 @@
 
      /* Enhanced Catalog Highlights Section */
      .catalog-highlights-grid {
-         display: grid;
+         display: flex;
          grid-template-columns: 2fr 1fr;
          gap: 3rem;
          align-items: start;
-         max-width: 1200px;
+        width: 96%;
          margin: 0 auto;
      }
 
@@ -588,6 +649,23 @@
         transform: translateY(-1px);
         box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
     }
+    
+    /* Disabled Buy Now button styling */
+    .primary-actions-container .btn-buy[style*="opacity: 0.6"] {
+        background: var(--gray-300);
+        border-color: var(--gray-400);
+        color: var(--gray-600);
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .primary-actions-container .btn-buy[style*="opacity: 0.6"]:hover {
+        background: var(--gray-300);
+        border-color: var(--gray-400);
+        color: var(--gray-600);
+        transform: none;
+        box-shadow: none;
+    }
 
     .primary-actions-container .btn-primary {
         background: transparent;
@@ -643,6 +721,15 @@
          border-radius: 16px;
          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
          height: fit-content;
+     }
+     
+     /* Horizontal Stats Layout */
+     .catalog-stats-horizontal {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+         gap: 2rem;
+         max-width: 1200px;
+         margin: 0 auto;
      }
 
      .stats-header {
@@ -1226,100 +1313,6 @@
          }
      }
 
-     /* Featured Compositions Carousel Styles */
-     .featured-carousel-container {
-         position: relative;
-         overflow: hidden;
-         border-radius: 20px;
-         margin: 2rem 0;
-         background: white;
-         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-     }
-
-     .featured-carousel {
-         display: flex;
-         transition: transform 0.5s ease;
-         gap: 0;
-     }
-
-     .featured-composition-item {
-         flex: 0 0 100%;
-         padding: 3rem;
-         box-sizing: border-box;
-         background: white;
-         border-radius: 20px;
-         position: relative;
-     }
-
-     .composition-card-layout {
-         display: grid;
-         grid-template-columns: 300px 1fr;
-         gap: 3rem;
-         align-items: center;
-         min-height: 400px;
-     }
-
-     .composition-image-section {
-         position: relative;
-     }
-
-     .composition-featured-image {
-         width: 100%;
-         height: auto;
-         aspect-ratio: 3/4;
-         object-fit: cover;
-         border-radius: 15px;
-         box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-         transition: all 0.3s ease;
-     }
-
-     .composition-featured-image:hover {
-         transform: scale(1.02);
-         box-shadow: 0 12px 35px rgba(0,0,0,0.2);
-     }
-
-     .composition-placeholder-image {
-         width: 100%;
-         aspect-ratio: 3/4;
-         display: flex;
-         flex-direction: column;
-         justify-content: center;
-         align-items: center;
-         background: var(--gray-100);
-         border-radius: 15px;
-         color: var(--gray-500);
-         text-align: center;
-     }
-
-     .composition-placeholder-image span {
-         font-size: 3rem;
-         margin-bottom: 0.5rem;
-     }
-
-     .composition-placeholder-image p {
-         font-size: 0.9rem;
-         margin: 0;
-     }
-
-     .composition-content-section {
-         display: flex;
-         flex-direction: column;
-         justify-content: center;
-         gap: 1.5rem;
-     }
-
-     .composition-header {
-         margin-bottom: 1rem;
-     }
-
-     .composition-featured-title {
-         font-size: 2.5rem;
-         font-weight: 700;
-         color: var(--gray-900);
-         margin: 0 0 0.5rem 0;
-         line-height: 1.2;
-     }
-
      .composition-featured-instrumentation {
          font-size: 1.3rem;
          color: var(--primary-600);
@@ -1821,7 +1814,7 @@
       /* Specific styling for the hero roles to ensure they're clickable */
       .hero-role {
           pointer-events: auto;
-          position: relative;
+          position: absolute !important;
           z-index: 16;
       }
 
@@ -1856,10 +1849,10 @@
       
       /* Ensure all sections respect container width */
       .container {
-          max-width: 90vw;
+          max-width: 96%;
           margin: 0 auto;
           padding: 0 1rem;
-          width: 100%;
+          width: 96%;
       }
       
       .section-showcase {
@@ -1879,6 +1872,8 @@
           max-width: 800px;
           margin: 0 auto;
           padding: 0 1rem;
+          position: relative;
+          z-index: 15;
       }
       
       .hero-main-title {
@@ -1900,7 +1895,7 @@
       
       @media (max-width: 1200px) {
           .container {
-              max-width: 95vw;
+              max-width: 96%;
           }
       }
       
@@ -1994,12 +1989,23 @@
     .highlights-section {
         padding: 1rem 0;
         background: var(--gray-50);
+        position: relative;
+        z-index: 1;
     }
 
     .highlights-grid {
-        display: grid;
-        grid-template-columns: 1fr 2fr 1fr;
+        display: flex;
         gap: 2rem;
+        align-items: stretch;
+    }
+    
+    /* Make catalog highlight (new releases) take more width than media highlight */
+    .highlight-card.catalog-highlight {
+        flex: 1.38; /* 58% of total width (1.38 / (1.38 + 1) = 0.58) */
+    }
+    
+    .highlight-card.media-highlight {
+        flex: 1; /* 42% of total width (1 / (1.38 + 1) = 0.42) */
     }
 
     .highlight-card {
@@ -2014,7 +2020,7 @@
 
 
     .highlight-card:hover {
-        transform: translateY(-5px);
+        /* Removed transform animation - keeping only subtle shadow */
         box-shadow: 0 8px 30px rgba(0,0,0,0.12);
     }
 
@@ -2097,32 +2103,87 @@
     /* Catalog Preview */
     .composition-featured {
         display: flex;
+        flex-direction: row;
         gap: 2rem;
         align-items: flex-start;
-        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        transition: all 0.4s ease-out;
     }
 
+    /* Enhanced New Release Animation System - Optimized Timing */
     .composition-featured.fade-out {
         opacity: 0;
-        transform: translateX(-10px);
+        transform: translateY(20px) scale(0.95);
+        transition: all 0.3s ease-out;
     }
 
     .composition-featured.fade-in {
         opacity: 1;
+        transform: translateY(0) scale(1);
+        transition: all 0.4s ease-out;
+    }
+
+    /* Separate animations for cover and details - Optimized Timing */
+    .composition-featured.fade-out .composition-img {
+        transform: translateX(-25px) scale(0.9);
+        opacity: 0.6;
+        transition: all 0.3s ease-out;
+    }
+
+    .composition-featured.fade-out .composition-details {
+        transform: translateX(25px);
+        opacity: 0.4;
+        transition: all 0.3s ease-out 0.1s;
+    }
+
+    .composition-featured.fade-in .composition-img {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+        transition: all 0.4s ease-out 0.15s;
+    }
+
+    .composition-featured.fade-in .composition-details {
         transform: translateX(0);
+        opacity: 1;
+        transition: all 0.4s ease-out 0.25s;
     }
 
     .composition-image {
-        flex: 0 0 200px;
+        flex: 0 0 220px; /* Slightly larger width for the image container */
+        height: 280px; /* Set a fixed height for the container */
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        position: relative; /* Required for absolute positioning of ::before */
     }
 
     .composition-img {
         width: 100%;
-        height: 250px;
+        height: 100%; /* Fill the entire container height */
         object-fit: cover;
+        display: block; /* Removes any extra space below the image */
+    }
+    
+    /* Default cover image when no image is available */
+    .composition-image::before {
+        content: '🎼';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4rem;
+        color: var(--gray-400);
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background: var(--gray-100);
+        border-radius: 12px;
+    }
+    
+    .composition-image.has-image::before {
+        display: none;
     }
 
     .composition-details {
@@ -2396,12 +2457,21 @@
         height: 40px;
     }
 
+    /* New Catalog Release Divider */
+    .new-release-divider {
+        height: 3px;
+        background: linear-gradient(90deg, transparent 0%, var(--primary-400) 20%, var(--primary-500) 50%, var(--primary-400) 80%, transparent 100%);
+        margin: 1rem 0 0.75rem 0;
+        border-radius: 2px;
+        opacity: 0.8;
+    }
+
     /* New Catalog Release Carousel Navigation */
     .new-release-carousel-nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-top: 1.5rem;
+        margin-top: 0.75rem;
         padding: 0 1rem;
     }
 
@@ -2430,14 +2500,16 @@
     }
 
     .nav-btn.next-btn {
-        background: #007bff;
+        background: var(--primary-500);
         color: white;
-        border-color: #007bff;
+        border-color: var(--primary-500);
     }
 
     .nav-btn.next-btn:hover {
-        background: #0056b3;
-        border-color: #0056b3;
+        background: var(--primary-600);
+        border-color: var(--primary-600);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
     }
 
     .carousel-dots {
@@ -2761,12 +2833,23 @@
 
     /* ===== RELATED WORKS CAROUSEL COMPONENT STYLES ===== */
     .related-works-carousel-component {
-        width: 100%;
-        max-width: 1400px;
+        width: 96%;
         margin: 2rem auto 0;
         padding: 0 1rem;
-        box-sizing: border-box;
     }
+    
+    /* ✨ OPTIMIZED: Popular compositions carousel performance */
+    .related-composition-card {
+        animation: fadeInUp 0.4s ease-out;
+        animation-fill-mode: both;
+    }
+    
+    .related-composition-card:nth-child(1) { animation-delay: 0.1s; }
+    .related-composition-card:nth-child(2) { animation-delay: 0.2s; }
+    .related-composition-card:nth-child(3) { animation-delay: 0.3s; }
+    .related-composition-card:nth-child(4) { animation-delay: 0.4s; }
+    .related-composition-card:nth-child(5) { animation-delay: 0.5s; }
+    .related-composition-card:nth-child(6) { animation-delay: 0.6s; }
 
     .related-works-carousel-container {
         background: white;
@@ -2868,7 +2951,7 @@
     }
 
     .related-composition-card:hover {
-        transform: translateY(-15px);
+        transform: translateY(-7px) !important;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(59, 130, 246, 0.2);
         background: linear-gradient(145deg, var(--gray-50) 0%, var(--primary-50) 100%);
         border-color: var(--primary-300);
@@ -2897,32 +2980,19 @@
     /* ===== CARD CONTENT ===== */
     .related-composition-content {
         padding: 0.75rem;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .related-composition-title {
         font-size: 0.9rem;
         font-weight: 600;
         color: var(--gray-900);
-        margin-bottom: 0.25rem;
+        margin: 0 0 0.25rem 0;
         line-height: 1.2;
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
         transition: color 0.3s ease;
-    }
-
-    .related-composition-title::before {
-        content: '♪';
-        font-size: 0.75rem;
-        opacity: 0.7;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        will-change: transform, opacity, color;
-    }
-
-    .related-composition-card:hover .related-composition-title::before {
-        opacity: 1;
-        transform: scale(1.2) rotate(5deg);
-        color: var(--primary-600);
     }
 
     .related-composition-instrumentation {
@@ -2994,10 +3064,12 @@
 
         .related-composition-content {
             padding: 0.5rem;
+            text-align: center;
         }
 
         .related-composition-title {
             font-size: 0.8rem;
+            margin: 0 0 0.25rem 0;
         }
 
         .related-composition-instrumentation {
@@ -3017,6 +3089,7 @@
 
         .related-composition-title {
             font-size: 0.75rem;
+            margin: 0 0 0.25rem 0;
         }
 
         .related-composition-instrumentation {
@@ -3195,7 +3268,53 @@
         transform: scale(1.2);
     }
 
-    /* Mobile Responsive */
+    /* ===== RESPONSIVE DESIGN SYSTEM ===== */
+    
+    /* Tablet Breakpoint */
+    @media (max-width: 1024px) {
+        .highlights-grid {
+            gap: 1.5rem;
+        }
+        
+        .highlight-card.catalog-highlight {
+            flex: 1.5; /* Slightly more space for catalog on tablets */
+        }
+        
+        .highlight-card.media-highlight {
+            flex: 1;
+        }
+        
+        .composition-image {
+            flex: 0 0 200px; /* Slightly smaller on tablets */
+            height: 260px;
+        }
+    }
+
+    /* Specific breakpoint for 764px to prevent overlay issues */
+    @media (max-width: 764px) {
+        .highlights-grid {
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .highlight-card.catalog-highlight,
+        .highlight-card.media-highlight {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .highlight-card {
+            padding: 1.25rem;
+            position: relative;
+            z-index: 1;
+        }
+    }
+    
+    /* Mobile Breakpoint */
     @media (max-width: 768px) {
         .welcome-title {
             font-size: 2rem;
@@ -3218,33 +3337,81 @@
             font-size: 1.5rem;
         }
 
+        /* Clean mobile highlights layout */
         .highlights-grid {
-            grid-template-columns: 1fr;
+            flex-direction: column;
             gap: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .highlight-card.catalog-highlight,
+        .highlight-card.media-highlight {
+            flex: 1;
+            position: relative;
+            z-index: 1;
         }
 
         .highlight-card {
-            padding: 1.5rem;
+            padding: 1.25rem;
+            position: relative;
+            z-index: 1;
         }
 
+        /* Mobile composition featured layout */
         .composition-featured {
             flex-direction: column;
-            text-align: center;
+            align-items: flex-start;
+            text-align: left;
+            gap: 1.25rem;
+            width: 100%;
         }
 
         .composition-image {
             flex: none;
             width: 100%;
-            max-width: 300px;
-            margin: 0 auto;
+            max-width: 100%;
+            height: 240px;
+            margin: 0;
+            align-self: center; /* Center only the image */
         }
 
         .composition-img {
-            height: 200px;
+            height: 100%;
+            width: 100%;
+        }
+        
+        /* Mobile text sizing */
+        .composition-title {
+            font-size: 1.3rem;
+            text-align: left;
+            width: 100%;
+        }
+        
+        .composition-instrumentation {
+            font-size: 1rem;
+            text-align: left;
+            width: 100%;
+        }
+        
+        .composition-description {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            text-align: left;
+            width: 100%;
         }
 
+        /* Mobile button layout */
         .composition-actions {
-            justify-content: center;
+            justify-content: flex-start;
+            gap: 0.5rem;
+            width: 100%;
+        }
+        
+        .btn-primary,
+        .btn-buy {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
         }
 
         .audio-content {
@@ -3262,7 +3429,58 @@
 
         .compositions-carousel {
             gap: 1rem;
-          }
+        }
+    }
+    
+    /* Small Mobile Breakpoint */
+    @media (max-width: 480px) {
+        .highlight-card {
+            padding: 1rem;
+        }
+        
+        .composition-featured {
+            gap: 1rem;
+            align-items: flex-start;
+            text-align: left;
+            width: 100%;
+        }
+        
+        .composition-image {
+            max-width: 100%;
+            height: 200px;
+            align-self: center;
+        }
+        
+        .composition-title {
+            font-size: 1.2rem;
+            text-align: left;
+            width: 100%;
+        }
+        
+        .composition-instrumentation {
+            font-size: 0.9rem;
+            text-align: left;
+            width: 100%;
+        }
+        
+        .composition-description {
+            font-size: 0.85rem;
+            text-align: left;
+            width: 100%;
+        }
+        
+        .composition-actions {
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+            justify-content: flex-start;
+        }
+        
+        .btn-primary,
+        .btn-buy {
+            width: 100%;
+            justify-content: center;
+        }
     }
     </style>
 </head>
@@ -3462,52 +3680,12 @@
     <!-- Main Content Container -->
     <div class="main-content-container">
 
-    <!-- Welcome & Navigation Section -->
-    <section class="welcome-section">
-        <div class="container">
-            <div class="welcome-content">
-                <h1 class="welcome-title">Welcome to BDicks Music</h1>
-                <p class="welcome-subtitle">The website of Brandon Dicks</p>
-                
-                <div class="main-navigation">
-                    <a href="/music-catalog.html" class="nav-card">
-                        <span>Music Catalog</span>
-                    </a>
-                    <a href="/media.html" class="nav-card">
-                        <span>Media</span>
-                    </a>
-                    <a href="/news.html" class="nav-card">
-                        <span>News</span>
-                    </a>
-                    <a href="/teaching-material.html" class="nav-card">
-                        <span>Teaching Material</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+
 
     <!-- Highlights Section -->
     <section class="highlights-section">
         <div class="container">
             <div class="highlights-grid">
-                <!-- News and Updates Card -->
-                <div class="highlight-card news-highlight">
-                    <div class="card-header">
-                        <h3>News and Updates</h3>
-                        <span class="card-badge">Latest</span>
-                    </div>
-                    <div class="card-content">
-                        <div class="news-placeholder">
-                            <div class="placeholder-icon">📰</div>
-                            <p>Latest blog post will appear here</p>
-                            <span class="placeholder-note">Database coming soon</span>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <a href="/news.html" class="card-link">View All News →</a>
-                    </div>
-                </div>
 
                 <!-- New Catalog Release Card -->
                 <div class="highlight-card catalog-highlight">
@@ -3588,6 +3766,7 @@
                     </div>
                     
                     <!-- New Catalog Release Carousel Navigation -->
+                    <div class="new-release-divider"></div>
                     <div class="new-release-carousel-nav">
                         <button class="nav-btn prev-btn" onclick="previousNewRelease()" id="new-release-prev">
                             <span class="nav-icon">←</span>
@@ -3642,187 +3821,51 @@
                 </div>
             </div>
         </div>
-    </section>
-
-
-
-    <!-- Featured Compositions Carousel Section -->
-    <section class="compositions-carousel-section">
-        <div class="container" style="max-width: 100%; padding: 0 2rem;">
-            <div class="section-header">
-                <h2 class="section-title">Featured Compositions</h2>
-                <p class="section-subtitle">Explore the complete collection of original works</p>
-            </div>
-            
-            <!-- Related Works Carousel Component for Featured Compositions -->
-            <div class="related-works-carousel-component" id="featured-compositions-carousel">
-                <div class="related-works-carousel-container">
-                    <h3 class="related-works-carousel-title">Popular Compositions</h3>
-                    <div class="related-works-carousel" id="related-works-carousel-featured-compositions">
-                        <!-- Content will be populated by JavaScript -->
-                        <div class="related-composition-loading">
-                            <div class="loading-spinner"></div>
-                            <p>Loading popular compositions...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-                    <div class="news-card-header">
-                        <span class="news-badge media">Media</span>
-                        <span class="news-date">November 2024</span>
-                    </div>
-                    <h3 class="news-title">Live Performance at Carnegie Hall</h3>
-                    <p class="news-excerpt">Recent performance highlights from the prestigious venue, featuring original compositions and classical repertoire.</p>
-                    <div class="news-actions">
-                        <a href="/media.html" class="btn-secondary">Watch Video</a>
-                        <a href="/news.html" class="news-link">Read More →</a>
-                    </div>
-                </div>
-                
-                <div class="news-card">
-                    <div class="news-card-header">
-                        <span class="news-badge teaching">Teaching</span>
-                        <span class="news-date">October 2024</span>
-                    </div>
-                    <h3 class="news-title">New Teaching Resources Available</h3>
-                    <p class="news-excerpt">Comprehensive brass technique exercises and innovative teaching methods now available for educators and students.</p>
-                    <div class="news-actions">
-                        <a href="/teaching-material.html" class="btn-secondary">Explore Resources</a>
-                        <a href="/news.html" class="news-link">Read More →</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="news-highlights-cta">
-                <a href="/news.html" class="btn-primary">View All News & Updates</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Introduction & Overview Section -->
-    <section class="intro-overview-section">
-        <div class="container">
-            <div class="intro-content">
-                <div class="intro-text">
-                    <h2 class="intro-title">Welcome to Brandon Dicks Music</h2>
-                    <p class="intro-description">
-                        Discover a world of original compositions, captivating performances, and innovative teaching resources. 
-                        Whether you're a professional musician, student, or music enthusiast, explore the diverse offerings 
-                        that showcase the intersection of composition, performance, and education.
-                    </p>
-                </div>
-                
-                <div class="intro-navigation-grid">
-                    <div class="intro-nav-card">
-                        <div class="nav-card-icon">🎼</div>
-                        <h3>Music Catalog</h3>
-                        <p>Browse original compositions for various ensembles and skill levels</p>
-                        <a href="/music-catalog.html" class="nav-card-btn">Explore Catalog</a>
-                    </div>
-                    
-                    <div class="intro-nav-card">
-                        <div class="nav-card-icon">🎬</div>
-                        <h3>Media & Performances</h3>
-                        <p>Watch live performances, studio recordings, and behind-the-scenes content</p>
-                        <a href="/media.html" class="nav-card-btn">View Media</a>
-                    </div>
-                    
-                    <div class="intro-nav-card">
-                        <div class="nav-card-icon">📰</div>
-                        <h3>News & Updates</h3>
-                        <p>Stay current with latest releases, performances, and educational content</p>
-                        <a href="/news.html" class="nav-card-btn">Read News</a>
-                    </div>
-                    
-                    <div class="intro-nav-card">
-                        <div class="nav-card-icon">📚</div>
-                        <h3>Teaching Material</h3>
-                        <p>Access exercises, tutorials, and resources for brass players and educators</p>
-                        <a href="/teaching-material.html" class="nav-card-btn">Browse Resources</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Music Catalog Highlights Section -->
-    <section id="performances" class="section-showcase" style="scroll-margin-top: 120px;">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">🎼 Music Catalog</h2>
-                <p class="section-subtitle">Original compositions for professional musicians and ensembles</p>
-        </div>
-            <div class="catalog-highlights-grid">
-                <div class="highlight-featured">
-                    <div class="featured-composition" id="featured-highlight">
-                        <div class="featured-composition-image">
-                            <img src="/imgs/Coming Home (Cover Photo).png" alt="Featured Composition" class="composition-highlight-img">
-                            <div class="audio-preview-overlay">
-                                <button class="preview-play-btn" id="featured-play-btn">
-                                    <span class="play-icon">▶</span>
-                                    <span class="play-text">Preview</span>
-                                </button>
-            </div>
-                        </div>
-                        <div class="featured-composition-content">
-                            <div class="composition-header">
-                                <h3 class="featured-title">Loading Featured Work...</h3>
-                                <div class="composition-badges">
-                                    <span class="difficulty-badge" id="featured-difficulty">Medium</span>
-                                    <span class="year-badge" id="featured-year">2024</span>
+                    <!-- Related Works Carousel Component for Featured Compositions -->
+                    <div class="related-works-carousel-component" id="featured-compositions-carousel">
+                        <div class="related-works-carousel-container">
+                            <h3 class="related-works-carousel-title">Popular Compositions</h3>
+                            <div class="related-works-carousel" id="related-works-carousel-featured-compositions">
+                                <!-- Content will be populated by JavaScript -->
+                                <div class="related-composition-loading">
+                                    <div class="loading-spinner"></div>
+                                    <p>Loading popular compositions...</p>
                                 </div>
                             </div>
-                            <p class="featured-instrumentation">Loading...</p>
-                            <p class="featured-description">Loading composition details...</p>
-                            
-                            <!-- Embedded Audio Player -->
-                            <div class="composition-audio-preview" id="featured-audio-container" style="display: none;">
-                                <audio controls preload="metadata" id="featured-audio-player">
-                                    <source src="" type="audio/mpeg">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </div>
-                            
-                            <div class="composition-actions">
-                                <a href="#" class="btn-primary featured-link">View Full Score</a>
-                                <button class="btn-secondary listen-more-btn" onclick="smoothScrollTo('#compositions'); return false;">
-                                    Browse All Works
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="catalog-stats">
-                    <div class="stats-header">
-                        <h3>Composition Portfolio</h3>
-                    </div>
-                    <div class="stat-item featured-stat">
-                        <span class="stat-number" id="total-compositions">25+</span>
-                        <span class="stat-label">Original Compositions</span>
-                        <span class="stat-detail">Across multiple genres</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">8</span>
-                        <span class="stat-label">Instrumentation Types</span>
-                        <span class="stat-detail">From solo to large ensemble</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">500+</span>
-                        <span class="stat-label">Downloads</span>
-                        <span class="stat-detail">By musicians worldwide</span>
-                    </div>
-                    <div class="stat-item cta-stat">
-                        <a href="/music-catalog" class="btn-primary catalog-browse-btn">
-                            <span class="btn-icon">🎼</span>
-                            Browse Full Catalog
-                        </a>
-                    </div>
+    </section>
+
+
+
+
+            
+
+
+
+    <!-- Music Catalog Stats Section -->
+    <section id="performances" class="section-showcase" style="scroll-margin-top: 120px;">
+        <div class="container">
+            <div class="catalog-stats-horizontal">
+                <div class="stat-item featured-stat">
+                    <span class="stat-number" id="total-compositions">25+</span>
+                    <span class="stat-label">Original Compositions</span>
+                    <span class="stat-detail">Across multiple genres</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label">Instrumentation Types</span>
+                    <span class="stat-detail">From solo to large ensemble</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">Downloads</span>
+                    <span class="stat-detail">By musicians worldwide</span>
                 </div>
             </div>
-                </div>
-            </section>
+        </div>
+    </section>
 
     <!-- Education & Notion Tools Section -->
     <section id="education" class="section-showcase alt-bg" style="scroll-margin-top: 120px;">
@@ -3887,46 +3930,7 @@
         </div>
     </section>
 
-    <!-- Featured Compositions Carousel -->
-<section id="compositions" style="scroll-margin-top: 120px;">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">🎼 Featured Compositions</h2>
-            <p class="section-subtitle">Discover my latest works and musical innovations</p>
-        </div>
-        
-        <!-- Carousel Container -->
-        <div class="featured-carousel-container">
-            <div class="featured-carousel" id="featured-carousel">
-                <div class="loading">Loading compositions...</div>
-            </div>
-        </div>
-        
-        <!-- Navigation Controls -->
-        <div class="carousel-navigation">
-            <button class="carousel-nav-btn" id="prev-featured" onclick="navigateFeaturedCarousel(-1)">
-                <span class="nav-icon">‹</span>
-                <span class="nav-text">Previous</span>
-            </button>
-            <div class="carousel-indicators" id="carousel-indicators">
-                <!-- Dots will be generated dynamically -->
-            </div>
-            <button class="carousel-nav-btn" id="next-featured" onclick="navigateFeaturedCarousel(1)">
-                <span class="nav-text">Next</span>
-                <span class="nav-icon">›</span>
-            </button>
-        </div>
-        
-        <!-- Auto-cycle Toggle -->
-        <div class="auto-cycle-control">
-            <label class="cycle-toggle">
-                <input type="checkbox" id="auto-cycle-toggle" checked>
-                    <span class="toggle-slider"></span>
-                    <span class="toggle-label">Auto-cycle every 8 seconds</span>
-                </label>
-            </div>
-        </div>
-    </main></section>
+
 
     <!-- Call to Action Section -->
     <section class="cta-section">
@@ -4483,7 +4487,6 @@
                     console.log('Loaded featured compositions:', featuredCompositions.length);
                     
                     initializeFeaturedDisplay();
-                    setupAutoCycle();
                     
                     // Hide loading overlay on success
                     if (window.hideLoading_catalog_loading) {
@@ -4493,7 +4496,6 @@
                     // Fallback to example data
                     featuredCompositions = exampleCompositions.slice(0, 4);
                     initializeFeaturedDisplay();
-                    setupAutoCycle();
                     
                     // Hide loading overlay on fallback success
                     if (window.hideLoading_catalog_loading) {
@@ -4510,75 +4512,9 @@
                 
                 featuredCompositions = exampleCompositions.slice(0, 4);
                 initializeFeaturedDisplay();
-                setupAutoCycle();
             }
         }
 
-        function initializeFeaturedDisplay() {
-            renderFeaturedCarousel();
-            createCarouselIndicators();
-            updateCarouselNavigationButtons();
-        }
-
-        function renderFeaturedCarousel() {
-            const carousel = document.getElementById('featured-carousel');
-            
-            if (!featuredCompositions || featuredCompositions.length === 0) {
-                carousel.innerHTML = '<div class="loading">No featured compositions available</div>';
-                return;
-            }
-            
-            // Create carousel HTML with all compositions
-            carousel.innerHTML = featuredCompositions.map((comp, index) => `
-                <div class="featured-composition-item">
-                    <div class="composition-card-layout">
-                        <div class="composition-image-section">
-                        ${comp.coverImage ? `
-                                <img src="${comp.coverImage}" alt="${comp.title}" class="composition-featured-image">
-                            ` : `
-                                <div class="composition-placeholder-image">
-                                    <span>🎼</span>
-                                    <p>No Image Available</p>
-                            </div>
-                            `}
-                        </div>
-                        
-                        <div class="composition-content-section">
-                            <div class="composition-header">
-                                <h2 class="composition-featured-title">${comp.title}</h2>
-                                <div class="composition-featured-instrumentation">${comp.instrumentation}</div>
-                            </div>
-                            
-                            <div class="composition-featured-description">
-                                ${comp.description || `A ${comp.difficulty || 'beautiful'} composition for ${comp.instrumentation}${comp.year ? ` from ${comp.year}` : ''}.`}
-                        </div>
-                            
-                            <div class="composition-meta-badges">
-                                ${comp.year ? `<span class="composition-meta-badge">${comp.year}</span>` : ''}
-                                ${comp.difficulty ? `<span class="composition-meta-badge">${comp.difficulty}</span>` : ''}
-                                ${comp.duration ? `<span class="composition-meta-badge">${comp.duration}</span>` : ''}
-                                ${comp.featured || comp.popular ? `<span class="composition-meta-badge featured">Featured</span>` : ''}
-                    </div>
-                            
-                            <div class="composition-actions">
-                                <button class="btn-secondary" onclick="learnMore('${comp.slug}')">
-                                    📖 Learn More
-                                </button>
-                                <button class="btn-secondary" onclick="viewScore('${comp.scoreLink || ''}')">
-                                    📄 View Score
-                                </button>
-                                <button class="btn-primary" onclick="buyNow('${comp.id}', '${comp.title.replace(/'/g, "\\'")}', ${comp.price || 25})">
-                                    💳 Buy Now - $${comp.price || 25}
-                                </button>
-                            </div>
-                        </div>
-                            </div>
-                        </div>
-            `).join('');
-            
-            // Set initial position
-            updateCarouselPosition();
-        }
 
         function renderAudioSection(comp) {
             const audioFiles = comp.audioFiles || [];
@@ -4669,65 +4605,7 @@
             }
         }
 
-        // Navigation Functions for Carousel
-        function navigateFeaturedCarousel(direction) {
-            const newIndex = currentFeaturedIndex + direction;
-            if (newIndex >= 0 && newIndex < featuredCompositions.length) {
-                currentFeaturedIndex = newIndex;
-                updateCarouselPosition();
-                createCarouselIndicators();
-                updateCarouselNavigationButtons();
-                
-                // Reset auto-cycle timer
-                if (autoCycleInterval) {
-                    clearInterval(autoCycleInterval);
-                    setupAutoCycle();
-                }
-            }
-        }
 
-        function goToFeatured(index) {
-            if (index >= 0 && index < featuredCompositions.length) {
-                currentFeaturedIndex = index;
-                updateCarouselPosition();
-                createCarouselIndicators();
-                updateCarouselNavigationButtons();
-                
-                // Reset auto-cycle timer
-                if (autoCycleInterval) {
-                    clearInterval(autoCycleInterval);
-                    setupAutoCycle();
-                }
-            }
-        }
-
-        function updateCarouselPosition() {
-            const carousel = document.getElementById('featured-carousel');
-            if (carousel) {
-                const translateX = -currentFeaturedIndex * 100;
-                carousel.style.transform = `translateX(${translateX}%)`;
-            }
-        }
-
-        function createCarouselIndicators() {
-            const indicatorsContainer = document.getElementById('carousel-indicators');
-            if (!indicatorsContainer) return;
-            
-            indicatorsContainer.innerHTML = featuredCompositions.map((_, index) => 
-                `<div class="carousel-indicator-dot ${index === currentFeaturedIndex ? 'active' : ''}" 
-                      onclick="goToFeatured(${index})"></div>`
-            ).join('');
-        }
-
-        function updateCarouselNavigationButtons() {
-            const prevBtn = document.getElementById('prev-featured');
-            const nextBtn = document.getElementById('next-featured');
-            
-            if (prevBtn && nextBtn) {
-                prevBtn.disabled = currentFeaturedIndex === 0;
-                nextBtn.disabled = currentFeaturedIndex >= featuredCompositions.length - 1;
-            }
-        }
 
         function previousAudio() {
             const comp = featuredCompositions[currentFeaturedIndex];
@@ -4782,31 +4660,7 @@
             }
         }
 
-        // Auto-cycle Setup
-        function setupAutoCycle() {
-            const toggle = document.getElementById('auto-cycle-toggle');
-            
-            if (toggle && toggle.checked && featuredCompositions.length > 1) {
-                autoCycleInterval = setInterval(() => {
-                    const nextIndex = (currentFeaturedIndex + 1) % featuredCompositions.length;
-                    goToFeatured(nextIndex);
-                }, 8000); // 8 seconds
-            }
-            
-            // Handle toggle changes
-            if (toggle) {
-                toggle.addEventListener('change', function() {
-                    if (this.checked) {
-                        setupAutoCycle();
-                    } else {
-                        if (autoCycleInterval) {
-                            clearInterval(autoCycleInterval);
-                            autoCycleInterval = null;
-                        }
-                    }
-                });
-            }
-        }
+
 
         // Action Functions
         function learnMore(slug) {
@@ -5339,32 +5193,58 @@
         let compositionsCarousel = [];
         let currentCarouselIndex = 0;
 
+        // ✨ OPTIMIZED: Popular compositions carousel loading with caching
         async function loadCompositionsCarousel() {
             try {
-                const response = await fetch('/api/compositions');
+                // ✨ CACHE CHECK: Check if we have cached data
+                const cachedData = sessionStorage.getItem('popularCompositionsData');
+                const cacheTimestamp = sessionStorage.getItem('popularCompositionsTimestamp');
+                const cacheAge = Date.now() - (cacheTimestamp || 0);
+                
+                // Use cached data if it's less than 5 minutes old
+                if (cachedData && cacheAge < 5 * 60 * 1000) {
+                    console.log('🚀 Using cached popular compositions data');
+                    const data = JSON.parse(cachedData);
+                    processPopularCompositionsData(data);
+                    return;
+                }
+                
+                console.log('🔄 Fetching fresh popular compositions data...');
+                const response = await fetch('/api/compositions?fields=title,instrumentation,coverImage,popular,featured,slug,id');
                 const data = await response.json();
                 
-                if (data && data.success && data.compositions && data.compositions.length > 0) {
-                    // Filter for compositions marked as "Popular"
-                    const popularCompositions = data.compositions.filter(comp => comp.popular === true);
-                    
-                    if (popularCompositions.length > 0) {
-                        compositionsCarousel = popularCompositions;
-                        initializeFeaturedCompositionsCarousel();
-                    } else {
-                        // Fallback to featured compositions if no popular items
-                        const featuredCompositions = data.compositions.filter(comp => comp.featured === true);
-                        compositionsCarousel = featuredCompositions.length > 0 ? featuredCompositions : data.compositions.slice(0, 6);
-                        initializeFeaturedCompositionsCarousel();
-                        console.log('No compositions marked as "Popular", using fallback');
-                    }
-                } else {
-                    // Fallback to example data
-                    compositionsCarousel = exampleCompositions;
-                    initializeFeaturedCompositionsCarousel();
+                // ✨ CACHE: Store the data for future use
+                if (data && data.success) {
+                    sessionStorage.setItem('popularCompositionsData', JSON.stringify(data));
+                    sessionStorage.setItem('popularCompositionsTimestamp', Date.now().toString());
                 }
+                
+                processPopularCompositionsData(data);
             } catch (error) {
                 console.error('Error loading compositions for carousel:', error);
+                compositionsCarousel = exampleCompositions;
+                initializeFeaturedCompositionsCarousel();
+            }
+        }
+        
+        // ✨ SEPARATED: Data processing for popular compositions
+        function processPopularCompositionsData(data) {
+            if (data && data.success && data.compositions && data.compositions.length > 0) {
+                // Filter for compositions marked as "Popular"
+                const popularCompositions = data.compositions.filter(comp => comp.popular === true);
+                
+                if (popularCompositions.length > 0) {
+                    compositionsCarousel = popularCompositions;
+                    initializeFeaturedCompositionsCarousel();
+                } else {
+                    // Fallback to featured compositions if no popular items
+                    const featuredCompositions = data.compositions.filter(comp => comp.featured === true);
+                    compositionsCarousel = featuredCompositions.length > 0 ? featuredCompositions : data.compositions.slice(0, 6);
+                    initializeFeaturedCompositionsCarousel();
+                    console.log('No compositions marked as "Popular", using fallback');
+                }
+            } else {
+                // Fallback to example data
                 compositionsCarousel = exampleCompositions;
                 initializeFeaturedCompositionsCarousel();
             }
@@ -5437,7 +5317,7 @@
             
             if (loadingElement && contentElement) {
                 loadingElement.style.display = 'none';
-                contentElement.style.display = 'block';
+                contentElement.style.display = 'flex';
                 console.log('✅ Hiding new release loading state, showing content');
             }
         }
@@ -5563,7 +5443,8 @@
                 // Show loading state
                 showNewReleaseLoading();
                 
-                const response = await fetch('/api/compositions?includeMedia=true');
+                // Optimized API call with specific fields to reduce payload
+                const response = await fetch('/api/compositions?fields=title,instrumentation,description,coverImage,newInCatalog,featured,popular,audioLink,audioFiles,performedBy,paymentLink,price&includeMedia=true');
                 const data = await response.json();
                 
                 console.log('📊 API Response:', {
@@ -5578,22 +5459,15 @@
                 });
                 
                 if (data && data.success && data.compositions && data.compositions.length > 0) {
-                    // Filter for compositions marked as "New in Catalog"
+                    // Filter for compositions marked as "New in Catalog" - optimized filtering
                     newReleaseCompositions = data.compositions.filter(comp => comp.newInCatalog === true);
                     
                     console.log('🎯 New in Catalog compositions found:', newReleaseCompositions.length);
-                    console.log('📝 New in Catalog compositions:', newReleaseCompositions.map(comp => comp.title));
                     
-                    // Debug: Log detailed audio information for each composition
-                    newReleaseCompositions.forEach((comp, index) => {
-                        console.log(`🎵 Composition ${index + 1} - "${comp.title}":`, {
-                            audioLink: comp.audioLink,
-                            audioFiles: comp.audioFiles,
-                            audioFilesLength: comp.audioFiles?.length,
-                            performedBy: comp.performedBy,
-                            hasAudio: comp.audioLink || (comp.audioFiles && comp.audioFiles.length > 0)
-                        });
-                    });
+                    // Reduced logging for performance
+                    if (newReleaseCompositions.length > 0) {
+                        console.log('📝 First composition:', newReleaseCompositions[0].title);
+                    }
                     
                     if (newReleaseCompositions.length > 0) {
                         currentNewReleaseIndex = 0;
@@ -5640,14 +5514,28 @@
             
             // Add fade out animation
             if (previewContainer) {
+                console.log('🎬 Starting animation for:', composition.title);
                 previewContainer.classList.add('fade-out');
                 
-                                    // Update content after fade out
+                                    // Update content after fade out - optimized timing
                     setTimeout(() => {
                         if (titleElement) titleElement.textContent = composition.title || 'New Release';
                         if (instrumentationElement) instrumentationElement.textContent = composition.instrumentation || 'Brass Ensemble';
                         if (descriptionElement) descriptionElement.textContent = composition.description || 'A dynamic new composition showcasing innovative musical ideas and technical brilliance.';
-                        if (imageElement && composition.coverImage) imageElement.src = composition.coverImage;
+                        
+                        // Handle cover image with default fallback
+                        if (imageElement) {
+                            const imageContainer = imageElement.parentElement;
+                            if (composition.coverImage) {
+                                imageElement.src = composition.coverImage;
+                                imageElement.style.display = 'block';
+                                imageContainer.classList.add('has-image');
+                            } else {
+                                // Show default cover when no image is available
+                                imageElement.style.display = 'none';
+                                imageContainer.classList.remove('has-image');
+                            }
+                        }
                         
                         // Update performed by information
                         const performedByElement = document.querySelector('#new-release-audio-container .performed-by-artist');
@@ -5660,12 +5548,8 @@
                         // Check for audio availability - prioritize media database files
                         const hasAudio = (composition.audioFiles && composition.audioFiles.length > 0) || composition.audioLink;
                         
-                        console.log('🎵 updateNewCatalogRelease - Audio check for:', composition.title, {
-                            audioLink: composition.audioLink,
-                            audioFiles: composition.audioFiles,
-                            audioFilesLength: composition.audioFiles?.length,
-                            hasAudio: hasAudio
-                        });
+                        // Reduced logging for performance
+                        console.log('🎵 Audio available:', hasAudio, 'for:', composition.title);
                         
                         // Update audio container state using the manager
                         AudioContainerManager.updateState(hasAudio);
@@ -5684,23 +5568,57 @@
                             }
                         }
                         
+                        // ✨ Update Buy Now button based on payment link availability
+                        const buyNowBtn = document.querySelector('#new-release-content .buy-now-btn');
+                        if (buyNowBtn) {
+                            if (composition.paymentLink) {
+                                // Show Buy Now button with actual price
+                                buyNowBtn.style.display = 'flex';
+                                buyNowBtn.innerHTML = `<span class="btn-icon">🛒</span>Buy Now - $${composition.price || '19.99'}`;
+                                buyNowBtn.onclick = () => buyNowComposition();
+                                console.log('💳 Buy Now button updated with payment link for:', composition.title);
+                            } else {
+                                // Show "Currently Not Available" when no payment link
+                                buyNowBtn.style.display = 'flex';
+                                buyNowBtn.innerHTML = `<span class="btn-icon">❌</span>Currently Not Available`;
+                                buyNowBtn.onclick = null; // Disable click functionality
+                                buyNowBtn.style.opacity = '0.6';
+                                buyNowBtn.style.cursor = 'not-allowed';
+                                console.log('⚠️ Buy Now button set to "Currently Not Available" for:', composition.title);
+                            }
+                        }
+                        
 
                     
-                    // Add fade in animation
+                    // Add fade in animation - optimized timing
+                    console.log('🎬 Adding fade-in animation');
                     previewContainer.classList.remove('fade-out');
                     previewContainer.classList.add('fade-in');
                     
-                    // Remove fade-in class after animation completes
+                    // Remove fade-in class after animation completes - faster timing
                     setTimeout(() => {
                         previewContainer.classList.remove('fade-in');
-                    }, 500);
-                }, 250);
+                    }, 400);
+                }, 300);
             } else {
                 // Fallback without animation
                 if (titleElement) titleElement.textContent = composition.title || 'New Release';
                 if (instrumentationElement) instrumentationElement.textContent = composition.instrumentation || 'Brass Ensemble';
                 if (descriptionElement) descriptionElement.textContent = composition.description || 'A dynamic new composition showcasing innovative musical ideas and technical brilliance.';
-                if (imageElement && composition.coverImage) imageElement.src = composition.coverImage;
+                
+                // Handle cover image with default fallback (fallback version)
+                if (imageElement) {
+                    const imageContainer = imageElement.parentElement;
+                    if (composition.coverImage) {
+                        imageElement.src = composition.coverImage;
+                        imageElement.style.display = 'block';
+                        imageContainer.classList.add('has-image');
+                    } else {
+                        // Show default cover when no image is available
+                        imageElement.style.display = 'none';
+                        imageContainer.classList.remove('has-image');
+                    }
+                }
                 
                 // Update performed by information
                 const performedByElement = document.querySelector('#new-release-audio-container .performed-by-artist');
@@ -5725,6 +5643,28 @@
                         // Hide Listen button if no audio available
                         listenBtn.style.display = 'none';
                         console.log('🎵 Listen button hidden - no audio available (fallback) for composition:', composition.title);
+                    }
+                }
+                
+                // ✨ Update Buy Now button based on payment link availability (fallback)
+                const buyNowBtn = document.querySelector('#new-release-content .buy-now-btn');
+                if (buyNowBtn) {
+                    if (composition.paymentLink) {
+                        // Show Buy Now button with actual price
+                        buyNowBtn.style.display = 'flex';
+                        buyNowBtn.innerHTML = `<span class="btn-icon">🛒</span>Buy Now - $${composition.price || '19.99'}`;
+                        buyNowBtn.onclick = () => buyNowComposition();
+                        buyNowBtn.style.opacity = '1';
+                        buyNowBtn.style.cursor = 'pointer';
+                        console.log('💳 Buy Now button updated with payment link (fallback) for:', composition.title);
+                    } else {
+                        // Show "Currently Not Available" when no payment link
+                        buyNowBtn.style.display = 'flex';
+                        buyNowBtn.innerHTML = `<span class="btn-icon">❌</span>Currently Not Available`;
+                        buyNowBtn.onclick = null; // Disable click functionality
+                        buyNowBtn.style.opacity = '0.6';
+                        buyNowBtn.style.cursor = 'not-allowed';
+                        console.log('⚠️ Buy Now button set to "Currently Not Available" (fallback) for:', composition.title);
                     }
                 }
                 
@@ -5771,16 +5711,14 @@
             const prevBtn = document.getElementById('new-release-prev');
             const nextBtn = document.getElementById('new-release-next');
             
-            const prevDisabled = currentNewReleaseIndex === 0;
-            const nextDisabled = currentNewReleaseIndex === newReleaseCompositions.length - 1;
-            
+            // ✨ LOOPING: Always enable buttons since we can loop infinitely
             if (prevBtn) {
-                prevBtn.disabled = prevDisabled;
-                console.log('⬅️ Previous button:', prevDisabled ? 'disabled' : 'enabled');
+                prevBtn.disabled = false;
+                console.log('⬅️ Previous button: enabled (looping)');
             }
             if (nextBtn) {
-                nextBtn.disabled = nextDisabled;
-                console.log('➡️ Next button:', nextDisabled ? 'disabled' : 'enabled');
+                nextBtn.disabled = false;
+                console.log('➡️ Next button: enabled (looping)');
             }
             
             console.log('🎯 Current index:', currentNewReleaseIndex, 'of', newReleaseCompositions.length - 1);
@@ -5794,27 +5732,89 @@
         }
 
         function previousNewRelease() {
+            // ✨ LOOPING: Wrap to the end if at the beginning
             if (currentNewReleaseIndex > 0) {
                 currentNewReleaseIndex--;
+            } else {
+                // Loop to the last composition
+                currentNewReleaseIndex = newReleaseCompositions.length - 1;
+            }
+            
+            // ✨ ANIMATION: Use the same animation as auto-cycle
+            const previewContainer = document.querySelector('#new-release-content .composition-featured');
+            if (previewContainer) {
+                // Add fade out animation
+                previewContainer.classList.add('fade-out');
+                
+                // Update content after fade out
+                setTimeout(() => {
+                    updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
+                    updateNewReleaseDots();
+                    updateNewReleaseNavButtons();
+                    resetNewReleaseAutoCycle();
+                    
+                    // Update audio player if it's visible
+                    updateNewReleaseAudioPlayer();
+                    
+                    // Add fade in animation
+                    previewContainer.classList.remove('fade-out');
+                    previewContainer.classList.add('fade-in');
+                    
+                    // Remove fade-in class after animation completes
+                    setTimeout(() => {
+                        previewContainer.classList.remove('fade-in');
+                    }, 600);
+                }, 500);
+            } else {
+                // Fallback without animation
                 updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
                 updateNewReleaseDots();
                 updateNewReleaseNavButtons();
                 resetNewReleaseAutoCycle();
-                
-                // Update audio player if it's visible
                 updateNewReleaseAudioPlayer();
             }
         }
 
         function nextNewRelease() {
+            // ✨ LOOPING: Wrap to the beginning if at the end
             if (currentNewReleaseIndex < newReleaseCompositions.length - 1) {
                 currentNewReleaseIndex++;
+            } else {
+                // Loop to the first composition
+                currentNewReleaseIndex = 0;
+            }
+            
+            // ✨ ANIMATION: Use the same animation as auto-cycle
+            const previewContainer = document.querySelector('#new-release-content .composition-featured');
+            if (previewContainer) {
+                // Add fade out animation
+                previewContainer.classList.add('fade-out');
+                
+                // Update content after fade out
+                setTimeout(() => {
+                    updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
+                    updateNewReleaseDots();
+                    updateNewReleaseNavButtons();
+                    resetNewReleaseAutoCycle();
+                    
+                    // Update audio player if it's visible
+                    updateNewReleaseAudioPlayer();
+                    
+                    // Add fade in animation
+                    previewContainer.classList.remove('fade-out');
+                    previewContainer.classList.add('fade-in');
+                    
+                    // Remove fade-in class after animation completes
+                    setTimeout(() => {
+                        previewContainer.classList.remove('fade-in');
+                    }, 600);
+                }, 500);
+            } else {
+                // Fallback without animation
                 updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
                 updateNewReleaseDots();
                 updateNewReleaseNavButtons();
                 resetNewReleaseAutoCycle();
-                
-                // Update audio player if it's visible
                 updateNewReleaseAudioPlayer();
             }
         }
@@ -6085,11 +6085,9 @@
                 if (currentNewReleaseIndex < newReleaseCompositions.length - 1) {
                     nextNewRelease();
                 } else {
-                    // Loop back to first
+                    // Loop back to first with animation
                     currentNewReleaseIndex = 0;
-                    updateNewCatalogRelease(newReleaseCompositions[currentNewReleaseIndex]);
-                    updateNewReleaseDots();
-                    updateNewReleaseNavButtons();
+                    nextNewRelease(); // Use the same function for consistent animation
                 }
             }, 12000); // 12 seconds
         }
