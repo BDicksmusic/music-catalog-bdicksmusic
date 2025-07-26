@@ -561,15 +561,15 @@
     .primary-actions-container .btn-buy,
     .primary-actions-container .btn-primary {
         flex: 1;
-        min-height: 44px;
+        min-height: 36px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.9rem;
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        border: 2px solid;
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: 1px solid;
         cursor: pointer;
         transition: all 0.3s ease;
         text-decoration: none;
@@ -585,8 +585,8 @@
     .primary-actions-container .btn-buy:hover {
         background: var(--primary-600);
         border-color: var(--primary-600);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
     }
 
     .primary-actions-container .btn-primary {
@@ -599,8 +599,8 @@
         background: var(--primary-50);
         color: var(--primary-700);
         border-color: var(--primary-600);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
     }
 
     .buy-now-container {
@@ -3410,13 +3410,13 @@
                                         <span class="card-badge">New Releases</span>
                                     </div>
                                     <div class="primary-actions-container">
-                                        <button class="btn-buy buy-now-btn" onclick="buyNowComposition()">
-                                            <span class="btn-icon">🛒</span>
-                                            Buy Now - $19.99
-                                        </button>
                                         <button class="btn-primary learn-more-btn" onclick="learnMoreComposition()">
                                             <span class="btn-icon">📖</span>
                                             Learn More
+                                        </button>
+                                        <button class="btn-buy buy-now-btn" onclick="buyNowComposition()">
+                                            <span class="btn-icon">🛒</span>
+                                            Buy Now - $19.99
                                         </button>
                                     </div>
                                     <p class="composition-description">Loading composition description...</p>
@@ -5361,14 +5361,39 @@
                             performedByElement.textContent = composition.performedBy || 'Unknown Artist';
                         }
                         
-                        // Update Listen button text based on audio container visibility
+                        // Check if audio is available and update Listen button
                         const listenBtn = document.getElementById('listen-btn');
                         const audioContainer = document.getElementById('new-release-audio-container');
-                        if (listenBtn && audioContainer) {
-                            const isVisible = audioContainer.style.display !== 'none';
-                            listenBtn.innerHTML = isVisible ? 
-                                '<span class="btn-icon">🎵</span>Listen (In View)' : 
-                                '<span class="btn-icon">🎵</span>Listen (Hidden)';
+                        const hasAudio = composition.audioPreview || (composition.audioFiles && composition.audioFiles.length > 0);
+                        
+                        if (listenBtn) {
+                            if (hasAudio) {
+                                // Show Listen button and update text based on visibility
+                                listenBtn.style.display = 'flex';
+                                if (audioContainer) {
+                                    const isVisible = audioContainer.style.display !== 'none';
+                                    listenBtn.innerHTML = isVisible ? 
+                                        '<span class="btn-icon">🎵</span>Listen (In View)' : 
+                                        '<span class="btn-icon">🎵</span>Listen (Hidden)';
+                                }
+                            } else {
+                                // Hide Listen button if no audio available
+                                listenBtn.style.display = 'none';
+                            }
+                        }
+                        
+                        // Check if score is available and update View Score button
+                        const viewScoreBtn = document.getElementById('view-score-btn');
+                        const hasScore = composition.scoreLink || (composition.scoreFiles && composition.scoreFiles.length > 0);
+                        
+                        if (viewScoreBtn) {
+                            if (hasScore) {
+                                // Show View Score button
+                                viewScoreBtn.style.display = 'flex';
+                            } else {
+                                // Hide View Score button if no score available
+                                viewScoreBtn.style.display = 'none';
+                            }
                         }
                     
                     // Add fade in animation
@@ -5393,14 +5418,39 @@
                     performedByElement.textContent = composition.performedBy || 'Unknown Artist';
                 }
                 
-                // Update Listen button text based on audio container visibility
+                // Check if audio is available and update Listen button
                 const listenBtn = document.getElementById('listen-btn');
                 const audioContainer = document.getElementById('new-release-audio-container');
-                if (listenBtn && audioContainer) {
-                    const isVisible = audioContainer.style.display !== 'none';
-                    listenBtn.innerHTML = isVisible ? 
-                        '<span class="btn-icon">🎵</span>Listen (In View)' : 
-                        '<span class="btn-icon">🎵</span>Listen (Hidden)';
+                const hasAudio = composition.audioPreview || (composition.audioFiles && composition.audioFiles.length > 0);
+                
+                if (listenBtn) {
+                    if (hasAudio) {
+                        // Show Listen button and update text based on visibility
+                        listenBtn.style.display = 'flex';
+                        if (audioContainer) {
+                            const isVisible = audioContainer.style.display !== 'none';
+                            listenBtn.innerHTML = isVisible ? 
+                                '<span class="btn-icon">🎵</span>Listen (In View)' : 
+                                '<span class="btn-icon">🎵</span>Listen (Hidden)';
+                        }
+                    } else {
+                        // Hide Listen button if no audio available
+                        listenBtn.style.display = 'none';
+                    }
+                }
+                
+                // Check if score is available and update View Score button
+                const viewScoreBtn = document.getElementById('view-score-btn');
+                const hasScore = composition.scoreLink || composition.scoreFile;
+                
+                if (viewScoreBtn) {
+                    if (hasScore) {
+                        // Show View Score button
+                        viewScoreBtn.style.display = 'flex';
+                    } else {
+                        // Hide View Score button if no score available
+                        viewScoreBtn.style.display = 'none';
+                    }
                 }
             }
         }
@@ -5878,8 +5928,22 @@
         }
 
         function buyNowComposition() {
-            // Navigate to the music catalog page with purchase intent
-            window.location.href = '/music-catalog.html';
+            // Use the existing purchase function for Stripe integration
+            if (newReleaseCompositions && newReleaseCompositions[currentNewReleaseIndex]) {
+                const composition = newReleaseCompositions[currentNewReleaseIndex];
+                if (composition.paymentLink) {
+                    // Use the existing purchaseComposition function with confirmation dialog
+                    purchaseComposition(composition.paymentLink, composition.title);
+                    console.log('💳 Processing purchase for:', composition.title);
+                } else {
+                    // Fallback to music catalog if no payment link
+                    console.log('⚠️ No payment link available for:', composition.title);
+                    window.location.href = '/music-catalog.html';
+                }
+            } else {
+                // Fallback to music catalog if no composition data
+                window.location.href = '/music-catalog.html';
+            }
         }
 
         // Load everything when page loads
