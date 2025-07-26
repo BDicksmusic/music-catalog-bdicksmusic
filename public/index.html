@@ -3560,6 +3560,10 @@
                                 </div>
 =======
                                     <div class="composition-actions">
+                                        <button class="btn-secondary view-score-btn" onclick="viewScoreComposition()">
+                                            <span class="btn-icon">🎼</span>
+                                            View Score
+                                        </button>
                                         <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn">
                                             <span class="btn-icon">🎵</span>
                                             Listen
@@ -5764,7 +5768,19 @@
                     // Update audio container state using the manager
                     AudioContainerManager.updateState(hasAudio);
                         
-
+                        // Check if score is available and update View Score button
+                        const viewScoreBtn = document.getElementById('view-score-btn');
+                        const hasScore = composition.scoreLink || (composition.scoreFiles && composition.scoreFiles.length > 0);
+                        
+                        if (viewScoreBtn) {
+                            if (hasScore) {
+                                // Show View Score button
+                                viewScoreBtn.style.display = 'flex';
+                            } else {
+                                // Hide View Score button if no score available
+                                viewScoreBtn.style.display = 'none';
+                            }
+                        }
                     
                     // Add fade in animation
                     previewContainer.classList.remove('fade-out');
@@ -5817,7 +5833,19 @@
                     }
                 }
                 
-
+                // Check if score is available and update View Score button
+                const viewScoreBtn = document.getElementById('view-score-btn');
+                const hasScore = composition.scoreLink || composition.scoreFile;
+                
+                if (viewScoreBtn) {
+                    if (hasScore) {
+                        // Show View Score button
+                        viewScoreBtn.style.display = 'flex';
+                    } else {
+                        // Hide View Score button if no score available
+                        viewScoreBtn.style.display = 'none';
+                    }
+                }
             }
         }
 
