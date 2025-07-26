@@ -3500,6 +3500,9 @@
                             <span class="toggle-slider"></span>
                         </label>
                         <span class="toggle-label">Auto-cycle every 12 seconds</span>
+                        <span class="auto-cycle-status" id="auto-cycle-status" style="display: none; color: var(--gray-500); font-size: 0.8rem; margin-left: 1rem;">
+                            (Paused - Audio playing)
+                        </span>
                     </div>
                 </div>
 
@@ -5496,7 +5499,8 @@
                         
                         // Check if audio is available and update Listen button and container
                         const listenBtn = document.getElementById('listen-btn');
-                        const hasAudio = composition.audioLink || (composition.audioFiles && composition.audioFiles.length > 0);
+                        // Check for audio availability - prioritize media database files
+                        const hasAudio = (composition.audioFiles && composition.audioFiles.length > 0) || composition.audioLink;
                         
                         console.log('🎵 updateNewCatalogRelease - Audio check for:', composition.title, {
                             audioLink: composition.audioLink,
@@ -5550,7 +5554,8 @@
                 // Check if audio is available and update Listen button
                 const listenBtn = document.getElementById('listen-btn');
                 const audioContainer = document.getElementById('new-release-audio-container');
-                const hasAudio = composition.audioLink || (composition.audioFiles && composition.audioFiles.length > 0);
+                // Check for audio availability - prioritize media database files
+                const hasAudio = (composition.audioFiles && composition.audioFiles.length > 0) || composition.audioLink;
                 
                 if (listenBtn) {
                     if (hasAudio) {
@@ -5723,20 +5728,8 @@
                 audioFilesLength: composition.audioFiles?.length
             });
             
-            // Check for single audio link (backward compatibility)
-            if (composition.audioLink) {
-                audioFiles.push({
-                    id: 'audio-link',
-                    url: composition.audioLink,
-                    title: composition.title,
-                    performanceBy: composition.performedBy || '',
-                    duration: null
-                });
-                console.log('🎵 Added single audio link:', composition.audioLink);
-            }
-            
-            // Check for multiple audio files from media database
-            if (composition.audioFiles && Array.isArray(composition.audioFiles)) {
+            // Prioritize multiple audio files from media database (more detailed)
+            if (composition.audioFiles && Array.isArray(composition.audioFiles) && composition.audioFiles.length > 0) {
                 composition.audioFiles.forEach((audioFile, index) => {
                     audioFiles.push({
                         id: audioFile.id || `audio-${index}`,
@@ -5747,6 +5740,18 @@
                     });
                     console.log(`🎵 Added audio file ${index + 1}:`, audioFile.title, audioFile.url);
                 });
+                console.log('🎵 Using media database audio files (', audioFiles.length, 'files)');
+            }
+            // Fallback to single audio link only if no media database files
+            else if (composition.audioLink) {
+                audioFiles.push({
+                    id: 'audio-link',
+                    url: composition.audioLink,
+                    title: composition.title,
+                    performanceBy: composition.performedBy || '',
+                    duration: null
+                });
+                console.log('🎵 Added single audio link (fallback):', composition.audioLink);
             }
             
             console.log('🎵 Total audio files parsed:', audioFiles.length);
@@ -5907,6 +5912,12 @@
             const autoCycleCheckbox = document.getElementById('new-release-auto-cycle');
             if (!autoCycleCheckbox || !autoCycleCheckbox.checked) return;
             
+            // Hide paused status
+            const statusElement = document.getElementById('auto-cycle-status');
+            if (statusElement) {
+                statusElement.style.display = 'none';
+            }
+            
             newReleaseAutoCycleInterval = setInterval(() => {
                 if (currentNewReleaseIndex < newReleaseCompositions.length - 1) {
                     nextNewRelease();
@@ -5925,6 +5936,15 @@
                 clearInterval(newReleaseAutoCycleInterval);
                 newReleaseAutoCycleInterval = null;
             }
+            
+            // Show paused status if audio is playing
+            const statusElement = document.getElementById('auto-cycle-status');
+            const isAudioVisible = AudioContainerManager.container && 
+                AudioContainerManager.container.classList.contains('has-audio');
+            
+            if (statusElement && isAudioVisible) {
+                statusElement.style.display = 'inline';
+            }
         }
 
         function resetNewReleaseAutoCycle() {
@@ -5941,12 +5961,21 @@
                 AudioContainerManager.container.classList.contains('has-audio');
             
             if (!isVisible) {
+                // Stop auto-scrolling when showing audio
+                stopNewReleaseAutoCycle();
+                
                 // Show the audio container using the manager
                 AudioContainerManager.show();
                 
                 // Update listen button text
                 if (listenBtn) {
                     listenBtn.innerHTML = '<span class="btn-icon">🎵</span>Listen (In View)';
+                }
+                
+                // Show auto-cycle paused status
+                const statusElement = document.getElementById('auto-cycle-status');
+                if (statusElement) {
+                    statusElement.style.display = 'inline';
                 }
                 
                 // Ensure audio player is synced with current composition
@@ -5970,6 +5999,9 @@
                         audio.currentTime = 0;
                     }
                 });
+                
+                // Restart auto-scrolling when hiding audio
+                startNewReleaseAutoCycle();
                 
                 console.log('🎵 Audio container hidden');
             }
