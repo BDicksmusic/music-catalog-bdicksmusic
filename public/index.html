@@ -5097,47 +5097,11 @@
             console.log('🎠 Featured compositions carousel populated with:', carouselContainer.children.length, 'cards');
         }
 
-        function createCarouselItem(composition, index) {
-            const item = document.createElement('div');
-            item.className = 'carousel-item';
-            item.style.cssText = `
-                flex: 0 0 300px;
-                background: white;
-                border-radius: 12px;
-                padding: 1.5rem;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                border: 1px solid var(--gray-200);
-                transition: all 0.3s ease;
-            `;
-            
-            item.innerHTML = `
-                <div class="carousel-item-image">
-                    <img src="${composition.coverImage || '/imgs/Coming Home (Cover Photo).png'}" 
-                         alt="${composition.title}" 
-                         style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
-                </div>
-                <h4 style="font-size: 1.1rem; font-weight: 600; color: var(--gray-900); margin: 0 0 0.5rem 0;">
-                    ${composition.title}
-                </h4>
-                <p style="font-size: 0.9rem; color: var(--gray-600); margin: 0 0 1rem 0;">
-                    ${composition.instrumentation}
-                </p>
-                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                    <span style="padding: 0.25rem 0.5rem; background: var(--gray-100); color: var(--gray-700); border-radius: 12px; font-size: 0.75rem;">
-                        ${composition.difficulty || 'Medium'}
-                    </span>
-                </div>
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <a href="/music-catalog.html" style="display: inline-block; background: var(--primary-500); color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">
-                        View Details
-                    </a>
-                    <button onclick="playCarouselComposition(${index})" id="carousel-listen-${index}" style="display: inline-block; background: var(--primary-100); color: var(--primary-700); border: 1px solid var(--primary-200); padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
-                        Listen
-                    </button>
-                </div>
-            `;
-            
-            return item;
+        // Global navigation function for composition cards
+        function navigateToComposition(slug) {
+            if (slug) {
+                window.location.href = `/composition/${slug}`;
+            }
         }
 
         function setupCarouselControls() {
