@@ -552,6 +552,10 @@
          border-radius: 8px;
      }
 
+     .buy-now-container {
+         margin-bottom: 1rem;
+     }
+
      .composition-actions {
          display: flex;
          gap: 1rem;
@@ -3239,6 +3243,12 @@
                                                 <div class="composition-details">
                     <h4 class="composition-title">Loading...</h4>
                     <p class="composition-instrumentation">Loading...</p>
+                    <div class="buy-now-container">
+                        <button class="btn-buy buy-now-btn" onclick="buyNowComposition()">
+                            <span class="btn-icon">🛒</span>
+                            Buy Now - $19.99
+                        </button>
+                    </div>
                     <div class="composition-actions">
                         <button class="btn-primary learn-more-btn" onclick="learnMoreComposition()">
                             <span class="btn-icon">📖</span>
@@ -3247,10 +3257,6 @@
                         <button class="btn-secondary view-score-btn" onclick="viewScoreComposition()">
                             <span class="btn-icon">🎼</span>
                             View Score
-                        </button>
-                        <button class="btn-buy buy-now-btn" onclick="buyNowComposition()">
-                            <span class="btn-icon">🛒</span>
-                            Buy Now - $19.99
                         </button>
                         <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn">
                             <span class="btn-icon">🎵</span>
@@ -3298,7 +3304,7 @@
                     </div>
                     
                     <!-- Auto-cycle Toggle -->
-                    <div class="auto-cycle-toggle">
+                    <div class="auto-cycle-toggle" style="display: none;">
                         <label class="toggle-switch">
                             <input type="checkbox" id="new-release-auto-cycle" checked>
                             <span class="toggle-slider"></span>
