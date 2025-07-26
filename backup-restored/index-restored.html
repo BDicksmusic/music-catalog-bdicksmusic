@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Music Catalog</title>
+    <link rel="stylesheet" href="variables.css"> 
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Enhanced Styles for Optimized Version -->
+    <style>
+        html, body {
+            scroll-behavior: smooth;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { 
+                opacity: 0.85; 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: .98; 
+                transform: scale(1.03);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes subtleShimmer {
+            0% {
+                background-position: -200% 0, 0 0;
+            }
+            100% {
+                background-position: 200% 0, 0 0;
+            }
+        }
+        
+        /* Enhanced Explore Button */
+        .explore-btn {
+            display: inline-block;
+            color: var(--gray-100);
+            font-size: 25px;
+            background: var(--primary-400);
+            font-weight: 900;
+            text-decoration: none;
+            cursor: pointer;
+            border-radius: 50px;
+            padding: 7px 10px;
+            border: 1px solid var(--primary-400);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.13);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: 
+                fadeInUp 0.8s ease-out 0.6s forwards,
+                pulse-glow 6.5s infinite 2s;
+        }
+        
+        .explore-btn:hover { 
+            color: var(--gray-100);
+            background: 
+                linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.3) 20%,
+                    rgba(255, 255, 255, 0.6) 50%,
+                    rgba(255, 255, 255, 0.3) 80%,
+                    transparent 100%
+                ),
+                var(--primary-500);
+            background-size: 200% 100%, 100% 100%;
+            border-color: var(--primary-500);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+            animation: 
+                fadeInUp 0.8s ease-out 0.6s forwards,
+                pulse-glow 6.5s infinite 2s paused,
+                subtleShimmer 4s linear infinite;
+            transform: scale(1.05) translateY(-1px) !important;
+            transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        /* Enhanced Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
+        }
+        
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        
+        .hero-video.loaded {
+            opacity: 1;
+        }
+        
+        .hero-fallback-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 2;
+            opacity: 1;
+            transition: all 0.8s ease;
+            filter: brightness(0.8);
+        }
+        
+        .hero-fallback-image.hidden {
+            opacity: 0;
+            z-index: 1 !important;
+            transform: scale(0.98);
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        .hero-fallback-image.active {
+            opacity: 1;
+            z-index: 2 !important;
+            transform: scale(1);
+            visibility: visible;
+            pointer-events: auto;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            color: white;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: var(--gray-200);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+        
+        /* Dynamic Hero Content */
+        .hero-content-dynamic {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .hero-main-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--gray-100);
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
+        
+        .hero-rotating-content {
+            position: relative;
+            min-height: 200px;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-role {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .hero-role.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .hero-role-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-100);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero-role-description {
+            font-size: 1.1rem;
+            color: var(--gray-200);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-nav-dots {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .dot {
+            width: 40px;
+            height: 4px;
+            border-radius: 2px;
+            border: none;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            z-index: 20;
+            transform: scaleX(1);
+        }
+        
+        .dot.active {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+            transform: scaleX(1.1);
+        }
+        
+        .dot:hover {
+            background: rgba(255, 255, 255, 0.7);
+            transform: scaleX(1.3) scaleY(1.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+        
+        .dot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .dot:hover::before {
+            left: 100%;
+        }
+        
+        /* Enhanced Featured Composition */
+        .featured-composition {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            min-height: 400px;
+        }
+        
+        .featured-composition:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        /* Enhanced Stats Section */
+        .stats-section {
+            background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+            padding: 4rem 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .stat-number {
+            display: block;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-600);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-detail {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+        
+        .featured-stat {
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+            color: white;
+        }
+        
+        .featured-stat .stat-number,
+        .featured-stat .stat-label,
+        .featured-stat .stat-detail {
+            color: white;
+        }
+        
+        .cta-stat {
+            background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 100%);
+        }
+        
+        .cta-stat .stat-link {
+            text-decoration: none;
+            color: white;
+        }
+        
+        .cta-stat .stat-label,
+        .cta-stat .stat-detail {
+            color: white;
+        }
+        
+        /* Enhanced Navigation */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--gray-900);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .logo:hover {
+            color: var(--primary-600);
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-link {
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-600);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            list-style: none;
+            padding: 0.5rem 0;
+            margin: 0;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-menu li {
+            margin: 0;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--gray-700);
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+        
+        .dropdown-menu a:hover {
+            background: var(--gray-50);
+            color: var(--primary-600);
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+            color: var(--gray-700);
+        }
+        
+        .theme-toggle:hover {
+            background: var(--gray-100);
+            color: var(--primary-600);
+        }
+        
+        .sun-icon,
+        .moon-icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .music-catalog-btn {
+            background: var(--primary-600);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .music-catalog-btn:hover {
+            background: var(--primary-700);
+        }
+        
+        .music-catalog-btn a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+        }
+        
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--gray-700);
+            transition: all 0.3s ease;
+        }
+        
+        /* Secondary Navigation */
+        .secondary-nav {
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0.5rem 0;
+        }
+        
+        .secondary-nav-left,
+        .secondary-nav-right {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .secondary-button {
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .secondary-button:hover {
+            color: var(--primary-600);
+            background: var(--primary-50);
+        }
+        
+        .social-media-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            color: var(--gray-600);
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .social-link:hover {
+            color: var(--primary-600);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .social-icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        /* Enhanced Footer */
+        .footer {
+            background: var(--gray-900);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: var(--gray-100);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section ul li a {
+            color: var(--gray-300);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-section ul li a:hover {
+            color: white;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-600);
+            border-radius: 8px;
+            background: var(--gray-800);
+            color: white;
+        }
+        
+        .newsletter-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-600);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .newsletter-btn:hover {
+            background: var(--primary-700);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-700);
+            color: var(--gray-400);
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loading-overlay.fade-out {
+            opacity: 0;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary-600);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 1.1rem;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-main-title {
+                font-size: 2rem;
+            }
+            
+            .hero-role-title {
+                font-size: 1.5rem;
+            }
+            
+            .hero-role-description {
+                font-size: 1rem;
+            }
+            
+            .hero-content-dynamic {
+                padding: 0 1rem;
+            }
+            
+            .hero-nav-dots {
+                gap: 0.75rem;
+            }
+            
+            .dot {
+                width: 30px;
+                height: 3px;
+            }
+            
+            .explore-btn {
+                font-size: 18px;
+                padding: 8px 16px;
+            }
+            
+            .nav-container {
+                padding: 1rem;
+            }
+            
+            .nav-menu {
+                gap: 1rem;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+            
+            .secondary-nav-left,
+            .secondary-nav-right {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 0 1rem;
+            }
+        }
+    </style>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="dist/core.min.js" as="script">
+    <link rel="preload" href="dist/components.min.js" as="script">
+    <link rel="preload" href="dist/utils.min.js" as="script">
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('✅ Service Worker registered:', registration);
+                    })
+                    .catch(error => {
+                        console.log('❌ Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Music Catalog...</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">BRANDON DICKS</a>
+            <div class="nav-right">
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="media.html" class="nav-link">Media</a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">News</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="news.html">Latest News</a></li>
+                            <li><a href="updates.html">Updates</a></li>
+                            <li><a href="events.html">Events</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">Teaching Material</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="exercises.html">Exercises</a></li>
+                            <li><a href="tutorials.html">Tutorials</a></li>
+                            <li><a href="resources.html">Resources</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">Contact</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="contact.html">Get in Touch</a></li>
+                            <li><a href="booking.html">Book a Lesson</a></li>
+                            <li><a href="inquiries.html">General Inquiries</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <svg class="sun-icon" width="18" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="moon-icon" width="18" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+                <button class="music-catalog-btn"><a href="music-catalog.html">Music Catalog</a></button>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>   
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Secondary Navigation -->
+    <nav class="secondary-nav">
+        <div class="secondary-nav-left">
+            <a href="/composer" class="secondary-button">Composer</a>
+            <a href="/trumpeter" class="secondary-button">Trumpeter</a>
+            <a href="/educator" class="secondary-button">Educator</a>
+        </div>
+        <div class="secondary-nav-right">
+            <div class="social-media-links">
+                <a href="https://www.youtube.com/@brandondicksmusic" target="_blank" rel="noopener noreferrer" class="social-link" title="YouTube">
+                    <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                </a>
+                <a href="https://www.instagram.com/brandondicksmusic" target="_blank" rel="noopener noreferrer" class="social-link" title="Instagram">
+                    <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                </a>
+                <a href="https://www.facebook.com/brandondicksmusic" target="_blank" rel="noopener noreferrer" class="social-link" title="Facebook">
+                    <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </a>
+                <a href="https://twitter.com/brandondicksmusic" target="_blank" rel="noopener noreferrer" class="social-link" title="Twitter">
+                    <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                    </svg>
+                </a>
+                <a href="https://open.spotify.com/artist/brandondicksmusic" target="_blank" rel="noopener noreferrer" class="social-link" title="Spotify">
+                    <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.48.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <video class="hero-video" autoplay muted loop>
+            <source src="/Video/[Master Video] Resolutions MVT 1.00_00_21_06.mp4" type="video/mp4">
+        </video>
+        <img src="/Index Photos/CJL07828.JPG" alt="Hero Background - Live Musical Performance" class="hero-fallback-image active">
+        <img src="/Index Photos/Playing Photo.jpg" alt="Hero Background - Performance Photo" class="hero-fallback-image">
+        <img src="/Index Photos/Letters Playing Photo.png" alt="Hero Background - Letters Performance" class="hero-fallback-image">
+        <img src="/Index Photos/[Master Video] Resolutions MVT 1.00_00_21_06.Still001.jpg" alt="Hero Background - Master Video Still" class="hero-fallback-image">
+        
+        <div class="hero-content-dynamic">
+            <h1 class="hero-main-title">BRANDON DICKS</h1>
+            
+            <div class="hero-rotating-content">
+                <div class="hero-role active" data-role="composer">
+                    <h2 class="hero-role-title">Composer</h2>
+                    <p class="hero-role-description">Creating original compositions that blend classical tradition with contemporary innovation, exploring themes of human connection and artistic expression.</p>
+                    <a href="#featured" class="explore-btn">Explore Compositions</a>
+                </div>
+                
+                <div class="hero-role" data-role="trumpeter">
+                    <h2 class="hero-role-title">Trumpeter</h2>
+                    <p class="hero-role-description">Performing with passion and technical precision, bringing compositions to life through expressive interpretation and masterful technique.</p>
+                    <a href="media.html" class="explore-btn">Watch Performances</a>
+                </div>
+                
+                <div class="hero-role" data-role="educator">
+                    <h2 class="hero-role-title">Educator</h2>
+                    <p class="hero-role-description">Sharing knowledge and inspiring the next generation of musicians through dedicated teaching and mentorship.</p>
+                    <a href="about.html" class="explore-btn">Learn More</a>
+                </div>
+            </div>
+            
+            <div class="hero-nav-dots">
+                <button class="dot active" data-role="composer"></button>
+                <button class="dot" data-role="trumpeter"></button>
+                <button class="dot" data-role="educator"></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Featured Composition Section -->
+        <section id="featured" class="featured-section">
+            <div class="container">
+                <div class="featured-header">
+                    <h2>Featured Composition</h2>
+                    <p>Latest addition to the catalog</p>
+                </div>
+                
+                <div id="new-release-content" class="featured-composition">
+                    <div class="composition-header">
+                        <h3 class="featured-title">Loading...</h3>
+                        <div class="composition-badges">
+                            <span class="difficulty-badge">Loading...</span>
+                            <span class="year-badge">Loading...</span>
+                        </div>
+                        <p class="featured-instrumentation">Loading...</p>
+                        <p class="featured-description">Loading...</p>
+                    </div>
+                    
+                    <div class="composition-audio-preview">
+                        <div id="audio-player-container">
+                            <!-- Audio player will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-header">
+                    <h3>Catalog Overview</h3>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number" id="composition-count">-</span>
+                        <span class="stat-label">Compositions</span>
+                        <span class="stat-detail">Original works</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="media-count">-</span>
+                        <span class="stat-label">Media Files</span>
+                        <span class="stat-detail">Audio & video</span>
+                    </div>
+                    <div class="stat-item featured-stat">
+                        <span class="stat-number" id="new-releases-count">-</span>
+                        <span class="stat-label">New Releases</span>
+                        <span class="stat-detail">This year</span>
+                    </div>
+                    <div class="stat-item cta-stat">
+                        <a href="media.html" class="stat-link">
+                            <span class="stat-label">Browse All</span>
+                            <span class="stat-detail">View complete catalog</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Brandon Dicks</h4>
+                    <p>Composer and performer</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="media.html">Media</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Newsletter</h4>
+                    <form id="newsletter-form" class="newsletter-form">
+                        <input type="email" id="newsletter-email" class="newsletter-input" required placeholder="Email Address">
+                        <button type="submit" class="newsletter-btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Brandon Dicks. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load optimized bundles -->
+    <script src="dist/core.min.js"></script>
+    <script src="dist/components.min.js"></script>
+    <script src="dist/utils.min.js"></script>
+    <script src="dist/pages.min.js"></script>
+    
+    <!-- Initialize the application -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide loading overlay
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) {
+                setTimeout(() => {
+                    loadingOverlay.classList.add('fade-out');
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 300);
+                }, 1000);
+            }
+            
+            // Hero Section Functionality
+            const heroRoles = document.querySelectorAll('.hero-role');
+            const dots = document.querySelectorAll('.dot');
+            let currentRole = 0;
+            let autoRotate = true;
+            let rotationInterval;
+            
+            function showRole(index) {
+                // Hide all roles
+                heroRoles.forEach(role => {
+                    role.classList.remove('active');
+                });
+                
+                // Remove active class from all dots
+                dots.forEach(dot => {
+                    dot.classList.remove('active');
+                });
+                
+                // Show selected role
+                if (heroRoles[index]) {
+                    heroRoles[index].classList.add('active');
+                }
+                
+                // Activate corresponding dot
+                if (dots[index]) {
+                    dots[index].classList.add('active');
+                }
+                
+                currentRole = index;
+            }
+            
+            function nextRole() {
+                const nextIndex = (currentRole + 1) % heroRoles.length;
+                showRole(nextIndex);
+            }
+            
+            // Auto-rotate every 5 seconds
+            function startAutoRotate() {
+                if (autoRotate) {
+                    rotationInterval = setInterval(nextRole, 5000);
+                }
+            }
+            
+            function stopAutoRotate() {
+                if (rotationInterval) {
+                    clearInterval(rotationInterval);
+                }
+            }
+            
+            // Dot click handlers
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    stopAutoRotate();
+                    showRole(index);
+                    // Restart auto-rotate after 10 seconds of inactivity
+                    setTimeout(startAutoRotate, 10000);
+                });
+            });
+            
+            // Pause auto-rotate on hover
+            const heroSection = document.querySelector('.hero');
+            if (heroSection) {
+                heroSection.addEventListener('mouseenter', stopAutoRotate);
+                heroSection.addEventListener('mouseleave', startAutoRotate);
+            }
+            
+            // Start auto-rotation
+            startAutoRotate();
+            
+            // Video loading
+            const heroVideo = document.querySelector('.hero-video');
+            const fallbackImages = document.querySelectorAll('.hero-fallback-image');
+            let currentImageIndex = 0;
+            
+            if (heroVideo) {
+                heroVideo.addEventListener('loadeddata', () => {
+                    heroVideo.classList.add('loaded');
+                    // Hide fallback images when video loads
+                    fallbackImages.forEach(img => {
+                        img.classList.add('hidden');
+                    });
+                });
+                
+                heroVideo.addEventListener('error', () => {
+                    // If video fails, cycle through fallback images
+                    cycleFallbackImages();
+                });
+            }
+            
+            function cycleFallbackImages() {
+                fallbackImages.forEach((img, index) => {
+                    if (index === currentImageIndex) {
+                        img.classList.add('active');
+                        img.classList.remove('hidden');
+                    } else {
+                        img.classList.remove('active');
+                        img.classList.add('hidden');
+                    }
+                });
+                
+                currentImageIndex = (currentImageIndex + 1) % fallbackImages.length;
+            }
+            
+            // Cycle fallback images every 8 seconds if video doesn't load
+            if (fallbackImages.length > 1) {
+                setInterval(cycleFallbackImages, 8000);
+            }
+            
+            // Initialize the page manager
+            if (window.IndexPageManager) {
+                const pageManager = new window.IndexPageManager();
+                pageManager.init();
+            }
+        });
+    </script>
+</body>
+</html> 
