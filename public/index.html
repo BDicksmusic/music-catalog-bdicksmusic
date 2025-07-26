@@ -2864,6 +2864,9 @@
     .compositions-carousel-section {
         padding: 4rem 0;
         background: white;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        position: relative;
     }
 
     .compositions-carousel-container {
@@ -3290,6 +3293,7 @@
                                             Buy Now - $19.99
                                         </button>
                                     </div>
+                                    <p class="composition-description">Loading composition description...</p>
                                     <div class="composition-actions">
                                         <button class="btn-primary learn-more-btn" onclick="learnMoreComposition()">
                                             <span class="btn-icon">📖</span>
@@ -3304,7 +3308,6 @@
                                             Listen
                                         </button>
                                     </div>
-                                    <p class="composition-description">Loading composition description...</p>
                                 </div>
                             </div>
                         </div>
@@ -3383,7 +3386,7 @@
 
     <!-- Featured Compositions Carousel Section -->
     <section class="compositions-carousel-section">
-        <div class="container">
+        <div class="container" style="max-width: 100%; padding: 0 2rem;">
             <div class="section-header">
                 <h2 class="section-title">Featured Compositions</h2>
                 <p class="section-subtitle">Explore the complete collection of original works</p>
@@ -5354,20 +5357,37 @@
             const audioPlayer = document.getElementById('new-release-audio-player');
             const performedByElement = document.querySelector('#new-release-audio-container .performed-by-artist');
             
-            // Only update if audio container is visible
-            if (audioContainer.style.display !== 'none' && newReleaseCompositions[currentNewReleaseIndex]) {
+            // Always update the audio player and performed by info when carousel changes
+            if (newReleaseCompositions[currentNewReleaseIndex]) {
                 const composition = newReleaseCompositions[currentNewReleaseIndex];
+                
+                console.log('🎵 Updating audio player for composition:', composition.title);
+                console.log('🎵 Performed By:', composition.performedBy);
+                console.log('🎵 Audio Preview URL:', composition.audioPreview);
                 
                 // Update performed by information
                 if (performedByElement) {
                     performedByElement.textContent = composition.performedBy || 'Unknown Artist';
+                    console.log('✅ Updated performed by to:', composition.performedBy || 'Unknown Artist');
                 }
                 
+                // Update audio source if available
                 if (composition.audioPreview) {
                     audioPlayer.src = composition.audioPreview;
                     audioPlayer.load();
-                    audioPlayer.play();
+                    console.log('✅ Updated audio source to:', composition.audioPreview);
+                    
+                    // Only auto-play if the audio container is visible
+                    if (audioContainer.style.display !== 'none') {
+                        audioPlayer.play().catch(e => {
+                            console.log('⚠️ Auto-play prevented by browser:', e);
+                        });
+                    }
+                } else {
+                    console.log('⚠️ No audio preview available for this composition');
                 }
+            } else {
+                console.log('❌ No composition found at index:', currentNewReleaseIndex);
             }
         }
 
@@ -5404,9 +5424,6 @@
         function playFeaturedComposition() {
             const audioContainer = document.getElementById('new-release-audio-container');
             const audioPlayer = document.getElementById('new-release-audio-player');
-            const audioTitle = document.querySelector('#new-release-audio-container .audio-composition-title');
-            const audioInstrumentation = document.querySelector('#new-release-audio-container .audio-composition-instrumentation');
-            const audioCover = document.querySelector('#new-release-audio-container .audio-cover');
             const listenBtn = document.getElementById('listen-btn');
             
             // Toggle audio container visibility
@@ -5421,24 +5438,10 @@
                     listenBtn.innerHTML = '<span class="btn-icon">🎵</span>Listen [HIDDEN]';
                 }
                 
-                // Get the current composition from the new release carousel
-                if (newReleaseCompositions && newReleaseCompositions[currentNewReleaseIndex]) {
-                    const composition = newReleaseCompositions[currentNewReleaseIndex];
-                    
-                    // Update audio player content
-                    audioTitle.textContent = composition.title || 'Composition';
-                    audioInstrumentation.textContent = composition.instrumentation || 'Brass Ensemble';
-                    
-                    if (composition.coverImage) {
-                        audioCover.src = composition.coverImage;
-                    }
-                    
-                    if (composition.audioPreview) {
-                        audioPlayer.src = composition.audioPreview;
-                        audioPlayer.load();
-                        audioPlayer.play();
-                    }
-                }
+                // Ensure audio player is synced with current composition
+                updateNewReleaseAudioPlayer();
+                
+                console.log('🎵 Audio container shown for composition:', newReleaseCompositions[currentNewReleaseIndex]?.title);
             } else {
                 // Hide the audio container
                 audioContainer.style.display = 'none';
@@ -5448,7 +5451,11 @@
                     listenBtn.innerHTML = '<span class="btn-icon">🎵</span>Listen';
                 }
                 
-                // Pause and reset audio
+                console.log('🎵 Audio container hidden');
+            }
+            
+            // Pause and reset audio when hiding
+            if (isVisible) {
                 audioPlayer.pause();
                 audioPlayer.currentTime = 0;
             }
