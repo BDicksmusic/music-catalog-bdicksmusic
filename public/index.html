@@ -5113,18 +5113,34 @@
 
         async function loadNewCatalogRelease() {
             try {
+                console.log('🔄 Loading New Catalog Release...');
                 const response = await fetch('/api/compositions');
                 const data = await response.json();
+                
+                console.log('📊 API Response:', {
+                    success: data?.success,
+                    totalCompositions: data?.compositions?.length || 0,
+                    compositions: data?.compositions?.map(comp => ({
+                        title: comp.title,
+                        newInCatalog: comp.newInCatalog,
+                        featured: comp.featured,
+                        popular: comp.popular
+                    })) || []
+                });
                 
                 if (data && data.success && data.compositions && data.compositions.length > 0) {
                     // Filter for compositions marked as "New in Catalog"
                     newReleaseCompositions = data.compositions.filter(comp => comp.newInCatalog === true);
+                    
+                    console.log('🎯 New in Catalog compositions found:', newReleaseCompositions.length);
+                    console.log('📝 New in Catalog compositions:', newReleaseCompositions.map(comp => comp.title));
                     
                     if (newReleaseCompositions.length > 0) {
                         currentNewReleaseIndex = 0;
                         updateNewCatalogRelease(newReleaseCompositions[0]);
                         initializeNewReleaseCarousel();
                         startNewReleaseAutoCycle();
+                        console.log('✅ New Catalog Release loaded successfully with', newReleaseCompositions.length, 'compositions');
                     } else {
                         // Fallback to featured or first composition if no "New in Catalog" items
                         const fallbackComposition = data.compositions.find(comp => comp.featured) || data.compositions[0];
@@ -5132,11 +5148,13 @@
                         currentNewReleaseIndex = 0;
                         updateNewCatalogRelease(fallbackComposition);
                         initializeNewReleaseCarousel();
-                        console.log('No compositions marked as "New in Catalog", using fallback');
+                        console.log('⚠️ No compositions marked as "New in Catalog", using fallback:', fallbackComposition?.title);
                     }
+                } else {
+                    console.log('❌ No compositions data available');
                 }
             } catch (error) {
-                console.error('Error loading new catalog release:', error);
+                console.error('❌ Error loading new catalog release:', error);
             }
         }
 
@@ -5153,33 +5171,57 @@
         }
 
         function initializeNewReleaseCarousel() {
+            console.log('🎠 Initializing New Release Carousel...');
             const dotsContainer = document.getElementById('new-release-dots');
             const prevBtn = document.getElementById('new-release-prev');
             const nextBtn = document.getElementById('new-release-next');
             
-            if (!dotsContainer || !prevBtn || !nextBtn) return;
+            console.log('🔍 Carousel elements found:', {
+                dotsContainer: !!dotsContainer,
+                prevBtn: !!prevBtn,
+                nextBtn: !!nextBtn,
+                compositionsCount: newReleaseCompositions.length
+            });
+            
+            if (!dotsContainer || !prevBtn || !nextBtn) {
+                console.error('❌ Missing carousel elements');
+                return;
+            }
             
             // Clear existing dots
             dotsContainer.innerHTML = '';
             
             // Create dots for each composition
-            newReleaseCompositions.forEach((_, index) => {
+            newReleaseCompositions.forEach((composition, index) => {
                 const dot = document.createElement('div');
                 dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
                 dot.onclick = () => goToNewRelease(index);
                 dotsContainer.appendChild(dot);
+                console.log(`🔘 Created dot ${index + 1} for: ${composition.title}`);
             });
             
             // Update button states
             updateNewReleaseNavButtons();
+            console.log('✅ New Release Carousel initialized with', newReleaseCompositions.length, 'dots');
         }
 
         function updateNewReleaseNavButtons() {
             const prevBtn = document.getElementById('new-release-prev');
             const nextBtn = document.getElementById('new-release-next');
             
-            if (prevBtn) prevBtn.disabled = currentNewReleaseIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentNewReleaseIndex === newReleaseCompositions.length - 1;
+            const prevDisabled = currentNewReleaseIndex === 0;
+            const nextDisabled = currentNewReleaseIndex === newReleaseCompositions.length - 1;
+            
+            if (prevBtn) {
+                prevBtn.disabled = prevDisabled;
+                console.log('⬅️ Previous button:', prevDisabled ? 'disabled' : 'enabled');
+            }
+            if (nextBtn) {
+                nextBtn.disabled = nextDisabled;
+                console.log('➡️ Next button:', nextDisabled ? 'disabled' : 'enabled');
+            }
+            
+            console.log('🎯 Current index:', currentNewReleaseIndex, 'of', newReleaseCompositions.length - 1);
         }
 
         function updateNewReleaseDots() {

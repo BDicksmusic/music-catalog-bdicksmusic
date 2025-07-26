@@ -784,6 +784,7 @@ const transformNotionPage = (page) => {
         type: properties.Type?.select?.name || 'Original',
         featured: properties.Featured?.checkbox || false,
         popular: properties.Popular?.checkbox || false,
+        newInCatalog: properties['New in Catalog']?.checkbox || false,
         slug: properties.Slug?.rich_text[0]?.plain_text || '',
         shortInstrumentList: notionRichTextToHtml(properties['Short Instrument List']?.rich_text) || '',
         similarWorksSlugs: (() => {
