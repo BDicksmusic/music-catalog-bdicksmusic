@@ -1255,6 +1255,56 @@
                 padding: 0 1rem;
             }
         }
+        
+        /* ===== FALLBACK LOADING OVERLAY STYLES ===== */
+        .fallback-loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .fallback-loading-content {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .fallback-loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .fallback-loading-content h3 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .fallback-loading-content p {
+            margin: 0;
+            color: #666;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
   <body class="composition-page">
@@ -1272,6 +1322,22 @@
          data-error-title="Error Loading Composition"
          data-error-message="Failed to load composition data"
          data-error-timeout-message="Please try refreshing the page">
+    </div>
+    
+    <!-- Fallback Loading Screen (in case component fails to load) -->
+    <div id="fallback-loading" class="fallback-loading-overlay" style="display: none;">
+        <div class="fallback-loading-content">
+            <div class="fallback-loading-spinner"></div>
+            <h3>Loading Composition...</h3>
+            <p>Please wait while we fetch the composition data...</p>
+        </div>
+    </div>
+    
+    <!-- Debug Test Button (temporary) -->
+    <div style="position: fixed; top: 10px; right: 10px; z-index: 10000;">
+        <button onclick="testLoadingOverlay()" style="padding: 0.5rem 1rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+            Test Loading
+        </button>
     </div>
 
     <main>
@@ -1459,19 +1525,46 @@
                             'replace'
                         );
                         console.log('✅ Loading overlay component loaded');
+                        
+                        // ✨ Wait a moment for component functions to be available
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        
+                        // ✨ Verify loading functions are available
+                        if (window['showLoading_' + containerId] && 
+                            window['hideLoading_' + containerId] && 
+                            window['showLoadingError_' + containerId]) {
+                            console.log('✅ Loading overlay functions verified');
+                            
+                            // ✨ Initialize composition loading after loading overlay is ready
+                            if (typeof loadCompositionDetail === 'function') {
+                                console.log('🎵 Starting composition detail loading...');
+                                await loadCompositionDetail();
+                            } else {
+                                console.error('❌ loadCompositionDetail function not found');
+                            }
+                        } else {
+                            console.error('❌ Loading overlay functions not available');
+                            // Fallback: try to load composition anyway
+                            if (typeof loadCompositionDetail === 'function') {
+                                console.log('🎵 Starting composition detail loading (fallback)...');
+                                await loadCompositionDetail();
+                            }
+                        }
                     } else {
                         console.error('❌ Loading placeholder not found');
+                        // Fallback: try to load composition anyway
+                        if (typeof loadCompositionDetail === 'function') {
+                            console.log('🎵 Starting composition detail loading (fallback)...');
+                            await loadCompositionDetail();
+                        }
                     }
                 } else {
                     console.error('❌ ComponentLoader not available');
-                }
-                
-                // ✨ Initialize composition loading after templates are loaded
-                if (typeof loadCompositionDetail === 'function') {
-                    console.log('🎵 Starting composition detail loading...');
-                    await loadCompositionDetail();
-                } else {
-                    console.error('❌ loadCompositionDetail function not found');
+                    // Fallback: try to load composition anyway
+                    if (typeof loadCompositionDetail === 'function') {
+                        console.log('🎵 Starting composition detail loading (fallback)...');
+                        await loadCompositionDetail();
+                    }
                 }
                 
             } catch (error) {
@@ -1482,6 +1575,16 @@
 
         function showUnavailableMessage(title) {
             alert(`"${title}" is currently not available for purchase.\n\nPlease contact us directly for more information about acquiring this composition.`);
+        }
+
+        // Debug function to test loading overlay
+        function testLoadingOverlay() {
+            console.log('🧪 Testing loading overlay...');
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                console.log('✅ Loading overlay test completed');
+            }, 3000);
         }
 
         // ===== NEW SIMPLIFIED TOGGLE FUNCTIONS =====

@@ -3285,9 +3285,16 @@
     </style>
 </head>
 
-<body>
-    <!-- Navigation -->
-<nav>
+    <body>
+        <!-- Debug Test Button (temporary) -->
+        <div style="position: fixed; top: 10px; right: 10px; z-index: 10000;">
+            <button onclick="testAudioContainer()" style="padding: 0.5rem 1rem; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                Test Audio Container
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav>
     <div class="nav-container">
         <a href="index.html" class="logo">BRANDON DICKS</a>
         <div class="nav-right">
@@ -5500,10 +5507,24 @@
                 }
                 
                 console.log('🎵 AudioContainerManager.show() - Showing container');
+                console.log('🎵 Before show - classes:', this.container.className);
+                console.log('🎵 Before show - display:', this.container.style.display);
+                
+                // Remove no-audio class and add has-audio class
                 this.container.classList.remove('no-audio');
                 this.container.classList.add('has-audio');
-                this.container.style.display = 'block';
                 
+                // Force display block to override CSS
+                this.container.style.display = 'block';
+                this.container.style.opacity = '1';
+                this.container.style.transform = 'translateY(0)';
+                this.container.style.pointerEvents = 'auto';
+                this.container.style.maxHeight = '500px';
+                this.container.style.overflow = 'visible';
+                this.container.style.marginBottom = '1.5rem';
+                
+                console.log('🎵 After show - classes:', this.container.className);
+                console.log('🎵 After show - display:', this.container.style.display);
                 console.log('🎵 Audio container shown');
             },
             
@@ -5511,15 +5532,20 @@
             hide() {
                 if (!this.container) return;
                 
+                console.log('🎵 AudioContainerManager.hide() - Hiding container');
+                
                 this.container.classList.remove('has-audio');
                 this.container.classList.add('no-audio');
                 
-                // Hide after animation completes
-                setTimeout(() => {
-                    if (this.container.classList.contains('no-audio')) {
-                        this.container.style.display = 'none';
-                    }
-                }, 300);
+                // Force hide immediately
+                this.container.style.display = 'none';
+                this.container.style.opacity = '0';
+                this.container.style.transform = 'translateY(-10px)';
+                this.container.style.pointerEvents = 'none';
+                this.container.style.maxHeight = '0';
+                this.container.style.overflow = 'hidden';
+                this.container.style.margin = '0';
+                this.container.style.padding = '0';
                 
                 console.log('🎵 Audio container hidden');
             },
@@ -5528,12 +5554,18 @@
             updateState(hasAudio) {
                 console.log('🎵 AudioContainerManager.updateState called with hasAudio:', hasAudio);
                 console.log('🎵 AudioContainerManager container exists:', !!this.container);
+                if (this.container) {
+                    console.log('🎵 Container current classes:', this.container.className);
+                    console.log('🎵 Container current display:', this.container.style.display);
+                }
+                
                 if (hasAudio) {
                     // Don't automatically show - just update the class for button state
                     console.log('🎵 Audio available - container remains hidden by default');
                     this.container.classList.remove('no-audio');
                     this.container.classList.add('has-audio');
                     // Keep display: none - only show when user clicks Listen button
+                    console.log('🎵 Container updated classes:', this.container.className);
                 } else {
                     console.log('🎵 No audio available - hiding container...');
                     this.hide();
@@ -6142,9 +6174,19 @@
         async function playFeaturedComposition() {
             const listenBtn = document.getElementById('listen-btn');
             
+            console.log('🎵 playFeaturedComposition called');
+            console.log('🎵 AudioContainerManager state:', {
+                container: !!AudioContainerManager.container,
+                hasAudioClass: AudioContainerManager.container?.classList.contains('has-audio'),
+                display: AudioContainerManager.container?.style.display
+            });
+            
             // Check if audio container is currently visible
             const isVisible = AudioContainerManager.container && 
-                AudioContainerManager.container.classList.contains('has-audio');
+                AudioContainerManager.container.classList.contains('has-audio') &&
+                AudioContainerManager.container.style.display !== 'none';
+            
+            console.log('🎵 Audio container is visible:', isVisible);
             
             if (!isVisible) {
                 // Load media data on-demand if not already loaded
@@ -6294,6 +6336,38 @@
                 // Fallback to music catalog if no composition data
                 window.location.href = '/music-catalog.html';
             }
+        }
+
+        // Debug function to test audio container
+        function testAudioContainer() {
+            console.log('🧪 Testing audio container...');
+            console.log('🎵 AudioContainerManager state:', {
+                container: !!AudioContainerManager.container,
+                hasAudioClass: AudioContainerManager.container?.classList.contains('has-audio'),
+                noAudioClass: AudioContainerManager.container?.classList.contains('no-audio'),
+                display: AudioContainerManager.container?.style.display
+            });
+            
+            // Test showing the container
+            AudioContainerManager.show();
+            
+            setTimeout(() => {
+                console.log('🎵 After show - state:', {
+                    hasAudioClass: AudioContainerManager.container?.classList.contains('has-audio'),
+                    display: AudioContainerManager.container?.style.display
+                });
+                
+                // Test hiding the container
+                AudioContainerManager.hide();
+                
+                setTimeout(() => {
+                    console.log('🎵 After hide - state:', {
+                        noAudioClass: AudioContainerManager.container?.classList.contains('no-audio'),
+                        display: AudioContainerManager.container?.style.display
+                    });
+                    console.log('✅ Audio container test completed');
+                }, 1000);
+            }, 1000);
         }
 
         // Load everything when page loads

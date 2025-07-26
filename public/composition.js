@@ -7,22 +7,57 @@ let currentVideoIndex = 0;
 let totalVideoCount = 0;
 let videoPlayers = [];
 
-// Loading state management - using component functions
+// Loading state management - using component functions with fallback
 function showLoading() {
+    // Try both possible container IDs (with dash and underscore)
     if (window.showLoading_composition_loading) {
         window.showLoading_composition_loading();
+    } else if (window.showLoading_composition_loading) {
+        window.showLoading_composition_loading();
+    } else {
+        // Fallback loading screen
+        const fallbackLoading = document.getElementById('fallback-loading');
+        if (fallbackLoading) {
+            fallbackLoading.style.display = 'flex';
+        }
     }
 }
 
 function hideLoading() {
+    // Try both possible container IDs (with dash and underscore)
     if (window.hideLoading_composition_loading) {
         window.hideLoading_composition_loading();
+    } else if (window.hideLoading_composition_loading) {
+        window.hideLoading_composition_loading();
+    } else {
+        // Hide fallback loading screen
+        const fallbackLoading = document.getElementById('fallback-loading');
+        if (fallbackLoading) {
+            fallbackLoading.style.display = 'none';
+        }
     }
 }
 
 function showLoadingError(message) {
+    // Try both possible container IDs (with dash and underscore)
     if (window.showLoadingError_composition_loading) {
         window.showLoadingError_composition_loading(message);
+    } else if (window.showLoadingError_composition_loading) {
+        window.showLoadingError_composition_loading(message);
+    } else {
+        // Show error in fallback loading screen
+        const fallbackLoading = document.getElementById('fallback-loading');
+        if (fallbackLoading) {
+            const content = fallbackLoading.querySelector('.fallback-loading-content');
+            if (content) {
+                content.innerHTML = `
+                    <div class="fallback-loading-spinner" style="border-top-color: #e74c3c;"></div>
+                    <h3 style="color: #e74c3c;">Error Loading Composition</h3>
+                    <p style="color: #e74c3c;">${message || 'Failed to load composition data'}</p>
+                    <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.75rem 1.5rem; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer;">Refresh Page</button>
+                `;
+            }
+        }
     }
 }
 
