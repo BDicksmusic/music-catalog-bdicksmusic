@@ -90,45 +90,7 @@ async function queryRelatedMedia(compositionId, mediaType = null) {
             ]
         });
         
-        console.log(`🔍 QUERY RESULT - Found ${response.results.length} media items for composition ${compositionId}`);
-        
-        // Enhanced debugging for each media item found
-        response.results.forEach((item, index) => {
-            const name = getTextContent(item.properties.Name) || 
-                        getTextContent(item.properties.Title) || 
-                        'Unnamed';
-            const type = item.properties.Type?.select?.name || 'No Type';
-            const audioRel = item.properties['Audio to Comp']?.relation?.length || 0;
-            const videoRel = item.properties['Video to Comp']?.relation?.length || 0;
-            
-            // Check if this item is actually related to our composition
-            const isRelated = item.properties['Audio to Comp']?.relation?.some(rel => rel.id === compositionId) ||
-                             item.properties['Video to Comp']?.relation?.some(rel => rel.id === compositionId);
-            
-            console.log(`  ${index + 1}. "${name}" (${type}) - Audio Rel: ${audioRel}, Video Rel: ${videoRel}, Related: ${isRelated ? 'YES' : 'NO'}`);
-            
-            // Debug URL extraction
-            let hasUrl = false;
-            if (item.properties.URL?.url || 
-                item.properties.VideoURL?.url || 
-                item.properties.AudioURL?.url ||
-                item.properties.Link?.url ||
-                item.properties['Audio File']?.files?.[0] ||
-                item.properties['Video File']?.files?.[0] ||
-                item.properties['Score File']?.files?.[0]) {
-                hasUrl = true;
-            }
-            
-            if (!hasUrl) {
-                console.log(`    ⚠️ NO URL found for "${name}" - Properties:`, Object.keys(item.properties).filter(key => 
-                    key.toLowerCase().includes('url') || 
-                    key.toLowerCase().includes('file') || 
-                    key.toLowerCase().includes('link')
-                ));
-            } else {
-                console.log(`    ✅ URL found for "${name}"`);
-            }
-        });
+        console.log(`🔍 Found ${response.results.length} media items for composition ${compositionId}`);
         
         const transformedMedia = response.results.map(transformMediaPage);
         
@@ -176,9 +138,6 @@ async function findMovementFilesByPattern(compositionTitle, linkedMediaIds = [])
             const fileName = item.properties.Name?.title?.[0]?.text?.content || '';
             const fileNameNormalized = fileName.toLowerCase().replace(/[^a-z0-9]/g, '');
             
-            console.log(`  🔍 Checking file: "${fileName}"`);
-            console.log(`    - Normalized: "${fileNameNormalized}"`);
-            
             // Check if this file matches the composition pattern and has movement indicators
             const hasCompositionMatch = fileNameNormalized.includes(compositionPattern) || 
                                       fileNameNormalized.includes('resolutions') ||
@@ -189,18 +148,12 @@ async function findMovementFilesByPattern(compositionTitle, linkedMediaIds = [])
                                        /\b(i{1,3}v?|v)\b[._]/i.test(fileName) ||
                                        /movement|mvt/i.test(fileName);
             
-            console.log(`    - Composition match: ${hasCompositionMatch}`);
-            console.log(`    - Movement indicator: ${hasMovementIndicator}`);
-            console.log(`    - Already linked: ${linkedMediaIds.includes(item.id)}`);
-            
             if (hasCompositionMatch && hasMovementIndicator && !linkedMediaIds.includes(item.id)) {
                 const mediaItem = transformMediaPage(item);
                 // Only include audio files in final results
                 if (mediaItem.type === 'Audio') {
                     movementFiles.push(mediaItem);
-                    console.log(`  ✅ Found movement file: "${fileName}" (Type: ${mediaItem.type})`);
-                } else {
-                    console.log(`  ⚠️ Skipping non-audio file: "${fileName}" (Type: ${mediaItem.type})`);
+                    console.log(`  ✅ Found movement file: "${fileName}"`);
                 }
             }
         });
@@ -498,8 +451,9 @@ const fetchSimilarWorks = async (compositionPage) => {
         index === self.findIndex(w => w.id === work.id)
     );
     
-    console.log(`🔗 DEBUG - Final unique similar works: ${uniqueWorks.length} total`);
-    console.log('🔗 DEBUG - All similar works:', uniqueWorks.map(w => `"${w.title}" (${w.id})`));
+    if (process.env.NODE_ENV !== 'production' && uniqueWorks.length > 0) {
+        console.log(`🔗 Found ${uniqueWorks.length} similar works`);
+    }
     
     return uniqueWorks;
 };
@@ -590,25 +544,10 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
             }
         }
 
-        // Debug: Log what media was actually returned
-        if (process.env.NODE_ENV !== 'production') {
-            console.log(`🔍 DEBUG - Found ${allMedia.length} total media items for composition:`);
-            allMedia.forEach((media, index) => {
-                console.log(`  ${index + 1}. "${media.title}" (${media.type}) - URL: ${media.url ? 'YES' : 'NO'}`);
-            });
+        // Debug: Log what media was actually returned (reduced logging for performance)
+        if (process.env.NODE_ENV !== 'production' && allMedia.length > 0) {
+            console.log(`🔍 Found ${allMedia.length} media items for composition: ${baseComposition.title}`);
         }
-        
-        // Debug: Show all media items with their types
-        console.log('🎼 DEBUG SERVER - All media items with types:');
-        allMedia.forEach((media, index) => {
-            console.log(`  ${index + 1}. "${media.title}" - Type: "${media.type}" - Category: "${media.category}" - URL: ${media.url ? 'YES' : 'NO'}`);
-            if (media.url) {
-                console.log(`    URL: ${media.url.substring(0, 80)}...`);
-            }
-        });
-        
-        // Debug: Show composition relations check
-        console.log('🎼 DEBUG SERVER - Checking composition relations in media database for ID:', page.id);
 
         // Separate by type - FIXED: Properly separate score PDFs from score videos
         const audioMedia = allMedia.filter(media => media.type === 'Audio');
@@ -619,39 +558,16 @@ const transformNotionPageWithMedia = async (page, includeMedia = true) => {
         // Combine all videos (regular + score videos) for client-side filtering
         const allVideoMedia = videoMedia.concat(scoreVideoMedia);
         
-        // Debug: Show filtered results
-        console.log('🎼 DEBUG SERVER - Regular video media:', videoMedia.length);
-        videoMedia.forEach((video, index) => {
-            console.log(`  Regular Video ${index + 1}. "${video.title}" - Type: "${video.type}" - Category: "${video.category}"`);
-        });
-        
-        console.log('🎼 DEBUG SERVER - Score PDF media (PDFs only):', scorePdfMedia.length);
-        scorePdfMedia.forEach((score, index) => {
-            console.log(`  Score PDF ${index + 1}. "${score.title}" - Type: "${score.type}" - Category: "${score.category}"`);
-        });
-        
-        console.log('🎼 DEBUG SERVER - Score Video media (Videos only):', scoreVideoMedia.length);
-        scoreVideoMedia.forEach((scoreVideo, index) => {
-            console.log(`  Score Video ${index + 1}. "${scoreVideo.title}" - Type: "${scoreVideo.type}" - Category: "${scoreVideo.category}"`);
-        });
-        
-        // Debug: Log the filtering results
+        // Debug: Log the filtering results (reduced for performance)
         if (process.env.NODE_ENV !== 'production') {
-            console.log(`🔍 DEBUG - After filtering: ${audioMedia.length} audio, ${allVideoMedia.length} total video, ${scorePdfMedia.length} score PDF, ${scoreVideoMedia.length} score video`);
-            console.log(`🔍 DEBUG - Audio files:`);
-            audioMedia.forEach((audio, index) => {
-                console.log(`  ${index + 1}. "${audio.title}" - URL: ${audio.url ? 'YES' : 'NO'}`);
-            });
+            console.log(`🔍 Media summary: ${audioMedia.length} audio, ${allVideoMedia.length} video, ${scorePdfMedia.length} score PDF, ${scoreVideoMedia.length} score video`);
         }
         
-        // Fetch similar works using the new comprehensive function
-        console.log('🔗 DEBUG - Fetching similar works for composition:', page.id);
-        console.log('🔗 DEBUG - Base composition similarWorksSlugs:', baseComposition.similarWorksSlugs?.length, baseComposition.similarWorksSlugs);
-        console.log('🔗 DEBUG - Base composition similarWorksIds:', baseComposition.similarWorksIds?.length, baseComposition.similarWorksIds);
-        console.log('🔗 DEBUG - Base composition similarWorksRelation:', baseComposition.similarWorksRelation?.length, baseComposition.similarWorksRelation);
-        
+        // Fetch similar works using the new comprehensive function (with reduced logging)
         const similarWorks = await fetchSimilarWorks(page); // Use the new fetchSimilarWorks function
-        console.log('🔗 DEBUG - Final similarWorks result:', similarWorks?.length, similarWorks?.map(w => w.title));
+        if (process.env.NODE_ENV !== 'production' && similarWorks?.length > 0) {
+            console.log(`🔗 Found ${similarWorks.length} similar works for: ${baseComposition.title}`);
+        }
         
         // Roll up media data - FIXED: Use properly separated arrays
         return {
@@ -1265,7 +1181,9 @@ app.get('/api/compositions', async (req, res) => {
         
         const fetchCompositions = async () => {
             console.log(`🔄 Fetching fresh compositions from Notion${includeMedia ? ' with media' : ''}...`);
-            const response = await notion.databases.query({
+            
+            // Build query with optional filters
+            const queryParams = {
                 database_id: process.env.NOTION_DATABASE_ID,
                 sorts: [
                     {
@@ -1273,7 +1191,28 @@ app.get('/api/compositions', async (req, res) => {
                         direction: 'descending'
                     }
                 ]
-            });
+            };
+            
+            // Add filter if specified
+            if (req.query.filter === 'newInCatalog') {
+                queryParams.filter = {
+                    property: 'New in Catalog',
+                    checkbox: {
+                        equals: true
+                    }
+                };
+                console.log('🎯 Filtering for "New in Catalog" compositions only');
+            } else if (req.query.filter === 'popular') {
+                queryParams.filter = {
+                    property: 'Popular',
+                    checkbox: {
+                        equals: true
+                    }
+                };
+                console.log('🎯 Filtering for "Popular" compositions only');
+            }
+            
+            const response = await notion.databases.query(queryParams);
             
             // Transform Notion data to clean format
             let compositions;
@@ -1316,6 +1255,55 @@ app.get('/api/compositions', async (req, res) => {
         res.status(500).json({ 
             success: false,
             error: 'Failed to fetch compositions',
+            message: error.message 
+        });
+    }
+});
+
+// OPTIMIZED: Load media data for specific compositions (for faster initial loading)
+app.get('/api/compositions/:id/media', async (req, res) => {
+    try {
+        const compositionId = req.params.id;
+        
+        const fetchMediaData = async () => {
+            console.log(`🎵 Loading media data for composition: ${compositionId}`);
+            
+            // Get the composition first
+            const pageData = await notion.pages.retrieve({
+                page_id: compositionId,
+            });
+            
+            // Load media data with timeout
+            const mediaData = await Promise.race([
+                transformNotionPageWithMedia(pageData, true),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Media loading timeout')), 5000)
+                )
+            ]);
+            
+            return {
+                success: true,
+                composition: mediaData,
+                cached: false,
+                timestamp: new Date().toISOString()
+            };
+        };
+
+        const cacheKey = `composition_media_${compositionId}`;
+        const result = await withCache(
+            cacheKey,
+            CACHE_DURATIONS.singleComposition,
+            fetchMediaData
+        );
+
+        result.cached = true;
+        res.json(result);
+        
+    } catch (error) {
+        console.error('Error loading composition media:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to load composition media',
             message: error.message 
         });
     }
