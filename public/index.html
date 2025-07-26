@@ -2263,9 +2263,9 @@
     }
 
     .btn-listen {
-        background: var(--gray-600);
-        color: white;
-        border: 1px solid var(--gray-600);
+        background: var(--primary-100);
+        color: var(--primary-700);
+        border: 1px solid var(--primary-200);
         padding: 0.5rem 1rem;
         border-radius: 6px;
         text-decoration: none;
@@ -2275,26 +2275,6 @@
         font-size: 0.85rem;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-listen.in-view {
-        background: #ff6b35;
-        color: white;
-        border: 1px solid #ff6b35;
-    }
-
-    .btn-listen .status-circle {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        border: 2px solid white;
-        background: transparent;
-        transition: all 0.3s ease;
-    }
-
-    .btn-listen.in-view .status-circle {
-        background: white;
     }
 
     .btn-listen:hover {
@@ -3575,12 +3555,21 @@
                                         </button>
                                     </div>
                                     <p class="composition-description">Loading composition description...</p>
+<<<<<<< HEAD
                                                                     <div class="composition-actions">
                                     <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn" style="display: none;">
                                         <span class="status-circle"></span>
                                         Listen (Hidden)
                                     </button>
                                 </div>
+=======
+                                    <div class="composition-actions">
+                                        <button class="btn-listen listen-btn" onclick="playFeaturedComposition()" id="listen-btn">
+                                            <span class="btn-icon">🎵</span>
+                                            Listen
+                                        </button>
+                                    </div>
+>>>>>>> parent of 1675cd3 (Update index.html)
                                 </div>
                             </div>
                         </div>
@@ -5693,6 +5682,7 @@
             if (previewContainer) {
                 previewContainer.classList.add('fade-out');
                 
+<<<<<<< HEAD
                 // Update content after fade out
                 setTimeout(() => {
                     if (titleElement) titleElement.textContent = composition.title || 'New Release';
@@ -5722,6 +5712,49 @@
                             // Hide Listen button if no audio available
                             listenBtn.style.display = 'none';
                             console.log('🎵 Listen button hidden - no audio available for composition:', composition.title);
+=======
+                                    // Update content after fade out
+                    setTimeout(() => {
+                        if (titleElement) titleElement.textContent = composition.title || 'New Release';
+                        if (instrumentationElement) instrumentationElement.textContent = composition.instrumentation || 'Brass Ensemble';
+                        if (descriptionElement) descriptionElement.textContent = composition.description || 'A dynamic new composition showcasing innovative musical ideas and technical brilliance.';
+                        if (imageElement && composition.coverImage) imageElement.src = composition.coverImage;
+                        
+                        // Update performed by information
+                        const performedByElement = document.querySelector('#new-release-audio-container .performed-by-artist');
+                        if (performedByElement) {
+                            performedByElement.textContent = composition.performedBy || 'Unknown Artist';
+                        }
+                        
+                        // Check if audio is available and update Listen button and container
+                        const listenBtn = document.getElementById('listen-btn');
+                        // Check for audio availability - prioritize media database files
+                        const hasAudio = (composition.audioFiles && composition.audioFiles.length > 0) || composition.audioLink;
+                        
+                        console.log('🎵 updateNewCatalogRelease - Audio check for:', composition.title, {
+                            audioLink: composition.audioLink,
+                            audioFiles: composition.audioFiles,
+                            audioFilesLength: composition.audioFiles?.length,
+                            hasAudio: hasAudio
+                        });
+                        
+                        // Update audio container state using the manager
+                        AudioContainerManager.updateState(hasAudio);
+                        
+                        if (listenBtn) {
+                            if (hasAudio) {
+                                // Show Listen button and update text based on visibility
+                                listenBtn.style.display = 'flex';
+                                const isVisible = AudioContainerManager.container && 
+                                    AudioContainerManager.container.classList.contains('has-audio');
+                                listenBtn.innerHTML = isVisible ? 
+                                    '<span class="btn-icon">🎵</span>Listen (In View)' : 
+                                    '<span class="btn-icon">🎵</span>Listen (Hidden)';
+                            } else {
+                                // Hide Listen button if no audio available
+                                listenBtn.style.display = 'none';
+                            }
+>>>>>>> parent of 1675cd3 (Update index.html)
                         }
                     }
                     
@@ -5772,9 +5805,18 @@
                     if (hasAudio) {
                         // Show Listen button - always start in hidden state
                         listenBtn.style.display = 'flex';
+<<<<<<< HEAD
                         listenBtn.innerHTML = '<span class="status-circle"></span>Listen (Hidden)';
                         listenBtn.classList.remove('in-view');
                         console.log('🎵 Listen button set to hidden state (fallback) for composition:', composition.title);
+=======
+                        if (audioContainer) {
+                            const isVisible = audioContainer.style.display !== 'none';
+                            listenBtn.innerHTML = isVisible ? 
+                                '<span class="btn-icon">🎵</span>Listen (In View)' : 
+                                '<span class="btn-icon">🎵</span>Listen (Hidden)';
+                        }
+>>>>>>> parent of 1675cd3 (Update index.html)
                     } else {
                         // Hide Listen button if no audio available
                         listenBtn.style.display = 'none';
@@ -6217,10 +6259,9 @@
                 // Show the audio container using the manager
                 AudioContainerManager.show();
                 
-                // Update listen button text and state
+                // Update listen button text
                 if (listenBtn) {
-                    listenBtn.innerHTML = '<span class="status-circle"></span>Listen (In View)';
-                    listenBtn.classList.add('in-view');
+                    listenBtn.innerHTML = '<span class="btn-icon">🎵</span>Listen (In View)';
                 }
                 
                 // Show auto-cycle paused status
@@ -6237,10 +6278,9 @@
                 // Hide the audio container using the manager
                 AudioContainerManager.hide();
                 
-                // Update listen button text and state
+                // Update listen button text
                 if (listenBtn) {
-                    listenBtn.innerHTML = '<span class="status-circle"></span>Listen (Hidden)';
-                    listenBtn.classList.remove('in-view');
+                    listenBtn.innerHTML = '<span class="btn-icon">🎵</span>Listen (Hidden)';
                 }
                 
                 // Pause all audio players when hiding
